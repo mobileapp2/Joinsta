@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,6 @@ public class MainDrawer_Activity extends AppCompatActivity {
 
     private Context context;
     private AHBottomNavigation bottomNavigation;
-    private AHBottomNavigationItem botNavClent, botNavPolicy, botNavCalendar, botNavReminder, botFilter;
     private Fragment currentFragment;
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
@@ -40,37 +40,11 @@ public class MainDrawer_Activity extends AppCompatActivity {
         if (Utilities.isNetworkAvailable(context)) {
 
         } else {
-//            new AwesomeErrorDialog(this)
-//                    .setTitle(R.string.msgt_nointernetconnection)
-//                    .setMessage("")
-//                    .setColoredCircle(R.color.dialogErrorBackgroundColor)
-//                    .setDialogIconAndColor(R.drawable.ic_dialog_error, R.color.white)
-//                    .setCancelable(true).setButtonText("Retry")
-//                    .setButtonBackgroundColor(R.color.dialogErrorBackgroundColor)
-//                    .setButtonText(getString(R.string.dialog_ok_button))
-//                    .setCancelable(false)
-//                    .setErrorButtonClick(new Closure() {
-//                        @Override
-//                        public void exec() {
-//                            startActivity(new Intent(context, MainDrawer_Activity.class));
-//                            finish();
-//                        }
-//                    })
-//                    .show();
-
-            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE);
-            sweetAlertDialog.setCancelable(false);
-            sweetAlertDialog.setTitleText("Oops...");
-            sweetAlertDialog.setContentText("Please check your internet connection");
-            sweetAlertDialog.setConfirmText("RETRY");
-            sweetAlertDialog.setConfirmButton("RETRY", new SweetAlertDialog.OnSweetClickListener() {
-                @Override
-                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                    startActivity(new Intent(context, MainDrawer_Activity.class));
-                    finish();
-                }
-            });
-            sweetAlertDialog.show();
+            SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
+            alertDialog.setCancelable(false);
+            alertDialog.setTitleText("Oops...");
+            alertDialog.setContentText("Please check your internet connection");
+            alertDialog.show();
         }
 
 
@@ -94,6 +68,46 @@ public class MainDrawer_Activity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigation() {
+        // Create items
 
+        AHBottomNavigationItem botHome = new AHBottomNavigationItem("HOME", R.drawable.icon_home, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("SEARCH", R.drawable.icon_search, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("FAVOURITE", R.drawable.icon_favourite, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("REQUEST", R.drawable.icon_request, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("PROFILE", R.drawable.icon_profile, R.color.colorPrimaryDark);
+
+        // Add items
+
+        bottomNavigation.addItem(botHome);
+        bottomNavigation.addItem(botSearch);
+        bottomNavigation.addItem(botFavourite);
+        bottomNavigation.addItem(botRequest);
+        bottomNavigation.addItem(botProfile);
+
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#424242"));
+        bottomNavigation.setAccentColor(Color.parseColor("#FF8F00"));
+        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
+        bottomNavigation.setForceTint(true);
+        bottomNavigation.setTranslucentNavigationEnabled(true);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+
+                if (currentFragment == null) {
+                    currentFragment = adapter.getCurrentFragment();
+                }
+
+                view_pager.setCurrentItem(position, true);
+
+                if (currentFragment == null) {
+                    return true;
+                }
+
+                currentFragment = adapter.getCurrentFragment();
+                return true;
+            }
+        });
     }
 }
