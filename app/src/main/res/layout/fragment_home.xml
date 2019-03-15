@@ -69,7 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="@android:color/white"
-        card_view:cardElevation="5dp"
+        card_view:cardElevation="2dp"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -101,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardBackgroundColor="@android:color/white"
-        card_view:cardElevation="5dp"
+        card_view:cardElevation="2dp"
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -129,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
+                    android:paddingLeft="5dp"
                     android:text="Builder"
                     android:textSize="16sp" />
 
@@ -158,6 +159,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
+                    android:paddingLeft="5dp"
                     android:text="Contractor"
                     android:textSize="16sp" />
 
@@ -188,6 +190,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
+                    android:paddingLeft="5dp"
                     android:text="Manufacturer"
                     android:textSize="16sp" />
 
@@ -217,6 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
+                    android:paddingLeft="5dp"
                     android:text="Service Provider"
                     android:textSize="16sp" />
 
@@ -247,6 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
+                    android:paddingLeft="5dp"
                     android:text="Trader"
                     android:textSize="16sp" />
 
@@ -276,6 +281,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
+                    android:paddingLeft="5dp"
                     android:text="Other"
                     android:textSize="16sp" />
 
