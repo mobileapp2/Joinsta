@@ -33,14 +33,13 @@
                     android:id="@+id/edt_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/imv_launcher"
+                    android:background="@android:color/transparent"
                     android:drawableRight="@drawable/icon_dropdown"
-                    android:focusable="false"
-                    android:longClickable="false"
                     android:text="Pick Location"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:backgroundTint="@color/white" />
 
@@ -49,14 +48,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_gravity="center_vertical"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
+                    android:background="@android:color/transparent"
                     android:drawableRight="@drawable/icon_dropdown"
-                    android:focusable="false"
-                    android:longClickable="false"
                     android:text="Type"
                     android:textColor="@color/white"
-                    android:textSize="14sp"
                     android:textStyle="bold"
                     app:backgroundTint="@color/white" />
 
@@ -66,28 +63,38 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/lightGray"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        card_view:cardBackgroundColor="@android:color/white"
+        card_view:cardElevation="5dp"
+        card_view:cardUseCompatPadding="true">
 
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.9"
-            android:background="@android:color/transparent"
-            android:hint="Search by name or keyworks" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="15dp">
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="0.1"
-            android:src="@drawable/icon_search"
-            android:tint="@color/mediumGray" />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:background="@android:color/transparent"
+                android:hint="Search by name or keyworks" />
 
-    </LinearLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="0.1"
+                android:src="@drawable/icon_search"
+                android:tint="@color/mediumGray" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -105,15 +112,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:background="@color/lightGray"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:layout_weight="0.1"
-                    android:src="@drawable/icon_search"
+                    android:src="@drawable/icon_builder"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -126,23 +134,23 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/darkGray" />  <LinearLayout
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:background="@color/darkGray" />-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:layout_weight="0.1"
-                    android:src="@drawable/icon_search"
+                    android:src="@drawable/icon_contractor"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -150,28 +158,29 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
-                    android:text="Builder"
+                    android:text="Contractor"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/darkGray" />  <LinearLayout
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:background="@color/darkGray" />-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:background="@color/lightGray"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:layout_weight="0.1"
-                    android:src="@drawable/icon_search"
+                    android:src="@drawable/icon_manufacturer"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -179,28 +188,28 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
-                    android:text="Builder"
+                    android:text="Manufacturer"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/darkGray" />  <LinearLayout
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:background="@color/darkGray" />-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:layout_weight="0.1"
-                    android:src="@drawable/icon_search"
+                    android:src="@drawable/icon_service"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -208,28 +217,29 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
-                    android:text="Builder"
+                    android:text="Service Provider"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/darkGray" />  <LinearLayout
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:background="@color/darkGray" />-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:background="@color/lightGray"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:layout_weight="0.1"
-                    android:src="@drawable/icon_search"
+                    android:src="@drawable/icon_trader"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -237,28 +247,28 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
-                    android:text="Builder"
+                    android:text="Trader"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/darkGray" />  <LinearLayout
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.5dp"-->
+            <!--android:background="@color/darkGray" />-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:orientation="horizontal"
+                android:padding="10dp"
                 android:weightSum="1">
 
                 <ImageView
                     android:layout_width="0dp"
                     android:layout_height="25dp"
                     android:layout_weight="0.1"
-                    android:src="@drawable/icon_search"
+                    android:src="@drawable/icon_other"
                     android:tint="@color/colorPrimary" />
 
                 <TextView
@@ -266,17 +276,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.9"
-                    android:text="Builder"
+                    android:text="Other"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/darkGray" />
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
