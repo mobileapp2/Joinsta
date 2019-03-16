@@ -8,6 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -44,4 +45,5 @@ dependencies {
 //    implementation 'com.github.pedant:sweet-alert-dialog:v1.1'
 //    implementation 'com.github.Leogiroux:sweet-alert-dialog:v1.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'info.hoang8f:android-segmented:1.0.6'
 }

@@ -64,10 +64,9 @@
                 android:textSize="16sp"
                 android:tint="@color/darkGray" />
 
-
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.1"
                 android:src="@drawable/icon_arrowright"
@@ -96,6 +95,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Please choose any one as your default profile view" />
+
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"

@@ -3,10 +3,21 @@
     <color name="colorPrimary">#FFA000</color>
     <color name="colorPrimaryDark">#FFA000</color>
     <color name="colorAccent">#FFA000</color>
+    <!--<color name="colorPrimary">#8b60c8</color>-->
+    <!--<color name="colorPrimaryDark">#8b60c8</color>-->
+    <!--<color name="colorAccent">#8b60c8</color>-->
 
 
     <color name="black">#000000</color>
     <color name="lightGray">#EEEEEE</color>
     <color name="mediumGray">#9E9E9E</color>
     <color name="darkGray">#616161</color>
+
+    <!--<color name="segment_tab_selected_color">#FFA000</color>-->
+    <color name="radio_button_selected_color">#FFFFFF</color>
+    <!--<color name="radio_button_unselected_color">#FFA000</color>-->
+
+    <!--<color name="selected_color">#FFA000</color>-->
+    <!--<color name="unselected_color">#e0e0e0</color>-->
+
 </resources>
