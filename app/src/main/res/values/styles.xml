@@ -31,14 +31,14 @@
 
     </style>
 
-    <style name="SegmentTabStyle">
-        <item name="android:textColor">@drawable/bg_segmenttab</item>
-        <item name="android:minHeight">33dp</item>
-        <item name="android:minWidth">70dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:button">@null</item>
-        <item name="android:paddingLeft">5dp</item>
-        <item name="android:paddingRight">5dp</item>
+    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottomsheet_dialog</item>
     </style>
 
 </resources>

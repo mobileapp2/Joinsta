@@ -12,12 +12,5 @@
     <color name="lightGray">#EEEEEE</color>
     <color name="mediumGray">#9E9E9E</color>
     <color name="darkGray">#616161</color>
-
-    <!--<color name="segment_tab_selected_color">#FFA000</color>-->
-    <color name="radio_button_selected_color">#FFFFFF</color>
-    <!--<color name="radio_button_unselected_color">#FFA000</color>-->
-
-    <!--<color name="selected_color">#FFA000</color>-->
-    <!--<color name="unselected_color">#e0e0e0</color>-->
-
+    <color name="white">#FFFFFF</color>
 </resources>
