@@ -2,19 +2,15 @@ package in.oriange.joinsta.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.SearchAdapter;
-import in.oriange.joinsta.models.SearchListModel;
 
 public class Favourite_Fragment extends Fragment {
 
