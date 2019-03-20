@@ -40,11 +40,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
         holder.tv_subheading.setText(profileDetails.getSubType());
         holder.tv_subsubheading.setText(profileDetails.getSubSubType());
 
-        if (profileDetails.getIsFavourite().equals("1")) {
-            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_filled));
-        } else {
-            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_outline));
-        }
+//        if (profileDetails.getIsFavourite().equals("1")) {
+//            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_filled));
+//        } else {
+//            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_outline));
+//        }
 
     }
 
@@ -55,13 +55,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView imv_preview, imv_favourite;
+        private ImageView imv_preview;
         private TextView tv_heading, tv_subheading, tv_subsubheading;
 
         public MyViewHolder(View view) {
             super(view);
             imv_preview = view.findViewById(R.id.imv_preview);
-            imv_favourite = view.findViewById(R.id.imv_favourite);
             tv_heading = view.findViewById(R.id.tv_heading);
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);

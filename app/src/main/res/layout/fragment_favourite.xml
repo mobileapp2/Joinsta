@@ -45,13 +45,13 @@
                     app:sbg_animateSelectorDuration="500"
                     app:sbg_backgroundColor="@color/colorPrimary"
                     app:sbg_dividerColor="@color/white"
-                    app:sbg_dividerSize="2dp"
+                    app:sbg_dividerSize="0.5dp"
                     app:sbg_position="0"
                     app:sbg_ripple="true"
                     app:sbg_rippleColor="@color/white"
                     app:sbg_selectorColor="@color/white"
                     app:sbg_selectorTextColor="@color/colorPrimary"
-                    app:sbg_shadowMargin="2dp">
+                    app:sbg_shadowMargin="0.5dp">
 
                     <Button
                         android:layout_width="0dp"
@@ -60,14 +60,12 @@
                         android:text="Business"
                         android:textAllCaps="false" />
 
-
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:minHeight="10dp"
                         android:text="Profession"
                         android:textAllCaps="false" />
-
 
                     <Button
                         android:layout_width="0dp"
@@ -76,14 +74,12 @@
                         android:text="Employee"
                         android:textAllCaps="false" />
 
-
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:minHeight="10dp"
                         android:text="Student"
                         android:textAllCaps="false" />
-
 
                 </co.ceryle.segmentedbutton.SegmentedButtonGroup>
 

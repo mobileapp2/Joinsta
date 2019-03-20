@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.BasicInformation_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
 import in.oriange.joinsta.adapters.ProfileViewAdapter;
 import in.oriange.joinsta.models.ProfileListModel;
@@ -29,6 +31,7 @@ public class Profile_Fragment extends Fragment {
 
     private Context context;
     private RecyclerView rv_profilelist;
+    private CardView cv_basicinfo;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class Profile_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        cv_basicinfo = rootView.findViewById(R.id.cv_basicinfo);
         rv_profilelist = rootView.findViewById(R.id.rv_profilelist);
         rv_profilelist.setLayoutManager(new LinearLayoutManager(context));
 
@@ -59,8 +63,8 @@ public class Profile_Fragment extends Fragment {
 
     private void setDefault() {
         ArrayList<ProfileListModel> profileList = new ArrayList<>();
-        profileList.add(new ProfileListModel("Oriange", "Business, Service Peovider"));
-        profileList.add(new ProfileListModel("Oriange", "Business, Service Peovider"));
+        profileList.add(new ProfileListModel("Oriange", "Business, Service Provider"));
+        profileList.add(new ProfileListModel("Oriange", "Business, Service Provider"));
 
         rv_profilelist.setAdapter(new ProfileViewAdapter(context, profileList));
 
@@ -71,7 +75,12 @@ public class Profile_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
-
+        cv_basicinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, BasicInformation_Activity.class));
+            }
+        });
     }
 
 
