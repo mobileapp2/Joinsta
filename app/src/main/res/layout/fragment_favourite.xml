@@ -56,7 +56,6 @@
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3"
                         android:minHeight="10dp"
                         android:text="Business"
                         android:textAllCaps="false" />
@@ -65,7 +64,6 @@
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3"
                         android:minHeight="10dp"
                         android:text="Profession"
                         android:textAllCaps="false" />
@@ -74,9 +72,16 @@
                     <Button
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.3"
                         android:minHeight="10dp"
                         android:text="Employee"
+                        android:textAllCaps="false" />
+
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="10dp"
+                        android:text="Student"
                         android:textAllCaps="false" />
 
 

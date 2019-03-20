@@ -1,13 +1,16 @@
 package in.oriange.joinsta.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +21,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.Settings_Activity;
 import in.oriange.joinsta.adapters.ProfileViewAdapter;
 import in.oriange.joinsta.models.ProfileListModel;
 
@@ -82,6 +86,9 @@ public class Profile_Fragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_notification:
+                break;
+            case R.id.action_settings:
+                startActivity(new Intent(context, Settings_Activity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
