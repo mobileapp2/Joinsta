@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Joinsta</string>
 
+    <string name="default_hint_text">Search Here</string>
 
     <string name="msgt_nointernetconnection">Please check your internet connection</string>
 </resources>

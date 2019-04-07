@@ -2,15 +2,14 @@ package in.oriange.joinsta.activities;
 
 import android.content.Context;
 import android.graphics.Color;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
@@ -81,7 +80,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         bottomNavigation.addItem(botRequest);
         bottomNavigation.addItem(botProfile);
 
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#424242"));
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
         bottomNavigation.setAccentColor(Color.parseColor("#FFA000"));
         bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
         bottomNavigation.setForceTint(true);

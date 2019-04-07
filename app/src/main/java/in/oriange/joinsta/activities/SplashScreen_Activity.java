@@ -3,9 +3,8 @@ package in.oriange.joinsta.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -35,7 +34,7 @@ public class SplashScreen_Activity extends Activity {
         new Handler().postDelayed(new Runnable() {
             public void run() {
 //                if (session.isUserLoggedIn()) {
-                startActivity(new Intent(context, MainDrawer_Activity.class));
+                startActivity(new Intent(context, Login_Activity.class));
 //                } else {
 //                    startActivity(new Intent(context, Login_Activity.class));
 //                }
