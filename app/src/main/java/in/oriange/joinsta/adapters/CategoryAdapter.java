@@ -55,7 +55,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         holder.imv_category.setImageDrawable(context.getResources().getDrawable(categotyDetails.getImageId()));
         holder.tv_categoty.setText(categotyDetails.getCategoryName());
 
-        holder.rv_sub_catrgory.setLayoutManager(new LinearLayoutManager(context));
+        holder.rv_sub_catrgory.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.rv_sub_catrgory.setAdapter(new SubCategoryAdapter(context, subCategoryList));
 
         holder.cv_main_row.setOnClickListener(new View.OnClickListener() {
