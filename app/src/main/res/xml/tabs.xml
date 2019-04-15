@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        drawable="@drawable/icon_home"
+        text="HOME" />
+
+    <tab
+        drawable="@drawable/icon_search"
+        text="SEARCH" />
+
+    <tab
+        drawable="@drawable/icon_favourite"
+        text="FAVOURITE" />
+
+    <tab
+        drawable="@drawable/icon_request"
+        text="REQUEST" />
+
+    <tab
+        drawable="@drawable/icon_profile"
+        text="PROFILE" />
+</tabs>
