@@ -14,7 +14,6 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +31,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.appcompat.app.AlertDialog;
+import es.dmoral.toasty.Toasty;
 import in.oriange.joinsta.R;
 
 public class Utilities {
@@ -128,12 +129,24 @@ public class Utilities {
     //******************************* Massages Methods *********************************************
 
     /* show message int*/
-    public static void showMessage(int msg, Context context) {
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    public static void showMessage(int msg, Context context, int type) {    //1=success, 2=warning, 3=erroe
+        if (type == 1) {
+            Toasty.success(context, msg, Toast.LENGTH_SHORT, true).show();
+        } else if (type == 2) {
+            Toasty.info(context, msg, Toast.LENGTH_SHORT, true).show();
+        } else if (type == 3) {
+            Toasty.error(context, msg, Toast.LENGTH_SHORT, true).show();
+        }
     }
 
-    public static void showMessageString(String msg, Context context) {
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    public static void showMessage(String msg, Context context, int type) {
+        if (type == 1) {
+            Toasty.success(context, msg, Toast.LENGTH_SHORT, true).show();
+        } else if (type == 2) {
+            Toasty.info(context, msg, Toast.LENGTH_SHORT, true).show();
+        } else if (type == 3) {
+            Toasty.error(context, msg, Toast.LENGTH_SHORT, true).show();
+        }
     }
 
     static android.app.AlertDialog alertDialog;

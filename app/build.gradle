@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
-    implementation 'com.github.GrenderG:Toasty:1.4.0'
+    implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
     implementation 'com.github.f0ris.sweetalert:library:1.5.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'

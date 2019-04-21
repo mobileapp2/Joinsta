@@ -4,15 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.MenuEffect;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -30,6 +33,10 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.models.CategotyListModel;
+import in.oriange.joinsta.pojos.CategotyListPojo;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -39,8 +46,9 @@ public class Home_Fragment extends Fragment {
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
     private RecyclerView rv_category;
-    private View ll_mainlayout;
+    private ProgressBar progressBar;
     private PowerMenu iconMenu;
+    private String categoryTypeId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -54,28 +62,26 @@ public class Home_Fragment extends Fragment {
     }
 
     private void init(View rootView) {
-        ll_mainlayout = rootView.findViewById(R.id.ll_mainlayout);
 
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_location = rootView.findViewById(R.id.edt_location);
+
+        progressBar = rootView.findViewById(R.id.progressBar);
 
         rv_category = rootView.findViewById(R.id.rv_category);
         rv_category.setLayoutManager(new LinearLayoutManager(context));
     }
 
     private void setDefault() {
-        ArrayList<CategotyListModel> categotyList = new ArrayList<>();
 
-        categotyList.add(new CategotyListModel(R.drawable.icon_builder1, "Builder"));
-        categotyList.add(new CategotyListModel(R.drawable.icon_contractor1, "Contractor"));
-        categotyList.add(new CategotyListModel(R.drawable.icon_manufacturer1, "Manufacturer"));
-        categotyList.add(new CategotyListModel(R.drawable.icon_service1, "Service Provider"));
-        categotyList.add(new CategotyListModel(R.drawable.icon_showroon, "Showroom"));
-        categotyList.add(new CategotyListModel(R.drawable.icon_trader1, "Trader"));
-        categotyList.add(new CategotyListModel(R.drawable.icon_other1, "Other"));
+        categoryTypeId = "1";
+        edt_type.setText("Business");
 
-        rv_category.setAdapter(new CategoryAdapter(context, categotyList));
-
+        if (Utilities.isNetworkAvailable(context)) {
+            new GetCategotyList().execute("0", "0", categoryTypeId);
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
 
     }
 
@@ -115,14 +121,65 @@ public class Home_Fragment extends Fragment {
 
     }
 
-    private OnMenuItemClickListener<PowerMenuItem> onIconMenuItemClickListener =
-            new OnMenuItemClickListener<PowerMenuItem>() {
-                @Override
-                public void onItemClick(int position, PowerMenuItem item) {
-                    edt_type.setText(item.getTitle());
-                    iconMenu.dismiss();
+    private OnMenuItemClickListener<PowerMenuItem> onIconMenuItemClickListener = new OnMenuItemClickListener<PowerMenuItem>() {
+        @Override
+        public void onItemClick(int position, PowerMenuItem item) {
+            edt_type.setText(item.getTitle());
+            categoryTypeId = String.valueOf(position + 1);
+            iconMenu.dismiss();
+        }
+    };
+
+    public class GetCategotyList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getcategory");
+            obj.addProperty("parent_id", params[0]);
+            obj.addProperty("level", params[1]);
+            obj.addProperty("category_type_id", params[2]);
+            res = APICall.JSONAPICall(ApplicationConstants.CATEGORYAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressBar.setVisibility(View.GONE);
+            rv_category.setVisibility(View.VISIBLE);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    ArrayList<CategotyListModel> categotyList = new ArrayList<>();
+                    CategotyListPojo pojoDetails = new Gson().fromJson(result, CategotyListPojo.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        categotyList = pojoDetails.getResult();
+                        if (categotyList.size() > 0) {
+                            rv_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
+
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, "Fail", message, false);
+
+                    }
                 }
-            };
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Please Try Again", "Server Not Responding", false);
+            }
+        }
+    }
 
     @SuppressLint("ValidFragment")
     public class BottomSheetMenu_Fragment extends BottomSheetDialogFragment {

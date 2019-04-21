@@ -36,8 +36,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
         final int position = holder.getAdapterPosition();
         final SubCategotyListModel subCategotyDetails = resultArrayList.get(position);
 
-        holder.imv_category.setImageDrawable(context.getResources().getDrawable(subCategotyDetails.getImageId()));
-        holder.tv_categoty.setText(subCategotyDetails.getSubCategoryName());
+        holder.tv_categoty.setText(subCategotyDetails.getName());
 
 //        if ((position + 1) == resultArrayList.size()) {
 //            holder.view_divider.setVisibility(View.GONE);

@@ -125,7 +125,7 @@ public class SelectLocation_Activity extends AppCompatActivity
                                         String.valueOf(latLng.latitude),
                                         String.valueOf(latLng.longitude));
                             } else {
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context);
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
                         } else {
                             Utilities.showAlertDialog(context, "Alert", "Unable to get address from this location. Please try again or search manually", false);
@@ -172,7 +172,7 @@ public class SelectLocation_Activity extends AppCompatActivity
                     String.valueOf(latLng.latitude),
                     String.valueOf(latLng.longitude));
         } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context);
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
     }
 

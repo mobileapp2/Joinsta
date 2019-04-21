@@ -9,12 +9,12 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.utilities.UserSessionManager;
 
 public class SplashScreen_Activity extends Activity {
 
     private Context context;
-    private int secondsDelayed = 1;
-//    private UserSessionManager session;
+    private UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +29,16 @@ public class SplashScreen_Activity extends Activity {
 
     private void init() {
         context = SplashScreen_Activity.this;
-//        session = new UserSessionManager(context);
+        session = new UserSessionManager(context);
 
+        int secondsDelayed = 1;
         new Handler().postDelayed(new Runnable() {
             public void run() {
-//                if (session.isUserLoggedIn()) {
-                startActivity(new Intent(context, Login_Activity.class));
-//                } else {
-//                    startActivity(new Intent(context, Login_Activity.class));
-//                }
+                if (session.isUserLoggedIn()) {
+                    startActivity(new Intent(context, MainDrawer_Activity.class));
+                } else {
+                    startActivity(new Intent(context, Login_Activity.class));
+                }
                 finish();
             }
         }, secondsDelayed * 500);

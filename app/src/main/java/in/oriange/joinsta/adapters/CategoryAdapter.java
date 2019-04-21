@@ -1,6 +1,7 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,11 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +25,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
+import in.oriange.joinsta.pojos.SubCategotyListPojo;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.Utilities;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
 
@@ -27,17 +36,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     private Context context;
     private ArrayList<SubCategotyListModel> subCategoryList;
     private ImageButton imv_arrow1;
+    private String categoryTypeId;
+    private RecyclerView rv_sub_catrgory1;
+    private ProgressBar progressBar1;
+    private TextView tv_subcst_notavailable1;
 
-    public CategoryAdapter(Context context, List<CategotyListModel> resultArrayList) {
+
+    public CategoryAdapter(Context context, List<CategotyListModel> resultArrayList, String categoryTypeId) {
         this.context = context;
         this.resultArrayList = resultArrayList;
-
+        this.categoryTypeId = categoryTypeId;
         subCategoryList = new ArrayList<>();
-        subCategoryList.add(new SubCategotyListModel(R.drawable.icon_builder1, "Builder"));
-        subCategoryList.add(new SubCategotyListModel(R.drawable.icon_contractor1, "Contractor"));
-        subCategoryList.add(new SubCategotyListModel(R.drawable.icon_manufacturer1, "Manufacturer"));
-        subCategoryList.add(new SubCategotyListModel(R.drawable.icon_service1, "Service Provider"));
-        subCategoryList.add(new SubCategotyListModel(R.drawable.icon_showroon, "Showroom"));
     }
 
     @Override
@@ -52,45 +61,48 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         final int position = holder.getAdapterPosition();
         final CategotyListModel categotyDetails = resultArrayList.get(position);
 
-        holder.imv_category.setImageDrawable(context.getResources().getDrawable(categotyDetails.getImageId()));
-        holder.tv_categoty.setText(categotyDetails.getCategoryName());
-
-        holder.rv_sub_catrgory.setLayoutManager(new LinearLayoutManager(context));
-        holder.rv_sub_catrgory.setAdapter(new SubCategoryAdapter(context, subCategoryList));
+        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
+        holder.tv_categoty.setText(categotyDetails.getName());
 
         holder.cv_main_row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.rv_sub_catrgory.getVisibility() == View.VISIBLE) {
-                    imv_arrow1 = holder.imv_arrow;
-                    holder.rv_sub_catrgory.setVisibility(View.GONE);
-                    animateCollapse();
-                } else {
-                    holder.cv_main_row.requestFocus();
-                    imv_arrow1 = holder.imv_arrow;
-                    holder.rv_sub_catrgory.setVisibility(View.VISIBLE);
-                    animateExpand();
-                }
+                setUpSubcategoryData(holder, categotyDetails);
             }
         });
 
         holder.imv_arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.rv_sub_catrgory.getVisibility() == View.VISIBLE) {
-                    imv_arrow1 = holder.imv_arrow;
-                    holder.rv_sub_catrgory.setVisibility(View.GONE);
-                    animateCollapse();
-                } else {
-                    holder.cv_main_row.requestFocus();
-                    imv_arrow1 = holder.imv_arrow;
-                    holder.rv_sub_catrgory.setVisibility(View.VISIBLE);
-                    animateExpand();
-                }
+                setUpSubcategoryData(holder, categotyDetails);
             }
         });
-
     }
+
+    private void setUpSubcategoryData(MyViewHolder holder, CategotyListModel categotyDetails) {
+        if (holder.rv_sub_catrgory.getVisibility() == View.VISIBLE ||
+                holder.progressBar.getVisibility() == View.VISIBLE ||
+                holder.tv_subcst_notavailable.getVisibility() == View.VISIBLE) {
+            imv_arrow1 = holder.imv_arrow;
+            holder.rv_sub_catrgory.setVisibility(View.GONE);
+            holder.progressBar.setVisibility(View.GONE);
+            holder.tv_subcst_notavailable.setVisibility(View.GONE);
+            animateCollapse();
+        } else {
+            holder.cv_main_row.requestFocus();
+            imv_arrow1 = holder.imv_arrow;
+            rv_sub_catrgory1 = holder.rv_sub_catrgory;
+            progressBar1 = holder.progressBar;
+            tv_subcst_notavailable1 = holder.tv_subcst_notavailable;
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetSubCategotyList().execute(categotyDetails.getId(), "1", categoryTypeId);
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+            animateExpand();
+        }
+    }
+
 
     @Override
     public int getItemCount() {
@@ -104,6 +116,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         private ImageButton imv_arrow;
         private TextView tv_categoty;
         private RecyclerView rv_sub_catrgory;
+        private ProgressBar progressBar;
+        private TextView tv_subcst_notavailable;
 
         public MyViewHolder(View view) {
             super(view);
@@ -112,6 +126,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             imv_arrow = view.findViewById(R.id.imv_arrow);
             tv_categoty = view.findViewById(R.id.tv_categoty);
             rv_sub_catrgory = view.findViewById(R.id.rv_sub_catrgory);
+            progressBar = view.findViewById(R.id.progressBar);
+            tv_subcst_notavailable = view.findViewById(R.id.tv_subcst_notavailable);
         }
     }
 
@@ -130,5 +146,57 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         rotate.setInterpolator(new LinearInterpolator());
         imv_arrow1.startAnimation(rotate);
     }
+
+    public class GetSubCategotyList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar1.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getcategory");
+            obj.addProperty("parent_id", params[0]);
+            obj.addProperty("level", params[1]);
+            obj.addProperty("category_type_id", params[2]);
+            res = APICall.JSONAPICall(ApplicationConstants.CATEGORYAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressBar1.setVisibility(View.GONE);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    SubCategotyListPojo pojoDetails = new Gson().fromJson(result, SubCategotyListPojo.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        subCategoryList = pojoDetails.getResult();
+                        if (subCategoryList.size() > 0) {
+                            rv_sub_catrgory1.setVisibility(View.VISIBLE);
+                            tv_subcst_notavailable1.setVisibility(View.GONE);
+                            rv_sub_catrgory1.setLayoutManager(new LinearLayoutManager(context));
+                            rv_sub_catrgory1.setAdapter(new SubCategoryAdapter(context, subCategoryList));
+                        }
+                    } else {
+                        rv_sub_catrgory1.setVisibility(View.GONE);
+                        tv_subcst_notavailable1.setVisibility(View.VISIBLE);
+                    }
+                }
+            } catch (Exception e) {
+                rv_sub_catrgory1.setVisibility(View.GONE);
+                tv_subcst_notavailable1.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
 }
 

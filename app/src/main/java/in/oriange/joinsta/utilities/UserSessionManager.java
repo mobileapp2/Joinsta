@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
-import androidx.core.app.ActivityCompat;
 
 import java.util.HashMap;
 
+import androidx.core.app.ActivityCompat;
 import in.oriange.joinsta.activities.Login_Activity;
 
 

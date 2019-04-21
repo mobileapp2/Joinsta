@@ -1,6 +1,7 @@
 package in.oriange.joinsta.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -28,26 +29,34 @@ public class MainDrawer_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_drawer);
 
+        context = MainDrawer_Activity.this;
+
+        if (!Utilities.isNetworkAvailable(context)) {
+            SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
+            alertDialog.setCancelable(false);
+            alertDialog.setTitleText("Oops...");
+            alertDialog.setContentText("Please check your internet connection");
+            alertDialog.setConfirmButton("Retry", new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    startActivity(new Intent(context, MainDrawer_Activity.class));
+                    finish();
+                }
+            });
+            alertDialog.show();
+            return;
+        }
+
+
         init();
         getSessionData();
         setEventHandler();
         setUpBottomNavigation();
 
-        if (Utilities.isNetworkAvailable(context)) {
-
-        } else {
-            SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
-            alertDialog.setCancelable(false);
-            alertDialog.setTitleText("Oops...");
-            alertDialog.setContentText("Please check your internet connection");
-            alertDialog.show();
-        }
-
 
     }
 
     private void init() {
-        context = MainDrawer_Activity.this;
         bottomNavigation = findViewById(R.id.bottom_navigation);
         view_pager = findViewById(R.id.view_pager);
         view_pager.setOffscreenPageLimit(4);
