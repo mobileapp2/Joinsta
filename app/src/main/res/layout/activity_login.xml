@@ -37,25 +37,25 @@
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_username"
-                        style="@style/CustomEdittext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Username"
                         android:inputType="textNoSuggestions"
                         android:textSize="18sp"
                         app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/mediumGray" />
+                        app:met_textColorHint="@color/mediumGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_password"
-                        style="@style/CustomEdittext"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Password"
                         android:inputType="textPassword"
                         android:textSize="18sp"
                         app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/mediumGray" />
+                        app:met_textColorHint="@color/mediumGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                     <TextView
                         android:id="@+id/tv_forgotpass"

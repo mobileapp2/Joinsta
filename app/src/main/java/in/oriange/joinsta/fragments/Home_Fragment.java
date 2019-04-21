@@ -79,8 +79,6 @@ public class Home_Fragment extends Fragment {
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetCategotyList().execute("0", "0", categoryTypeId);
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
 
     }
@@ -130,7 +128,7 @@ public class Home_Fragment extends Fragment {
         }
     };
 
-    public class GetCategotyList extends AsyncTask<String, Void, String> {
+    private class GetCategotyList extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
