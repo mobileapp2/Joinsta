@@ -61,15 +61,14 @@
             android:layout_marginTop="2dp"
             android:background="@color/mediumGray" />
 
-        <ProgressBar
+        <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            style="@style/SpinKitView.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:SpinKit_Color="@color/colorAccent" />
 
         <TextView
             android:id="@+id/tv_subcst_notavailable"

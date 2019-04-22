@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -38,7 +39,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     private ImageButton imv_arrow1;
     private String categoryTypeId;
     private RecyclerView rv_sub_catrgory1;
-    private ProgressBar progressBar1;
+    private SpinKitView progressBar1;
     private TextView tv_subcst_notavailable1;
 
 
@@ -116,7 +117,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         private ImageButton imv_arrow;
         private TextView tv_categoty;
         private RecyclerView rv_sub_catrgory;
-        private ProgressBar progressBar;
+        private SpinKitView progressBar;
         private TextView tv_subcst_notavailable;
 
         public MyViewHolder(View view) {

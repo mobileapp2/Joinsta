@@ -47,4 +47,5 @@ dependencies {
     implementation 'com.github.jd-alexander:LikeButton:0.2.3'
     implementation 'com.airbnb.android:lottie:2.5.0-rc1'
     implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
 }
