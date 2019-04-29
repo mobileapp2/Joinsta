@@ -38,19 +38,6 @@ public class Utilities {
     public static SimpleDateFormat dfDate3 = new SimpleDateFormat("MM/dd/yyyy");
     public static SimpleDateFormat dfDate4 = new SimpleDateFormat("yyyy/MM/dd");
 
-    public static boolean isMobileNo(EditText edt) {
-        edt.setError(null);
-        if ((edt.getText().toString().trim().length() == 10)
-                && (isValidMobileno(edt.getText().toString().trim())))
-            return true;
-
-        else {
-            edt.setError("Enter valid mobile number");
-            edt.requestFocus();
-            return false;
-        }
-    }
-
     public static String ConvertDateFormat(DateFormat dateFormat, int day, int month, int year) {
         String startDateString = String.valueOf(day) + "/"
                 + String.valueOf(month) + "/"
@@ -66,12 +53,28 @@ public class Utilities {
         return newDateString;
     }
 
-    private static boolean isValidMobileno(String mobileno) {
+    public static boolean isValidMobileno(String mobileno) {
         String Mobile_PATTERN = "^[6-9]{1}[0-9]{9}$";                                               //^[+]?[0-9]{10,13}$
         Pattern pattern = Pattern.compile(Mobile_PATTERN);
         Matcher matcher = pattern.matcher(mobileno);
         return matcher.matches();
     }
+
+    public static boolean isLandlineValid(String landline) {
+        String expression = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(landline);
+        return matcher.matches();
+    }
+
+    public static boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+
 
     private static boolean isValidPincode(String pincode) {
         String Pincode_PATTERN = "[4]{1}[0-9]{5}";

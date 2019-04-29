@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
@@ -46,7 +47,7 @@ public class Home_Fragment extends Fragment {
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
     private RecyclerView rv_category;
-    private ProgressBar progressBar;
+    private SpinKitView progressBar;
     private PowerMenu iconMenu;
     private String categoryTypeId;
 

@@ -11,7 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -31,8 +34,13 @@ import java.util.List;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.MasterModel;
+import in.oriange.joinsta.models.PrimaryPublicMobileSelectionModel;
+import in.oriange.joinsta.models.PrimarySelectionModel;
 import in.oriange.joinsta.pojos.MasterPojo;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -50,9 +58,15 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton ib_add_mobile, ib_add_landline, ib_add_email;
-    private String bloodGroupId = "1", educationId = "1", referalCode, isActive, imageUrl;
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
+
+    private String userId, password, bloodGroupId, educationId, genderId, imageUrl, isActive, referralCode;
+    private JsonArray mobileJSONArray, landlineJSONArray, emailJSONArray;
+
+    private ArrayList<PrimaryPublicMobileSelectionModel> mobileList;
+    private ArrayList<PrimarySelectionModel> landlineList, emailList;
+    private int lastSelectedMobilePrimary = -1, lastSelectedLandlinePrimary = -1, lastSelectedEmailPrimary = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,22 +112,107 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mobileLayoutsList = new ArrayList<>();
         landlineLayoutsList = new ArrayList<>();
         emailLayoutsList = new ArrayList<>();
+
+        mobileJSONArray = new JsonArray();
+        landlineJSONArray = new JsonArray();
+        emailJSONArray = new JsonArray();
+
+        mobileList = new ArrayList<>();
+        landlineList = new ArrayList<>();
+        emailList = new ArrayList<>();
     }
 
     private void setDefault() {
-        mobileLayoutsList.add(ll_mobile);
-        landlineLayoutsList.add(ll_landline);
-        emailLayoutsList.add(ll_email);
     }
 
     private void getSessionData() {
+
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
-            referalCode = json.getString("referral_code");
-            isActive = json.getString("is_active");
+
+            userId = json.getString("userid");
+            password = json.getString("password");
+            bloodGroupId = json.getString("blood_group_id");
+            edt_bloodgroup.setText(json.getString("blood_group_description"));
+            educationId = json.getString("education_id");
+            edt_education.setText(json.getString("education_description"));
+            edt_specify.setText(json.getString("specific_education"));
+            edt_nativeplace.setText(json.getString("native_place"));
+            edt_fname.setText(json.getString("first_name"));
+            edt_mname.setText(json.getString("middle_name"));
+            edt_lname.setText(json.getString("last_name"));
+            genderId = json.getString("gender_id");
             imageUrl = json.getString("image_url");
+            isActive = json.getString("is_active");
+            referralCode = json.getString("referral_code");
+
+            if (genderId.equals("1")) {
+                rb_male.setChecked(true);
+            } else if (genderId.equals("2")) {
+                rb_female.setChecked(true);
+            }
+
+
+            JSONArray mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
+            JSONArray landlinesonArray = new JSONArray(json.getString("landline_numbers"));
+            JSONArray emailJsonArray = new JSONArray(json.getString("email"));
+
+
+            if (mobileJsonArray.length() > 0) {
+                for (int i = 0; i < mobileJsonArray.length(); i++) {
+
+                    if (i == (mobileJsonArray.length() - 1)) {
+                        edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+//                        mobileLayoutsList.add(ll_mobile);
+                    } else {
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+                        mobileLayoutsList.add((LinearLayout) rowView);
+                        ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                    }
+                }
+            }
+
+
+            if (landlinesonArray.length() > 0) {
+                for (int i = 0; i < landlinesonArray.length(); i++) {
+
+                    if (i == (landlinesonArray.length() - 1)) {
+                        edt_landline.setText(landlinesonArray.getJSONObject(i).getString("landline_number"));
+//                        landlineLayoutsList.add(ll_landline);
+                    } else {
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+                        landlineLayoutsList.add((LinearLayout) rowView);
+                        ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                    }
+                }
+            }
+
+
+            if (emailJsonArray.length() > 0) {
+                for (int i = 0; i < emailJsonArray.length(); i++) {
+
+                    if (i == (emailJsonArray.length() - 1)) {
+                        edt_email.setText(emailJsonArray.getJSONObject(i).getString("email"));
+//                        emailLayoutsList.add(ll_email);
+                    } else {
+                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View rowView = inflater.inflate(R.layout.layout_add_email, null);
+                        emailLayoutsList.add((LinearLayout) rowView);
+                        ll_email.addView(rowView, ll_email.getChildCount() - 1);
+                        ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
+
+                    }
+
+                }
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -369,14 +468,14 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_save:
-                submitData();
+                validateData();
                 break;
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void submitData() {
+    private void validateData() {
         if (edt_fname.getText().toString().trim().isEmpty()) {
             edt_fname.setError("Please enter first name");
             edt_fname.requestFocus();
@@ -418,20 +517,46 @@ public class BasicInformation_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_mobile.getText().toString().trim().isEmpty()) {
-            edt_mobile.setError("Please enter mobile number");
+
+        for (int i = 0; i < mobileLayoutsList.size(); i++) {
+            if (!Utilities.isValidMobileno(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim())) {
+                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setError("Please enter mobile number");
+                (mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).requestFocus();
+                return;
+            }
+        }
+
+        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+            edt_mobile.setError("Please enter valid mobile number");
             edt_mobile.requestFocus();
             return;
         }
 
-//        if (edt_landline.getText().toString().trim().isEmpty()) {
-//            edt_landline.setError("Please enter landline number");
-//            edt_landline.requestFocus();
-//            return;
-//        }
+        for (int i = 0; i < landlineLayoutsList.size(); i++) {
+            if (!Utilities.isLandlineValid(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim())) {
+                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setError("Please enter valid landline number");
+                (landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).requestFocus();
+                return;
+            }
+        }
 
-        if (edt_email.getText().toString().trim().isEmpty()) {
-            edt_email.setError("Please enter email");
+        if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
+            edt_landline.setError("Please enter valid landline number");
+            edt_landline.requestFocus();
+            return;
+        }
+
+
+        for (int i = 0; i < emailLayoutsList.size(); i++) {
+            if (!Utilities.isEmailValid(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim())) {
+                ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setError("Please enter valid email");
+                (emailLayoutsList.get(i).findViewById(R.id.edt_email)).requestFocus();
+                return;
+            }
+        }
+
+        if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+            edt_email.setError("Please enter valid email");
             edt_email.requestFocus();
             return;
         }
@@ -442,41 +567,399 @@ public class BasicInformation_Activity extends AppCompatActivity {
             return;
         }
 
+
+        for (int i = 0; i < mobileLayoutsList.size(); i++) {
+            if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
+                mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0"));
+            }
+        }
+
+        mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0"));
+
+        for (int i = 0; i < landlineLayoutsList.size(); i++) {
+            if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
+                landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0"));
+            }
+        }
+
+        landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0"));
+
+        for (int i = 0; i < emailLayoutsList.size(); i++) {
+            if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
+                emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0"));
+            }
+        }
+
+        emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0"));
+
+        showPrimaryMobileDialog();
+
+
+    }
+
+    private void showPrimaryMobileDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_primary_selection, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Select Primary Mobile");
+        alertDialogBuilder.setView(promptView);
+
+        final RecyclerView rv_list = promptView.findViewById(R.id.rv_list);
+        Button btn_next = promptView.findViewById(R.id.btn_next);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rv_list.setLayoutManager(layoutManager);
+        rv_list.setAdapter(new MobilePrimaryAdapter());
+
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (int i = 0; i < mobileList.size(); i++) {
+
+                    MobilePrimaryAdapter.MyViewHolder myViewHolder =
+                            (MobilePrimaryAdapter.MyViewHolder) rv_list.findViewHolderForAdapterPosition(i);
+
+                    if (myViewHolder.rb_selectone.isChecked()) {
+                        mobileList.get(i).setIsPrimary("1");
+                    }
+                }
+
+                alertD.dismiss();
+                showPublicMobileDialog();
+            }
+        });
+
+        alertD.show();
+    }
+
+    private class MobilePrimaryAdapter extends RecyclerView.Adapter<MobilePrimaryAdapter.MyViewHolder> {
+
+        public MobilePrimaryAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_primary, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            holder.rb_selectone.setText(mobileList.get(position).getDetails());
+
+            holder.rb_selectone.setChecked(lastSelectedMobilePrimary == position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mobileList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private RadioButton rb_selectone;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+                rb_selectone = view.findViewById(R.id.rb_selectone);
+
+                rb_selectone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        lastSelectedMobilePrimary = getAdapterPosition();
+                        notifyDataSetChanged();
+                    }
+                });
+
+
+            }
+        }
+    }
+
+    private void showPublicMobileDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_primary_selection, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Select Public Mobile");
+        alertDialogBuilder.setView(promptView);
+
+        final RecyclerView rv_list = promptView.findViewById(R.id.rv_list);
+        Button btn_next = promptView.findViewById(R.id.btn_next);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rv_list.setLayoutManager(layoutManager);
+        rv_list.setAdapter(new MobilePublicAdapter());
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (int i = 0; i < mobileList.size(); i++) {
+
+                    MobilePublicAdapter.MyViewHolder myViewHolder =
+                            (MobilePublicAdapter.MyViewHolder) rv_list.findViewHolderForAdapterPosition(i);
+
+                    if (myViewHolder.cb_selected.isChecked()) {
+                        mobileList.get(i).setIsPublic("1");
+                    }
+                }
+
+                alertD.dismiss();
+                showPrimaryLandlineDialog();
+            }
+        });
+
+        alertD.show();
+    }
+
+    private class MobilePublicAdapter extends RecyclerView.Adapter<MobilePublicAdapter.MyViewHolder> {
+
+        public MobilePublicAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_public, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            holder.cb_selected.setText(mobileList.get(position).getDetails());
+        }
+
+        @Override
+        public int getItemCount() {
+            return mobileList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CheckBox cb_selected;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+                cb_selected = view.findViewById(R.id.cb_selected);
+
+            }
+        }
+    }
+
+    private void showPrimaryLandlineDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_primary_selection, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Select Primary Landline");
+        alertDialogBuilder.setView(promptView);
+
+        final RecyclerView rv_list = promptView.findViewById(R.id.rv_list);
+        Button btn_next = promptView.findViewById(R.id.btn_next);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rv_list.setLayoutManager(layoutManager);
+        rv_list.setAdapter(new LandLinePrimaryAdapter());
+
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (int i = 0; i < landlineList.size(); i++) {
+
+                    LandLinePrimaryAdapter.MyViewHolder myViewHolder =
+                            (LandLinePrimaryAdapter.MyViewHolder) rv_list.findViewHolderForAdapterPosition(i);
+
+                    if (myViewHolder.rb_selectone.isChecked()) {
+                        landlineList.get(i).setIsPrimary("1");
+                    }
+                }
+
+                alertD.dismiss();
+                showPrimaryEmailDialog();
+            }
+        });
+
+        alertD.show();
+    }
+
+    private class LandLinePrimaryAdapter extends RecyclerView.Adapter<LandLinePrimaryAdapter.MyViewHolder> {
+
+        public LandLinePrimaryAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_primary, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            holder.rb_selectone.setText(landlineList.get(position).getDetails());
+
+            holder.rb_selectone.setChecked(lastSelectedLandlinePrimary == position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return landlineList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private RadioButton rb_selectone;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+                rb_selectone = view.findViewById(R.id.rb_selectone);
+
+                rb_selectone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        lastSelectedLandlinePrimary = getAdapterPosition();
+                        notifyDataSetChanged();
+                    }
+                });
+
+
+            }
+        }
+    }
+
+    private void showPrimaryEmailDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_primary_selection, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Select Primary Email");
+        alertDialogBuilder.setView(promptView);
+
+        final RecyclerView rv_list = promptView.findViewById(R.id.rv_list);
+        Button btn_next = promptView.findViewById(R.id.btn_next);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        rv_list.setLayoutManager(layoutManager);
+        rv_list.setAdapter(new EmailPrimaryAdapter());
+
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                for (int i = 0; i < emailList.size(); i++) {
+
+                    EmailPrimaryAdapter.MyViewHolder myViewHolder =
+                            (EmailPrimaryAdapter.MyViewHolder) rv_list.findViewHolderForAdapterPosition(i);
+
+                    if (myViewHolder.rb_selectone.isChecked()) {
+                        emailList.get(i).setIsPrimary("1");
+                    }
+                }
+
+                alertD.dismiss();
+                submitData();
+            }
+        });
+
+        alertD.show();
+    }
+
+    private class EmailPrimaryAdapter extends RecyclerView.Adapter<EmailPrimaryAdapter.MyViewHolder> {
+
+        public EmailPrimaryAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_primary, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int position) {
+            holder.rb_selectone.setText(emailList.get(position).getDetails());
+
+            holder.rb_selectone.setChecked(lastSelectedEmailPrimary == position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return emailList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private RadioButton rb_selectone;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+                rb_selectone = view.findViewById(R.id.rb_selectone);
+
+                rb_selectone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        lastSelectedEmailPrimary = getAdapterPosition();
+                        notifyDataSetChanged();
+                    }
+                });
+
+
+            }
+        }
+    }
+
+    private void submitData() {
+
         JsonObject mainObj = new JsonObject();
 
-        JsonArray mobileJSONArray = new JsonArray();
-        for (int i = 0; i < mobileLayoutsList.size(); i++) {
+        for (int i = 0; i < mobileList.size(); i++) {
             JsonObject mobileJSONObj = new JsonObject();
-            if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
-                mobileJSONObj.addProperty("mobile_number", ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim());
-                mobileJSONObj.addProperty("is_primary", "0");
-                mobileJSONObj.addProperty("is_public", "0");
-                mobileJSONArray.add(mobileJSONObj);
-            }
+            mobileJSONObj.addProperty("mobile_number", mobileList.get(i).getDetails());
+            mobileJSONObj.addProperty("is_primary", mobileList.get(i).getIsPrimary());
+            mobileJSONObj.addProperty("is_public", mobileList.get(i).getIsPublic());
+            mobileJSONArray.add(mobileJSONObj);
         }
 
-        JsonArray landlineJSONArray = new JsonArray();
-        for (int i = 0; i < landlineLayoutsList.size(); i++) {
+        for (int i = 0; i < landlineList.size(); i++) {
             JsonObject landlineJSONObj = new JsonObject();
-            if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
-                landlineJSONObj.addProperty("landlinenumber", ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim());
-                landlineJSONObj.addProperty("is_primary", "0");
-                landlineJSONArray.add(landlineJSONObj);
-            }
+            landlineJSONObj.addProperty("landlinenumber", landlineList.get(i).getDetails());
+            landlineJSONObj.addProperty("is_primary", landlineList.get(i).getIsPrimary());
+            landlineJSONArray.add(landlineJSONObj);
         }
 
-        JsonArray emailJSONArray = new JsonArray();
-        for (int i = 0; i < emailLayoutsList.size(); i++) {
+        for (int i = 0; i < emailList.size(); i++) {
             JsonObject emailJSONObj = new JsonObject();
-            if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
-                emailJSONObj.addProperty("email_id", ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim());
-                emailJSONObj.addProperty("is_primary", "0");
-                emailJSONArray.add(emailJSONObj);
-            }
+            emailJSONObj.addProperty("email_id", emailList.get(i).getDetails());
+            emailJSONObj.addProperty("is_primary", emailList.get(i).getIsPrimary());
+            emailJSONArray.add(emailJSONObj);
         }
 
-
-        mainObj.addProperty("type", "createusers");
+        mainObj.addProperty("type", "updateusers");
         mainObj.addProperty("first_name", edt_fname.getText().toString().trim());
         mainObj.addProperty("last_name", edt_lname.getText().toString().trim());
         mainObj.addProperty("middle_name", edt_mname.getText().toString().trim());
@@ -484,17 +967,77 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mainObj.addProperty("blood_group_id", bloodGroupId);
         mainObj.addProperty("education_id", educationId);
         mainObj.addProperty("specific_education", edt_specify.getText().toString().trim());
-        mainObj.addProperty("referral_code", referalCode);
+        mainObj.addProperty("referral_code", referralCode);
         mainObj.addProperty("is_active", isActive);
-        mainObj.addProperty("password", "");
-        mainObj.addProperty("image_url", "");
+        mainObj.addProperty("password", password);
+        mainObj.addProperty("image_url", imageUrl);
         mainObj.addProperty("native_place", edt_nativeplace.getText().toString().trim());
         mainObj.add("mobile", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("email", emailJSONArray);
+        mainObj.addProperty("user_id", userId);
 
         Log.i("BASICINFOJSON", mainObj.toString());
 
+        if (Utilities.isNetworkAvailable(context)) {
+            new UpdateUser().execute(mainObj.toString());
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+
+    }
+
+    private class UpdateUser extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        if (!Utilities.isNetworkAvailable(context)) {
+                            SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE);
+                            alertDialog.setCancelable(false);
+                            alertDialog.setContentText("User details updated successfully");
+                            alertDialog.setConfirmButton("OK", new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    finish();
+                                }
+                            });
+                            alertDialog.show();
+                            return;
+                        }
+                    } else {
+                        Utilities.showMessage("Username or password is invalid", context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setUpToolbar() {

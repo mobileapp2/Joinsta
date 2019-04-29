@@ -74,12 +74,13 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <ProgressBar
+    <com.github.ybq.android.spinkit.SpinKitView
         android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
+        style="@style/SpinKitView.Circle"
         android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:indeterminate="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:SpinKit_Color="@color/colorAccent" />
 </LinearLayout>

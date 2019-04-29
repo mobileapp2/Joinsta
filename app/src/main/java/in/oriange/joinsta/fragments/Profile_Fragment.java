@@ -3,26 +3,26 @@ package in.oriange.joinsta.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.BasicInformation_Activity;
+import in.oriange.joinsta.activities.BizProfEmpDetails_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
 import in.oriange.joinsta.adapters.ProfileViewAdapter;
 import in.oriange.joinsta.models.ProfileListModel;
@@ -32,6 +32,7 @@ public class Profile_Fragment extends Fragment {
     private Context context;
     private RecyclerView rv_profilelist;
     private CardView cv_basicinfo;
+    private Button btn_add;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class Profile_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        btn_add = rootView.findViewById(R.id.btn_add);
         cv_basicinfo = rootView.findViewById(R.id.cv_basicinfo);
         rv_profilelist = rootView.findViewById(R.id.rv_profilelist);
         rv_profilelist.setLayoutManager(new LinearLayoutManager(context));
@@ -79,6 +81,13 @@ public class Profile_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, BasicInformation_Activity.class));
+            }
+        });
+
+        btn_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, BizProfEmpDetails_Activity.class));
             }
         });
     }

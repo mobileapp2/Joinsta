@@ -89,7 +89,7 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
-    public class LoginUser extends AsyncTask<String, Void, String> {
+    private class LoginUser extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
