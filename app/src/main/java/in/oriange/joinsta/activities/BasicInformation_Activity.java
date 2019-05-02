@@ -479,7 +479,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        imageUrl = "https://gstkhata.com/joinsta/images/" + userId + "/" + jsonObject.getString("document_url");
+                        imageUrl = jsonObject.getString("document_url");
 
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
@@ -1219,7 +1219,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();

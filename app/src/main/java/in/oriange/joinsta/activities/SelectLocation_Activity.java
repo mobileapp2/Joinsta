@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.AutoCompleteLocation;
 import in.oriange.joinsta.utilities.Utilities;
@@ -117,8 +118,6 @@ public class SelectLocation_Activity extends AppCompatActivity
                         turnOnLocation(context);
                     } else {
                         startLocationUpdates();
-
-
                         if (latLng != null) {
                             if (Utilities.isNetworkAvailable(context)) {
                                 new GetPlanningListByUserid().execute(

@@ -30,6 +30,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.CategoryAdapter;

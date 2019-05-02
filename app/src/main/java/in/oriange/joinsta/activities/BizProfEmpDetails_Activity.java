@@ -106,9 +106,12 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
         });
     }
 
-
     public void removeMobileLayout(View v) {
-        AddEmployee_Fragment.removeMobileLayout(v);
+        AddBusiness_Fragment.removeMobileLayout(v);
+    }
+
+    public void removeLandlineLayout(View v) {
+        AddBusiness_Fragment.removeLandlineLayout(v);
     }
 
 

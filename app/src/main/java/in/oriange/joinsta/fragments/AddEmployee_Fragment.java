@@ -66,13 +66,11 @@ public class AddEmployee_Fragment extends Fragment {
     private MaterialEditText edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
             edt_email, edt_website, edt_select_area, edt_address_one, edt_address_two, edt_pincode,
             edt_city, edt_state, edt_country;
-    private static LinearLayout ll_mobile;
-    private LinearLayout ll_landline;
+    private static LinearLayout ll_mobile, ll_landline;
     private ImageButton ib_add_mobile, ib_add_landline;
     private Button btn_save;
 
-    private static ArrayList<LinearLayout> mobileLayoutsList;
-    private ArrayList<LinearLayout> landlineLayoutsList;
+    private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
     private ArrayList<String> mobileList, landlineList;
     private JsonArray mobileJSONArray, landlineJSONArray;
 
@@ -177,7 +175,6 @@ public class AddEmployee_Fragment extends Fragment {
             }
         });
 
-
         edt_nature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,16 +217,6 @@ public class AddEmployee_Fragment extends Fragment {
                 submitData();
             }
         });
-    }
-
-    public static void removeMobileLayout(View v) {
-        ll_mobile.removeView((View) v.getParent());
-        mobileLayoutsList.remove(v.getParent());
-    }
-
-    public void removeLandlineLayout(View view) {
-        ll_landline.removeView((View) view.getParent());
-        landlineLayoutsList.remove(view.getParent());
     }
 
     private void selectImage() {
@@ -288,7 +275,7 @@ public class AddEmployee_Fragment extends Fragment {
         }
     }
 
-    public void savefile(Uri sourceuri) {
+    private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
         String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
@@ -320,7 +307,6 @@ public class AddEmployee_Fragment extends Fragment {
         new UploadImage().execute(photoFileToUpload);
 
     }
-
 
     private class UploadImage extends AsyncTask<File, Integer, String> {
 
@@ -365,7 +351,7 @@ public class AddEmployee_Fragment extends Fragment {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        imageUrl = "https://gstkhata.com/joinsta/images/" + userId + "/" + jsonObject.getString("document_url");
+                        imageUrl = jsonObject.getString("document_url");
 
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
@@ -382,7 +368,6 @@ public class AddEmployee_Fragment extends Fragment {
             }
         }
     }
-
 
     private void submitData() {
 
@@ -498,7 +483,6 @@ public class AddEmployee_Fragment extends Fragment {
 
 
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void askPermission() {

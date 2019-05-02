@@ -18,19 +18,24 @@
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:orientation="vertical">
+                android:layout_height="170dp">
 
                 <ImageView
+                    android:id="@+id/imv_photo1"
                     android:layout_width="match_parent"
                     android:layout_height="170dp"
-                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/imv_photo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
                     android:padding="40dp"
                     android:src="@drawable/icon_color_camera" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -146,7 +151,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.9"
-                            android:hint="Mobile Number (Optional)"
+                            android:hint="Mobile (Optional)"
                             android:inputType="number"
                             android:maxLength="10"
                             android:textSize="16sp"
@@ -184,7 +189,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.9"
-                            android:hint="Landline Number (Optional)"
+                            android:hint="Landline (Optional)"
                             android:inputType="number"
                             android:maxLength="10"
                             android:textSize="16sp"
@@ -306,22 +311,10 @@
                     app:met_underlineColor="@color/mediumGray" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_address_one"
+                    android:id="@+id/edt_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Address Line One (Optional)"
-                    android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
-
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_address_two"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Address Line Two (Optional)"
+                    android:hint="Address (Optional)"
                     android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
                     android:textColorHint="@color/colorAccent"
                     android:textSize="16sp"
