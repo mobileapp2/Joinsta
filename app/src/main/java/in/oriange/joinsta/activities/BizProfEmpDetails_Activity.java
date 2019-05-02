@@ -5,17 +5,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
-import com.ogaclejapan.smarttablayout.SmartTabLayout;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.AddBusiness_Fragment;
 import in.oriange.joinsta.fragments.AddEmployee_Fragment;
@@ -44,7 +45,7 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
     private void init() {
         context = BizProfEmpDetails_Activity.this;
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         tabs = findViewById(R.id.tabs);
         viewpager = findViewById(R.id.viewpager);
@@ -104,5 +105,11 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
             }
         });
     }
+
+
+    public void removeMobileLayout(View v) {
+        AddEmployee_Fragment.removeMobileLayout(v);
+    }
+
 
 }

@@ -1,10 +1,18 @@
 package in.oriange.joinsta.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,24 +27,38 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import cn.pedant.SweetAlert.SweetAlertDialog;
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.models.PrimaryPublicMobileSelectionModel;
@@ -44,15 +66,20 @@ import in.oriange.joinsta.models.PrimarySelectionModel;
 import in.oriange.joinsta.pojos.MasterPojo;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
+
+import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
+import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 
 public class BasicInformation_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private CircleImageView imv_user;
     private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
             edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace;
     private RadioButton rb_male, rb_female;
@@ -67,6 +94,13 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private ArrayList<PrimaryPublicMobileSelectionModel> mobileList;
     private ArrayList<PrimarySelectionModel> landlineList, emailList;
     private int lastSelectedMobilePrimary = -1, lastSelectedLandlinePrimary = -1, lastSelectedEmailPrimary = -1;
+
+    private Uri photoURI;
+    private final int CAMERA_REQUEST = 100;
+    private final int GALLERY_REQUEST = 200;
+    private File file, photoFileToUpload, profilPicFolder;
+    private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +117,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private void init() {
         context = BasicInformation_Activity.this;
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        imv_user = findViewById(R.id.imv_user);
 
         edt_fname = findViewById(R.id.edt_fname);
         edt_mname = findViewById(R.id.edt_mname);
@@ -120,6 +156,17 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
         emailList = new ArrayList<>();
+
+
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Basic Info");
+        if (!profilPicFolder.exists())
+            profilPicFolder.mkdirs();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     private void setDefault() {
@@ -147,6 +194,13 @@ public class BasicInformation_Activity extends AppCompatActivity {
             imageUrl = json.getString("image_url");
             isActive = json.getString("is_active");
             referralCode = json.getString("referral_code");
+
+            if (!imageUrl.equals("")) {
+                Picasso.with(context)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.icon_userphoto)
+                        .into(imv_user);
+            }
 
             if (genderId.equals("1")) {
                 rb_male.setChecked(true);
@@ -181,7 +235,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 for (int i = 0; i < landlinesonArray.length(); i++) {
 
                     if (i == (landlinesonArray.length() - 1)) {
-                        edt_landline.setText(landlinesonArray.getJSONObject(i).getString("landline_number"));
+                        edt_landline.setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
 //                        landlineLayoutsList.add(ll_landline);
                     } else {
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -219,6 +273,23 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+
+        imv_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+
         edt_bloodgroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -273,6 +344,157 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 ll_email.addView(rowView, ll_email.getChildCount() - 1);
             }
         });
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setCancelable(false);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take a Photo")) {
+                    file = new File(profilPicFolder, "doc_image.png");
+                    photoURI = Uri.fromFile(file);
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(intent, CAMERA_REQUEST);
+                } else if (options[item].equals("Choose from Gallery")) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY_REQUEST);
+                }
+            }
+        });
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == GALLERY_REQUEST) {
+                Uri imageUri = data.getData();
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(BasicInformation_Activity.this);
+            }
+            if (requestCode == CAMERA_REQUEST) {
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(BasicInformation_Activity.this);
+            }
+
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                savefile(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
+
+    private void savefile(Uri sourceuri) {
+        Log.i("sourceuri1", "" + sourceuri);
+        String sourceFilename = sourceuri.getPath();
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+                + "Basic Info/" + "uplimg.png";
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFile, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        photoFileToUpload = new File(destinationFile);
+        new UploadUserImage().execute(photoFileToUpload);
+
+    }
+
+    private class UploadUserImage extends AsyncTask<File, Integer, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(File... params) {
+            String res = "";
+            try {
+                MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
+
+                multipart.addFormField("request_type", "uploadFile");
+                multipart.addFormField("user_id", userId);
+                multipart.addFilePart("document", params[0]);
+
+                List<String> response = multipart.finish();
+                for (String line : response) {
+                    res = res + line;
+                }
+                return res;
+            } catch (IOException ex) {
+                return ex.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject jsonObject = mainObj.getJSONObject("result");
+                        imageUrl = "https://gstkhata.com/joinsta/images/" + userId + "/" + jsonObject.getString("document_url");
+
+                        if (!imageUrl.equals("")) {
+                            Picasso.with(context)
+                                    .load(imageUrl)
+                                    .placeholder(R.drawable.icon_userphoto)
+                                    .into(imv_user);
+                        }
+                    } else {
+                        Utilities.showMessage("Image upload failed", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class GetBloodGroupList extends AsyncTask<String, Void, String> {
@@ -476,6 +698,11 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void validateData() {
+
+        mobileList = new ArrayList<>();
+        landlineList = new ArrayList<>();
+        emailList = new ArrayList<>();
+
         if (edt_fname.getText().toString().trim().isEmpty()) {
             edt_fname.setError("Please enter first name");
             edt_fname.requestFocus();
@@ -939,7 +1166,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         for (int i = 0; i < mobileList.size(); i++) {
             JsonObject mobileJSONObj = new JsonObject();
-            mobileJSONObj.addProperty("mobile_number", mobileList.get(i).getDetails());
+            mobileJSONObj.addProperty("mobile", mobileList.get(i).getDetails());
             mobileJSONObj.addProperty("is_primary", mobileList.get(i).getIsPrimary());
             mobileJSONObj.addProperty("is_public", mobileList.get(i).getIsPublic());
             mobileJSONArray.add(mobileJSONObj);
@@ -947,7 +1174,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         for (int i = 0; i < landlineList.size(); i++) {
             JsonObject landlineJSONObj = new JsonObject();
-            landlineJSONObj.addProperty("landlinenumber", landlineList.get(i).getDetails());
+            landlineJSONObj.addProperty("landline_number", landlineList.get(i).getDetails());
             landlineJSONObj.addProperty("is_primary", landlineList.get(i).getIsPrimary());
             landlineJSONArray.add(landlineJSONObj);
         }
@@ -972,7 +1199,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mainObj.addProperty("password", password);
         mainObj.addProperty("image_url", imageUrl);
         mainObj.addProperty("native_place", edt_nativeplace.getText().toString().trim());
-        mainObj.add("mobile", mobileJSONArray);
+        mainObj.add("mobile1", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("email", emailJSONArray);
         mainObj.addProperty("user_id", userId);
@@ -1016,21 +1243,31 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        if (!Utilities.isNetworkAvailable(context)) {
-                            SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.SUCCESS_TYPE);
-                            alertDialog.setCancelable(false);
-                            alertDialog.setContentText("User details updated successfully");
-                            alertDialog.setConfirmButton("OK", new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                    finish();
-                                }
-                            });
-                            alertDialog.show();
-                            return;
-                        }
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("User details updated successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
                     } else {
-                        Utilities.showMessage("Username or password is invalid", context, 3);
+                        Utilities.showMessage("User details failed to update", context, 3);
                     }
 
                 }
@@ -1052,5 +1289,48 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
         });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void askPermission() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+            return;
+        } else {
+            selectImage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    selectImage();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setTitle("Alert");
+                    builder.setMessage("Please provide permission for Camera and Gallery");
+                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", context.getPackageName(), null)));
+                        }
+                    });
+                    builder.create();
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            }
+
+        }
+    }
+
 
 }
