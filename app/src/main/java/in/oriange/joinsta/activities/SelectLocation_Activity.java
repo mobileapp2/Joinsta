@@ -120,7 +120,7 @@ public class SelectLocation_Activity extends AppCompatActivity
                         startLocationUpdates();
                         if (latLng != null) {
                             if (Utilities.isNetworkAvailable(context)) {
-                                new GetPlanningListByUserid().execute(
+                                new GetAddress().execute(
                                         String.valueOf(latLng.latitude),
                                         String.valueOf(latLng.longitude));
                             } else {
@@ -167,7 +167,7 @@ public class SelectLocation_Activity extends AppCompatActivity
         if (Utilities.isNetworkAvailable(context)) {
             LatLng latLng = selectedPlace.getLatLng();
 
-            new GetPlanningListByUserid().execute(
+            new GetAddress().execute(
                     String.valueOf(latLng.latitude),
                     String.valueOf(latLng.longitude));
         } else {
@@ -175,7 +175,7 @@ public class SelectLocation_Activity extends AppCompatActivity
         }
     }
 
-    public class GetPlanningListByUserid extends AsyncTask<String, Void, List<Address>> {
+    private class GetAddress extends AsyncTask<String, Void, List<Address>> {
 
         @Override
         protected void onPreExecute() {

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -48,9 +50,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.PickMapLoaction_Activity;
+import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.MapAddressListModel;
@@ -63,9 +67,13 @@ import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.app.Activity.RESULT_OK;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
+import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
+import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class AddBusiness_Fragment extends Fragment {
 
@@ -202,7 +210,7 @@ public class AddBusiness_Fragment extends Fragment {
         edt_nature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (categotyList.size() > 0) {
+                if (categotyList.size() == 0) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new GetCategotyList().execute("0", "0", "1");
                     } else {
@@ -260,6 +268,13 @@ public class AddBusiness_Fragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(context, PickMapLoaction_Activity.class);
                 startActivityForResult(intent, 10001);
+            }
+        });
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitData();
             }
         });
     }
@@ -466,6 +481,10 @@ public class AddBusiness_Fragment extends Fragment {
         builderSingle.show();
     }
 
+    private void submitData() {
+
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -483,7 +502,7 @@ public class AddBusiness_Fragment extends Fragment {
             if (requestCode == 10001) {
                 latitude = data.getStringExtra("latitude");
                 longitude = data.getStringExtra("longitude");
-
+                new GetAddress().execute(latitude, longitude);
                 MapAddressListModel address = (MapAddressListModel) data.getSerializableExtra("mapAddressDetails");
                 edt_address.setText(address.getAddress_line_one());
                 edt_country.setText(address.getCountry());
@@ -501,6 +520,44 @@ public class AddBusiness_Fragment extends Fragment {
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
+        }
+    }
+
+    private class GetAddress extends AsyncTask<String, Void, List<Address>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected List<Address> doInBackground(String... params) {
+            Geocoder geocoder;
+            List<Address> addresses = null;
+
+            try {
+                geocoder = new Geocoder(context, Locale.getDefault());
+                addresses = geocoder.getFromLocation(Double.parseDouble(params[0]), Double.parseDouble(params[1]), 1); // Here 1 represent max icon_location result to returned, by documents it recommended 1 to 5
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addresses;
+        }
+
+        @Override
+        protected void onPostExecute(List<Address> addresses) {
+            super.onPostExecute(addresses);
+            pd.dismiss();
+            if (addresses != null && !addresses.isEmpty()) {
+                edt_select_area.setText(addresses.get(0).getFeatureName());
+                edt_city.setText(addresses.get(0).getSubAdminArea());
+            } else {
+                Utilities.showAlertDialog(context, "Alert", "Unable to get address from this location. Please try again or search manually", false);
+            }
+
         }
     }
 
@@ -542,7 +599,6 @@ public class AddBusiness_Fragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();

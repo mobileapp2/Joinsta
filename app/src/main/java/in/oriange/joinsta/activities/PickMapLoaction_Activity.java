@@ -12,17 +12,21 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;
@@ -59,13 +63,13 @@ import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 
 public class PickMapLoaction_Activity extends FragmentActivity
-        implements OnMapReadyCallback, AutoCompleteLocation.AutoCompleteLocationListener/*, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener */{
+        implements OnMapReadyCallback, AutoCompleteLocation.AutoCompleteLocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    public static final int REQUEST_LOCATION_CODE = 99;
+    private static final int REQUEST_LOCATION_CODE = 99;
     private MapAddressListModel addressList;
     private GoogleApiClient client;
     private LocationRequest locationRequest;
-    LatLng latLng1;
+    private LatLng latLng1;
     private Context context;
     private GoogleMap mMap;
     private Button btn_save;
@@ -95,63 +99,58 @@ public class PickMapLoaction_Activity extends FragmentActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-            provideLocationAccess(context);
-        } else {
-            if (!isLocationEnabled(context)) {
-                turnOnLocation(context);
-            } else {
-                startLocationUpdates();
-            }
-        }
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         init();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                bulidGoogleApiClient();
+                bulidGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             }
         }
 
     }
 
-//    protected synchronized void bulidGoogleApiClient() {
-//        client = new GoogleApiClient.Builder(this).
-//                addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API).build();
-//        client.connect();
-//    }
+    protected synchronized void bulidGoogleApiClient() {
+        client = new GoogleApiClient.Builder(this).
+                addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+        client.connect();
+    }
 
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//
-//        locationRequest = LocationRequest.create();
-//        locationRequest.setInterval(1000);
-//        locationRequest.setFastestInterval(1000);
-//        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
-//        }
-//    }
+    @Override
+    public void onLocationChanged(Location location) {
+        latLng1 = new LatLng(location.getLatitude(), location.getLongitude());
+        if (client != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
+        }
 
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//
-//    }
+    }
 
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(1000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(client, locationRequest, this);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -174,7 +173,7 @@ public class PickMapLoaction_Activity extends FragmentActivity
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         if (client == null) {
-//                            bulidGoogleApiClient();
+                            bulidGoogleApiClient();
                         }
                         mMap.setMyLocationEnabled(true);
                     }
@@ -188,24 +187,20 @@ public class PickMapLoaction_Activity extends FragmentActivity
         btn_pick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                    provideLocationAccess(context);
-                } else {
-                    if (!isLocationEnabled(context)) {
-                        turnOnLocation(context);
-                    } else {
-                        startLocationUpdates();
-                        addMapMarker(latLng1);
-                    }
-                }
+
+                bulidGoogleApiClient();
+                addMapMarker(latLng1);
+
             }
         });
-
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (latLng1 != null) {
+
+//                    constantData.setLatitude(String.format("%.6f", latLng1.latitude));
+//                    constantData.setLongitude(String.format("%.6f", latLng1.longitude));
                     try {
                         getAllAddress();
                     } catch (IOException e) {
@@ -268,9 +263,13 @@ public class PickMapLoaction_Activity extends FragmentActivity
         geocoder = new Geocoder(this, Locale.getDefault());
 
         try {
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            AutoCompleteLocation ob = findViewById(R.id.autocomplete_location);
-            ob.setHint(addresses.get(0).getAddressLine(0));
+            if (latLng != null) {
+                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                AutoCompleteLocation ob = findViewById(R.id.autocomplete_location);
+                if (addresses.size() > 0) {
+                    ob.setText(addresses.get(0).getAddressLine(0));
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -281,42 +280,5 @@ public class PickMapLoaction_Activity extends FragmentActivity
                 .target(latLng)
                 .zoom(10).build();
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-    }
-
-    private LocationRequest mLocationRequest;
-
-    private long UPDATE_INTERVAL = 10 * 100000;  /* 100 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
-
-    @SuppressLint("RestrictedApi")
-    protected void startLocationUpdates() {
-
-        // Create the location request to start receiving updates
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(UPDATE_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        LocationSettingsRequest locationSettingsRequest = builder.build();
-
-        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
-        settingsClient.checkLocationSettings(locationSettingsRequest);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        onLocationChanged(locationResult.getLastLocation());
-                    }
-                },
-                Looper.myLooper());
-    }
-
-    public void onLocationChanged(Location location) {
-        latLng1 = new LatLng(location.getLatitude(), location.getLongitude());
     }
 }
