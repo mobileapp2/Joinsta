@@ -536,12 +536,12 @@ public class BasicInformation_Activity extends AppCompatActivity {
                             showBloodGroupListDialog();
                         }
                     } else {
-                        Utilities.showAlertDialog(context, "Fail", message, false);
+                        Utilities.showAlertDialog(context, message, false);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.showAlertDialog(context, "Please Try Again", "Server Not Responding", false);
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
     }
@@ -619,12 +619,12 @@ public class BasicInformation_Activity extends AppCompatActivity {
                             showEducationDialog();
                         }
                     } else {
-                        Utilities.showAlertDialog(context, "Fail", message, false);
+                        Utilities.showAlertDialog(context, message, false);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.showAlertDialog(context, "Please Try Again", "Server Not Responding", false);
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
     }

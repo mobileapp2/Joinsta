@@ -15,6 +15,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -28,11 +33,6 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.AutoCompleteLocation;
@@ -127,7 +127,7 @@ public class SelectLocation_Activity extends AppCompatActivity
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
                         } else {
-                            Utilities.showAlertDialog(context, "Alert", "Unable to get address from this location. Please try again or search manually", false);
+                            Utilities.showAlertDialog(context, "Unable to get address from this location. Please try again or search manually", false);
                         }
                     }
                 }
@@ -213,7 +213,7 @@ public class SelectLocation_Activity extends AppCompatActivity
                 tv_locality.setText(addresses.get(0).getSubLocality());
                 tv_pincode.setText(addresses.get(0).getPostalCode());
             } else {
-                Utilities.showAlertDialog(context, "Alert", "Unable to get address from this location. Please try again or search manually", false);
+                Utilities.showAlertDialog(context, "Unable to get address from this location. Please try again or search manually", false);
                 cv_locationdetails.setVisibility(View.GONE);
             }
 

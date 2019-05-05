@@ -37,7 +37,7 @@
         app:stl_indicatorColor="@color/white"
         app:stl_indicatorCornerRadius="1.5dp"
         app:stl_indicatorInterpolation="smart"
-        app:stl_indicatorThickness="3dp"
+        app:stl_indicatorThickness="4dp"
         app:stl_underlineColor="@android:color/transparent" />
 
     <androidx.viewpager.widget.ViewPager

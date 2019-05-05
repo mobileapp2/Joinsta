@@ -21,9 +21,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -40,6 +42,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -52,11 +55,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import co.lujun.androidtagview.TagContainerLayout;
+import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.PickMapLoaction_Activity;
-import in.oriange.joinsta.activities.SelectLocation_Activity;
-import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.models.CategotyListModel;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
@@ -67,30 +71,30 @@ import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.app.Activity.RESULT_OK;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
-import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
-import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
+import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
 public class AddBusiness_Fragment extends Fragment {
 
-    private Context context;
+    private static Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private ImageView imv_photo1, imv_photo2;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
-            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_state, edt_country;
+            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country, edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
+    private TextView tv_countrycode_mobile, tv_countrycode_landline;
     private ImageButton ib_add_mobile, ib_add_landline;
-    private Button btn_save;
+    private TagContainerLayout tag_container;
+    private Button btn_save, btn_add_tag;
 
     private ArrayList<CategotyListModel> categotyList;
     private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
     private ArrayList<String> mobileList, landlineList;
     private JsonArray mobileJSONArray, landlineJSONArray;
+    private static ArrayList<ContryCodeModel> countryCodeList;
 
     private String userId, imageUrl, categoryId, subCategoryId, latitude, longitude;
     private Uri photoURI;
@@ -99,6 +103,7 @@ public class AddBusiness_Fragment extends Fragment {
     private File file, photoFileToUpload, profilPicFolder;
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
+    private static TextView tv_selected_forconcode = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -129,8 +134,14 @@ public class AddBusiness_Fragment extends Fragment {
         edt_address = rootView.findViewById(R.id.edt_address);
         edt_pincode = rootView.findViewById(R.id.edt_pincode);
         edt_city = rootView.findViewById(R.id.edt_city);
+        edt_district = rootView.findViewById(R.id.edt_district);
         edt_state = rootView.findViewById(R.id.edt_state);
         edt_country = rootView.findViewById(R.id.edt_country);
+        edt_tag = rootView.findViewById(R.id.edt_tag);
+
+        tag_container = rootView.findViewById(R.id.tag_container);
+        tv_countrycode_mobile = rootView.findViewById(R.id.tv_countrycode_mobile);
+        tv_countrycode_landline = rootView.findViewById(R.id.tv_countrycode_landline);
 
         ll_mobile = rootView.findViewById(R.id.ll_mobile);
         ll_landline = rootView.findViewById(R.id.ll_landline);
@@ -138,6 +149,7 @@ public class AddBusiness_Fragment extends Fragment {
         ib_add_mobile = rootView.findViewById(R.id.ib_add_mobile);
         ib_add_landline = rootView.findViewById(R.id.ib_add_landline);
 
+        btn_add_tag = rootView.findViewById(R.id.btn_add_tag);
         btn_save = rootView.findViewById(R.id.btn_save);
 
         categotyList = new ArrayList<>();
@@ -174,6 +186,24 @@ public class AddBusiness_Fragment extends Fragment {
     }
 
     private void setDefault() {
+
+        try {
+            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
+            countryCodeList = new ArrayList<>();
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                countryCodeList.add(new ContryCodeModel(
+                        jo_inside.getString("name"),
+                        jo_inside.getString("dial_code"),
+                        jo_inside.getString("code")
+                ));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void setEventListner() {
@@ -233,11 +263,25 @@ public class AddBusiness_Fragment extends Fragment {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetSubCategotyList().execute("1", "1", categoryId);
+                    new GetSubCategotyList().execute(categoryId, "1", "1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
 
+            }
+        });
+
+        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContryCodeDialog(countryCodeList, "1");
+            }
+        });
+
+        tv_countrycode_landline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContryCodeDialog(countryCodeList, "2");
             }
         });
 
@@ -268,6 +312,46 @@ public class AddBusiness_Fragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(context, PickMapLoaction_Activity.class);
                 startActivityForResult(intent, 10001);
+            }
+        });
+
+
+        btn_add_tag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (edt_tag.getText().toString().trim().isEmpty()) {
+                    edt_tag.setError("Please enter tag");
+                    edt_tag.requestFocus();
+                    return;
+                }
+
+                tag_container.addTag(edt_tag.getText().toString().trim());
+                edt_tag.setText("");
+            }
+        });
+
+        tag_container.setOnTagClickListener(new TagView.OnTagClickListener() {
+            @Override
+            public void onTagClick(int position, String text) {
+
+            }
+
+            @Override
+            public void onTagLongClick(int position, String text) {
+
+            }
+
+            @Override
+            public void onSelectedTagDrag(int position, String text) {
+
+            }
+
+            @Override
+            public void onTagCrossClick(int position) {
+                if (position < tag_container.getChildCount()) {
+                    tag_container.removeTag(position);
+                }
             }
         });
 
@@ -319,6 +403,11 @@ public class AddBusiness_Fragment extends Fragment {
         landlineLayoutsList.remove(view.getParent());
     }
 
+    public static void selectContryCode(View v) {
+        tv_selected_forconcode = (TextView) v;
+        showContryCodeForSelectedDialog(countryCodeList);
+    }
+
     private class GetCategotyList extends AsyncTask<String, Void, String> {
 
         @Override
@@ -359,13 +448,13 @@ public class AddBusiness_Fragment extends Fragment {
                             showCategoryListDialog();
                         }
                     } else {
-                        Utilities.showAlertDialog(context, "Fail", message, false);
+                        Utilities.showAlertDialog(context, message, false);
 
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.showAlertDialog(context, "Please Try Again", "Server Not Responding", false);
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
     }
@@ -439,13 +528,15 @@ public class AddBusiness_Fragment extends Fragment {
                         ArrayList<SubCategotyListModel> subCategoryList = pojoDetails.getResult();
                         if (subCategoryList.size() > 0) {
                             showSubCategoryListDialog(subCategoryList);
-
                         }
+                    } else {
+                        Utilities.showAlertDialog(context, "Subtype not available", false);
+
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.showAlertDialog(context, "Please Try Again", "Server Not Responding", false);
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
     }
@@ -481,7 +572,172 @@ public class AddBusiness_Fragment extends Fragment {
         builderSingle.show();
     }
 
+    private void showContryCodeDialog(final ArrayList<ContryCodeModel> contryCodeList, final String type) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Country Code");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < contryCodeList.size(); i++) {
+            arrayAdapter.add(String.valueOf(contryCodeList.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ContryCodeModel countryCode = contryCodeList.get(which);
+
+                if (type.equals("1")) {
+                    tv_countrycode_mobile.setText(countryCode.getDial_code());
+                } else if (type.equals("2")) {
+                    tv_countrycode_landline.setText(countryCode.getDial_code());
+                }
+            }
+        });
+        builderSingle.show();
+    }
+
+    private static void showContryCodeForSelectedDialog(final ArrayList<ContryCodeModel> contryCodeList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Country Code");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < contryCodeList.size(); i++) {
+            arrayAdapter.add(String.valueOf(contryCodeList.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ContryCodeModel countryCode = contryCodeList.get(which);
+                tv_selected_forconcode.setText(countryCode.getDial_code());
+            }
+        });
+        builderSingle.show();
+    }
+
     private void submitData() {
+        mobileList = new ArrayList<>();
+        landlineList = new ArrayList<>();
+
+        if (edt_name.getText().toString().trim().isEmpty()) {
+            edt_name.setError("Please enter the name of business");
+            edt_name.requestFocus();
+            return;
+        }
+
+        if (edt_nature.getText().toString().trim().isEmpty()) {
+            edt_nature.setError("Please select the nature of business");
+            edt_nature.requestFocus();
+            return;
+        }
+
+        if (edt_subtype.getText().toString().trim().isEmpty()) {
+            edt_subtype.setError("Please select subtype");
+            edt_subtype.requestFocus();
+            return;
+        }
+
+        for (int i = 0; i < mobileLayoutsList.size(); i++) {
+            if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
+                if (!Utilities.isValidMobileno(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim())) {
+                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setError("Please enter mobile number");
+                    (mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).requestFocus();
+                    return;
+                }
+            }
+        }
+
+        if (!edt_mobile.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                edt_mobile.setError("Please enter valid mobile number");
+                edt_mobile.requestFocus();
+                return;
+            }
+        }
+
+        for (int i = 0; i < landlineLayoutsList.size(); i++) {
+            if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().isEmpty()) {
+
+                if (!Utilities.isLandlineValid(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim())) {
+                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setError("Please enter valid landline number");
+                    (landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).requestFocus();
+                    return;
+                }
+            }
+        }
+
+        if (!edt_landline.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
+                edt_landline.setError("Please enter valid landline number");
+                edt_landline.requestFocus();
+                return;
+            }
+        }
+
+        if (!edt_email.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+                edt_email.setError("Please enter valid email");
+                edt_email.requestFocus();
+                return;
+            }
+        }
+
+        if (edt_select_area.getText().toString().trim().isEmpty()) {
+            edt_select_area.setError("Please select area");
+            edt_select_area.requestFocus();
+            return;
+        }
+
+        if (edt_city.getText().toString().trim().isEmpty()) {
+            edt_city.setError("Please select area");
+            edt_city.requestFocus();
+            return;
+        }
+
+        for (int i = 0; i < mobileLayoutsList.size(); i++) {
+            if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
+                mobileList.add(((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).getText().toString() + "" +
+                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim());
+            }
+        }
+
+        if (!edt_mobile.getText().toString().trim().isEmpty()) {
+            mobileList.add(tv_countrycode_mobile.getText().toString() + "" + edt_mobile.getText().toString().trim());
+        }
+
+        for (int i = 0; i < landlineLayoutsList.size(); i++) {
+            if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
+                landlineList.add(((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).getText().toString() + "" +
+                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim());
+            }
+        }
+
+        if (!edt_landline.getText().toString().trim().isEmpty()) {
+            landlineList.add(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim());
+        }
+
 
     }
 
@@ -507,6 +763,7 @@ public class AddBusiness_Fragment extends Fragment {
                 edt_address.setText(address.getAddress_line_one());
                 edt_country.setText(address.getCountry());
                 edt_state.setText(address.getState());
+                edt_district.setText(address.getDistrict());
                 edt_pincode.setText(address.getPincode());
             }
 
@@ -554,8 +811,6 @@ public class AddBusiness_Fragment extends Fragment {
             if (addresses != null && !addresses.isEmpty()) {
                 edt_select_area.setText(addresses.get(0).getFeatureName());
                 edt_city.setText(addresses.get(0).getSubAdminArea());
-            } else {
-                Utilities.showAlertDialog(context, "Alert", "Unable to get address from this location. Please try again or search manually", false);
             }
 
         }
@@ -641,7 +896,6 @@ public class AddBusiness_Fragment extends Fragment {
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
                                     .load(imageUrl)
-                                    .placeholder(R.drawable.icon_userphoto)
                                     .into(imv_photo1);
                             imv_photo2.setVisibility(View.GONE);
                         }

@@ -5,8 +5,10 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:gravity="center_vertical"
-    android:minHeight="35dp"
     android:paddingLeft="10dp"
+    android:paddingTop="5dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="5dp"
     android:textAppearance="?android:attr/textAppearanceLarge"
     android:textColor="?android:attr/textColorAlertDialogListItem"
-    android:textSize="18dp" />
+    android:textSize="18sp" />

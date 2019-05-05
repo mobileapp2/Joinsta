@@ -10,7 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -24,12 +29,6 @@ import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.SelectLocation_Activity;
@@ -127,6 +126,11 @@ public class Home_Fragment extends Fragment {
             edt_type.setText(item.getTitle());
             categoryTypeId = String.valueOf(position + 1);
             iconMenu.dismiss();
+
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetCategotyList().execute("0", "0", categoryTypeId);
+            }
+
         }
     };
 
@@ -136,6 +140,7 @@ public class Home_Fragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            rv_category.setVisibility(View.GONE);
         }
 
         @Override
@@ -170,13 +175,13 @@ public class Home_Fragment extends Fragment {
 
                         }
                     } else {
-                        Utilities.showAlertDialog(context, "Fail", message, false);
+                        Utilities.showAlertDialog(context, "Categories not available", false);
 
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.showAlertDialog(context, "Please Try Again", "Server Not Responding", false);
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
     }

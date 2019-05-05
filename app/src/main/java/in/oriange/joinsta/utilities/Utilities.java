@@ -9,13 +9,21 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import org.jsoup.Jsoup;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +31,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import androidx.appcompat.app.AlertDialog;
 import es.dmoral.toasty.Toasty;
 import in.oriange.joinsta.R;
 
@@ -75,7 +82,6 @@ public class Utilities {
     }
 
 
-
     private static boolean isValidPincode(String pincode) {
         String Pincode_PATTERN = "[4]{1}[0-9]{5}";
         Pattern pattern = Pattern.compile(Pincode_PATTERN);
@@ -92,6 +98,22 @@ public class Utilities {
 
     public static String html2text(String html) {
         return Jsoup.parse(html).text();
+    }
+
+    public static String loadJSONForCountryCode(Context context) {
+        String json = null;
+        try {
+            InputStream is = context.getAssets().open("countrycodes.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     //******************************* Massages Methods *********************************************
@@ -120,19 +142,48 @@ public class Utilities {
     static android.app.AlertDialog alertDialog;
 
     @SuppressWarnings("deprecation")
-    public static void showAlertDialog(Context context, String title,
+    public static void showAlertDialog(Context context,
                                        String message, Boolean status) {
-        alertDialog = new android.app.AlertDialog.Builder(context, R.style.CustomDialogTheme).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(message);
-        if (status != null)
-            alertDialog.setIcon((status) ? R.drawable.icon_success : R.drawable.icon_alertred);
-        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                alertDialog.dismiss();
+//        alertDialog = new android.app.AlertDialog.Builder(context, R.style.CustomDialogTheme).create();
+//        alertDialog.setTitle(title);
+//        alertDialog.setMessage(message);
+//        if (status != null)
+//            alertDialog.setIcon((status) ? R.drawable.icon_success : R.drawable.icon_alertred);
+//        alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int which) {
+//                alertDialog.dismiss();
+//            }
+//        });
+//        alertDialog.show();
+
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView;
+        if (status) {
+            promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+        } else {
+            promptView = layoutInflater.inflate(R.layout.dialog_layout_error, null);
+        }
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+        TextView tv_title = promptView.findViewById(R.id.tv_title);
+        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+        animation_view.playAnimation();
+        tv_title.setText(message);
+        btn_ok.setText("OK");
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
             }
         });
-        alertDialog.show();
+
+        alertD.show();
     }
 
     public static boolean isNetworkAvailable(Context context) {

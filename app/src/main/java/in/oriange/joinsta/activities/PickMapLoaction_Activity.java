@@ -208,7 +208,7 @@ public class PickMapLoaction_Activity extends FragmentActivity
                     }
                     finish();
                 } else {
-                    Utilities.showAlertDialog(context, "Alert", "Please search and pick a location", false);
+                    Utilities.showAlertDialog(context, "Please search and pick a location", false);
                 }
             }
         });
