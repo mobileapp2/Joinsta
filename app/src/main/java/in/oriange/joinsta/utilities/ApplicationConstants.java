@@ -19,5 +19,6 @@ public class ApplicationConstants {
     public static final String USERSAPI = API_LINK + "users.php";
     public static final String CATEGORYAPI = API_LINK + "category.php";
     public static final String MASTERAPI = API_LINK + "master.php";
+    public static final String BUSINESSAPI = API_LINK + "business.php";
     public static final String FILEUPLOADAPI = API_LINK + "upload.php";
 }

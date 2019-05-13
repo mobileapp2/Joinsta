@@ -33,6 +33,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -93,10 +94,10 @@ public class AddBusiness_Fragment extends Fragment {
     private ArrayList<CategotyListModel> categotyList;
     private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
     private ArrayList<String> mobileList, landlineList;
-    private JsonArray mobileJSONArray, landlineJSONArray;
+    private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl, categoryId, subCategoryId, latitude, longitude;
+    private String userId, imageUrl = "", categoryId, subCategoryId, latitude, longitude;
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -157,6 +158,7 @@ public class AddBusiness_Fragment extends Fragment {
         landlineLayoutsList = new ArrayList<>();
         mobileJSONArray = new JsonArray();
         landlineJSONArray = new JsonArray();
+        tagJSONArray = new JsonArray();
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
 
@@ -640,6 +642,9 @@ public class AddBusiness_Fragment extends Fragment {
     private void submitData() {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
+        mobileJSONArray = new JsonArray();
+        landlineJSONArray = new JsonArray();
+        tagJSONArray = new JsonArray();
 
         if (edt_name.getText().toString().trim().isEmpty()) {
             edt_name.setError("Please enter the name of business");
@@ -738,6 +743,66 @@ public class AddBusiness_Fragment extends Fragment {
             landlineList.add(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim());
         }
 
+        List<String> tagList = tag_container.getTags();
+
+        JsonObject mainObj = new JsonObject();
+
+
+        for (int i = 0; i < mobileList.size(); i++) {
+            JsonObject mobileJSONObj = new JsonObject();
+            mobileJSONObj.addProperty("mobile", mobileList.get(i));
+            mobileJSONArray.add(mobileJSONObj);
+        }
+
+        for (int i = 0; i < landlineList.size(); i++) {
+            JsonObject landlineJSONObj = new JsonObject();
+            landlineJSONObj.addProperty("landlinenumbers", landlineList.get(i));
+            landlineJSONArray.add(landlineJSONObj);
+        }
+        for (int i = 0; i < tagList.size(); i++) {
+            JsonObject landlineJSONObj = new JsonObject();
+            landlineJSONObj.addProperty("tag_name", tagList.get(i));
+            tagJSONArray.add(landlineJSONObj);
+        }
+
+        mainObj.addProperty("type", "createbusiness");
+        mainObj.addProperty("business_name", edt_name.getText().toString().trim());
+        mainObj.addProperty("address", edt_address.getText().toString().trim());
+        mainObj.addProperty("district", edt_district.getText().toString().trim());
+        mainObj.addProperty("state", edt_state.getText().toString().trim());
+        mainObj.addProperty("city", edt_city.getText().toString().trim());
+        mainObj.addProperty("country", edt_country.getText().toString().trim());
+        mainObj.addProperty("pincode", edt_pincode.getText().toString().trim());
+        mainObj.addProperty("longitude", longitude);
+        mainObj.addProperty("latitude", latitude);
+        mainObj.addProperty("landmark", edt_select_area.getText().toString().trim());
+        mainObj.addProperty("locality", edt_city.getText().toString().trim());
+        mainObj.addProperty("email", edt_email.getText().toString().trim());
+        mainObj.addProperty("designation", edt_designation.getText().toString().trim());
+        mainObj.addProperty("record_statusid", "1");
+        mainObj.addProperty("website", edt_website.getText().toString().trim());
+        mainObj.addProperty("image_url", imageUrl);
+        mainObj.addProperty("busi_type_id", "0");
+        mainObj.addProperty("website", edt_nature.getText().toString().trim());
+        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
+        mainObj.addProperty("cat_id", "0");
+        mainObj.addProperty("type_id", categoryId);
+        mainObj.addProperty("sub_type_id", subCategoryId);
+        mainObj.addProperty("created_by", userId);
+        mainObj.addProperty("updated_by", userId);
+        mainObj.add("mobile_number", mobileJSONArray);
+        mainObj.add("landline_number", landlineJSONArray);
+        mainObj.add("tag_name", tagJSONArray);
+
+
+        Log.i("ADDBUSINESS", mainObj.toString());
+
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new AddBusiness().execute(mainObj.toString());
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
 
     }
 
@@ -902,6 +967,68 @@ public class AddBusiness_Fragment extends Fragment {
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
                     }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class AddBusiness extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Business details submitted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                getActivity().finish();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("User details failed to update", context, 3);
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
