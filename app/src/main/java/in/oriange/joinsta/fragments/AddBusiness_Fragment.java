@@ -162,7 +162,7 @@ public class AddBusiness_Fragment extends Fragment {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Professional");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Business");
         if (!profilPicFolder.exists())
             profilPicFolder.mkdirs();
 
