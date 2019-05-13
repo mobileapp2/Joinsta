@@ -97,7 +97,7 @@ public class AddBusiness_Fragment extends Fragment {
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", categoryId, subCategoryId, latitude, longitude;
+    private String userId, imageUrl = "", imageName = "", categoryId, subCategoryId, latitude, longitude;
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -781,9 +781,9 @@ public class AddBusiness_Fragment extends Fragment {
         mainObj.addProperty("designation", edt_designation.getText().toString().trim());
         mainObj.addProperty("record_statusid", "1");
         mainObj.addProperty("website", edt_website.getText().toString().trim());
-        mainObj.addProperty("image_url", imageUrl);
+        mainObj.addProperty("image_url", imageName);
         mainObj.addProperty("busi_type_id", "0");
-        mainObj.addProperty("website", edt_nature.getText().toString().trim());
+        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
         mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
         mainObj.addProperty("cat_id", "0");
         mainObj.addProperty("type_id", categoryId);
@@ -957,6 +957,7 @@ public class AddBusiness_Fragment extends Fragment {
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
                         imageUrl = jsonObject.getString("document_url");
+                        imageName = jsonObject.getString("name");
 
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
