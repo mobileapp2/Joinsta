@@ -1,8 +1,12 @@
 package in.oriange.joinsta.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -47,11 +51,6 @@ public class Search_Fragment extends Fragment {
     private void setDefault() {
 
         ArrayList<SearchListModel> searchList = new ArrayList<>();
-        searchList.add(new SearchListModel("Joinsta Development", "This is the sub heading", "This is the sub sub heading", "0"));
-        searchList.add(new SearchListModel("Joinsta Development", "This is the sub heading", "This is the sub sub heading", "1"));
-        searchList.add(new SearchListModel("Joinsta Development", "This is the sub heading", "This is the sub sub heading", "0"));
-        searchList.add(new SearchListModel("Joinsta Development", "This is the sub heading", "This is the sub sub heading", "0"));
-
         rv_searchlist.setAdapter(new SearchAdapter(context, searchList));
     }
 
@@ -62,4 +61,5 @@ public class Search_Fragment extends Fragment {
     private void setEventHandlers() {
 
     }
+
 }
