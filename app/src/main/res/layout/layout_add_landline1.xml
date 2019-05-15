@@ -44,7 +44,7 @@
         android:layout_gravity="center_vertical|end"
         android:layout_weight="0.1"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="removeLandlineLayout"
+        android:onClick="removeLandlineLayoutBiz"
         android:src="@drawable/icon_cross"
         android:tint="@color/black" />
 

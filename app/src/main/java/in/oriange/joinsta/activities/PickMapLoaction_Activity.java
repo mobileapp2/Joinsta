@@ -267,7 +267,7 @@ public class PickMapLoaction_Activity extends FragmentActivity
                 addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                 AutoCompleteLocation ob = findViewById(R.id.autocomplete_location);
                 if (addresses.size() > 0) {
-                    ob.setText(addresses.get(0).getAddressLine(0));
+                    ob.setHint(addresses.get(0).getAddressLine(0));
                 }
             }
         } catch (IOException e) {

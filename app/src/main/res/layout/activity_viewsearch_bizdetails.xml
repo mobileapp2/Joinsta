@@ -41,7 +41,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/layout_bizprofemp_details" />
+    <include layout="@layout/layout_biz_details" />
 
     <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
         <!--android:layout_width="wrap_content"-->

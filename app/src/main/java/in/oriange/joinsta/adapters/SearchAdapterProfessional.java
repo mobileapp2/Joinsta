@@ -7,18 +7,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
-import androidx.recyclerview.widget.RecyclerView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.models.SearchListModel;
+import in.oriange.joinsta.models.SearchDetailsModel;
 
-public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder> {
+public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapterProfessional.MyViewHolder> {
 
-    private List<SearchListModel> resultArrayList;
+    private List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList;
     private Context context;
 
-    public SearchAdapter(Context context, List<SearchListModel> resultArrayList) {
+    public SearchAdapterProfessional(Context context, List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
 
@@ -34,12 +35,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int pos) {
         final int position = holder.getAdapterPosition();
-        final SearchListModel profileDetails = resultArrayList.get(position);
+        final SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(profileDetails.getType());
-        holder.tv_subheading.setText(profileDetails.getSubType());
-        holder.tv_subsubheading.setText(profileDetails.getSubSubType());
-
+        holder.tv_heading.setText(searchDetails.getFirm_name());
+        holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+        holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 //        if (profileDetails.getIsFavourite().equals("1")) {
 //            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_filled));
 //        } else {

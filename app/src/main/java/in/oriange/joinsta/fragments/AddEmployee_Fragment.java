@@ -63,9 +63,8 @@ public class AddEmployee_Fragment extends Fragment {
     private UserSessionManager session;
     private ProgressDialog pd;
     private CircleImageView imv_user;
-    private MaterialEditText edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
-            edt_email, edt_website, edt_select_area, edt_address_one, edt_address_two, edt_pincode,
-            edt_city, edt_state, edt_country;
+    private MaterialEditText edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline, edt_email, edt_website, edt_select_area,
+            edt_address_one, edt_address_two, edt_pincode, edt_city, edt_state, edt_country;
     private static LinearLayout ll_mobile, ll_landline;
     private ImageButton ib_add_mobile, ib_add_landline;
     private Button btn_save;

@@ -1,7 +1,7 @@
 package in.oriange.joinsta.models;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
 public class SearchDetailsModel implements Serializable {
 
@@ -41,31 +41,32 @@ public class SearchDetailsModel implements Serializable {
     }
 
     public static class ResultBean implements Serializable {
-        private List<EmployeesBean> employees;
-        private List<ProfessionalsBean> professionals;
-        private List<BusinessesBean> businesses;
 
-        public List<EmployeesBean> getEmployees() {
+        private ArrayList<EmployeesBean> employees;
+        private ArrayList<ProfessionalsBean> professionals;
+        private ArrayList<BusinessesBean> businesses;
+
+        public ArrayList<EmployeesBean> getEmployees() {
             return employees;
         }
 
-        public void setEmployees(List<EmployeesBean> employees) {
+        public void setEmployees(ArrayList<EmployeesBean> employees) {
             this.employees = employees;
         }
 
-        public List<ProfessionalsBean> getProfessionals() {
+        public ArrayList<ProfessionalsBean> getProfessionals() {
             return professionals;
         }
 
-        public void setProfessionals(List<ProfessionalsBean> professionals) {
+        public void setProfessionals(ArrayList<ProfessionalsBean> professionals) {
             this.professionals = professionals;
         }
 
-        public List<BusinessesBean> getBusinesses() {
+        public ArrayList<BusinessesBean> getBusinesses() {
             return businesses;
         }
 
-        public void setBusinesses(List<BusinessesBean> businesses) {
+        public void setBusinesses(ArrayList<BusinessesBean> businesses) {
             this.businesses = businesses;
         }
 
@@ -130,9 +131,9 @@ public class SearchDetailsModel implements Serializable {
             private String updated_by;
             private String subtype_description;
             private String type_description;
-            private List<List<MobilesBean>> mobiles;
-            private List<List<LandlineBean>> landline;
-            private List<List<TagBean>> tag;
+            private ArrayList<ArrayList<MobilesBean>> mobiles;
+            private ArrayList<ArrayList<LandlineBean>> landline;
+            private ArrayList<ArrayList<TagBean>> tag;
 
             public String getId() {
                 return id;
@@ -350,27 +351,27 @@ public class SearchDetailsModel implements Serializable {
                 this.type_description = type_description;
             }
 
-            public List<List<MobilesBean>> getMobiles() {
+            public ArrayList<ArrayList<MobilesBean>> getMobiles() {
                 return mobiles;
             }
 
-            public void setMobiles(List<List<MobilesBean>> mobiles) {
+            public void setMobiles(ArrayList<ArrayList<MobilesBean>> mobiles) {
                 this.mobiles = mobiles;
             }
 
-            public List<List<LandlineBean>> getLandline() {
+            public ArrayList<ArrayList<LandlineBean>> getLandline() {
                 return landline;
             }
 
-            public void setLandline(List<List<LandlineBean>> landline) {
+            public void setLandline(ArrayList<ArrayList<LandlineBean>> landline) {
                 this.landline = landline;
             }
 
-            public List<List<TagBean>> getTag() {
+            public ArrayList<ArrayList<TagBean>> getTag() {
                 return tag;
             }
 
-            public void setTag(List<List<TagBean>> tag) {
+            public void setTag(ArrayList<ArrayList<TagBean>> tag) {
                 this.tag = tag;
             }
 
@@ -505,10 +506,10 @@ public class SearchDetailsModel implements Serializable {
             private String created_at;
             private String updated_at;
             private String subtype_description;
-            private Object type_description;
-            private List<List<MobilesBeanX>> mobiles;
-            private List<List<LandlineBeanX>> landline;
-            private List<List<TagBeanX>> tag;
+            private String type_description;
+            private ArrayList<ArrayList<MobilesBeanX>> mobiles;
+            private ArrayList<ArrayList<LandlineBeanX>> landline;
+            private ArrayList<ArrayList<TagBeanX>> tag;
 
             public String getId() {
                 return id;
@@ -686,35 +687,35 @@ public class SearchDetailsModel implements Serializable {
                 this.subtype_description = subtype_description;
             }
 
-            public Object getType_description() {
+            public String getType_description() {
                 return type_description;
             }
 
-            public void setType_description(Object type_description) {
+            public void setType_description(String type_description) {
                 this.type_description = type_description;
             }
 
-            public List<List<MobilesBeanX>> getMobiles() {
+            public ArrayList<ArrayList<MobilesBeanX>> getMobiles() {
                 return mobiles;
             }
 
-            public void setMobiles(List<List<MobilesBeanX>> mobiles) {
+            public void setMobiles(ArrayList<ArrayList<MobilesBeanX>> mobiles) {
                 this.mobiles = mobiles;
             }
 
-            public List<List<LandlineBeanX>> getLandline() {
+            public ArrayList<ArrayList<LandlineBeanX>> getLandline() {
                 return landline;
             }
 
-            public void setLandline(List<List<LandlineBeanX>> landline) {
+            public void setLandline(ArrayList<ArrayList<LandlineBeanX>> landline) {
                 this.landline = landline;
             }
 
-            public List<List<TagBeanX>> getTag() {
+            public ArrayList<ArrayList<TagBeanX>> getTag() {
                 return tag;
             }
 
-            public void setTag(List<List<TagBeanX>> tag) {
+            public void setTag(ArrayList<ArrayList<TagBeanX>> tag) {
                 this.tag = tag;
             }
 
@@ -840,17 +841,18 @@ public class SearchDetailsModel implements Serializable {
             private String designation;
             private String email;
             private String website;
+            private String business_name;
             private String record_statusid;
             private String created_at;
             private String updated_at;
             private String created_by;
             private String updated_by;
-            private Object subtype_description;
+            private String subtype_description;
             private String type_description;
             private String image_url;
-            private List<List<MobilesBeanXX>> mobiles;
-            private List<List<LandlineBeanXX>> landline;
-            private List<List<TagBeanXX>> tag;
+            private ArrayList<ArrayList<MobilesBeanXX>> mobiles;
+            private ArrayList<ArrayList<LandlineBeanXX>> landline;
+            private ArrayList<ArrayList<TagBeanXX>> tag;
 
             public String getId() {
                 return id;
@@ -964,6 +966,14 @@ public class SearchDetailsModel implements Serializable {
                 this.website = website;
             }
 
+            public String getBusiness_name() {
+                return business_name;
+            }
+
+            public void setBusiness_name(String business_name) {
+                this.business_name = business_name;
+            }
+
             public String getRecord_statusid() {
                 return record_statusid;
             }
@@ -1004,11 +1014,11 @@ public class SearchDetailsModel implements Serializable {
                 this.updated_by = updated_by;
             }
 
-            public Object getSubtype_description() {
+            public String getSubtype_description() {
                 return subtype_description;
             }
 
-            public void setSubtype_description(Object subtype_description) {
+            public void setSubtype_description(String subtype_description) {
                 this.subtype_description = subtype_description;
             }
 
@@ -1028,27 +1038,27 @@ public class SearchDetailsModel implements Serializable {
                 this.image_url = image_url;
             }
 
-            public List<List<MobilesBeanXX>> getMobiles() {
+            public ArrayList<ArrayList<MobilesBeanXX>> getMobiles() {
                 return mobiles;
             }
 
-            public void setMobiles(List<List<MobilesBeanXX>> mobiles) {
+            public void setMobiles(ArrayList<ArrayList<MobilesBeanXX>> mobiles) {
                 this.mobiles = mobiles;
             }
 
-            public List<List<LandlineBeanXX>> getLandline() {
+            public ArrayList<ArrayList<LandlineBeanXX>> getLandline() {
                 return landline;
             }
 
-            public void setLandline(List<List<LandlineBeanXX>> landline) {
+            public void setLandline(ArrayList<ArrayList<LandlineBeanXX>> landline) {
                 this.landline = landline;
             }
 
-            public List<List<TagBeanXX>> getTag() {
+            public ArrayList<ArrayList<TagBeanXX>> getTag() {
                 return tag;
             }
 
-            public void setTag(List<List<TagBeanXX>> tag) {
+            public void setTag(ArrayList<ArrayList<TagBeanXX>> tag) {
                 this.tag = tag;
             }
 

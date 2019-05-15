@@ -33,6 +33,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -82,7 +83,7 @@ public class AddProfessional_Fragment extends Fragment {
     private UserSessionManager session;
     private ProgressDialog pd;
     private ImageView imv_photo1, imv_photo2;
-    private MaterialEditText edt_nature, edt_subtype, edt_firm, edt_mobile, edt_landline,
+    private MaterialEditText edt_nature, edt_subtype, edt_firm, edt_mobile, edt_landline, edt_designation,
             edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country, edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
     private TextView tv_countrycode_mobile, tv_countrycode_landline;
@@ -93,10 +94,10 @@ public class AddProfessional_Fragment extends Fragment {
     private ArrayList<CategotyListModel> categotyList;
     private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
     private ArrayList<String> mobileList, landlineList;
-    private JsonArray mobileJSONArray, landlineJSONArray;
+    private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl, categoryId, subCategoryId, latitude, longitude;
+    private String userId, imageUrl = "", imageName = "", categoryId, subCategoryId, latitude, longitude;
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -127,6 +128,7 @@ public class AddProfessional_Fragment extends Fragment {
         edt_subtype = rootView.findViewById(R.id.edt_subtype);
         edt_firm = rootView.findViewById(R.id.edt_firm);
         edt_mobile = rootView.findViewById(R.id.edt_mobile);
+        edt_designation = rootView.findViewById(R.id.edt_designation);
         edt_landline = rootView.findViewById(R.id.edt_landline);
         edt_email = rootView.findViewById(R.id.edt_email);
         edt_website = rootView.findViewById(R.id.edt_website);
@@ -157,6 +159,7 @@ public class AddProfessional_Fragment extends Fragment {
         landlineLayoutsList = new ArrayList<>();
         mobileJSONArray = new JsonArray();
         landlineJSONArray = new JsonArray();
+        tagJSONArray = new JsonArray();
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
 
@@ -186,6 +189,7 @@ public class AddProfessional_Fragment extends Fragment {
     }
 
     private void setDefault() {
+
         try {
             JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
             countryCodeList = new ArrayList<>();
@@ -202,6 +206,7 @@ public class AddProfessional_Fragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     private void setEventListner() {
@@ -287,7 +292,7 @@ public class AddProfessional_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_mobile1, null);
+                final View rowView = inflater.inflate(R.layout.layout_add_mobile2, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 mobileLayoutsList.add(ll);
                 ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
@@ -298,7 +303,7 @@ public class AddProfessional_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_landline1, null);
+                final View rowView = inflater.inflate(R.layout.layout_add_landline2, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 landlineLayoutsList.add(ll);
                 ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
@@ -638,6 +643,9 @@ public class AddProfessional_Fragment extends Fragment {
     private void submitData() {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
+        mobileJSONArray = new JsonArray();
+        landlineJSONArray = new JsonArray();
+        tagJSONArray = new JsonArray();
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
             edt_nature.setError("Please select the nature of business");
@@ -736,6 +744,63 @@ public class AddProfessional_Fragment extends Fragment {
             landlineList.add(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim());
         }
 
+        List<String> tagList = tag_container.getTags();
+
+        JsonObject mainObj = new JsonObject();
+
+
+        for (int i = 0; i < mobileList.size(); i++) {
+            JsonObject mobileJSONObj = new JsonObject();
+            mobileJSONObj.addProperty("mobile", mobileList.get(i));
+            mobileJSONArray.add(mobileJSONObj);
+        }
+
+        for (int i = 0; i < landlineList.size(); i++) {
+            JsonObject landlineJSONObj = new JsonObject();
+            landlineJSONObj.addProperty("landlinenumbers", landlineList.get(i));
+            landlineJSONArray.add(landlineJSONObj);
+        }
+        for (int i = 0; i < tagList.size(); i++) {
+            JsonObject landlineJSONObj = new JsonObject();
+            landlineJSONObj.addProperty("tag_name", tagList.get(i));
+            tagJSONArray.add(landlineJSONObj);
+        }
+
+        mainObj.addProperty("type", "createprofessional");
+        mainObj.addProperty("address", edt_address.getText().toString().trim());
+        mainObj.addProperty("district", edt_district.getText().toString().trim());
+        mainObj.addProperty("state", edt_state.getText().toString().trim());
+        mainObj.addProperty("city", edt_city.getText().toString().trim());
+        mainObj.addProperty("country", edt_country.getText().toString().trim());
+        mainObj.addProperty("pincode", edt_pincode.getText().toString().trim());
+        mainObj.addProperty("longitude", longitude);
+        mainObj.addProperty("latitude", latitude);
+        mainObj.addProperty("landmark", edt_select_area.getText().toString().trim());
+        mainObj.addProperty("locality", edt_city.getText().toString().trim());
+        mainObj.addProperty("email", edt_email.getText().toString().trim());
+        mainObj.addProperty("designation", edt_designation.getText().toString().trim());
+        mainObj.addProperty("is_verified", "0");
+        mainObj.addProperty("firm_name", edt_firm.getText().toString().trim());
+        mainObj.addProperty("website", edt_website.getText().toString().trim());
+        mainObj.addProperty("image_url", imageName);
+        mainObj.addProperty("is_active", "0");
+        mainObj.addProperty("record_status_id", "0");
+//        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
+//        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
+//        mainObj.addProperty("cat_id", "1");
+        mainObj.addProperty("type_id", categoryId);
+        mainObj.addProperty("sub_type_id", subCategoryId);
+        mainObj.addProperty("created_by", userId);
+        mainObj.addProperty("updated_by", userId);
+        mainObj.add("mobile_number", mobileJSONArray);
+        mainObj.add("landline_number", landlineJSONArray);
+        mainObj.add("tag_name", tagJSONArray);
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new AddProfessional().execute(mainObj.toString());
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
 
     }
 
@@ -890,6 +955,7 @@ public class AddProfessional_Fragment extends Fragment {
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
                         imageUrl = jsonObject.getString("document_url");
+                        imageName = jsonObject.getString("name");
 
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
@@ -900,6 +966,68 @@ public class AddProfessional_Fragment extends Fragment {
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
                     }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class AddProfessional extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.PROFESSIONALAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Professional details submitted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                getActivity().finish();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("User details failed to update", context, 3);
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

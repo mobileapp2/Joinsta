@@ -34,14 +34,22 @@
                     android:text="Search"
                     android:textColor="@color/white" />
 
-                <ImageButton
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edt_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/icon_filter" />
+                    android:layout_marginRight="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:drawableRight="@drawable/icon_dropdown"
+                    android:focusable="false"
+                    android:inputType="textNoSuggestions"
+                    android:longClickable="false"
+                    android:text="Type"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white" />
             </RelativeLayout>
 
 
@@ -83,6 +91,17 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_searchlist"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/SpinKitView.Circle"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/colorAccent" />
 
 </LinearLayout>

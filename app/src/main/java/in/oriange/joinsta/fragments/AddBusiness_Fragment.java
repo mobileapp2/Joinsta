@@ -106,6 +106,7 @@ public class AddBusiness_Fragment extends Fragment {
 
     private static TextView tv_selected_forconcode = null;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_business, container, false);
@@ -779,13 +780,13 @@ public class AddBusiness_Fragment extends Fragment {
         mainObj.addProperty("locality", edt_city.getText().toString().trim());
         mainObj.addProperty("email", edt_email.getText().toString().trim());
         mainObj.addProperty("designation", edt_designation.getText().toString().trim());
-        mainObj.addProperty("record_statusid", "1");
+        mainObj.addProperty("record_statusid", "0");
         mainObj.addProperty("website", edt_website.getText().toString().trim());
         mainObj.addProperty("image_url", imageName);
         mainObj.addProperty("busi_type_id", "0");
-        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
-        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
-        mainObj.addProperty("cat_id", "0");
+//        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
+//        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
+//        mainObj.addProperty("cat_id", "1");
         mainObj.addProperty("type_id", categoryId);
         mainObj.addProperty("sub_type_id", subCategoryId);
         mainObj.addProperty("created_by", userId);
