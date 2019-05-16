@@ -502,6 +502,7 @@ public class SearchDetailsModel implements Serializable {
             private String updated_by;
             private String is_active;
             private String firm_name;
+            private String profession_name;
             private String image_url;
             private String created_at;
             private String updated_at;
@@ -677,6 +678,14 @@ public class SearchDetailsModel implements Serializable {
 
             public void setUpdated_at(String updated_at) {
                 this.updated_at = updated_at;
+            }
+
+            public String getProfession_name() {
+                return profession_name;
+            }
+
+            public void setProfession_name(String profession_name) {
+                this.profession_name = profession_name;
             }
 
             public String getSubtype_description() {

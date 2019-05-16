@@ -149,25 +149,12 @@
                 android:padding="5dp">
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:hint="Name of Business"
-                    android:longClickable="false"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
-
-                <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_nature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="false"
                     android:focusable="false"
-                    android:hint="Nature of Business"
+                    android:hint="Nature of Employee"
                     android:longClickable="false"
                     android:textSize="16sp"
                     app:met_floatingLabel="highlight"

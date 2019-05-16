@@ -302,4 +302,26 @@ public class Utilities {
         alertDialog.show();
 
     }
+
+    public static void provideCallPremission(final Context context) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialog.setTitle("Permission");
+        alertDialog.setCancelable(false);
+        alertDialog.setIcon(R.drawable.icon_alertred);
+        alertDialog.setMessage("Please grant permission to make a call");
+        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                context.startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts("package", context.getPackageName(), null)));
+            }
+        });
+        alertDialog.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        alertDialog.create();
+        alertDialog.show();
+
+    }
 }
