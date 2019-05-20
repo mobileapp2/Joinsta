@@ -131,6 +131,7 @@ public class SearchDetailsModel implements Serializable {
             private String updated_by;
             private String subtype_description;
             private String type_description;
+            private String IsFavourite;
             private ArrayList<ArrayList<MobilesBean>> mobiles;
             private ArrayList<ArrayList<LandlineBean>> landline;
             private ArrayList<ArrayList<TagBean>> tag;
@@ -351,6 +352,14 @@ public class SearchDetailsModel implements Serializable {
                 this.type_description = type_description;
             }
 
+            public String getIsFavourite() {
+                return IsFavourite;
+            }
+
+            public void setIsFavourite(String isFavourite) {
+                IsFavourite = isFavourite;
+            }
+
             public ArrayList<ArrayList<MobilesBean>> getMobiles() {
                 return mobiles;
             }
@@ -508,6 +517,9 @@ public class SearchDetailsModel implements Serializable {
             private String updated_at;
             private String subtype_description;
             private String type_description;
+            private String IsFavourite;
+            private String designation;
+            private String state;
             private ArrayList<ArrayList<MobilesBeanX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanX>> landline;
             private ArrayList<ArrayList<TagBeanX>> tag;
@@ -704,6 +716,22 @@ public class SearchDetailsModel implements Serializable {
                 this.type_description = type_description;
             }
 
+            public String getDesignation() {
+                return designation;
+            }
+
+            public void setDesignation(String designation) {
+                this.designation = designation;
+            }
+
+            public String getState() {
+                return state;
+            }
+
+            public void setState(String state) {
+                this.state = state;
+            }
+
             public ArrayList<ArrayList<MobilesBeanX>> getMobiles() {
                 return mobiles;
             }
@@ -718,6 +746,14 @@ public class SearchDetailsModel implements Serializable {
 
             public void setLandline(ArrayList<ArrayList<LandlineBeanX>> landline) {
                 this.landline = landline;
+            }
+
+            public String getIsFavourite() {
+                return IsFavourite;
+            }
+
+            public void setIsFavourite(String isFavourite) {
+                IsFavourite = isFavourite;
             }
 
             public ArrayList<ArrayList<TagBeanX>> getTag() {
@@ -859,6 +895,7 @@ public class SearchDetailsModel implements Serializable {
             private String subtype_description;
             private String type_description;
             private String image_url;
+            private String IsFavourite;
             private ArrayList<ArrayList<MobilesBeanXX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanXX>> landline;
             private ArrayList<ArrayList<TagBeanXX>> tag;
@@ -1071,6 +1108,14 @@ public class SearchDetailsModel implements Serializable {
                 this.tag = tag;
             }
 
+            public String getIsFavourite() {
+                return IsFavourite;
+            }
+
+            public void setIsFavourite(String isFavourite) {
+                IsFavourite = isFavourite;
+            }
+
             public static class MobilesBeanXX implements Serializable {
                 /**
                  * id : 98
@@ -1151,3 +1196,4 @@ public class SearchDetailsModel implements Serializable {
         }
     }
 }
+

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -32,8 +31,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="90dp"
@@ -49,6 +48,7 @@
                         android:text="No Preview Available"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
+
                 </LinearLayout>
 
                 <ImageView
@@ -75,21 +75,22 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+            <CheckBox
+                android:id="@+id/cb_like"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_margin="10dp"
+                android:background="@drawable/like_icon"
+                android:button="@null"
+                android:checked="false"
+                android:stateListAnimator="@animator/scale" />
+
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/layout_biz_details" />
 
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="8dp"-->
-    <!--android:clickable="true"-->
-    <!--android:src="@drawable/icon_color_call"-->
-    <!--android:tint="@color/white"-->
-    <!--app:backgroundTint="@color/colorPrimary"-->
-    <!--app:fabSize="normal"-->
-    <!--app:layout_anchor="@id/appbar"-->
-    <!--app:layout_anchorGravity="bottom|right|end" />-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

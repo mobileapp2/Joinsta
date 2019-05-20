@@ -6,10 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,13 +23,22 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -37,13 +50,19 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private LinearLayout ll_direction, ll_mobile, ll_landline, ll_email;
+    private ImageView imv_image;
+    private ProgressBar progressBar;
+    private CheckBox cb_like;
+    private LinearLayout ll_direction, ll_mobile, ll_landline, ll_email, ll_nopreview;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_district, edt_state, edt_country;
     private CardView cv_tabs;
     private TagContainerLayout tag_container;
 
     private SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails;
+    private String userId;
+    private int position;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +86,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
 
+        cb_like = findViewById(R.id.cb_like);
+        imv_image = findViewById(R.id.imv_image);
+        progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
 
         edt_name = findViewById(R.id.edt_name);
@@ -91,35 +113,99 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         edt_name.setText(searchDetails.getFirm_name());
         edt_nature.setText(searchDetails.getType_description());
         edt_subtype.setText(searchDetails.getSubtype_description());
-//        edt_designation.setText(searchDetails.getProfession_name());
+        edt_designation.setText(searchDetails.getDesignation());
         edt_website.setText(searchDetails.getWebsite());
         edt_select_area.setText(searchDetails.getLandmark());
         edt_address.setText(searchDetails.getAddress());
         edt_pincode.setText(searchDetails.getPincode());
         edt_city.setText(searchDetails.getCity());
         edt_district.setText(searchDetails.getDistrict());
-//        edt_state.setText(searchDetails.getState());
+        edt_state.setText(searchDetails.getState());
         edt_country.setText(searchDetails.getCountry());
+
+        if (searchDetails.getIsFavourite().equals("1"))
+            cb_like.setChecked(true);
 
         ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.TagBeanX> tagsList = new ArrayList<>();
         tagsList = searchDetails.getTag().get(0);
 
         if (tagsList != null)
-            if (tagsList.size() > 0) {
-                for (int i = 0; i < tagsList.size(); i++) {
+            if (tagsList.size() > 0)
+                for (int i = 0; i < tagsList.size(); i++)
                     tag_container.addTag(tagsList.get(i).getTag_name());
-                }
-            } else
+            else
                 cv_tabs.setVisibility(View.GONE);
         else
             cv_tabs.setVisibility(View.GONE);
+
+
+        if (!searchDetails.getImage_url().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(searchDetails.getImage_url().trim())
+                    .into(imv_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            ll_nopreview.setVisibility(View.GONE);
+                            imv_image.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            imv_image.setVisibility(View.GONE);
+                            ll_nopreview.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            imv_image.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void getSessionData() {
 
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setEventHandler() {
+        cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String isFav = searchDetails.getIsFavourite();
+
+                if (cb_like.isChecked())
+                    isFav = "1";
+                else
+                    isFav = "0";
+
+                JsonObject mainObj = new JsonObject();
+
+                mainObj.addProperty("type", "createfav");
+                mainObj.addProperty("info_id", searchDetails.getId());
+                mainObj.addProperty("info_type", "2");
+                mainObj.addProperty("user_id", userId);
+                mainObj.addProperty("record_status_id", isFav);
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SetFavourite().execute(mainObj.toString());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
+        });
+
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,6 +325,46 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             }
         });
         builderSingle.show();
+    }
+
+    private class SetFavourite extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.FAVOURITEALAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        Search_Fragment.professionalList.get(position).setIsFavourite("1");
+                    } else {
+                        cb_like.setChecked(false);
+                    }
+                }
+            } catch (Exception e) {
+                cb_like.setChecked(false);
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setUpToolbar() {

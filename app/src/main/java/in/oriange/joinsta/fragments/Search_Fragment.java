@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -26,6 +24,11 @@ import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.SearchAdapterBusiness;
 import in.oriange.joinsta.adapters.SearchAdapterEmployee;
@@ -33,20 +36,23 @@ import in.oriange.joinsta.adapters.SearchAdapterProfessional;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class Search_Fragment extends Fragment {
 
     private Context context;
+    private UserSessionManager session;
     private RecyclerView rv_searchlist;
     private AppCompatEditText edt_type;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
     private String categoryTypeId;
 
-    ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
-    ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
-    ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
+    public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
+    public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
+    public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class Search_Fragment extends Fragment {
     }
 
     private void init(View rootView) {
+        session = new UserSessionManager(context);
         Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -86,6 +93,16 @@ public class Search_Fragment extends Fragment {
 
     private void getSessionDetails() {
 
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class GetSearchList extends AsyncTask<String, Void, String> {
@@ -102,6 +119,7 @@ public class Search_Fragment extends Fragment {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getDetailsByLocation");
+            obj.addProperty("user_id", userId);
             obj.addProperty("location", params[0]);
             res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
             return res.trim();

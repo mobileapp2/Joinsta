@@ -21,6 +21,7 @@ public class ApplicationConstants {
     public static final String SEARCHAPI = API_LINK + "SearchDetails.php";
     public static final String MASTERAPI = API_LINK + "master.php";
     public static final String BUSINESSAPI = API_LINK + "business.php";
-    public static final String PROFESSIONALAPI = API_LINK + "business.php";
+    public static final String PROFESSIONALAPI = API_LINK + "professional.php";
+    public static final String FAVOURITEALAPI = API_LINK + "fav.php";
     public static final String FILEUPLOADAPI = API_LINK + "upload.php";
 }
