@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.List;
-
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.ViewSearchBizDetails_Activity;
@@ -40,7 +40,7 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int pos) {
+    public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
         final SearchDetailsModel.ResultBean.BusinessesBean searchDetails = resultArrayList.get(position);
 
@@ -51,27 +51,34 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, ViewSearchBizDetails_Activity.class).putExtra("searchDetails", searchDetails));
+                context.startActivity(new Intent(context, ViewSearchBizDetails_Activity.class)
+                        .putExtra("searchDetails", searchDetails)
+                        .putExtra("position", position));
             }
         });
 
-//        if (!searchDetails.getImage_url().trim().isEmpty()) {
-//            Picasso.with(context)
-//                    .load(searchDetails.getImage_url().trim())
-//                    .into(holder.imv_preview, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            holder.progressBar.setVisibility(View.GONE);
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            holder.progressBar.setVisibility(View.GONE);
-//                        }
-//                    });
-//        } else {
-//            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-//        }
+        if (!searchDetails.getImage_url().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(searchDetails.getImage_url().trim())
+                    .into(holder.imv_preview, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.imv_preview.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.imv_preview.setVisibility(View.VISIBLE);
+                            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        }
+                    });
+        } else {
+            holder.progressBar.setVisibility(View.GONE);
+            holder.imv_preview.setVisibility(View.VISIBLE);
+            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+        }
 
 
     }

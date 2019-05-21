@@ -6,10 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -43,18 +47,40 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
         holder.tv_heading.setText(searchDetails.getFirm_name());
         holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
-//        if (profileDetails.getIsFavourite().equals("1")) {
-//            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_filled));
-//        } else {
-//            holder.imv_favourite.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_fav_outline));
-//        }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, ViewSearchProfDetails_Activity.class).putExtra("searchDetails", searchDetails));
+                context.startActivity(new Intent(context, ViewSearchProfDetails_Activity.class)
+                        .putExtra("searchDetails", searchDetails)
+                        .putExtra("position", position));
             }
         });
+
+
+        if (!searchDetails.getImage_url().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(searchDetails.getImage_url().trim())
+                    .into(holder.imv_preview, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.imv_preview.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.imv_preview.setVisibility(View.VISIBLE);
+                            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        }
+                    });
+        } else {
+            holder.progressBar.setVisibility(View.GONE);
+            holder.imv_preview.setVisibility(View.VISIBLE);
+            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+        }
+
 
     }
 
@@ -67,6 +93,7 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
 
         private ImageView imv_preview;
         private CardView cv_mainlayout;
+        private ProgressBar progressBar;
         private TextView tv_heading, tv_subheading, tv_subsubheading;
 
         public MyViewHolder(View view) {
@@ -76,6 +103,7 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+            progressBar = view.findViewById(R.id.progressBar);
         }
     }
 }

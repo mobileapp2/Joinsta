@@ -175,6 +175,7 @@ public class Home_Fragment extends Fragment {
 
                         }
                     } else {
+                        rv_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
                         Utilities.showAlertDialog(context, "Categories not available", false);
 
                     }
