@@ -32,15 +32,26 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <Button
+        android:id="@+id/btn_post_requirement"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Post Your Requirement" />
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_requirementlist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/SpinKitView.Circle"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/colorAccent" />
 
 </LinearLayout>

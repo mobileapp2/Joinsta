@@ -18,10 +18,12 @@ public class ApplicationConstants {
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String USERSAPI = API_LINK + "users.php";
     public static final String CATEGORYAPI = API_LINK + "category.php";
+    public static final String CATEGORYTYPEAPI = API_LINK + "categorytypes.php";
     public static final String SEARCHAPI = API_LINK + "SearchDetails.php";
     public static final String MASTERAPI = API_LINK + "master.php";
     public static final String BUSINESSAPI = API_LINK + "business.php";
     public static final String PROFESSIONALAPI = API_LINK + "professional.php";
-    public static final String FAVOURITEALAPI = API_LINK + "fav.php";
+    public static final String FAVOURITEAPI = API_LINK + "fav.php";
+    public static final String REQUIREMENTAPI = API_LINK + "requirements.php";
     public static final String FILEUPLOADAPI = API_LINK + "upload.php";
 }

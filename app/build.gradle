@@ -52,4 +52,5 @@ dependencies {
     implementation 'com.ogaclejapan.smarttablayout:library:2.0.0@aar'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'co.lujun:androidtagview:1.1.7'
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
 }

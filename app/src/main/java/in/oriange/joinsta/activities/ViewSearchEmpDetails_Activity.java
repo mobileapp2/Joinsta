@@ -337,7 +337,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.FAVOURITEALAPI, params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.FAVOURITEAPI, params[0]);
             return res.trim();
         }
 

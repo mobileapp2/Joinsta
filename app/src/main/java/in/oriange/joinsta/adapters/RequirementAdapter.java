@@ -3,7 +3,6 @@ package in.oriange.joinsta.adapters;
 import android.content.Context;
 
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
@@ -22,19 +21,24 @@ import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.models.RequirementListModel;
-import in.oriange.joinsta.utilities.Utilities;
+import in.oriange.joinsta.models.RequirementsListModel;
 
 public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.MyViewHolder> {
 
-    private List<RequirementListModel> resultArrayList;
+    private List<RequirementsListModel> resultArrayList;
     private Context context;
     PowerMenu powerMenu;
 
-    public RequirementAdapter(Context context, List<RequirementListModel> resultArrayList) {
+    public RequirementAdapter(Context context, List<RequirementsListModel> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
     }
@@ -49,11 +53,18 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int pos) {
         final int position = holder.getAdapterPosition();
-        final RequirementListModel requirementDetails = resultArrayList.get(position);
+        final RequirementsListModel reqDetails = resultArrayList.get(position);
+        PrettyTime p = new PrettyTime();
 
-        holder.tv_requirement.setText(requirementDetails.getRequirement());
-        holder.tv_name.setText(requirementDetails.getName());
-        holder.tv_timelocation.setText(requirementDetails.getTime() + " | " + requirementDetails.getLocation());
+        holder.tv_name.setText(reqDetails.getFname() + " " + reqDetails.getMname() + " " + reqDetails.getLname());
+        holder.tv_title.setText(reqDetails.getTitle());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+        try {
+            holder.tv_timelocation.setText(p.format(formatter.parse(reqDetails.getUpdated_at())) + " | " + reqDetails.getCity());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         holder.imv_more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,13 +86,13 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imv_more;
-        private TextView tv_requirement, tv_name, tv_timelocation;
+        private TextView tv_name, tv_title, tv_timelocation;
 
         public MyViewHolder(View view) {
             super(view);
             imv_more = view.findViewById(R.id.imv_more);
-            tv_requirement = view.findViewById(R.id.tv_requirement);
             tv_name = view.findViewById(R.id.tv_name);
+            tv_title = view.findViewById(R.id.tv_title);
             tv_timelocation = view.findViewById(R.id.tv_timelocation);
         }
     }
@@ -108,8 +119,8 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
             OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener,
             OnDismissedListener onDismissedListener) {
         return new PowerMenu.Builder(context)
-                .addItem(new PowerMenuItem("EDIT", R.drawable.icon_edit))
-                .addItem(new PowerMenuItem("DELETE", R.drawable.icon_delete))
+                .addItem(new PowerMenuItem("EDIT"))
+                .addItem(new PowerMenuItem("DELETE"))
                 .setAutoDismiss(true)
                 .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
                 .setMenuEffect(MenuEffect.BODY)

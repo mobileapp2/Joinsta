@@ -176,7 +176,6 @@ public class AddBusiness_Fragment extends Fragment {
     }
 
     private void getSessionData() {
-
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
