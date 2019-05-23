@@ -6,6 +6,8 @@ public class ApplicationConstants {
     public static final String IS_USER_LOGIN = "IS_USER_LOGIN";
     public static final String KEY_LOGIN_INFO = "KEY_LOGIN_INFO";
     public static final String KEY_ANDROIDTOKETID = "KEY_ANDROIDTOKETID";
+    public static final String IS_LOCATION_SET = "IS_LOCATION_SET";
+    public static final String KEY_LOCATION_INFO = "KEY_LOCATION_INFO";
 
 
     // BETA API LINK

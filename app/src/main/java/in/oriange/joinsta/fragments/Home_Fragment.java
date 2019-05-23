@@ -1,7 +1,9 @@
 package in.oriange.joinsta.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -34,9 +36,12 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.models.CategotyListModel;
+import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
+import in.oriange.joinsta.pojos.MainCategoryListPojo;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
@@ -50,6 +55,9 @@ public class Home_Fragment extends Fragment {
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
     private String categoryTypeId;
+    private ProgressDialog pd;
+    private ArrayList<MainCategoryListModel> mainCategoryList;
+    private ArrayList<PowerMenuItem> powerMenuItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +71,7 @@ public class Home_Fragment extends Fragment {
     }
 
     private void init(View rootView) {
-
+        pd = new ProgressDialog(context);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_location = rootView.findViewById(R.id.edt_location);
 
@@ -71,6 +79,9 @@ public class Home_Fragment extends Fragment {
 
         rv_category = rootView.findViewById(R.id.rv_category);
         rv_category.setLayoutManager(new LinearLayoutManager(context));
+
+        mainCategoryList = new ArrayList<>();
+        powerMenuItems = new ArrayList<>();
     }
 
     private void setDefault() {
@@ -85,7 +96,13 @@ public class Home_Fragment extends Fragment {
     }
 
     private void getSessionDetails() {
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setEventHandlers() {
@@ -94,20 +111,13 @@ public class Home_Fragment extends Fragment {
             public void onClick(View v) {
 //                new BottomSheetMenu_Fragment().show(getFragmentManager(), TAG);
 
-                iconMenu = new PowerMenu.Builder(context)
-                        .addItem(new PowerMenuItem("Business", R.drawable.icon_trader1))
-                        .addItem(new PowerMenuItem("Profession", R.drawable.icon_profession))
-                        .addItem(new PowerMenuItem("Empolyee", R.drawable.icon_employee))
-                        .addItem(new PowerMenuItem("Student", R.drawable.icon_student))
-                        .setOnMenuItemClickListener(onIconMenuItemClickListener)
-                        .setAnimation(MenuAnimation.FADE)
-                        .setMenuEffect(MenuEffect.BODY)
-                        .setMenuRadius(10f)
-                        .setMenuShadow(10f)
-                        .build();
-                iconMenu.showAsDropDown(v);
-
-
+                if (powerMenuItems.size() == 0)
+                    if (Utilities.isNetworkAvailable(context))
+                        new GetMainCategotyList().execute();
+                    else
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                else
+                    showCategoryMenus(powerMenuItems);
             }
         });
 
@@ -124,7 +134,7 @@ public class Home_Fragment extends Fragment {
         @Override
         public void onItemClick(int position, PowerMenuItem item) {
             edt_type.setText(item.getTitle());
-            categoryTypeId = String.valueOf(position + 1);
+            categoryTypeId = mainCategoryList.get(position).getId();
             iconMenu.dismiss();
 
             if (Utilities.isNetworkAvailable(context)) {
@@ -246,6 +256,71 @@ public class Home_Fragment extends Fragment {
             });
 
         }
+    }
+
+    private class GetMainCategotyList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getcategorytypes");
+            res = APICall.JSONAPICall(ApplicationConstants.CATEGORYTYPEAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    mainCategoryList = new ArrayList<>();
+                    MainCategoryListPojo pojoDetails = new Gson().fromJson(result, MainCategoryListPojo.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        mainCategoryList = pojoDetails.getResult();
+                        if (mainCategoryList.size() > 0) {
+
+                            for (int i = 0; i < mainCategoryList.size(); i++) {
+                                powerMenuItems.add(new PowerMenuItem(mainCategoryList.get(i).getType_description()));
+                            }
+                            showCategoryMenus(powerMenuItems);
+
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
+    }
+
+    private void showCategoryMenus(ArrayList<PowerMenuItem> powerMenuItems) {
+        iconMenu = new PowerMenu.Builder(context)
+                .addItemList(powerMenuItems)
+                .setOnMenuItemClickListener(onIconMenuItemClickListener)
+                .setAnimation(MenuAnimation.FADE)
+                .setMenuEffect(MenuEffect.BODY)
+                .setMenuRadius(10f)
+                .setMenuShadow(10f)
+                .build();
+        iconMenu.showAsDropDown(edt_type);
     }
 
     @Override

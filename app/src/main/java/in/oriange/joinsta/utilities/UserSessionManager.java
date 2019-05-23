@@ -10,6 +10,7 @@ import android.os.Build;
 import java.util.HashMap;
 
 import androidx.core.app.ActivityCompat;
+
 import in.oriange.joinsta.activities.Login_Activity;
 
 
@@ -79,4 +80,27 @@ public class UserSessionManager {
     public boolean isUserLoggedIn() {
         return pref.getBoolean(ApplicationConstants.IS_USER_LOGIN, false);
     }
+
+    public void setLocation(String pincodeInfo) {
+        pref = _context.getSharedPreferences(ApplicationConstants.PREFER_NAME,
+                Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putBoolean(ApplicationConstants.IS_LOCATION_SET, true);
+        editor.putString(ApplicationConstants.KEY_LOCATION_INFO, pincodeInfo);
+        editor.commit();
+    }
+
+    public HashMap<String, String> getLocation() {
+        pref = _context.getSharedPreferences(ApplicationConstants.PREFER_NAME,
+                Context.MODE_PRIVATE);
+        HashMap<String, String> user = new HashMap<String, String>();
+        user.put(ApplicationConstants.KEY_LOCATION_INFO,
+                pref.getString(ApplicationConstants.KEY_LOCATION_INFO, null));
+        return user;
+    }
+
+    public boolean isLocationSet() {
+        return pref.getBoolean(ApplicationConstants.IS_LOCATION_SET, false);
+    }
+
 }

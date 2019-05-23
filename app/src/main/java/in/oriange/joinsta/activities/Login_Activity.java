@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -127,8 +128,12 @@ public class Login_Activity extends AppCompatActivity {
                             for (int i = 0; i < jsonarr.length(); i++) {
                                 session.createUserLoginSession(jsonarr.toString());
                                 startActivity(new Intent(context, MainDrawer_Activity.class));
+                                if (session.isLocationSet())
+                                    startActivity(new Intent(context, MainDrawer_Activity.class));
+                                else
+                                    startActivity(new Intent(context, SelectLocation_Activity.class));
+
                                 finish();
-//                                saveRegistrationID();
                             }
                         }
                     } else {

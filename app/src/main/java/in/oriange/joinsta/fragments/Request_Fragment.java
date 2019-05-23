@@ -1,11 +1,13 @@
 package in.oriange.joinsta.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,12 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
@@ -45,15 +46,12 @@ public class Request_Fragment extends Fragment {
     private UserSessionManager session;
     private RecyclerView rv_requirementlist;
     private Button btn_post_requirement;
+    private ImageButton ib_filter;
     private SpinKitView progressBar;
     private String userId;
     private ArrayList<RequirementsListModel> requirementsList;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+    private boolean business, employment, others, posted, starred;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +70,7 @@ public class Request_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        ib_filter = rootView.findViewById(R.id.ib_filter);
         progressBar = rootView.findViewById(R.id.progressBar);
         btn_post_requirement = rootView.findViewById(R.id.btn_post_requirement);
         rv_requirementlist = rootView.findViewById(R.id.rv_requirementlist);
@@ -104,6 +103,117 @@ public class Request_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
+        ib_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                View promptView = layoutInflater.inflate(R.layout.dialog_layout_filter, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertDialogBuilder.setTitle("Filter");
+                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.setView(promptView);
+
+                final CheckBox cb_business = promptView.findViewById(R.id.cb_business);
+                final CheckBox cb_employment = promptView.findViewById(R.id.cb_employment);
+                final CheckBox cb_others = promptView.findViewById(R.id.cb_others);
+                final CheckBox cb_postedbyme = promptView.findViewById(R.id.cb_postedbyme);
+                final CheckBox cb_staredbyme = promptView.findViewById(R.id.cb_staredbyme);
+
+                if (business)
+                    cb_business.setChecked(true);
+
+                if (employment)
+                    cb_employment.setChecked(true);
+
+                if (others)
+                    cb_others.setChecked(true);
+
+                if (posted)
+                    cb_postedbyme.setChecked(true);
+
+                if (starred)
+                    cb_staredbyme.setChecked(true);
+
+
+                alertDialogBuilder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ArrayList<RequirementsListModel> filteredRequirementsList = new ArrayList<>();
+
+                        if (cb_business.isChecked()) {
+                            business = true;
+                            for (RequirementsListModel requirements : requirementsList)
+                                if (requirements.getCategory_type_id().equals("1"))
+                                    filteredRequirementsList.add(requirements);
+                        } else {
+                            business = false;
+                        }
+
+                        if (cb_employment.isChecked()) {
+                            employment = true;
+                            for (RequirementsListModel requirements : requirementsList)
+                                if (requirements.getCategory_type_id().equals("2") || requirements.getCategory_type_id().equals("3"))
+                                    filteredRequirementsList.add(requirements);
+                        } else {
+                            employment = false;
+                        }
+
+                        if (cb_others.isChecked()) {
+                            others = true;
+                            for (RequirementsListModel requirements : requirementsList)
+                                if (requirements.getCategory_type_id().equals("4"))
+                                    filteredRequirementsList.add(requirements);
+                        } else {
+                            others = false;
+                        }
+
+                        if (cb_postedbyme.isChecked()) {
+                            posted = true;
+                            if (filteredRequirementsList.size() != 0) {
+                                for (int i = 0; i < filteredRequirementsList.size(); i++)
+                                    if (!filteredRequirementsList.get(i).getCreated_by().equals(userId))
+                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
+                            } else {
+                                for (int i = 0; i < requirementsList.size(); i++)
+                                    if (requirementsList.get(i).getCreated_by().equals(userId))
+                                        filteredRequirementsList.add(requirementsList.get(i));
+                            }
+                        } else {
+                            posted = false;
+                        }
+
+                        if (cb_staredbyme.isChecked()) {
+                            starred = true;
+                            if (filteredRequirementsList.size() != 0) {
+                                for (int i = 0; i < filteredRequirementsList.size(); i++)
+                                    if (!(filteredRequirementsList.get(i).getCreated_by().equals(userId) && filteredRequirementsList.get(i).getIsStarred().equals("1")))
+                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
+                            } else {
+                                for (int i = 0; i < requirementsList.size(); i++)
+                                    if ((requirementsList.get(i).getCreated_by().equals(userId) && requirementsList.get(i).getIsStarred().equals("1")))
+                                        filteredRequirementsList.add(requirementsList.get(i));
+                            }
+                        } else {
+                            starred = false;
+                        }
+
+                        rv_requirementlist.setAdapter(new RequirementAdapter(context, filteredRequirementsList));
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+
+                final AlertDialog alertD = alertDialogBuilder.create();
+                alertD.show();
+            }
+        });
+
         btn_post_requirement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,22 +269,6 @@ public class Request_Fragment extends Fragment {
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menus_requirement, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_filter:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 }

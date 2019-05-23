@@ -36,6 +36,7 @@ import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.AutoCompleteLocation;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -137,8 +138,14 @@ public class SelectLocation_Activity extends AppCompatActivity
         btn_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(RESULT_OK, new Intent().putExtra("locationname", tv_locality.getText().toString()));
-                finish();
+                if (tv_city.getText().toString().trim().equals("")){
+                    return;
+                }
+
+                UserSessionManager session = new UserSessionManager(context);
+                session.setLocation(tv_city.getText().toString());
+                finishAffinity();
+                startActivity(new Intent(context, MainDrawer_Activity.class));
             }
         });
     }

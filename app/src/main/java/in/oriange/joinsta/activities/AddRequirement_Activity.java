@@ -96,7 +96,7 @@ public class AddRequirement_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mainCategoryList.size() == 0) {
                     if (Utilities.isNetworkAvailable(context)) {
-                        new GetMainCategotyList().execute("0", "0", "1");
+                        new GetMainCategotyList().execute();
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
@@ -298,7 +298,6 @@ public class AddRequirement_Activity extends AppCompatActivity {
             }
         }
     }
-
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

@@ -86,18 +86,16 @@ public class Search_Fragment extends Fragment {
         edt_type.setText("Business");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetSearchList().execute("latur");
+            new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
         }
 
     }
 
     private void getSessionDetails() {
-
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
-
             userId = json.getString("userid");
 
         } catch (Exception e) {

@@ -18,8 +18,12 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
+import org.json.JSONObject;
+
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
+import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class MainDrawer_Activity extends AppCompatActivity {
@@ -38,19 +42,6 @@ public class MainDrawer_Activity extends AppCompatActivity {
         context = MainDrawer_Activity.this;
 
         if (!Utilities.isNetworkAvailable(context)) {
-//            SweetAlertDialog alertDialog = new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE);
-//            alertDialog.setCancelable(false);
-//            alertDialog.setTitleText("Oops...");
-//            alertDialog.setContentText("Please check your internet connection");
-//            alertDialog.setConfirmButton("Retry", new SweetAlertDialog.OnSweetClickListener() {
-//                @Override
-//                public void onClick(SweetAlertDialog sweetAlertDialog) {
-//                    startActivity(new Intent(context, MainDrawer_Activity.class));
-//                    finish();
-//                }
-//            });
-//            alertDialog.show();
-
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.dialog_layout_error, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
