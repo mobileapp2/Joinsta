@@ -60,7 +60,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private TagContainerLayout tag_container;
 
     private SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails;
-    private String userId;
+    private String userId, isFav;
     private int position;
 
 
@@ -81,6 +81,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context);
 
+        ll_nopreview = findViewById(R.id.ll_nopreview);
         ll_direction = findViewById(R.id.ll_direction);
         ll_mobile = findViewById(R.id.ll_mobile);
         ll_landline = findViewById(R.id.ll_landline);
@@ -182,7 +183,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         cb_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String isFav = searchDetails.getIsFavourite();
+                isFav = searchDetails.getIsFavourite();
 
                 if (cb_like.isChecked())
                     isFav = "1";
@@ -355,7 +356,8 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        Search_Fragment.professionalList.get(position).setIsFavourite("1");
+                        position = Search_Fragment.professionalList.indexOf(searchDetails);
+                        Search_Fragment.professionalList.get(position).setIsFavourite(isFav);
                     } else {
                         cb_like.setChecked(false);
                     }

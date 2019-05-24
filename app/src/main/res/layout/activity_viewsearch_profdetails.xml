@@ -76,7 +76,7 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             <CheckBox
-                android:id="@+id/likeIcon"
+                android:id="@+id/cb_like"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="end"

@@ -1,11 +1,15 @@
 package in.oriange.joinsta.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +37,9 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.SearchAdapterBusiness;
 import in.oriange.joinsta.adapters.SearchAdapterEmployee;
 import in.oriange.joinsta.adapters.SearchAdapterProfessional;
+import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.pojos.MainCategoryListPojo;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -44,15 +50,19 @@ public class Search_Fragment extends Fragment {
     private Context context;
     private UserSessionManager session;
     private RecyclerView rv_searchlist;
+    private EditText edt_search;
     private AppCompatEditText edt_type;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
-    private String categoryTypeId;
-
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
     public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
-    private String userId;
+
+    private String userId, categoryTypeId;
+    private ProgressDialog pd;
+    private ArrayList<MainCategoryListModel> mainCategoryList;
+    private ArrayList<PowerMenuItem> powerMenuItems;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -67,18 +77,23 @@ public class Search_Fragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
+        pd = new ProgressDialog(context);
         Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         progressBar = rootView.findViewById(R.id.progressBar);
         edt_type = rootView.findViewById(R.id.edt_type);
+        edt_search = rootView.findViewById(R.id.edt_search);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
         businessList = new ArrayList<>();
         professionalList = new ArrayList<>();
         employeeList = new ArrayList<>();
+
+        mainCategoryList = new ArrayList<>();
+        powerMenuItems = new ArrayList<>();
     }
 
     private void setDefault() {
@@ -158,27 +173,151 @@ public class Search_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
-
         edt_type.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                new BottomSheetMenu_Fragment().show(getFragmentManager(), TAG);
+                if (powerMenuItems.size() == 0)
+                    if (Utilities.isNetworkAvailable(context))
+                        new GetMainCategotyList().execute();
+                    else
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                else
+                    showCategoryMenus(powerMenuItems);
+            }
+        });
 
-                iconMenu = new PowerMenu.Builder(context)
-                        .addItem(new PowerMenuItem("Business", R.drawable.icon_trader1))
-                        .addItem(new PowerMenuItem("Profession", R.drawable.icon_profession))
-                        .addItem(new PowerMenuItem("Empolyee", R.drawable.icon_employee))
-                        .setOnMenuItemClickListener(onIconMenuItemClickListener)
-                        .setAnimation(MenuAnimation.FADE)
-                        .setMenuEffect(MenuEffect.BODY)
-                        .setMenuRadius(10f)
-                        .setMenuShadow(10f)
-                        .build();
-                iconMenu.showAsDropDown(v);
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchDetails(categoryTypeId, s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
+    }
+
+    private void searchDetails(String categoryTypeId, String query) {
+        switch (categoryTypeId) {
+            case "1":
+                if (!query.equals("")) {
+                    ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessSearchedList = new ArrayList<>();
+                    for (SearchDetailsModel.ResultBean.BusinessesBean businessDetails : businessList) {
+                        String businessToBeSearched = businessDetails.getBusiness_name().toLowerCase() +
+                                businessDetails.getCity().toLowerCase();
+                        if (businessToBeSearched.contains(query.toLowerCase())) {
+                            businessSearchedList.add(businessDetails);
+                        }
+                    }
+                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessSearchedList));
+                } else {
+                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList));
+                }
+                break;
+            case "2":
+                if (!query.equals("")) {
+                    ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalSearchedList = new ArrayList<>();
+                    for (SearchDetailsModel.ResultBean.ProfessionalsBean professionalDetails : professionalList) {
+                        String professionalToBeSearched = professionalDetails.getFirm_name().toLowerCase() +
+                                professionalDetails.getCity().toLowerCase();
+                        if (professionalToBeSearched.contains(query.toLowerCase())) {
+                            professionalSearchedList.add(professionalDetails);
+                        }
+                    }
+                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalSearchedList));
+                } else {
+                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList));
+                }
+                break;
+            case "3":
+                if (!query.equals("")) {
+                    ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeSearchedList = new ArrayList<>();
+                    for (SearchDetailsModel.ResultBean.EmployeesBean employeeDetails : employeeList) {
+                        String employeeToBeSearched = employeeDetails.getDesignation().toLowerCase() +
+                                employeeDetails.getCity().toLowerCase();
+                        if (employeeToBeSearched.contains(query.toLowerCase())) {
+                            employeeSearchedList.add(employeeDetails);
+                        }
+                    }
+                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeSearchedList));
+                } else {
+                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList));
+                }
+
+                break;
+        }
+    }
+
+    private class GetMainCategotyList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getcategorytypes");
+            res = APICall.JSONAPICall(ApplicationConstants.CATEGORYTYPEAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    mainCategoryList = new ArrayList<>();
+                    MainCategoryListPojo pojoDetails = new Gson().fromJson(result, MainCategoryListPojo.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        mainCategoryList = pojoDetails.getResult();
+                        if (mainCategoryList.size() > 0) {
+
+                            for (int i = 0; i < mainCategoryList.size(); i++) {
+                                powerMenuItems.add(new PowerMenuItem(mainCategoryList.get(i).getType_description()));
+                            }
+                            showCategoryMenus(powerMenuItems);
+
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
+    }
+
+    private void showCategoryMenus(ArrayList<PowerMenuItem> powerMenuItems) {
+        iconMenu = new PowerMenu.Builder(context)
+                .addItemList(powerMenuItems)
+                .setOnMenuItemClickListener(onIconMenuItemClickListener)
+                .setAnimation(MenuAnimation.FADE)
+                .setMenuEffect(MenuEffect.BODY)
+                .setMenuRadius(10f)
+                .setMenuShadow(10f)
+                .build();
+        iconMenu.showAsDropDown(edt_type);
     }
 
     private void setDataToRecyclerView(String categoryTypeId) {
@@ -189,13 +328,13 @@ public class Search_Fragment extends Fragment {
                 }
                 break;
             case "2":
-                if (professionalList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList));
+                if (employeeList.size() > 0) {
+                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList));
                 }
                 break;
             case "3":
-                if (employeeList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList));
+                if (professionalList.size() > 0) {
+                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList));
                 }
                 break;
         }
@@ -205,10 +344,9 @@ public class Search_Fragment extends Fragment {
         @Override
         public void onItemClick(int position, PowerMenuItem item) {
             edt_type.setText(item.getTitle());
-            categoryTypeId = String.valueOf(position + 1);
+            categoryTypeId = mainCategoryList.get(position).getId();
             iconMenu.dismiss();
             setDataToRecyclerView(categoryTypeId);
-
         }
     };
 }

@@ -60,7 +60,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
     private CardView cv_tabs;
     private TagContainerLayout tag_container;
     private SearchDetailsModel.ResultBean.BusinessesBean searchDetails;
-    private String userId;
+    private String userId, isFav;
     private int position;
 
     @Override
@@ -109,7 +109,6 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
 
     private void setDefault() {
         searchDetails = (SearchDetailsModel.ResultBean.BusinessesBean) getIntent().getSerializableExtra("searchDetails");
-        position = getIntent().getIntExtra("position", 0);
 
         edt_name.setText(searchDetails.getBusiness_name());
         edt_nature.setText(searchDetails.getType_description());
@@ -184,7 +183,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
         cb_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String isFav = searchDetails.getIsFavourite();
+                isFav = searchDetails.getIsFavourite();
 
                 if (cb_like.isChecked())
                     isFav = "1";
@@ -357,7 +356,8 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        Search_Fragment.businessList.get(position).setIsFavourite("1");
+                        position = Search_Fragment.businessList.indexOf(searchDetails);
+                        Search_Fragment.businessList.get(position).setIsFavourite(isFav);
                     } else {
                         cb_like.setChecked(false);
                     }

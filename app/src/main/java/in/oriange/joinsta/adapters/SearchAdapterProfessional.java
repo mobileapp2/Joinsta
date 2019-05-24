@@ -52,8 +52,7 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchProfDetails_Activity.class)
-                        .putExtra("searchDetails", searchDetails)
-                        .putExtra("position", position));
+                        .putExtra("searchDetails", searchDetails));
             }
         });
 

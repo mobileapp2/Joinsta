@@ -1193,6 +1193,15 @@ public class SearchDetailsModel implements Serializable {
                     this.tag_name = tag_name;
                 }
             }
+
+            @Override
+            public boolean equals(Object anotherObject) {
+                if (!(anotherObject instanceof BusinessesBean)) {
+                    return false;
+                }
+                BusinessesBean p = (BusinessesBean) anotherObject;
+                return (this.id.equals(p.id));
+            }
         }
     }
 }

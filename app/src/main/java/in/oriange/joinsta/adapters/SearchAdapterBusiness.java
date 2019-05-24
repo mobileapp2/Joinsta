@@ -52,8 +52,7 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchBizDetails_Activity.class)
-                        .putExtra("searchDetails", searchDetails)
-                        .putExtra("position", position));
+                        .putExtra("searchDetails", searchDetails));
             }
         });
 

@@ -52,8 +52,7 @@ public class SearchAdapterEmployee extends RecyclerView.Adapter<SearchAdapterEmp
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchEmpDetails_Activity.class)
-                        .putExtra("searchDetails", searchDetails)
-                        .putExtra("position", position));
+                        .putExtra("searchDetails", searchDetails));
             }
         });
 

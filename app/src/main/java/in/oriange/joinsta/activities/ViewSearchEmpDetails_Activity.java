@@ -14,12 +14,14 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -34,6 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import co.lujun.androidtagview.TagContainerLayout;
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
@@ -50,7 +53,8 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private ImageView imv_image;
+    private RelativeLayout rl_profilepic;
+    private CircleImageView imv_user;
     private ProgressBar progressBar;
     private CheckBox cb_like;
     private LinearLayout ll_direction, ll_mobile, ll_landline, ll_email;
@@ -60,7 +64,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private TagContainerLayout tag_container;
 
     private SearchDetailsModel.ResultBean.EmployeesBean searchDetails;
-    private String userId;
+    private String userId, isFav;
     private int position;
 
 
@@ -81,13 +85,14 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context);
 
+        rl_profilepic = findViewById(R.id.rl_profilepic);
         ll_direction = findViewById(R.id.ll_direction);
         ll_mobile = findViewById(R.id.ll_mobile);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
 
         cb_like = findViewById(R.id.cb_like);
-        imv_image = findViewById(R.id.imv_image);
+        imv_user = findViewById(R.id.imv_user);
         progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
 
@@ -141,21 +146,22 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
                     .load(searchDetails.getImage_url().trim())
-                    .into(imv_image, new Callback() {
+                    .placeholder(R.drawable.icon_userphoto)
+                    .into(imv_user, new Callback() {
                         @Override
                         public void onSuccess() {
-                            imv_image.setVisibility(View.VISIBLE);
+                            rl_profilepic.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
-                            imv_image.setVisibility(View.VISIBLE);
+                            rl_profilepic.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
                         }
                     });
         } else {
-            imv_image.setVisibility(View.VISIBLE);
+            rl_profilepic.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
     }
@@ -178,7 +184,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         cb_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String isFav = searchDetails.getIsFavourite();
+                isFav = searchDetails.getIsFavourite();
 
                 if (cb_like.isChecked())
                     isFav = "1";
@@ -352,7 +358,8 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        Search_Fragment.employeeList.get(position).setIsFavourite("1");
+                        position = Search_Fragment.employeeList.indexOf(searchDetails);
+                        Search_Fragment.employeeList.get(position).setIsFavourite(isFav);
                     } else {
                         cb_like.setChecked(false);
                     }
