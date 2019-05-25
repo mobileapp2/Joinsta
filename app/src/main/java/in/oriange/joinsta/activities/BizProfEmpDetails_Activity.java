@@ -122,6 +122,14 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
         AddProfessional_Fragment.removeLandlineLayout(v);
     }
 
+    public void removeMobileLayoutEmp(View v) {
+        AddEmployee_Fragment.removeMobileLayout(v);
+    }
+
+    public void removeLandlineLayoutEmp(View v) {
+        AddEmployee_Fragment.removeLandlineLayout(v);
+    }
+
     public void selectContryCode(View v) {
         AddBusiness_Fragment.selectContryCode(v);
     }
