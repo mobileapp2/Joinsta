@@ -56,7 +56,8 @@ public class SearchAdapterEmployee extends RecyclerView.Adapter<SearchAdapterEmp
             }
         });
 
-
+        float scale = context.getResources().getDisplayMetrics().density;
+        final int dpAsPixels = (int) (5 * scale + 0.5f);
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
                     .load(searchDetails.getImage_url().trim())
@@ -71,14 +72,17 @@ public class SearchAdapterEmployee extends RecyclerView.Adapter<SearchAdapterEmp
                         public void onError() {
                             holder.progressBar.setVisibility(View.GONE);
                             holder.imv_preview.setVisibility(View.VISIBLE);
+                            holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
                             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
                         }
                     });
         } else {
             holder.progressBar.setVisibility(View.GONE);
             holder.imv_preview.setVisibility(View.VISIBLE);
+            holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
+
 
 
     }

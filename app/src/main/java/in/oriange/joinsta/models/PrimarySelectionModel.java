@@ -4,10 +4,12 @@ public class PrimarySelectionModel {
 
     private String details;
     private String isPrimary;
+    private String id;
 
-    public PrimarySelectionModel(String details, String isPrimary) {
+    public PrimarySelectionModel(String details, String isPrimary, String id) {
         this.details = details;
         this.isPrimary = isPrimary;
+        this.id = id;
     }
 
     public String getDetails() {
@@ -24,5 +26,13 @@ public class PrimarySelectionModel {
 
     public void setIsPrimary(String isPrimary) {
         this.isPrimary = isPrimary;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

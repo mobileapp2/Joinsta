@@ -47,6 +47,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -90,6 +91,8 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
     private String userId, password, bloodGroupId, educationId, genderId, imageUrl, isActive, referralCode;
     private JsonArray mobileJSONArray, landlineJSONArray, emailJSONArray;
+
+    private JSONArray mobileJsonArray, landlinesonArray, emailJsonArray;
 
     private ArrayList<PrimaryPublicMobileSelectionModel> mobileList;
     private ArrayList<PrimarySelectionModel> landlineList, emailList;
@@ -170,6 +173,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+
     }
 
     private void getSessionData() {
@@ -209,9 +213,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
 
 
-            JSONArray mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
-            JSONArray landlinesonArray = new JSONArray(json.getString("landline_numbers"));
-            JSONArray emailJsonArray = new JSONArray(json.getString("email"));
+            mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
+            landlinesonArray = new JSONArray(json.getString("landline_numbers"));
+            emailJsonArray = new JSONArray(json.getString("email"));
 
 
             if (mobileJsonArray.length() > 0) {
@@ -219,7 +223,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
                     if (i == (mobileJsonArray.length() - 1)) {
                         edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
-//                        mobileLayoutsList.add(ll_mobile);
                     } else {
                         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
@@ -246,7 +249,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     }
                 }
             }
-
 
             if (emailJsonArray.length() > 0) {
                 for (int i = 0; i < emailJsonArray.length(); i++) {
@@ -795,29 +797,49 @@ public class BasicInformation_Activity extends AppCompatActivity {
         }
 
 
-        for (int i = 0; i < mobileLayoutsList.size(); i++) {
-            if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
-                mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0"));
+        try {
+            for (int i = 0; i < mobileLayoutsList.size(); i++) {
+                if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
+                    if (i < mobileJsonArray.length() - 1) {
+                        mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(i).getString("user_moblie_id")));
+                    } else {
+                        mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", "0"));
+
+                    }
+                }
             }
-        }
 
-        mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0"));
+            mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
 
-        for (int i = 0; i < landlineLayoutsList.size(); i++) {
-            if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
-                landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0"));
+
+            for (int i = 0; i < landlineLayoutsList.size(); i++) {
+                if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
+                    if (i < landlinesonArray.length() - 1) {
+                        landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", landlinesonArray.getJSONObject(i).getString("user_landline_id")));
+                    } else {
+                        landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", "0"));
+                    }
+                }
             }
-        }
 
-        landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0"));
+            landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlinesonArray.getJSONObject(landlinesonArray.length() - 1).getString("user_landline_id")));
 
-        for (int i = 0; i < emailLayoutsList.size(); i++) {
-            if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
-                emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0"));
+            for (int i = 0; i < emailLayoutsList.size(); i++) {
+                if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
+                    if (i < emailJsonArray.length() - 1) {
+                        emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0", emailJsonArray.getJSONObject(i).getString("user_email_id")));
+                    } else {
+                        emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0", "0"));
+                    }
+                }
             }
-        }
 
-        emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0"));
+            emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         showPrimaryMobileDialog();
 
@@ -1206,11 +1228,11 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         Log.i("BASICINFOJSON", mainObj.toString());
 
-        if (Utilities.isNetworkAvailable(context)) {
-            new UpdateUser().execute(mainObj.toString());
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-        }
+//        if (Utilities.isNetworkAvailable(context)) {
+//            new UpdateUser().execute(mainObj.toString());
+//        } else {
+//            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//        }
 
     }
 
