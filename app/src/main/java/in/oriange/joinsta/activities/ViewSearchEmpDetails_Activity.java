@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -21,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -58,7 +56,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private ProgressBar progressBar;
     private CheckBox cb_like;
     private LinearLayout ll_direction, ll_mobile, ll_landline, ll_email;
-    private MaterialEditText edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
+    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_district, edt_state, edt_country;
     private CardView cv_tabs;
     private TagContainerLayout tag_container;
@@ -66,7 +64,6 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private SearchDetailsModel.ResultBean.EmployeesBean searchDetails;
     private String userId, isFav;
     private int position;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +93,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
 
+        edt_name = findViewById(R.id.edt_name);
         edt_nature = findViewById(R.id.edt_nature);
         edt_subtype = findViewById(R.id.edt_subtype);
         edt_designation = findViewById(R.id.edt_designation);
@@ -114,6 +112,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private void setDefault() {
         searchDetails = (SearchDetailsModel.ResultBean.EmployeesBean) getIntent().getSerializableExtra("searchDetails");
 
+        edt_name.setText(searchDetails.getOrganization_name());
         edt_nature.setText(searchDetails.getType_description());
         edt_subtype.setText(searchDetails.getSubtype_description());
         edt_designation.setText(searchDetails.getDesignation());

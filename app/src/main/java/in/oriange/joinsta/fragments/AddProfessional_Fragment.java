@@ -675,13 +675,12 @@ public class AddProfessional_Fragment extends Fragment {
             }
         }
 
-        if (!edt_mobile.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                edt_mobile.setError("Please enter valid mobile number");
-                edt_mobile.requestFocus();
-                return;
-            }
+        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+            edt_mobile.setError("Please enter valid mobile number");
+            edt_mobile.requestFocus();
+            return;
         }
+
 
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
             if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().isEmpty()) {
@@ -702,13 +701,12 @@ public class AddProfessional_Fragment extends Fragment {
             }
         }
 
-        if (!edt_email.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-                edt_email.setError("Please enter valid email");
-                edt_email.requestFocus();
-                return;
-            }
+        if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+            edt_email.setError("Please enter valid email");
+            edt_email.requestFocus();
+            return;
         }
+
 
         if (edt_select_area.getText().toString().trim().isEmpty()) {
             edt_select_area.setError("Please select area");

@@ -674,12 +674,10 @@ public class AddBusiness_Fragment extends Fragment {
             }
         }
 
-        if (!edt_mobile.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                edt_mobile.setError("Please enter valid mobile number");
-                edt_mobile.requestFocus();
-                return;
-            }
+        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+            edt_mobile.setError("Please enter valid mobile number");
+            edt_mobile.requestFocus();
+            return;
         }
 
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
@@ -701,17 +699,22 @@ public class AddBusiness_Fragment extends Fragment {
             }
         }
 
-        if (!edt_email.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-                edt_email.setError("Please enter valid email");
-                edt_email.requestFocus();
-                return;
-            }
+        if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+            edt_email.setError("Please enter valid email");
+            edt_email.requestFocus();
+            return;
         }
+
 
         if (edt_select_area.getText().toString().trim().isEmpty()) {
             edt_select_area.setError("Please select area");
             edt_select_area.requestFocus();
+            return;
+        }
+
+        if (edt_pincode.getText().toString().trim().length() != 6) {
+            edt_pincode.setError("Please enter pincode");
+            edt_pincode.requestFocus();
             return;
         }
 
@@ -747,7 +750,6 @@ public class AddBusiness_Fragment extends Fragment {
 
         JsonObject mainObj = new JsonObject();
 
-
         for (int i = 0; i < mobileList.size(); i++) {
             JsonObject mobileJSONObj = new JsonObject();
             mobileJSONObj.addProperty("mobile", mobileList.get(i));
@@ -759,6 +761,7 @@ public class AddBusiness_Fragment extends Fragment {
             landlineJSONObj.addProperty("landlinenumbers", landlineList.get(i));
             landlineJSONArray.add(landlineJSONObj);
         }
+
         for (int i = 0; i < tagList.size(); i++) {
             JsonObject landlineJSONObj = new JsonObject();
             landlineJSONObj.addProperty("tag_name", tagList.get(i));
