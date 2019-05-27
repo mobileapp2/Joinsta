@@ -2,9 +2,11 @@ package in.oriange.joinsta.adapters;
 
 import android.content.Context;
 
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.ViewRequirements_Activity;
 import in.oriange.joinsta.models.RequirementsListModel;
 
 public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.MyViewHolder> {
@@ -76,6 +79,14 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
             }
         });
 
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, ViewRequirements_Activity.class)
+                        .putExtra("reqDetails", reqDetails));
+            }
+        });
+
     }
 
     @Override
@@ -86,10 +97,12 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imv_more;
+        private CardView cv_mainlayout;
         private TextView tv_name, tv_title, tv_timelocation;
 
         public MyViewHolder(View view) {
             super(view);
+            cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             imv_more = view.findViewById(R.id.imv_more);
             tv_name = view.findViewById(R.id.tv_name);
             tv_title = view.findViewById(R.id.tv_title);
