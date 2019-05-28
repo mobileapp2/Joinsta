@@ -21,73 +21,88 @@
             app:contentInsetStartWithNavigation="0dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/toolbar_title"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginLeft="20dp"
                     android:text="Favourite"
                     android:textColor="@color/white" />
 
-                <co.ceryle.segmentedbutton.SegmentedButtonGroup
-                    android:id="@+id/segmentedButtonGroup"
-                    android:layout_width="match_parent"
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edt_type"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/bg_outline_segmenttabs"
-                    app:sbg_animateSelector="bounce"
-                    app:sbg_animateSelectorDuration="500"
-                    app:sbg_backgroundColor="@color/colorPrimary"
-                    app:sbg_dividerColor="@color/white"
-                    app:sbg_dividerSize="0.5dp"
-                    app:sbg_position="0"
-                    app:sbg_ripple="true"
-                    app:sbg_rippleColor="@color/white"
-                    app:sbg_selectorColor="@color/white"
-                    app:sbg_selectorTextColor="@color/colorPrimary"
-                    app:sbg_shadowMargin="0.5dp">
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:drawableRight="@drawable/icon_dropdown"
+                    android:focusable="false"
+                    android:inputType="textNoSuggestions"
+                    android:longClickable="false"
+                    android:text="Type"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white" />
+            </RelativeLayout>
 
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="10dp"
-                        android:text="Business"
-                        android:textAllCaps="false" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="10dp"
-                        android:text="Profession"
-                        android:textAllCaps="false" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="10dp"
-                        android:text="Employee"
-                        android:textAllCaps="false" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:minHeight="10dp"
-                        android:text="Student"
-                        android:textAllCaps="false" />
-
-                </co.ceryle.segmentedbutton.SegmentedButtonGroup>
-
-            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="2dp"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <EditText
+                android:id="@+id/edt_search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:background="@android:color/transparent"
+                android:hint="Search" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="0.1"
+                android:src="@drawable/icon_search"
+                android:tint="@color/mediumGray" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_searchlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/progressBar"
+        style="@style/SpinKitView.Circle"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:SpinKit_Color="@color/colorAccent" />
 
 </LinearLayout>

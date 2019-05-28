@@ -34,62 +34,112 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<de.hdodenhof.circleimageview.CircleImageView-->
+            <!--android:id="@+id/imv_user"-->
+            <!--android:layout_width="120dp"-->
+            <!--android:layout_height="120dp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_margin="15dp"-->
+            <!--android:elevation="15dp"-->
+            <!--android:src="@drawable/icon_userphoto" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/tv_reqby_name"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/imv_user"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:text="Priyesh Vilas Pawar"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textStyle="bold" />-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/imv_mobile"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/bg_ring"-->
+            <!--android:padding="10dp"-->
+            <!--android:src="@drawable/icon_color_call" />-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/imv_email"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@drawable/bg_ring"-->
+            <!--android:padding="10dp"-->
+            <!--android:src="@drawable/icon_color_email" />-->
+
+            <!--</RelativeLayout>-->
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imv_user"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="15dp"
-                    android:elevation="15dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:src="@drawable/icon_userphoto" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/imv_user"
-                    android:layout_alignRight="@id/imv_user"
-                    android:layout_marginTop="-25dp"
-                    android:layout_marginRight="20dp"
-                    android:elevation="15dp"
-                    android:src="@drawable/icon_camera" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_reqby_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/imv_user"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:text="Priyesh Vilas Pawar"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tv_reqby_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="Priyesh Vilas Pawar"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/bg_ring"
-                    android:padding="10dp"
-                    android:src="@drawable/icon_color_call" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:background="@drawable/bg_ring"
-                    android:padding="10dp"
-                    android:src="@drawable/icon_color_email" />
+                        <ImageView
+                            android:id="@+id/imv_mobile"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@drawable/bg_ring"
+                            android:padding="10dp"
+                            android:src="@drawable/icon_color_call" />
 
-            </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/imv_email"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:background="@drawable/bg_ring"
+                            android:padding="10dp"
+                            android:src="@drawable/icon_color_email" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -105,13 +155,13 @@
                     android:padding="5dp">
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_fname"
+                        android:id="@+id/edt_categoryname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        android:hint="First Name"
-                        android:inputType="textCapWords|textNoSuggestions"
+                        android:hint="Category"
+                        android:inputType="textNoSuggestions|textMultiLine"
                         android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
@@ -120,13 +170,13 @@
                         app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_mname"
+                        android:id="@+id/edt_reqmtitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        android:hint="Middle Name"
-                        android:inputType="textCapWords|textNoSuggestions"
+                        android:hint="Requirement Title"
+                        android:inputType="textNoSuggestions|textMultiLine"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -134,13 +184,13 @@
                         app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_lname"
+                        android:id="@+id/edt_reqmdesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        android:hint="Last Name"
-                        android:inputType="textCapWords|textNoSuggestions"
+                        android:hint="Requirement Description"
+                        android:inputType="textNoSuggestions|textMultiLine"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -148,27 +198,13 @@
                         app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_specify"
+                        android:id="@+id/edt_city"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        android:hint="Specification"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:longClickable="false"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_nativeplace"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:hint="Native Place"
-                        android:inputType="textCapWords|textNoSuggestions"
+                        android:hint="City"
+                        android:inputType="textNoSuggestions|textMultiLine"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
