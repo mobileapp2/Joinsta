@@ -3,6 +3,12 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+
+import androidx.cardview.widget.CardView;
+import androidx.lifecycle.Lifecycle;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -32,11 +38,13 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.ViewRequirements_Activity;
 import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.models.RequirementsListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -129,6 +137,14 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
             }
         });
 
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, ViewRequirements_Activity.class)
+                        .putExtra("reqDetails", reqDetails));
+            }
+        });
+
     }
 
     @Override
@@ -141,10 +157,12 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
         private ImageButton imv_more;
         private CircleImageView imv_user;
         private ProgressBar progressBar;
+        private CardView cv_mainlayout;
         private TextView tv_name, tv_title, tv_timelocation;
 
         public MyViewHolder(View view) {
             super(view);
+            cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             imv_more = view.findViewById(R.id.imv_more);
             imv_user = view.findViewById(R.id.imv_user);
             progressBar = view.findViewById(R.id.progressBar);

@@ -1,6 +1,8 @@
 package in.oriange.joinsta.models;
 
-public class RequirementsListModel {
+import java.io.Serializable;
+
+public class RequirementsListModel implements Serializable {
 
     private String fname;
 
