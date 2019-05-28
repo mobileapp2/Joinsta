@@ -1,9 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,8 +10,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
@@ -28,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.pojos.MainCategoryListPojo;
 import in.oriange.joinsta.utilities.APICall;
@@ -42,7 +42,7 @@ public class AddRequirement_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private MaterialEditText edt_category, edt_city, edt_title;
     private EditText edt_description;
-    private LinearLayout ll_submit;
+    private Button btn_save;
 
     private ArrayList<MainCategoryListModel> mainCategoryList;
     private String mainCategoryId;
@@ -69,7 +69,7 @@ public class AddRequirement_Activity extends AppCompatActivity {
         edt_city = findViewById(R.id.edt_city);
         edt_title = findViewById(R.id.edt_title);
         edt_description = findViewById(R.id.edt_description);
-        ll_submit = findViewById(R.id.ll_submit);
+        btn_save = findViewById(R.id.btn_save);
 
         mainCategoryList = new ArrayList<>();
     }
@@ -106,7 +106,7 @@ public class AddRequirement_Activity extends AppCompatActivity {
             }
         });
 
-        ll_submit.setOnClickListener(new View.OnClickListener() {
+        btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitData();
@@ -265,6 +265,8 @@ public class AddRequirement_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+
+                        new Request_Fragment.GetRequirementList().execute();
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);

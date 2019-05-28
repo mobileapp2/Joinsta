@@ -227,8 +227,10 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardUseCompatPadding="true">
 

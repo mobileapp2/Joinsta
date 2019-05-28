@@ -36,6 +36,8 @@ public class RequirementsListModel {
 
     private String category_type_id;
 
+    private String ImageURL;
+
     public String getFname() {
         return fname;
     }
@@ -172,4 +174,11 @@ public class RequirementsListModel {
         this.category_type_id = category_type_id;
     }
 
+    public String getImageURL() {
+        return ImageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        ImageURL = imageURL;
+    }
 }

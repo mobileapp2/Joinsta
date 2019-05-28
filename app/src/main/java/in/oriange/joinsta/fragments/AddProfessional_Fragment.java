@@ -245,7 +245,7 @@ public class AddProfessional_Fragment extends Fragment {
             public void onClick(View v) {
                 if (categotyList.size() == 0) {
                     if (Utilities.isNetworkAvailable(context)) {
-                        new GetCategotyList().execute("0", "0", "2");
+                        new GetCategotyList().execute("0", "0", "3");
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
@@ -260,13 +260,13 @@ public class AddProfessional_Fragment extends Fragment {
             public void onClick(View v) {
 
                 if (edt_nature.getText().toString().trim().isEmpty()) {
-                    edt_nature.setError("Please select the nature of business");
+                    edt_nature.setError("Please select the nature of profession");
                     edt_nature.requestFocus();
                     return;
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetSubCategotyList().execute(categoryId, "1", "2");
+                    new GetSubCategotyList().execute(categoryId, "1", "3");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -464,7 +464,7 @@ public class AddProfessional_Fragment extends Fragment {
 
     private void showCategoryListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Nature of Business");
+        builderSingle.setTitle("Select Nature of Profession");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -647,8 +647,14 @@ public class AddProfessional_Fragment extends Fragment {
         landlineJSONArray = new JsonArray();
         tagJSONArray = new JsonArray();
 
+        if (edt_firm.getText().toString().trim().isEmpty()) {
+            edt_firm.setError("Please enter the name of firm");
+            edt_firm.requestFocus();
+            return;
+        }
+
         if (edt_nature.getText().toString().trim().isEmpty()) {
-            edt_nature.setError("Please select the nature of business");
+            edt_nature.setError("Please select the nature of profession");
             edt_nature.requestFocus();
             return;
         }
@@ -659,11 +665,6 @@ public class AddProfessional_Fragment extends Fragment {
             return;
         }
 
-        if (edt_firm.getText().toString().trim().isEmpty()) {
-            edt_firm.setError("Please enter the name of firm");
-            edt_firm.requestFocus();
-            return;
-        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
@@ -755,7 +756,7 @@ public class AddProfessional_Fragment extends Fragment {
 
         for (int i = 0; i < landlineList.size(); i++) {
             JsonObject landlineJSONObj = new JsonObject();
-            landlineJSONObj.addProperty("landlinenumbers", landlineList.get(i));
+            landlineJSONObj.addProperty("landlinenumber", landlineList.get(i));
             landlineJSONArray.add(landlineJSONObj);
         }
         for (int i = 0; i < tagList.size(); i++) {
@@ -785,7 +786,7 @@ public class AddProfessional_Fragment extends Fragment {
         mainObj.addProperty("record_status_id", "0");
 //        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
 //        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
-//        mainObj.addProperty("cat_id", "1");
+        mainObj.addProperty("cat_id", "3");
         mainObj.addProperty("type_id", categoryId);
         mainObj.addProperty("sub_type_id", subCategoryId);
         mainObj.addProperty("created_by", userId);
@@ -1023,7 +1024,7 @@ public class AddProfessional_Fragment extends Fragment {
 
                         alertD.show();
                     } else {
-                        Utilities.showMessage("User details failed to update", context, 3);
+                        Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
                 }

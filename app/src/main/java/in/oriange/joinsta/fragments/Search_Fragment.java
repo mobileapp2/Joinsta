@@ -240,7 +240,7 @@ public class Search_Fragment extends Fragment {
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.EmployeesBean employeeDetails : employeeList) {
-                        String employeeToBeSearched = employeeDetails.getDesignation().toLowerCase() +
+                        String employeeToBeSearched = employeeDetails.getOrganization_name().toLowerCase() +
                                 employeeDetails.getCity().toLowerCase();
                         if (employeeToBeSearched.contains(query.toLowerCase())) {
                             employeeSearchedList.add(employeeDetails);

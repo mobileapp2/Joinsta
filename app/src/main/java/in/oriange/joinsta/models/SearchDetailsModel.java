@@ -461,6 +461,16 @@ public class SearchDetailsModel implements Serializable {
                     this.tag_name = tag_name;
                 }
             }
+
+            @Override
+            public boolean equals(Object anotherObject) {
+                if (!(anotherObject instanceof EmployeesBean)) {
+                    return false;
+                }
+                EmployeesBean p = (EmployeesBean) anotherObject;
+                return (this.id.equals(p.id));
+            }
+
         }
 
         public static class ProfessionalsBean implements Serializable {
@@ -841,6 +851,16 @@ public class SearchDetailsModel implements Serializable {
                     this.tag_name = tag_name;
                 }
             }
+
+            @Override
+            public boolean equals(Object anotherObject) {
+                if (!(anotherObject instanceof ProfessionalsBean)) {
+                    return false;
+                }
+                ProfessionalsBean p = (ProfessionalsBean) anotherObject;
+                return (this.id.equals(p.id));
+            }
+
         }
 
         public static class BusinessesBean implements Serializable {

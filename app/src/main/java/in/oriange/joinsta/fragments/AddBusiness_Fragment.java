@@ -769,8 +769,8 @@ public class AddBusiness_Fragment extends Fragment {
         }
 
         mainObj.addProperty("type", "createbusiness");
-        mainObj.addProperty("business_name", edt_name.getText().toString().trim());
         mainObj.addProperty("address", edt_address.getText().toString().trim());
+        mainObj.addProperty("business_name", edt_name.getText().toString().trim());
         mainObj.addProperty("district", edt_district.getText().toString().trim());
         mainObj.addProperty("state", edt_state.getText().toString().trim());
         mainObj.addProperty("city", edt_city.getText().toString().trim());
@@ -782,15 +782,17 @@ public class AddBusiness_Fragment extends Fragment {
         mainObj.addProperty("locality", edt_city.getText().toString().trim());
         mainObj.addProperty("email", edt_email.getText().toString().trim());
         mainObj.addProperty("designation", edt_designation.getText().toString().trim());
-        mainObj.addProperty("record_statusid", "0");
+        mainObj.addProperty("record_statusid", "1");
         mainObj.addProperty("website", edt_website.getText().toString().trim());
         mainObj.addProperty("image_url", imageName);
-        mainObj.addProperty("busi_type_id", "0");
+        mainObj.addProperty("busi_type_id", "2");
 //        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
 //        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
 //        mainObj.addProperty("cat_id", "1");
         mainObj.addProperty("type_id", categoryId);
         mainObj.addProperty("sub_type_id", subCategoryId);
+        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
+        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
         mainObj.add("mobile_number", mobileJSONArray);
@@ -1030,7 +1032,7 @@ public class AddBusiness_Fragment extends Fragment {
 
                         alertD.show();
                     } else {
-                        Utilities.showMessage("User details failed to update", context, 3);
+                        Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
                 }

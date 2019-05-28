@@ -1183,6 +1183,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
+        mobileJSONArray = new JsonArray();
+        landlineJSONArray = new JsonArray();
+        emailJSONArray = new JsonArray();
 
         JsonObject mainObj = new JsonObject();
 
@@ -1191,6 +1194,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             mobileJSONObj.addProperty("mobile", mobileList.get(i).getDetails());
             mobileJSONObj.addProperty("is_primary", mobileList.get(i).getIsPrimary());
             mobileJSONObj.addProperty("is_public", mobileList.get(i).getIsPublic());
+            mobileJSONObj.addProperty("id", mobileList.get(i).getId());
             mobileJSONArray.add(mobileJSONObj);
         }
 
@@ -1198,6 +1202,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             JsonObject landlineJSONObj = new JsonObject();
             landlineJSONObj.addProperty("landline_number", landlineList.get(i).getDetails());
             landlineJSONObj.addProperty("is_primary", landlineList.get(i).getIsPrimary());
+            landlineJSONObj.addProperty("id", landlineList.get(i).getId());
             landlineJSONArray.add(landlineJSONObj);
         }
 
@@ -1205,6 +1210,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             JsonObject emailJSONObj = new JsonObject();
             emailJSONObj.addProperty("email_id", emailList.get(i).getDetails());
             emailJSONObj.addProperty("is_primary", emailList.get(i).getIsPrimary());
+            emailJSONObj.addProperty("id", emailList.get(i).getId());
             emailJSONArray.add(emailJSONObj);
         }
 
@@ -1227,12 +1233,11 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mainObj.addProperty("user_id", userId);
 
         Log.i("BASICINFOJSON", mainObj.toString());
-
-//        if (Utilities.isNetworkAvailable(context)) {
-//            new UpdateUser().execute(mainObj.toString());
-//        } else {
-//            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-//        }
+        if (Utilities.isNetworkAvailable(context)) {
+            new UpdateUser().execute(mainObj.toString());
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
 
     }
 
@@ -1264,29 +1269,39 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        LayoutInflater layoutInflater = LayoutInflater.from(context);
-                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                        alertDialogBuilder.setView(promptView);
 
-                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
-                        TextView tv_title = promptView.findViewById(R.id.tv_title);
-                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+                                session.createUserLoginSession(jsonarr.toString());
 
-                        animation_view.playAnimation();
-                        tv_title.setText("User details updated successfully");
-                        alertDialogBuilder.setCancelable(false);
-                        final AlertDialog alertD = alertDialogBuilder.create();
+                                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                                View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                                alertDialogBuilder.setView(promptView);
 
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertD.dismiss();
-                                finish();
+                                LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                                TextView tv_title = promptView.findViewById(R.id.tv_title);
+                                Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                                animation_view.playAnimation();
+                                tv_title.setText("User details updated successfully");
+                                alertDialogBuilder.setCancelable(false);
+                                final AlertDialog alertD = alertDialogBuilder.create();
+
+                                btn_ok.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        alertD.dismiss();
+                                        finish();
+                                    }
+                                });
+
+                                alertD.show();
                             }
-                        });
+                        }
 
-                        alertD.show();
+
                     } else {
                         Utilities.showMessage("User details failed to update", context, 3);
                     }

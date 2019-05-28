@@ -1,41 +1,30 @@
 package in.oriange.joinsta.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,7 +32,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -54,12 +42,6 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.utilities.AutoCompleteLocation;
 import in.oriange.joinsta.utilities.Utilities;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
-import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 
 public class PickMapLoaction_Activity extends FragmentActivity
@@ -275,10 +257,12 @@ public class PickMapLoaction_Activity extends FragmentActivity
         }
 
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(latLng));
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(10).build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        if (latLng != null) {
+            mMap.addMarker(new MarkerOptions().position(latLng));
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(latLng)
+                    .zoom(10).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 }

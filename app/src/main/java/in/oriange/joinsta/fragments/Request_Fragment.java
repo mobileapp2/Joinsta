@@ -5,21 +5,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
@@ -42,14 +41,14 @@ import in.oriange.joinsta.utilities.Utilities;
 
 public class Request_Fragment extends Fragment {
 
-    private Context context;
+    private static Context context;
     private UserSessionManager session;
-    private RecyclerView rv_requirementlist;
+    private static RecyclerView rv_requirementlist;
     private Button btn_post_requirement;
     private ImageButton ib_filter;
-    private SpinKitView progressBar;
-    private String userId;
-    private ArrayList<RequirementsListModel> requirementsList;
+    private static SpinKitView progressBar;
+    private static String userId;
+    private static ArrayList<RequirementsListModel> requirementsList;
 
     private boolean business, employment, others, posted, starred;
 
@@ -138,45 +137,76 @@ public class Request_Fragment extends Fragment {
                 alertDialogBuilder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         ArrayList<RequirementsListModel> filteredRequirementsList = new ArrayList<>();
+
 
                         if (cb_business.isChecked()) {
                             business = true;
-                            for (RequirementsListModel requirements : requirementsList)
-                                if (requirements.getCategory_type_id().equals("1"))
-                                    filteredRequirementsList.add(requirements);
+                            if (filteredRequirementsList.size() > 0) {
+                                for (int i = 0; i < filteredRequirementsList.size(); i++)
+                                    if (!filteredRequirementsList.get(i).getCategory_type_id().equals("1"))
+                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
+                            } else {
+                                for (int j = 0; j < requirementsList.size(); j++)
+                                    if (requirementsList.get(j).getCategory_type_id().equals("1"))
+                                        filteredRequirementsList.add(requirementsList.get(j));
+                            }
                         } else {
                             business = false;
                         }
 
                         if (cb_employment.isChecked()) {
                             employment = true;
-                            for (RequirementsListModel requirements : requirementsList)
-                                if (requirements.getCategory_type_id().equals("2") || requirements.getCategory_type_id().equals("3"))
-                                    filteredRequirementsList.add(requirements);
+                            if (filteredRequirementsList.size() > 0) {
+                                for (int i = 0; i < filteredRequirementsList.size(); i++)
+                                    if (!(filteredRequirementsList.get(i).getCategory_type_id().equals("2") || filteredRequirementsList.get(i).getCategory_type_id().equals("3")))
+                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
+                            } else {
+                                for (int j = 0; j < requirementsList.size(); j++) {
+                                    if (requirementsList.get(j).getCategory_type_id().equals("2") || requirementsList.get(j).getCategory_type_id().equals("3")) {
+                                        filteredRequirementsList.add(requirementsList.get(j));
+                                    }
+                                }
+                            }
+
                         } else {
                             employment = false;
                         }
 
                         if (cb_others.isChecked()) {
                             others = true;
-                            for (RequirementsListModel requirements : requirementsList)
-                                if (requirements.getCategory_type_id().equals("4"))
-                                    filteredRequirementsList.add(requirements);
+                            if (filteredRequirementsList.size() > 0) {
+                                for (int i = 0; i < filteredRequirementsList.size(); i++) {
+                                    if (!filteredRequirementsList.get(i).getCategory_type_id().equals("4")) {
+                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
+                                    }
+                                }
+                            } else {
+                                for (int j = 0; j < requirementsList.size(); j++) {
+                                    if (requirementsList.get(j).getCategory_type_id().equals("4")) {
+                                        filteredRequirementsList.add(requirementsList.get(j));
+                                    }
+                                }
+                            }
+
                         } else {
                             others = false;
                         }
 
                         if (cb_postedbyme.isChecked()) {
                             posted = true;
-                            if (filteredRequirementsList.size() != 0) {
+                            if (filteredRequirementsList.size() > 0) {
                                 for (int i = 0; i < filteredRequirementsList.size(); i++)
-                                    if (!filteredRequirementsList.get(i).getCreated_by().equals(userId))
+                                    if (!filteredRequirementsList.get(i).getCreated_by().equals(userId)) {
                                         filteredRequirementsList.remove(filteredRequirementsList.get(i));
+                                    }
                             } else {
-                                for (int i = 0; i < requirementsList.size(); i++)
-                                    if (requirementsList.get(i).getCreated_by().equals(userId))
+                                for (int i = 0; i < requirementsList.size(); i++) {
+                                    if (requirementsList.get(i).getCreated_by().equals(userId)) {
                                         filteredRequirementsList.add(requirementsList.get(i));
+                                    }
+                                }
                             }
                         } else {
                             posted = false;
@@ -184,7 +214,7 @@ public class Request_Fragment extends Fragment {
 
                         if (cb_staredbyme.isChecked()) {
                             starred = true;
-                            if (filteredRequirementsList.size() != 0) {
+                            if (filteredRequirementsList.size() > 0) {
                                 for (int i = 0; i < filteredRequirementsList.size(); i++)
                                     if (!(filteredRequirementsList.get(i).getCreated_by().equals(userId) && filteredRequirementsList.get(i).getIsStarred().equals("1")))
                                         filteredRequirementsList.remove(filteredRequirementsList.get(i));
@@ -196,6 +226,7 @@ public class Request_Fragment extends Fragment {
                         } else {
                             starred = false;
                         }
+
 
                         rv_requirementlist.setAdapter(new RequirementAdapter(context, filteredRequirementsList));
                     }
@@ -222,7 +253,7 @@ public class Request_Fragment extends Fragment {
         });
     }
 
-    private class GetRequirementList extends AsyncTask<String, Void, String> {
+    public static class GetRequirementList extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {

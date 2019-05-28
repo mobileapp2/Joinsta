@@ -162,7 +162,7 @@ public class AddEmployee_Fragment extends Fragment {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Business");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Employee");
         if (!profilPicFolder.exists())
             profilPicFolder.mkdirs();
 
@@ -243,7 +243,7 @@ public class AddEmployee_Fragment extends Fragment {
             public void onClick(View v) {
 
                 if (edt_nature.getText().toString().trim().isEmpty()) {
-                    edt_nature.setError("Please select the nature of business");
+                    edt_nature.setError("Please select the nature of employee");
                     edt_nature.requestFocus();
                     return;
                 }
@@ -446,7 +446,7 @@ public class AddEmployee_Fragment extends Fragment {
 
     private void showCategoryListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Nature of Business");
+        builderSingle.setTitle("Select Nature of Employee");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -636,7 +636,7 @@ public class AddEmployee_Fragment extends Fragment {
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
-            edt_nature.setError("Please select the nature of business");
+            edt_nature.setError("Please select the nature of employee");
             edt_nature.requestFocus();
             return;
         }
@@ -781,11 +781,11 @@ public class AddEmployee_Fragment extends Fragment {
         mainObj.add("landline_numbers", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
 
-        Log.i("ADDPROFESSIONAL", mainObj.toString());
+        Log.i("ADDEMPLOYEE", mainObj.toString());
 
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddProfessional().execute(mainObj.toString());
+            new AddEmployee().execute(mainObj.toString());
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -961,7 +961,7 @@ public class AddEmployee_Fragment extends Fragment {
         }
     }
 
-    private class AddProfessional extends AsyncTask<String, Void, String> {
+    private class AddEmployee extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1013,7 +1013,7 @@ public class AddEmployee_Fragment extends Fragment {
 
                         alertD.show();
                     } else {
-                        Utilities.showMessage("User details failed to update", context, 3);
+                        Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
                 }
