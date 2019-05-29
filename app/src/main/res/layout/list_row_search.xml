@@ -66,16 +66,6 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
-                <com.like.LikeButton
-                    android:id="@+id/imv_favourite"
-                    android:layout_width="0dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="end"
-                    android:layout_weight="0.1"
-                    android:clickable="false"
-                    android:visibility="gone"
-                    app:icon_type="heart"
-                    app:liked="true" />
             </LinearLayout>
 
             <TextView

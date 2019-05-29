@@ -37,7 +37,7 @@ public class Login_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private MaterialEditText edt_username, edt_password;
-    private Button btn_login;
+    private Button btn_login, btn_register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,7 @@ public class Login_Activity extends AppCompatActivity {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         btn_login = findViewById(R.id.btn_login);
+        btn_register = findViewById(R.id.btn_register);
         edt_username = findViewById(R.id.edt_username);
         edt_password = findViewById(R.id.edt_password);
     }
@@ -68,6 +69,12 @@ public class Login_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 submitData();
+            }
+        });
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, Register_Activity.class));
             }
         });
     }
