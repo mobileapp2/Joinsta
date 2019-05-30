@@ -16,8 +16,8 @@ public class ApplicationConstants {
     //LIVE API LINK
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
 
-
     public static final String LOGINAPI = API_LINK + "login.php";
+    public static final String OTPAPI = API_LINK + "sendotp.php";
     public static final String USERSAPI = API_LINK + "users.php";
     public static final String CATEGORYAPI = API_LINK + "category.php";
     public static final String CATEGORYTYPEAPI = API_LINK + "categorytypes.php";

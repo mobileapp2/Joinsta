@@ -9,6 +9,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -18,11 +24,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.APICall;
@@ -36,6 +37,8 @@ public class Login_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private LinearLayout ll_password, ll_otp, ll_loginwithpwd, ll_loginwithotp;
+    private View v_password, v_otp;
     private MaterialEditText edt_username, edt_password;
     private Button btn_login, btn_register;
 
@@ -58,6 +61,12 @@ public class Login_Activity extends AppCompatActivity {
         btn_register = findViewById(R.id.btn_register);
         edt_username = findViewById(R.id.edt_username);
         edt_password = findViewById(R.id.edt_password);
+        ll_password = findViewById(R.id.ll_password);
+        ll_otp = findViewById(R.id.ll_otp);
+        ll_loginwithpwd = findViewById(R.id.ll_loginwithpwd);
+        ll_loginwithotp = findViewById(R.id.ll_loginwithotp);
+        v_password = findViewById(R.id.v_password);
+        v_otp = findViewById(R.id.v_otp);
     }
 
     private void setDefault() {
@@ -65,12 +74,35 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private void setEventHandlers() {
+        ll_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v_password.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                v_otp.setBackgroundColor(getResources().getColor(R.color.white));
+                ll_loginwithpwd.setVisibility(View.VISIBLE);
+                ll_loginwithotp.setVisibility(View.GONE);
+            }
+        });
+
+        ll_otp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v_password.setBackgroundColor(getResources().getColor(R.color.white));
+                v_otp.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                ll_loginwithpwd.setVisibility(View.GONE);
+                ll_loginwithotp.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitData();
             }
         });
+
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

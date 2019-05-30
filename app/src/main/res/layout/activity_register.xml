@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:attribute="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
@@ -12,25 +11,37 @@
         android:layout_height="wrap_content">
 
         <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp">
-
-        <com.github.florent37.shapeofview.shapes.ArcView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@color/colorPrimary"
-            android:elevation="4dp"
-            app:shape_arc_height="40dp"
-            app:shape_arc_position="bottom">
+            android:layout_height="270dp"
+            app:cardElevation="0dp">
 
-            <LinearLayout
+            <com.github.florent37.shapeofview.shapes.ArcView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_gradient"/>
+                android:layout_height="250dp"
+                android:background="@color/colorPrimary"
+                android:elevation="4dp"
+                app:shape_arc_height="40dp"
+                app:shape_arc_position="bottom">
 
-        </com.github.florent37.shapeofview.shapes.ArcView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_gradient">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:gravity="center_horizontal"
+                        android:text="@string/welcome"
+                        android:textColor="@color/white"
+                        android:textSize="40sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+            </com.github.florent37.shapeofview.shapes.ArcView>
 
         </androidx.cardview.widget.CardView>
 
@@ -55,19 +66,20 @@
                     android:id="@+id/edt_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Username"
-                    android:inputType="textNoSuggestions"
+                    android:hint="Name"
+                    android:inputType="textNoSuggestions|textCapWords"
                     android:textSize="18sp"
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/mediumGray"
                     app:met_underlineColor="@color/mediumGray" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_username"
+                    android:id="@+id/edt_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Mobile"
-                    android:inputType="textNoSuggestions"
+                    android:inputType="number"
+                    android:maxLength="10"
                     android:textSize="18sp"
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/mediumGray"
@@ -86,7 +98,7 @@
 
                 <Button
                     android:id="@+id/btn_register"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_gravity="end"
                     android:layout_marginTop="20dp"
@@ -99,7 +111,6 @@
                     android:text="REGISTER"
                     android:textColor="@color/colorAccent"
                     android:textSize="16sp" />
-
 
             </LinearLayout>
 
