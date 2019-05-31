@@ -60,7 +60,7 @@
                             <View
                                 android:id="@+id/v_password"
                                 android:layout_width="match_parent"
-                                android:layout_height="5dp"
+                                android:layout_height="3dp"
                                 android:background="@color/colorPrimary" />
 
                         </LinearLayout>
@@ -86,7 +86,7 @@
                             <View
                                 android:id="@+id/v_otp"
                                 android:layout_width="match_parent"
-                                android:layout_height="5dp" />
+                                android:layout_height="3dp" />
 
                         </LinearLayout>
 

@@ -109,6 +109,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+        <activity
+            android:name=".activities.BizProfEmpDetailsList_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
     </application>
 
 </manifest>

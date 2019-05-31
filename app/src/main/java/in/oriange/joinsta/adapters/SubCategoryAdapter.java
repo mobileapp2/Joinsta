@@ -1,6 +1,7 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,21 @@ import android.widget.TextView;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.BizProfEmpDetailsList_Activity;
 import in.oriange.joinsta.models.SubCategotyListModel;
 
 public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.MyViewHolder> {
 
     private List<SubCategotyListModel> resultArrayList;
     private Context context;
+    private String categoryTypeId;
 
-    public SubCategoryAdapter(Context context, List<SubCategotyListModel> resultArrayList) {
+    public SubCategoryAdapter(Context context, List<SubCategotyListModel> resultArrayList, String categoryTypeId) {
         this.context = context;
         this.resultArrayList = resultArrayList;
-
+        this.categoryTypeId = categoryTypeId;
     }
 
     @Override
@@ -38,9 +42,13 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
 
         holder.tv_categoty.setText(subCategotyDetails.getName());
 
-//        if ((position + 1) == resultArrayList.size()) {
-//            holder.view_divider.setVisibility(View.GONE);
-//        }
+        holder.tv_categoty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, BizProfEmpDetailsList_Activity.class)
+                        .putExtra("categoryTypeId", categoryTypeId));
+            }
+        });
 
     }
 

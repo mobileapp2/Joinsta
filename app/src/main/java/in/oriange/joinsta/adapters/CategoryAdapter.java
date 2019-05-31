@@ -185,7 +185,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
                             rv_sub_catrgory1.setVisibility(View.VISIBLE);
                             tv_subcst_notavailable1.setVisibility(View.GONE);
                             rv_sub_catrgory1.setLayoutManager(new LinearLayoutManager(context));
-                            rv_sub_catrgory1.setAdapter(new SubCategoryAdapter(context, subCategoryList));
+                            rv_sub_catrgory1.setAdapter(new SubCategoryAdapter(context, subCategoryList, categoryTypeId));
                         }
                     } else {
                         rv_sub_catrgory1.setVisibility(View.GONE);
