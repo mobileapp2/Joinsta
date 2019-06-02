@@ -40,7 +40,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="10dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/icon_filter" />
+                    android:src="@drawable/icon_filter"
+                    android:visibility="gone" />
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>

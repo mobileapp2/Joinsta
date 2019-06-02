@@ -105,4 +105,31 @@
         android:visibility="gone"
         app:SpinKit_Color="@color/colorAccent" />
 
+    <LinearLayout
+        android:id="@+id/ll_nopreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:fitsSystemWindows="true"
+            android:src="@drawable/icon_nopreview" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Details are not availabile for this category"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+
 </LinearLayout>

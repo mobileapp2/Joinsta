@@ -41,7 +41,7 @@ public class SplashScreen_Activity extends Activity {
                 }
                 finish();
             }
-        }, secondsDelayed * 500);
+        }, secondsDelayed * 1000);
     }
 
 }

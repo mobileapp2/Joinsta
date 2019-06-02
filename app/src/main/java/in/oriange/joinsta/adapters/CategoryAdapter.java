@@ -10,8 +10,11 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
@@ -20,9 +23,6 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
@@ -63,6 +63,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         final CategotyListModel categotyDetails = resultArrayList.get(position);
 
         holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
+
+
         holder.tv_categoty.setText(categotyDetails.getName());
 
         holder.cv_main_row.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +80,81 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
                 setUpSubcategoryData(holder, categotyDetails);
             }
         });
+
+
+        switch (categoryTypeId) {
+            case "1":
+                switch (position) {
+                    case 0:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
+                        break;
+                    case 1:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_contractor1));
+                        break;
+                    case 2:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_manufacturer1));
+                        break;
+                    case 3:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_service1));
+                        break;
+                    case 4:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_showroon));
+                        break;
+                    case 5:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_trader1));
+                        break;
+                    case 6:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
+                        break;
+                    default:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        break;
+
+                }
+
+                break;
+            case "2":
+                switch (position) {
+                    case 0:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_government));
+                        break;
+                    case 1:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_private));
+                        break;
+                    case 2:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_corporate));
+                        break;
+                    default:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        break;
+
+                }
+
+                break;
+            case "3":
+                switch (position) {
+                    case 0:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_ca));
+                        break;
+                    case 1:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_advocate));
+                        break;
+                    case 2:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_architect));
+                        break;
+                    case 3:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_interiordesign));
+                        break;
+                    default:
+                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        break;
+
+                }
+
+                break;
+        }
+
+
     }
 
     private void setUpSubcategoryData(MyViewHolder holder, CategotyListModel categotyDetails) {

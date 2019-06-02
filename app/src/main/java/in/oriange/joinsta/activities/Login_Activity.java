@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.goodiebag.pinview.Pinview;
-import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
@@ -40,6 +41,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 
 public class Login_Activity extends AppCompatActivity {
 
@@ -139,6 +142,41 @@ public class Login_Activity extends AppCompatActivity {
                 startActivity(new Intent(context, Register_Activity.class));
             }
         });
+
+        edt_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (edt_mobile.getText().toString().trim().equals("")) {
+                    return;
+                }
+
+                if (edt_mobile.getText().toString().trim().length() == 10) {
+                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                        edt_mobile.setError("Please enter valid mobile number");
+                        edt_mobile.requestFocus();
+                        return;
+                    }
+
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void submitData() {
@@ -159,12 +197,43 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
-    private class LoginUser extends AsyncTask<String, Void, String> {
+    private void createDialogForOTP(final String otp) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_otp, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
+        pinview_opt.setPinLength(otp.length());
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        pinview_opt.setPinViewEventListener(new Pinview.PinViewEventListener() {
+            @Override
+            public void onDataEntered(Pinview pinview, boolean fromUser) {
+                if (pinview.getValue().length() == otp.length()) {
+                    if (pinview.getValue().equals(otp)) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            alertD.dismiss();
+                            new LoginUserWithOtp().execute(edt_mobile.getText().toString().trim());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    } else {
+                        Utilities.showMessage("OTP did not match", context, 3);
+                    }
+                }
+            }
+        });
+        alertD.show();
+    }
+
+    private class VerifyMobile extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();
@@ -173,28 +242,12 @@ public class Login_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-
-            OkHttpClient client = new OkHttpClient();
-
-            RequestBody formBody = new FormBody.Builder()
-                    .add("logintype", "loginwithpassword")
-                    .add("mobile", params[0])
-                    .add("password", params[1])
-                    .add("is_registered","1")
-                    .build();
-            Request request = new Request.Builder()
-                    .url(ApplicationConstants.LOGINAPI)
-                    .post(formBody)
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-                res = response.body().string();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("mobile", params[0]));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.LOGINAPI, param);
             return res.trim();
         }
+
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -206,29 +259,30 @@ public class Login_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        JSONArray jsonarr = mainObj.getJSONArray("result");
-                        if (jsonarr.length() > 0) {
-                            session.createUserLoginSession(jsonarr.toString());
-                            startActivity(new Intent(context, MainDrawer_Activity.class));
-                            if (session.isLocationSet())
-                                startActivity(new Intent(context, MainDrawer_Activity.class));
-                            else
-                                startActivity(new Intent(context, SelectLocation_Activity.class));
+                        JSONObject resultObj = mainObj.getJSONObject("result");
 
-                            finish();
+                        String is_registered = resultObj.getString("is_registered");
+
+                        if (is_registered.equals("-1")) {
+                            Utilities.showAlertDialog(context, "Mobile number is not registered", false);
+                            edt_mobile.setText("");
                         }
-                    } else {
-                        Utilities.showMessage("Username or password is invalid", context, 3);
+
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showAlertDialog(context, "Failed to verify. Please try again", false);
+                        edt_mobile.setText("");
                     }
 
                 }
             } catch (Exception e) {
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+                edt_mobile.setText("");
                 e.printStackTrace();
             }
         }
     }
 
-    public class SendOTP extends AsyncTask<String, Void, String> {
+    private class SendOTP extends AsyncTask<String, Void, String> {
 
 
         @Override
@@ -274,38 +328,6 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
-    private void createDialogForOTP(final String otp) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_otp, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setView(promptView);
-
-        Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
-        pinview_opt.setPinLength(otp.length());
-
-        alertDialogBuilder.setCancelable(false);
-        final AlertDialog alertD = alertDialogBuilder.create();
-
-        pinview_opt.setPinViewEventListener(new Pinview.PinViewEventListener() {
-            @Override
-            public void onDataEntered(Pinview pinview, boolean fromUser) {
-                if (pinview.getValue().length() == otp.length()) {
-                    if (pinview.getValue().equals(otp)) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            alertD.dismiss();
-                            new LoginUserWithOtp().execute(edt_mobile.getText().toString().trim());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-                    } else {
-                        Utilities.showMessage("OTP did not match", context, 3);
-                    }
-                }
-            }
-        });
-        alertD.show();
-    }
-
     private class LoginUserWithOtp extends AsyncTask<String, Void, String> {
 
         @Override
@@ -320,10 +342,25 @@ public class Login_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("logintype", "loginwithotp");
-            obj.addProperty("mobile", params[0]);
-            res = APICall.JSONAPICall(ApplicationConstants.LOGINAPI, obj.toString());
+
+            OkHttpClient client = new OkHttpClient();
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("logintype", "loginwithotp")
+                    .add("mobile", params[0])
+                    .add("is_registered", "1")
+                    .build();
+            Request request = new Request.Builder()
+                    .url(ApplicationConstants.LOGINAPI)
+                    .post(formBody)
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                res = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return res.trim();
         }
 
@@ -349,6 +386,76 @@ public class Login_Activity extends AppCompatActivity {
                                     startActivity(new Intent(context, SelectLocation_Activity.class));
                                 finish();
                             }
+                        }
+                    } else {
+                        Utilities.showMessage(message, context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class LoginUser extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+
+            OkHttpClient client = new OkHttpClient();
+
+            RequestBody formBody = new FormBody.Builder()
+                    .add("logintype", "loginwithpassword")
+                    .add("mobile", params[0])
+                    .add("password", params[1])
+                    .add("is_registered", "1")
+                    .build();
+            Request request = new Request.Builder()
+                    .url(ApplicationConstants.LOGINAPI)
+                    .post(formBody)
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                res = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            session.createUserLoginSession(jsonarr.toString());
+                            startActivity(new Intent(context, MainDrawer_Activity.class));
+                            if (session.isLocationSet())
+                                startActivity(new Intent(context, MainDrawer_Activity.class));
+                            else
+                                startActivity(new Intent(context, SelectLocation_Activity.class));
+
+                            finish();
                         }
                     } else {
                         Utilities.showMessage("Username or password is invalid", context, 3);
@@ -417,4 +524,11 @@ public class Login_Activity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(Login_Activity.this);
+    }
+
 }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +31,8 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+
 public class Register_Activity extends AppCompatActivity {
 
     private Context context;
@@ -45,7 +49,6 @@ public class Register_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        getSessionData();
         setEventHandler();
     }
 
@@ -64,11 +67,43 @@ public class Register_Activity extends AppCompatActivity {
 
     }
 
-    private void getSessionData() {
-
-    }
-
     private void setEventHandler() {
+        edt_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (edt_mobile.getText().toString().trim().equals("")) {
+                    return;
+                }
+
+                if (edt_mobile.getText().toString().trim().length() == 10) {
+                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                        edt_mobile.setError("Please enter valid mobile number");
+                        edt_mobile.requestFocus();
+                        return;
+                    }
+
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                }
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +214,59 @@ public class Register_Activity extends AppCompatActivity {
         alertD.show();
     }
 
+    private class VerifyMobile extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("mobile", params[0]));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.LOGINAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject resultObj = mainObj.getJSONObject("result");
+
+                        String is_registered = resultObj.getString("is_registered");
+
+                        if (is_registered.equals("1")) {
+                            Utilities.showAlertDialog(context, "Mobile number is already registered", false);
+                            edt_mobile.setText("");
+                        }
+
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showAlertDialog(context, "Failed to verify. Please try again", false);
+                        edt_mobile.setText("");
+                    }
+
+                }
+            } catch (Exception e) {
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+                edt_mobile.setText("");
+                e.printStackTrace();
+            }
+        }
+    }
+
     public class RegisterUser extends AsyncTask<String, Void, String> {
 
 
@@ -283,4 +371,9 @@ public class Register_Activity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(Register_Activity.this);
+    }
 }

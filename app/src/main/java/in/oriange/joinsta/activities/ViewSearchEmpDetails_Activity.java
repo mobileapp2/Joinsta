@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import co.lujun.androidtagview.TagContainerLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Favourite_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -62,8 +63,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private TagContainerLayout tag_container;
 
     private SearchDetailsModel.ResultBean.EmployeesBean searchDetails;
-    private String userId, isFav;
-    private int position;
+    private String userId, isFav, typeFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,8 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
 
     private void setDefault() {
         searchDetails = (SearchDetailsModel.ResultBean.EmployeesBean) getIntent().getSerializableExtra("searchDetails");
-
+        typeFrom = getIntent().getStringExtra("type");
+        
         edt_name.setText(searchDetails.getOrganization_name());
         edt_nature.setText(searchDetails.getType_description());
         edt_subtype.setText(searchDetails.getSubtype_description());
@@ -357,8 +358,21 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        position = Search_Fragment.employeeList.indexOf(searchDetails);
-                        Search_Fragment.employeeList.get(position).setIsFavourite(isFav);
+
+                        if (typeFrom.equals("1")) {               //  1 = from search
+                            int position = Search_Fragment.employeeList.indexOf(searchDetails);
+                            Search_Fragment.employeeList.get(position).setIsFavourite(isFav);
+                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                        } else if (typeFrom.equals("2")) {        // 2 = from favorite
+                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+
+                        } else if (typeFrom.equals("3")) {        // 3 = from home
+                            int position = BizProfEmpDetailsList_Activity.employeeList.indexOf(searchDetails);
+                            BizProfEmpDetailsList_Activity.employeeList.get(position).setIsFavourite(isFav);
+                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                        }
                     } else {
                         cb_like.setChecked(false);
                     }
@@ -371,12 +385,19 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-
+        Toolbar toolbar = findViewById(R.id.anim_toolbar);
+        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         collapsingToolbar.setTitle("");
     }

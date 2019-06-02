@@ -25,10 +25,12 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
 
     private List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList;
     private Context context;
+    private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
 
-    public SearchAdapterProfessional(Context context, List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList) {
+    public SearchAdapterProfessional(Context context, List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList, String type) {
         this.context = context;
         this.resultArrayList = resultArrayList;
+        this.type = type;
 
     }
 
@@ -52,10 +54,10 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchProfDetails_Activity.class)
-                        .putExtra("searchDetails", searchDetails));
+                        .putExtra("searchDetails", searchDetails)
+                        .putExtra("type", type));
             }
         });
-
 
         float scale = context.getResources().getDisplayMetrics().density;
         final int dpAsPixels = (int) (5 * scale + 0.5f);
@@ -83,7 +85,6 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
             holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
-
 
     }
 

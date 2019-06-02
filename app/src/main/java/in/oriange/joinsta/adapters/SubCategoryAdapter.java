@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.List;
-
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.BizProfEmpDetailsList_Activity;
@@ -46,7 +46,8 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, BizProfEmpDetailsList_Activity.class)
-                        .putExtra("categoryTypeId", categoryTypeId));
+                        .putExtra("categoryTypeId", categoryTypeId)
+                        .putExtra("subCategoryTypeId", subCategotyDetails.getId()));
             }
         });
 

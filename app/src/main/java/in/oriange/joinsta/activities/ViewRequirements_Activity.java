@@ -1,23 +1,40 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.models.RequirementsListModel;
+import in.oriange.joinsta.pojos.MainCategoryListPojo;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
+import in.oriange.joinsta.utilities.Utilities;
+
+import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
 public class ViewRequirements_Activity extends AppCompatActivity {
 
@@ -83,6 +100,12 @@ public class ViewRequirements_Activity extends AppCompatActivity {
         edt_reqmtitle.setText(reqDetails.getTitle());
         edt_reqmdesc.setText(reqDetails.getDescription());
         edt_city.setText(reqDetails.getCity());
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new GetMainCategotyList().execute();
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
     }
 
     private void getSessionData() {
@@ -93,16 +116,88 @@ public class ViewRequirements_Activity extends AppCompatActivity {
         imv_mobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    provideCallPremission(context);
+                    return;
+                }
 
+                if (reqDetails.getMobileNumber().trim().equals("")) {
+                    Utilities.showMessage("Mobile number not available", context, 2);
+                    return;
+                }
+
+                startActivity(new Intent(Intent.ACTION_CALL,
+                        Uri.parse("tel:" + reqDetails.getMobileNumber())));
             }
         });
 
         imv_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!reqDetails.getEmail().isEmpty()) {
+                    Intent email = new Intent(Intent.ACTION_SEND);
+                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{reqDetails.getEmail()});
+                    email.setType("message/rfc822");
+                    startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                } else {
+                    Utilities.showMessage("Email address not added", context, 2);
+                }
             }
         });
+    }
+
+    private class GetMainCategotyList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getcategorytypes");
+            res = APICall.JSONAPICall(ApplicationConstants.CATEGORYTYPEAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    ArrayList<MainCategoryListModel> mainCategoryList = new ArrayList<>();
+                    MainCategoryListPojo pojoDetails = new Gson().fromJson(result, MainCategoryListPojo.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        mainCategoryList = pojoDetails.getResult();
+                        if (mainCategoryList.size() > 0) {
+
+                            for (MainCategoryListModel catDetails : mainCategoryList) {
+                                if (catDetails.getId().equals(reqDetails.getCategory_type_id())) {
+                                    edt_categoryname.setText(catDetails.getType_description());
+                                }
+                            }
+
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
     }
 
     private void setUpToolbar() {

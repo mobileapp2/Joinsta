@@ -132,6 +132,8 @@ public class SearchDetailsModel implements Serializable {
             private String subtype_description;
             private String type_description;
             private String IsFavourite;
+            private String type_id;
+            private String sub_type_id;
             private ArrayList<ArrayList<MobilesBean>> mobiles;
             private ArrayList<ArrayList<LandlineBean>> landline;
             private ArrayList<ArrayList<TagBean>> tag;
@@ -360,6 +362,22 @@ public class SearchDetailsModel implements Serializable {
                 IsFavourite = isFavourite;
             }
 
+            public String getType_id() {
+                return type_id;
+            }
+
+            public void setType_id(String type_id) {
+                this.type_id = type_id;
+            }
+
+            public String getSub_type_id() {
+                return sub_type_id;
+            }
+
+            public void setSub_type_id(String sub_type_id) {
+                this.sub_type_id = sub_type_id;
+            }
+
             public ArrayList<ArrayList<MobilesBean>> getMobiles() {
                 return mobiles;
             }
@@ -530,6 +548,8 @@ public class SearchDetailsModel implements Serializable {
             private String IsFavourite;
             private String designation;
             private String state;
+            private String type_id;
+            private String sub_type_id;
             private ArrayList<ArrayList<MobilesBeanX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanX>> landline;
             private ArrayList<ArrayList<TagBeanX>> tag;
@@ -742,6 +762,22 @@ public class SearchDetailsModel implements Serializable {
                 this.state = state;
             }
 
+            public String getType_id() {
+                return type_id;
+            }
+
+            public void setType_id(String type_id) {
+                this.type_id = type_id;
+            }
+
+            public String getSub_type_id() {
+                return sub_type_id;
+            }
+
+            public void setSub_type_id(String sub_type_id) {
+                this.sub_type_id = sub_type_id;
+            }
+
             public ArrayList<ArrayList<MobilesBeanX>> getMobiles() {
                 return mobiles;
             }
@@ -916,6 +952,8 @@ public class SearchDetailsModel implements Serializable {
             private String type_description;
             private String image_url;
             private String IsFavourite;
+            private String type_id;
+            private String sub_type_id;
             private ArrayList<ArrayList<MobilesBeanXX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanXX>> landline;
             private ArrayList<ArrayList<TagBeanXX>> tag;
@@ -1102,6 +1140,22 @@ public class SearchDetailsModel implements Serializable {
 
             public void setImage_url(String image_url) {
                 this.image_url = image_url;
+            }
+
+            public String getType_id() {
+                return type_id;
+            }
+
+            public void setType_id(String type_id) {
+                this.type_id = type_id;
+            }
+
+            public String getSub_type_id() {
+                return sub_type_id;
+            }
+
+            public void setSub_type_id(String sub_type_id) {
+                this.sub_type_id = sub_type_id;
             }
 
             public ArrayList<ArrayList<MobilesBeanXX>> getMobiles() {

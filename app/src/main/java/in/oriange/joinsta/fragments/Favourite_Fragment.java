@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,18 +48,20 @@ import in.oriange.joinsta.utilities.Utilities;
 
 public class Favourite_Fragment extends Fragment {
 
-    private Context context;
+    private static Context context;
     private UserSessionManager session;
-    private RecyclerView rv_searchlist;
-    private EditText edt_search;
+    private static RecyclerView rv_searchlist;
+    private static LinearLayout ll_nopreview;
+    private static EditText edt_search;
     private AppCompatEditText edt_type;
-    private SpinKitView progressBar;
+    private static SpinKitView progressBar;
     private PowerMenu iconMenu;
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
     public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
 
-    private String userId, categoryTypeId;
+    private static String userId;
+    private static String categoryTypeId;
     private ProgressDialog pd;
     private ArrayList<MainCategoryListModel> mainCategoryList;
     private ArrayList<PowerMenuItem> powerMenuItems;
@@ -85,6 +88,7 @@ public class Favourite_Fragment extends Fragment {
         progressBar = rootView.findViewById(R.id.progressBar);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_search = rootView.findViewById(R.id.edt_search);
+        ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
@@ -118,7 +122,7 @@ public class Favourite_Fragment extends Fragment {
         }
     }
 
-    private class GetSearchList extends AsyncTask<String, Void, String> {
+    public static class GetSearchList extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -141,6 +145,7 @@ public class Favourite_Fragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
             rv_searchlist.setVisibility(View.VISIBLE);
             String type = "", message = "";
@@ -158,24 +163,24 @@ public class Favourite_Fragment extends Fragment {
                         employeeList = pojoDetails.getResult().getEmployees();
 
                         ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
-                        for(SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList){
-                            if(bizdetails.getIsFavourite().equals("0")){
+                        for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
+                            if (bizdetails.getIsFavourite().equals("0")) {
                                 foundbiz.add(bizdetails);
                             }
                         }
                         businessList.removeAll(foundbiz);
 
                         ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> foundProf = new ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean>();
-                        for(SearchDetailsModel.ResultBean.ProfessionalsBean profdetails : professionalList){
-                            if(profdetails.getIsFavourite().equals("0")){
+                        for (SearchDetailsModel.ResultBean.ProfessionalsBean profdetails : professionalList) {
+                            if (profdetails.getIsFavourite().equals("0")) {
                                 foundProf.add(profdetails);
                             }
                         }
                         professionalList.removeAll(foundProf);
 
                         ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> foundEmp = new ArrayList<SearchDetailsModel.ResultBean.EmployeesBean>();
-                        for(SearchDetailsModel.ResultBean.EmployeesBean empdetails : employeeList){
-                            if(empdetails.getIsFavourite().equals("0")){
+                        for (SearchDetailsModel.ResultBean.EmployeesBean empdetails : employeeList) {
+                            if (empdetails.getIsFavourite().equals("0")) {
                                 foundEmp.add(empdetails);
                             }
                         }
@@ -229,6 +234,10 @@ public class Favourite_Fragment extends Fragment {
     private void searchDetails(String categoryTypeId, String query) {
         switch (categoryTypeId) {
             case "1":
+                if (businessList.size() == 0) {
+                    return;
+                }
+
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.BusinessesBean businessDetails : businessList) {
@@ -238,12 +247,16 @@ public class Favourite_Fragment extends Fragment {
                             businessSearchedList.add(businessDetails);
                         }
                     }
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessSearchedList));
+                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessSearchedList, "1"));
                 } else {
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList));
+                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList, "1"));
                 }
                 break;
             case "2":
+                if (professionalList.size() == 0) {
+                    return;
+                }
+
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.ProfessionalsBean professionalDetails : professionalList) {
@@ -253,12 +266,16 @@ public class Favourite_Fragment extends Fragment {
                             professionalSearchedList.add(professionalDetails);
                         }
                     }
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalSearchedList));
+                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalSearchedList, "1"));
                 } else {
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList));
+                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList, "1"));
                 }
                 break;
             case "3":
+                if (employeeList.size() == 0) {
+                    return;
+                }
+
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.EmployeesBean employeeDetails : employeeList) {
@@ -268,9 +285,9 @@ public class Favourite_Fragment extends Fragment {
                             employeeSearchedList.add(employeeDetails);
                         }
                     }
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeSearchedList));
+                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeSearchedList, "1"));
                 } else {
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList));
+                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList, "1"));
                 }
 
                 break;
@@ -342,21 +359,36 @@ public class Favourite_Fragment extends Fragment {
         iconMenu.showAsDropDown(edt_type);
     }
 
-    private void setDataToRecyclerView(String categoryTypeId) {
+    private static void setDataToRecyclerView(String categoryTypeId) {
         switch (categoryTypeId) {
             case "1":
                 if (businessList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList));
+                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList, "2"));
+                    ll_nopreview.setVisibility(View.VISIBLE);
+                    rv_searchlist.setVisibility(View.VISIBLE);
+                } else {
+                    rv_searchlist.setVisibility(View.GONE);
+                    ll_nopreview.setVisibility(View.VISIBLE);
                 }
                 break;
             case "2":
                 if (employeeList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList));
+                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList, "2"));
+                    ll_nopreview.setVisibility(View.GONE);
+                    rv_searchlist.setVisibility(View.VISIBLE);
+                } else {
+                    rv_searchlist.setVisibility(View.GONE);
+                    ll_nopreview.setVisibility(View.VISIBLE);
                 }
                 break;
             case "3":
                 if (professionalList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList));
+                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList, "2"));
+                    ll_nopreview.setVisibility(View.GONE);
+                    rv_searchlist.setVisibility(View.VISIBLE);
+                } else {
+                    rv_searchlist.setVisibility(View.GONE);
+                    ll_nopreview.setVisibility(View.VISIBLE);
                 }
                 break;
         }

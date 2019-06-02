@@ -1,21 +1,19 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.skydoves.powermenu.PowerMenu;
 
 import java.util.ArrayList;
 
@@ -34,13 +32,13 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private RecyclerView rv_searchlist;
-    private EditText edt_search;
     private SpinKitView progressBar;
+    private LinearLayout ll_nopreview;
 
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
     public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
-    private String userId, categoryTypeId;
+    private String userId, categoryTypeId, subCategoryTypeId;
 
 
     @Override
@@ -59,7 +57,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
         context = BizProfEmpDetailsList_Activity.this;
         session = new UserSessionManager(context);
 
-        edt_search = findViewById(R.id.edt_search);
+        ll_nopreview = findViewById(R.id.ll_nopreview);
         progressBar = findViewById(R.id.progressBar);
         rv_searchlist = findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
@@ -72,6 +70,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
     private void setDefault() {
 
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
+        subCategoryTypeId = getIntent().getStringExtra("subCategoryTypeId");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
@@ -145,17 +144,56 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
         switch (categoryTypeId) {
             case "1":
                 if (businessList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList));
+                    ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
+                    for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
+                        if (!bizdetails.getSub_type_id().equals(subCategoryTypeId)) {
+                            foundbiz.add(bizdetails);
+                        }
+                    }
+                    businessList.removeAll(foundbiz);
+
+                    if (businessList.size() == 0) {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_searchlist.setVisibility(View.GONE);
+                    } else {
+                        rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList, "3"));
+                    }
                 }
                 break;
             case "2":
                 if (employeeList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList));
+                    ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> foundEmp = new ArrayList<SearchDetailsModel.ResultBean.EmployeesBean>();
+                    for (SearchDetailsModel.ResultBean.EmployeesBean empdetails : employeeList) {
+                        if (!empdetails.getSub_type_id().equals(subCategoryTypeId)) {
+                            foundEmp.add(empdetails);
+                        }
+                    }
+                    employeeList.removeAll(foundEmp);
+
+                    if (employeeList.size() == 0) {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_searchlist.setVisibility(View.GONE);
+                    } else {
+                        rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList, "3"));
+                    }
                 }
                 break;
             case "3":
                 if (professionalList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList));
+                    ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> foundProf = new ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean>();
+                    for (SearchDetailsModel.ResultBean.ProfessionalsBean profdetails : professionalList) {
+                        if (!profdetails.getSub_type_id().equals(subCategoryTypeId)) {
+                            foundProf.add(profdetails);
+                        }
+                    }
+                    professionalList.removeAll(foundProf);
+
+                    if (professionalList.size() == 0) {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_searchlist.setVisibility(View.GONE);
+                    } else {
+                        rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList, "3"));
+                    }
                 }
                 break;
         }

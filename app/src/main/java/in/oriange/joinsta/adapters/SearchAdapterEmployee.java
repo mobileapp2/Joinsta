@@ -25,10 +25,12 @@ public class SearchAdapterEmployee extends RecyclerView.Adapter<SearchAdapterEmp
 
     private List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList;
     private Context context;
+    private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
 
-    public SearchAdapterEmployee(Context context, List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList) {
+    public SearchAdapterEmployee(Context context, List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList, String type) {
         this.context = context;
         this.resultArrayList = resultArrayList;
+        this.type = type;
 
     }
 
@@ -52,7 +54,8 @@ public class SearchAdapterEmployee extends RecyclerView.Adapter<SearchAdapterEmp
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchEmpDetails_Activity.class)
-                        .putExtra("searchDetails", searchDetails));
+                        .putExtra("searchDetails", searchDetails)
+                        .putExtra("type", type));
             }
         });
 
@@ -82,8 +85,6 @@ public class SearchAdapterEmployee extends RecyclerView.Adapter<SearchAdapterEmp
             holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
-
-
 
     }
 

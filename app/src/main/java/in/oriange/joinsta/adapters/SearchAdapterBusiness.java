@@ -25,10 +25,12 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
 
     private List<SearchDetailsModel.ResultBean.BusinessesBean> resultArrayList;
     private Context context;
+    private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
 
-    public SearchAdapterBusiness(Context context, List<SearchDetailsModel.ResultBean.BusinessesBean> resultArrayList) {
+    public SearchAdapterBusiness(Context context, List<SearchDetailsModel.ResultBean.BusinessesBean> resultArrayList, String type) {
         this.context = context;
         this.resultArrayList = resultArrayList;
+        this.type = type;
 
     }
 
@@ -52,7 +54,8 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchBizDetails_Activity.class)
-                        .putExtra("searchDetails", searchDetails));
+                        .putExtra("searchDetails", searchDetails)
+                        .putExtra("type", type));
             }
         });
 
@@ -82,7 +85,6 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
             holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
-
 
     }
 

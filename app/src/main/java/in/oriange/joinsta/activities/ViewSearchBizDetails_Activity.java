@@ -21,7 +21,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -35,6 +34,7 @@ import java.util.ArrayList;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Favourite_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -60,8 +60,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
     private CardView cv_tabs;
     private TagContainerLayout tag_container;
     private SearchDetailsModel.ResultBean.BusinessesBean searchDetails;
-    private String userId, isFav;
-    private int position;
+    private String userId, isFav, typeFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +108,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
 
     private void setDefault() {
         searchDetails = (SearchDetailsModel.ResultBean.BusinessesBean) getIntent().getSerializableExtra("searchDetails");
+        typeFrom = getIntent().getStringExtra("type");
 
         edt_name.setText(searchDetails.getBusiness_name());
         edt_nature.setText(searchDetails.getType_description());
@@ -356,8 +356,22 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        position = Search_Fragment.businessList.indexOf(searchDetails);
-                        Search_Fragment.businessList.get(position).setIsFavourite(isFav);
+                        if (typeFrom.equals("1")) {               //  1 = from search
+                            int position = Search_Fragment.businessList.indexOf(searchDetails);
+                            Search_Fragment.businessList.get(position).setIsFavourite(isFav);
+                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                        } else if (typeFrom.equals("2")) {        // 2 = from favorite
+                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+
+                        } else if (typeFrom.equals("3")) {        // 3 = from home
+                            int position = BizProfEmpDetailsList_Activity.businessList.indexOf(searchDetails);
+                            BizProfEmpDetailsList_Activity.businessList.get(position).setIsFavourite(isFav);
+                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                        }
+
+
                     } else {
                         cb_like.setChecked(false);
                     }
@@ -370,13 +384,21 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-
+        Toolbar toolbar = findViewById(R.id.anim_toolbar);
+        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         collapsingToolbar.setTitle("");
     }
+
 }

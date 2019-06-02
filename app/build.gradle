@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'co.lujun:androidtagview:1.1.7'
     implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-    implementation 'com.github.developer-shivam:Crescento:1.2.1'
     implementation 'com.github.florent37:shapeofview:1.4.7'
     implementation 'com.github.GoodieBag:Pinview:v1.3'
+    implementation 'com.flaviofaria:kenburnsview:1.0.7'
 }

@@ -199,6 +199,12 @@ public class BasicInformation_Activity extends AppCompatActivity {
             isActive = json.getString("is_active");
             referralCode = json.getString("referral_code");
 
+            if (edt_bloodgroup.getText().toString().trim().equals("null"))
+                edt_bloodgroup.setText("");
+
+            if (edt_education.getText().toString().trim().equals("null"))
+                edt_education.setText("");
+
             if (!imageUrl.equals("")) {
                 Picasso.with(context)
                         .load(imageUrl)
@@ -212,61 +218,62 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 rb_female.setChecked(true);
             }
 
-
             mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
             landlinesonArray = new JSONArray(json.getString("landline_numbers"));
             emailJsonArray = new JSONArray(json.getString("email"));
 
 
-            if (mobileJsonArray.length() > 0) {
-                for (int i = 0; i < mobileJsonArray.length(); i++) {
+            if (mobileJSONArray != null)
+                if (mobileJsonArray.length() > 0) {
+                    for (int i = 0; i < mobileJsonArray.length(); i++) {
 
-                    if (i == (mobileJsonArray.length() - 1)) {
-                        edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
-                        mobileLayoutsList.add((LinearLayout) rowView);
-                        ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                        if (i == (mobileJsonArray.length() - 1)) {
+                            edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                        } else {
+                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+                            mobileLayoutsList.add((LinearLayout) rowView);
+                            ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+                            ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                        }
                     }
                 }
-            }
 
+            if (landlinesonArray != null)
+                if (landlinesonArray.length() > 0) {
+                    for (int i = 0; i < landlinesonArray.length(); i++) {
 
-            if (landlinesonArray.length() > 0) {
-                for (int i = 0; i < landlinesonArray.length(); i++) {
-
-                    if (i == (landlinesonArray.length() - 1)) {
-                        edt_landline.setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                        if (i == (landlinesonArray.length() - 1)) {
+                            edt_landline.setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
 //                        landlineLayoutsList.add(ll_landline);
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
-                        landlineLayoutsList.add((LinearLayout) rowView);
-                        ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                        } else {
+                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+                            landlineLayoutsList.add((LinearLayout) rowView);
+                            ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+                            ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                        }
                     }
                 }
-            }
 
-            if (emailJsonArray.length() > 0) {
-                for (int i = 0; i < emailJsonArray.length(); i++) {
+            if (emailJsonArray != null)
+                if (emailJsonArray.length() > 0) {
+                    for (int i = 0; i < emailJsonArray.length(); i++) {
 
-                    if (i == (emailJsonArray.length() - 1)) {
-                        edt_email.setText(emailJsonArray.getJSONObject(i).getString("email"));
+                        if (i == (emailJsonArray.length() - 1)) {
+                            edt_email.setText(emailJsonArray.getJSONObject(i).getString("email"));
 //                        emailLayoutsList.add(ll_email);
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_email, null);
-                        emailLayoutsList.add((LinearLayout) rowView);
-                        ll_email.addView(rowView, ll_email.getChildCount() - 1);
-                        ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
+                        } else {
+                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            final View rowView = inflater.inflate(R.layout.layout_add_email, null);
+                            emailLayoutsList.add((LinearLayout) rowView);
+                            ll_email.addView(rowView, ll_email.getChildCount() - 1);
+                            ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
+
+                        }
 
                     }
-
                 }
-            }
 
 
         } catch (Exception e) {
@@ -711,17 +718,17 @@ public class BasicInformation_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_mname.getText().toString().trim().isEmpty()) {
-            edt_mname.setError("Please enter middle name");
-            edt_mname.requestFocus();
-            return;
-        }
-
-        if (edt_lname.getText().toString().trim().isEmpty()) {
-            edt_lname.setError("Please enter last name");
-            edt_lname.requestFocus();
-            return;
-        }
+//        if (edt_mname.getText().toString().trim().isEmpty()) {
+//            edt_mname.setError("Please enter middle name");
+//            edt_mname.requestFocus();
+//            return;
+//        }
+//
+//        if (edt_lname.getText().toString().trim().isEmpty()) {
+//            edt_lname.setError("Please enter last name");
+//            edt_lname.requestFocus();
+//            return;
+//        }
 
         String genderId = "";
 
@@ -730,7 +737,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         } else if (rb_female.isChecked()) {
             genderId = "2";
         } else {
-            Utilities.showMessage("Please select genderId", context, 2);
+            Utilities.showMessage("Please select gender", context, 2);
             return;
         }
 
@@ -809,7 +816,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 }
             }
 
-            mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
+            if (mobileJsonArray != null)
+                mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
+            else
+                mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", "0"));
 
 
             for (int i = 0; i < landlineLayoutsList.size(); i++) {
@@ -822,7 +832,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 }
             }
 
-            landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlinesonArray.getJSONObject(landlinesonArray.length() - 1).getString("user_landline_id")));
+            if (landlinesonArray != null)
+                landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlinesonArray.getJSONObject(landlinesonArray.length() - 1).getString("user_landline_id")));
+            else
+                landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", "0"));
 
             for (int i = 0; i < emailLayoutsList.size(); i++) {
                 if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
@@ -834,7 +847,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 }
             }
 
-            emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
+            if (emailJsonArray != null)
+                emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
+            else
+                emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", "0"));
 
 
         } catch (JSONException e) {

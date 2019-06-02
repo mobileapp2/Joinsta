@@ -22,20 +22,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize">
 
-                <ImageView
-                    android:id="@+id/imv_launcher"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/icon_launcher" />
-
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edt_location"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/imv_launcher"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:drawableRight="@drawable/icon_dropdown"
                     android:focusable="false"

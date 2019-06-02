@@ -3,11 +3,6 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-
-import androidx.cardview.widget.CardView;
-import androidx.lifecycle.Lifecycle;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -19,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,12 +34,12 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditRequirements_Activity;
 import in.oriange.joinsta.activities.ViewRequirements_Activity;
 import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.models.RequirementsListModel;
@@ -178,7 +174,8 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
                 public void onItemClick(int position, PowerMenuItem item) {
                     switch (position) {
                         case 0:
-
+                            context.startActivity(new Intent(context, EditRequirements_Activity.class)
+                                    .putExtra("reqDetails", resultArrayList.get(positionToDelete)));
                             break;
 
                         case 1:

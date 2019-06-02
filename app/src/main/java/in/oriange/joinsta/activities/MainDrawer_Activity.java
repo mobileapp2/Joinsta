@@ -18,12 +18,8 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
-import org.json.JSONObject;
-
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
-import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class MainDrawer_Activity extends AppCompatActivity {
@@ -101,7 +97,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         AHBottomNavigationItem botHome = new AHBottomNavigationItem("HOME", R.drawable.icon_home, R.color.colorPrimaryDark);
         AHBottomNavigationItem botSearch = new AHBottomNavigationItem("SEARCH", R.drawable.icon_search, R.color.colorPrimaryDark);
         AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("FAVOURITE", R.drawable.icon_favourite, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("REQUEST", R.drawable.icon_request, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("REQUIREMENTS", R.drawable.icon_request, R.color.colorPrimaryDark);
         AHBottomNavigationItem botProfile = new AHBottomNavigationItem("PROFILE", R.drawable.icon_profile, R.color.colorPrimaryDark);
 
         // Add items
