@@ -81,8 +81,8 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int pos) {
-        final int position = holder.getAdapterPosition();
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+//        final int position = holder.getAdapterPosition();
         final RequirementsListModel reqDetails = resultArrayList.get(position);
         PrettyTime p = new PrettyTime();
 
@@ -118,7 +118,7 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
             holder.imv_user.setVisibility(View.VISIBLE);
         }
 
-        if (reqDetails.getCreated_by().equals(userId)) {
+        if (resultArrayList.get(position).getCreated_by().equals(userId)) {
             holder.imv_more.setVisibility(View.VISIBLE);
         }
 
@@ -288,6 +288,12 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
     public void removeItem(int position) {
         resultArrayList.remove(position);
         notifyItemRemoved(position);
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
     }
 
 

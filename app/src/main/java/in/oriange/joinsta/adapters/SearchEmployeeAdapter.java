@@ -18,16 +18,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.ViewSearchProfDetails_Activity;
+import in.oriange.joinsta.activities.ViewSearchEmpDetails_Activity;
 import in.oriange.joinsta.models.SearchDetailsModel;
 
-public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapterProfessional.MyViewHolder> {
+public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAdapter.MyViewHolder> {
 
-    private List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList;
+    private List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList;
     private Context context;
     private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
 
-    public SearchAdapterProfessional(Context context, List<SearchDetailsModel.ResultBean.ProfessionalsBean> resultArrayList, String type) {
+    public SearchEmployeeAdapter(Context context, List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList, String type) {
         this.context = context;
         this.resultArrayList = resultArrayList;
         this.type = type;
@@ -44,16 +44,16 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int pos) {
         final int position = holder.getAdapterPosition();
-        final SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails = resultArrayList.get(position);
+        final SearchDetailsModel.ResultBean.EmployeesBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getFirm_name());
+        holder.tv_heading.setText(searchDetails.getOrganization_name());
         holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, ViewSearchProfDetails_Activity.class)
+                context.startActivity(new Intent(context, ViewSearchEmpDetails_Activity.class)
                         .putExtra("searchDetails", searchDetails)
                         .putExtra("type", type));
             }
@@ -110,4 +110,11 @@ public class SearchAdapterProfessional extends RecyclerView.Adapter<SearchAdapte
             progressBar = view.findViewById(R.id.progressBar);
         }
     }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
+    }
+
 }

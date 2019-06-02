@@ -21,13 +21,13 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.ViewSearchBizDetails_Activity;
 import in.oriange.joinsta.models.SearchDetailsModel;
 
-public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBusiness.MyViewHolder> {
+public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAdapter.MyViewHolder> {
 
     private List<SearchDetailsModel.ResultBean.BusinessesBean> resultArrayList;
     private Context context;
     private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
 
-    public SearchAdapterBusiness(Context context, List<SearchDetailsModel.ResultBean.BusinessesBean> resultArrayList, String type) {
+    public SearchBusinessAdapter(Context context, List<SearchDetailsModel.ResultBean.BusinessesBean> resultArrayList, String type) {
         this.context = context;
         this.resultArrayList = resultArrayList;
         this.type = type;
@@ -110,4 +110,11 @@ public class SearchAdapterBusiness extends RecyclerView.Adapter<SearchAdapterBus
             progressBar = view.findViewById(R.id.progressBar);
         }
     }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return position;
+    }
+
 }

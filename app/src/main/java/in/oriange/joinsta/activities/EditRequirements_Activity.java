@@ -80,6 +80,7 @@ public class EditRequirements_Activity extends AppCompatActivity {
     private void setDefault() {
         reqDetails = (RequirementsListModel) getIntent().getSerializableExtra("reqDetails");
 
+        mainCategoryId = reqDetails.getCategory_type_id();
         edt_title.setText(reqDetails.getTitle());
         edt_description.setText(reqDetails.getDescription());
         edt_city.setText(reqDetails.getCity());

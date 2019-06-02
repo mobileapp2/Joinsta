@@ -35,9 +35,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.SearchAdapterBusiness;
-import in.oriange.joinsta.adapters.SearchAdapterEmployee;
-import in.oriange.joinsta.adapters.SearchAdapterProfessional;
+import in.oriange.joinsta.adapters.SearchBusinessAdapter;
+import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
+import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.pojos.MainCategoryListPojo;
@@ -247,9 +247,9 @@ public class Favourite_Fragment extends Fragment {
                             businessSearchedList.add(businessDetails);
                         }
                     }
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessSearchedList, "1"));
+                    rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessSearchedList, "1"));
                 } else {
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList, "1"));
+                    rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessList, "1"));
                 }
                 break;
             case "2":
@@ -266,9 +266,9 @@ public class Favourite_Fragment extends Fragment {
                             professionalSearchedList.add(professionalDetails);
                         }
                     }
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalSearchedList, "1"));
+                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalSearchedList, "1"));
                 } else {
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList, "1"));
+                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalList, "1"));
                 }
                 break;
             case "3":
@@ -285,9 +285,9 @@ public class Favourite_Fragment extends Fragment {
                             employeeSearchedList.add(employeeDetails);
                         }
                     }
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeSearchedList, "1"));
+                    rv_searchlist.setAdapter(new SearchEmployeeAdapter(context, employeeSearchedList, "1"));
                 } else {
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList, "1"));
+                    rv_searchlist.setAdapter(new SearchEmployeeAdapter(context, employeeList, "1"));
                 }
 
                 break;
@@ -363,7 +363,7 @@ public class Favourite_Fragment extends Fragment {
         switch (categoryTypeId) {
             case "1":
                 if (businessList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList, "2"));
+                    rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessList, "2"));
                     ll_nopreview.setVisibility(View.VISIBLE);
                     rv_searchlist.setVisibility(View.VISIBLE);
                 } else {
@@ -373,7 +373,7 @@ public class Favourite_Fragment extends Fragment {
                 break;
             case "2":
                 if (employeeList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList, "2"));
+                    rv_searchlist.setAdapter(new SearchEmployeeAdapter(context, employeeList, "2"));
                     ll_nopreview.setVisibility(View.GONE);
                     rv_searchlist.setVisibility(View.VISIBLE);
                 } else {
@@ -383,7 +383,7 @@ public class Favourite_Fragment extends Fragment {
                 break;
             case "3":
                 if (professionalList.size() > 0) {
-                    rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList, "2"));
+                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalList, "2"));
                     ll_nopreview.setVisibility(View.GONE);
                     rv_searchlist.setVisibility(View.VISIBLE);
                 } else {

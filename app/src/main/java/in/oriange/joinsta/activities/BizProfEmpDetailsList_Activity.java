@@ -18,9 +18,9 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.SearchAdapterBusiness;
-import in.oriange.joinsta.adapters.SearchAdapterEmployee;
-import in.oriange.joinsta.adapters.SearchAdapterProfessional;
+import in.oriange.joinsta.adapters.SearchBusinessAdapter;
+import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
+import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -156,7 +156,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_searchlist.setVisibility(View.GONE);
                     } else {
-                        rv_searchlist.setAdapter(new SearchAdapterBusiness(context, businessList, "3"));
+                        rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessList, "3"));
                     }
                 }
                 break;
@@ -174,7 +174,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_searchlist.setVisibility(View.GONE);
                     } else {
-                        rv_searchlist.setAdapter(new SearchAdapterEmployee(context, employeeList, "3"));
+                        rv_searchlist.setAdapter(new SearchEmployeeAdapter(context, employeeList, "3"));
                     }
                 }
                 break;
@@ -192,7 +192,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_searchlist.setVisibility(View.GONE);
                     } else {
-                        rv_searchlist.setAdapter(new SearchAdapterProfessional(context, professionalList, "3"));
+                        rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalList, "3"));
                     }
                 }
                 break;

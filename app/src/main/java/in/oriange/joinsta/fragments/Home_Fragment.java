@@ -1,7 +1,6 @@
 package in.oriange.joinsta.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;

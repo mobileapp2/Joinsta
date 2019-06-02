@@ -1,122 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark">
+            android:background="@color/colorPrimary"
+            android:theme="@style/AppTheme.NoActionBar">
 
-            <TextView
-                android:id="@+id/toolbar_title"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="Profile"
-                android:textColor="@color/white" />
+                android:minHeight="?attr/actionBarSize"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-        </androidx.appcompat.widget.Toolbar>
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Profile"
+                    android:textColor="@color/white" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+            </androidx.appcompat.widget.Toolbar>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_basicinfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardElevation="2dp"
-        app:cardUseCompatPadding="true">
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_basicinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:weightSum="1">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="0.1"
+                    android:src="@drawable/icon_basicinfo"
+                    android:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.8"
+                    android:paddingLeft="5dp"
+                    android:text="Basic Information"
+                    android:textSize="18sp"
+                    android:tint="@color/black" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.1"
+                    android:src="@drawable/icon_arrowright"
+                    android:tint="@color/black" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_business"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Business"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:id="@+id/v_business"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:background="@color/colorPrimary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_employee"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Employee"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:id="@+id/v_employee"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_professional"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Professional"
+                        android:textSize="16sp" />
+
+                    <View
+                        android:id="@+id/v_professional"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/progressBar"
+            style="@style/SpinKitView.Circle"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/colorAccent" />
 
         <LinearLayout
+            android:id="@+id/ll_nopreview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="15dp"
-            android:weightSum="1">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:visibility="gone">
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_weight="0.1"
-                android:src="@drawable/icon_basicinfo"
-                android:tint="@color/colorPrimary" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:fitsSystemWindows="true"
+                android:src="@drawable/icon_nopreview" />
 
-            <TextView
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.8"
-                android:paddingLeft="5dp"
-                android:text="Basic Information"
-                android:textSize="18sp"
-                android:tint="@color/black" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="0.1"
-                android:src="@drawable/icon_arrowright"
-                android:tint="@color/black" />
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="Details are not added by you in this category"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="5dp"
-        android:text="Add Business, Professional or Employee"
-        android:textSize="16sp" />
-
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADD" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/icon_add"
+        android:tint="@color/white" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Please choose any one as your default profile view"
-        android:visibility="gone" />
-
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardElevation="2dp"
-        app:cardUseCompatPadding="true">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_profilelist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </androidx.cardview.widget.CardView>
-
-
-</LinearLayout>
+</RelativeLayout>
