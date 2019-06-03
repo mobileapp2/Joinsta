@@ -106,7 +106,6 @@ public class AddProfessional_Fragment extends Fragment {
 
     private static TextView tv_selected_forconcode = null;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_professional, container, false);
@@ -1000,6 +999,8 @@ public class AddProfessional_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        new Profile_Fragment.GetProfessional().execute();
+
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);

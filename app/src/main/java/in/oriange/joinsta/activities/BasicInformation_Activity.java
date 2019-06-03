@@ -226,7 +226,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
             if (mobileJSONArray != null)
                 if (mobileJsonArray.length() > 0) {
                     for (int i = 0; i < mobileJsonArray.length(); i++) {
-
                         if (i == (mobileJsonArray.length() - 1)) {
                             edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
                         } else {

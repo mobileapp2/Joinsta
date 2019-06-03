@@ -1,4 +1,8 @@
-package in.oriange.joinsta.fragments;
+package in.oriange.joinsta.activities;
+
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -17,6 +21,9 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,11 +32,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -38,6 +47,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -60,8 +70,10 @@ import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.PickMapLoaction_Activity;
+import in.oriange.joinsta.fragments.Profile_Fragment;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
+import in.oriange.joinsta.models.GetBusinessModel;
 import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
@@ -77,11 +89,14 @@ import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
-public class AddBusiness_Fragment extends Fragment {
+import in.oriange.joinsta.R;
+
+public class EditBusiness_Activity extends AppCompatActivity {
 
     private static Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private ProgressBar progressBar;
     private ImageView imv_photo1, imv_photo2;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
             edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country, edt_tag;
@@ -106,53 +121,57 @@ public class AddBusiness_Fragment extends Fragment {
 
     private static TextView tv_selected_forconcode = null;
 
+    private GetBusinessModel.ResultBean searchDetails;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_business, container, false);
-        context = getActivity();
-        init(rootView);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_business);
+
+        init();
         getSessionData();
         setDefault();
         setEventListner();
-        return rootView;
+        setUpToolbar();
     }
 
-    private void init(View rootView) {
+    private void init() {
+        context = EditBusiness_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
-        imv_photo1 = rootView.findViewById(R.id.imv_photo1);
-        imv_photo2 = rootView.findViewById(R.id.imv_photo2);
-        edt_name = rootView.findViewById(R.id.edt_name);
-        edt_nature = rootView.findViewById(R.id.edt_nature);
-        edt_subtype = rootView.findViewById(R.id.edt_subtype);
-        edt_designation = rootView.findViewById(R.id.edt_designation);
-        edt_mobile = rootView.findViewById(R.id.edt_mobile);
-        edt_landline = rootView.findViewById(R.id.edt_landline);
-        edt_email = rootView.findViewById(R.id.edt_email);
-        edt_website = rootView.findViewById(R.id.edt_website);
-        edt_select_area = rootView.findViewById(R.id.edt_select_area);
-        edt_address = rootView.findViewById(R.id.edt_address);
-        edt_pincode = rootView.findViewById(R.id.edt_pincode);
-        edt_city = rootView.findViewById(R.id.edt_city);
-        edt_district = rootView.findViewById(R.id.edt_district);
-        edt_state = rootView.findViewById(R.id.edt_state);
-        edt_country = rootView.findViewById(R.id.edt_country);
-        edt_tag = rootView.findViewById(R.id.edt_tag);
+        progressBar = findViewById(R.id.progressBar);
+        imv_photo1 = findViewById(R.id.imv_photo1);
+        imv_photo2 = findViewById(R.id.imv_photo2);
+        edt_name = findViewById(R.id.edt_name);
+        edt_nature = findViewById(R.id.edt_nature);
+        edt_subtype = findViewById(R.id.edt_subtype);
+        edt_designation = findViewById(R.id.edt_designation);
+        edt_mobile = findViewById(R.id.edt_mobile);
+        edt_landline = findViewById(R.id.edt_landline);
+        edt_email = findViewById(R.id.edt_email);
+        edt_website = findViewById(R.id.edt_website);
+        edt_select_area = findViewById(R.id.edt_select_area);
+        edt_address = findViewById(R.id.edt_address);
+        edt_pincode = findViewById(R.id.edt_pincode);
+        edt_city = findViewById(R.id.edt_city);
+        edt_district = findViewById(R.id.edt_district);
+        edt_state = findViewById(R.id.edt_state);
+        edt_country = findViewById(R.id.edt_country);
+        edt_tag = findViewById(R.id.edt_tag);
 
-        tag_container = rootView.findViewById(R.id.tag_container);
-        tv_countrycode_mobile = rootView.findViewById(R.id.tv_countrycode_mobile);
-        tv_countrycode_landline = rootView.findViewById(R.id.tv_countrycode_landline);
+        tag_container = findViewById(R.id.tag_container);
+        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
+        tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
 
-        ll_mobile = rootView.findViewById(R.id.ll_mobile);
-        ll_landline = rootView.findViewById(R.id.ll_landline);
+        ll_mobile = findViewById(R.id.ll_mobile);
+        ll_landline = findViewById(R.id.ll_landline);
 
-        ib_add_mobile = rootView.findViewById(R.id.ib_add_mobile);
-        ib_add_landline = rootView.findViewById(R.id.ib_add_landline);
+        ib_add_mobile = findViewById(R.id.ib_add_mobile);
+        ib_add_landline = findViewById(R.id.ib_add_landline);
 
-        btn_add_tag = rootView.findViewById(R.id.btn_add_tag);
-        btn_save = rootView.findViewById(R.id.btn_save);
+        btn_add_tag = findViewById(R.id.btn_add_tag);
+        btn_save = findViewById(R.id.btn_save);
 
         categotyList = new ArrayList<>();
         mobileLayoutsList = new ArrayList<>();
@@ -176,6 +195,7 @@ public class AddBusiness_Fragment extends Fragment {
     }
 
     private void getSessionData() {
+
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -206,6 +226,118 @@ public class AddBusiness_Fragment extends Fragment {
             e.printStackTrace();
         }
 
+        searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
+
+        if (!searchDetails.getImage_url().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(searchDetails.getImage_url().trim())
+                    .into(imv_photo1, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            imv_photo1.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                            imv_photo2.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            imv_photo2.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
+                            imv_photo1.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            imv_photo2.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            imv_photo1.setVisibility(View.GONE);
+        }
+
+        edt_name.setText(searchDetails.getBusiness_name());
+        edt_nature.setText(searchDetails.getType_description());
+        edt_subtype.setText(searchDetails.getSubtype_description());
+        edt_designation.setText(searchDetails.getDesignation());
+        edt_email.setText(searchDetails.getEmail());
+        edt_website.setText(searchDetails.getWebsite());
+        edt_select_area.setText(searchDetails.getLandmark());
+        edt_address.setText(searchDetails.getAddress());
+        edt_pincode.setText(searchDetails.getPincode());
+        edt_city.setText(searchDetails.getCity());
+        edt_district.setText(searchDetails.getDistrict());
+        edt_state.setText(searchDetails.getState());
+        edt_country.setText(searchDetails.getCountry());
+
+        ArrayList<GetBusinessModel.ResultBean.TagBean> tagsList = new ArrayList<>();
+        tagsList = searchDetails.getTag().get(0);
+
+        if (tagsList != null)
+            if (tagsList.size() > 0)
+                for (int i = 0; i < tagsList.size(); i++)
+                    tag_container.addTag(tagsList.get(i).getTag_name());
+
+        ArrayList<GetBusinessModel.ResultBean.MobilesBean> mobilesList = new ArrayList<>();
+        mobilesList = searchDetails.getMobiles().get(0);
+
+        if (mobilesList != null)
+            if (mobilesList.size() > 0)
+                for (int i = 0; i < mobilesList.size(); i++) {
+                    if (i == mobilesList.size() - 1) {
+                        if (mobilesList.get(i).getMobile_number().length() > 10) {
+                            edt_mobile.setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
+                            String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
+                            if (!code.isEmpty())
+                                tv_countrycode_mobile.setText(code);
+                        }
+                    } else {
+                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View rowView = inflater.inflate(R.layout.layout_add_mobile1, null);
+                        LinearLayout ll = (LinearLayout) rowView;
+                        mobileLayoutsList.add(ll);
+                        ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
+                        String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
+                        if (!code.isEmpty())
+                            ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                    }
+
+                }
+
+
+        ArrayList<GetBusinessModel.ResultBean.LandlineBean> landlineList = new ArrayList<>();
+        landlineList = searchDetails.getLandline().get(0);
+
+
+        if (landlineList != null)
+            if (landlineList.size() > 0)
+                for (int i = 0; i < landlineList.size(); i++) {
+                    if (i == landlineList.size() - 1) {
+                        if (landlineList.get(i).getLandline_number().length() > 10) {
+                            edt_landline.setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
+                            String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                            if (!code.isEmpty())
+                                tv_countrycode_landline.setText(code);
+                        }
+                    } else {
+                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        final View rowView = inflater.inflate(R.layout.layout_add_landline1, null);
+                        LinearLayout ll = (LinearLayout) rowView;
+                        landlineLayoutsList.add(ll);
+                        ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
+                        String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                        if (!code.isEmpty())
+                            ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
+                    }
+
+                }
+
+
+        categoryId = searchDetails.getType_id();
+        subCategoryId = searchDetails.getSub_type_id();
+        latitude = searchDetails.getLatitude();
+        longitude = searchDetails.getLongitude();
+
+        Uri uri = Uri.parse(searchDetails.getImage_url());
+        imageName = uri.getLastPathSegment();
     }
 
     private void setEventListner() {
@@ -395,17 +527,17 @@ public class AddBusiness_Fragment extends Fragment {
         alertD.show();
     }
 
-    public static void removeMobileLayout(View v) {
+    public void removeMobileLayoutBiz(View v) {
         ll_mobile.removeView((View) v.getParent());
         mobileLayoutsList.remove(v.getParent());
     }
 
-    public static void removeLandlineLayout(View view) {
+    public void removeLandlineLayoutBiz(View view) {
         ll_landline.removeView((View) view.getParent());
         landlineLayoutsList.remove(view.getParent());
     }
 
-    public static void selectContryCode(View v) {
+    public void selectContryCode(View v) {
         tv_selected_forconcode = (TextView) v;
         showContryCodeForSelectedDialog(countryCodeList);
     }
@@ -768,7 +900,7 @@ public class AddBusiness_Fragment extends Fragment {
             tagJSONArray.add(landlineJSONObj);
         }
 
-        mainObj.addProperty("type", "createbusiness");
+        mainObj.addProperty("type", "updatebusiness");
         mainObj.addProperty("address", edt_address.getText().toString().trim());
         mainObj.addProperty("business_name", edt_name.getText().toString().trim());
         mainObj.addProperty("district", edt_district.getText().toString().trim());
@@ -795,16 +927,15 @@ public class AddBusiness_Fragment extends Fragment {
         mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
+        mainObj.addProperty("business_id", searchDetails.getId());
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
 
-
-        Log.i("ADDBUSINESS", mainObj.toString());
-
+        Log.i("EDITBUSINESS", mainObj.toString());
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddBusiness().execute(mainObj.toString());
+            new EditBusiness().execute(mainObj.toString());
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -818,11 +949,11 @@ public class AddBusiness_Fragment extends Fragment {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(getContext(), this);
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditBusiness_Activity.this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(getContext(), this);
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditBusiness_Activity.this);
             }
 
             if (requestCode == 10001) {
@@ -980,7 +1111,7 @@ public class AddBusiness_Fragment extends Fragment {
         }
     }
 
-    private class AddBusiness extends AsyncTask<String, Void, String> {
+    private class EditBusiness extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1020,7 +1151,7 @@ public class AddBusiness_Fragment extends Fragment {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Business details submitted successfully");
+                        tv_title.setText("Business details updated successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -1028,7 +1159,7 @@ public class AddBusiness_Fragment extends Fragment {
                             @Override
                             public void onClick(View v) {
                                 alertD.dismiss();
-                                getActivity().finish();
+                                finish();
                             }
                         });
 
@@ -1083,6 +1214,86 @@ public class AddBusiness_Fragment extends Fragment {
                 }
             }
 
+        }
+    }
+
+    private void setUpToolbar() {
+        Toolbar mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_delete, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                new DeleteBusiness().execute();
+                break;
+
+            default:
+                break;
+        }
+        return true;
+    }
+
+    public class DeleteBusiness extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "deletebusiness");
+            obj.addProperty("business_id", searchDetails.getId());
+            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Profile_Fragment.GetBusiness().execute();
+                        Utilities.showMessage("Business details deleted successfully", context, 1);
+                        finish();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

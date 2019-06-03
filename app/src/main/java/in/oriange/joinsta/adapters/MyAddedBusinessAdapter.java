@@ -1,6 +1,7 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditBusiness_Activity;
 import in.oriange.joinsta.models.GetBusinessModel;
 
 public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusinessAdapter.MyViewHolder> {
@@ -40,13 +42,13 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         holder.tv_heading.setText(searchDetails.getBusiness_name());
         holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
 
-//        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                context.startActivity(new Intent(context, ViewSearchBizDetails_Activity.class)
-//                        .putExtra("searchDetails", searchDetails));
-//            }
-//        });
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, EditBusiness_Activity.class)
+                        .putExtra("searchDetails", searchDetails));
+            }
+        });
 
     }
 

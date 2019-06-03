@@ -60,6 +60,8 @@ public class GetProfessionalModel {
         private String state;
         private String designation;
         private String IsFavourite;
+        private String type_id;
+        private String sub_type_id;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -270,6 +272,22 @@ public class GetProfessionalModel {
 
         public void setIsFavourite(String IsFavourite) {
             this.IsFavourite = IsFavourite;
+        }
+
+        public String getType_id() {
+            return type_id;
+        }
+
+        public void setType_id(String type_id) {
+            this.type_id = type_id;
+        }
+
+        public String getSub_type_id() {
+            return sub_type_id;
+        }
+
+        public void setSub_type_id(String sub_type_id) {
+            this.sub_type_id = sub_type_id;
         }
 
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {

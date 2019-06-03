@@ -291,8 +291,7 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return position;
     }
 

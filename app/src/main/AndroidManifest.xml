@@ -21,6 +21,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
+        <activity android:name=".activities.EditProfessional_Activity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -117,6 +118,11 @@
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
             android:name=".activities.EditRequirements_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+        <activity
+            android:name=".activities.EditBusiness_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />

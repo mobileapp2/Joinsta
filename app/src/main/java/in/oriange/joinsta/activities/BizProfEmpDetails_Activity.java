@@ -54,8 +54,8 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
     private void setDefault() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new AddBusiness_Fragment(), "Business");
-        adapter.addFrag(new AddProfessional_Fragment(), "Professional");
         adapter.addFrag(new AddEmployee_Fragment(), "Employee");
+        adapter.addFrag(new AddProfessional_Fragment(), "Professional");
         viewpager.setAdapter(adapter);
         tabs.setViewPager(viewpager);
     }

@@ -1,8 +1,9 @@
 package in.oriange.joinsta.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GetBusinessModel {
+public class GetBusinessModel implements Serializable {
 
     private String type;
     private String message;
@@ -32,7 +33,7 @@ public class GetBusinessModel {
         this.result = result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
 
         private String id;
         private String address;
@@ -296,7 +297,7 @@ public class GetBusinessModel {
             this.tag = tag;
         }
 
-        public static class MobilesBean {
+        public static class MobilesBean implements Serializable {
 
             private String id;
             private String mobile_number;
@@ -318,7 +319,7 @@ public class GetBusinessModel {
             }
         }
 
-        public static class LandlineBean {
+        public static class LandlineBean implements Serializable {
 
             private String id;
             private String landline_number;
@@ -340,7 +341,7 @@ public class GetBusinessModel {
             }
         }
 
-        public static class TagBean {
+        public static class TagBean implements Serializable {
 
             private String id;
             private String tag_name;
