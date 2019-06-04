@@ -1,8 +1,9 @@
 package in.oriange.joinsta.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GetEmployeeModel {
+public class GetEmployeeModel implements Serializable {
 
     private String type;
     private String message;
@@ -32,7 +33,7 @@ public class GetEmployeeModel {
         this.result = result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
 
         private String id;
         private String address;
@@ -61,6 +62,8 @@ public class GetEmployeeModel {
         private String subtype_description;
         private String type_description;
         private String IsFavourite;
+        private String type_id;
+        private String sub_type_id;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -281,6 +284,22 @@ public class GetEmployeeModel {
             this.IsFavourite = IsFavourite;
         }
 
+        public String getType_id() {
+            return type_id;
+        }
+
+        public void setType_id(String type_id) {
+            this.type_id = type_id;
+        }
+
+        public String getSub_type_id() {
+            return sub_type_id;
+        }
+
+        public void setSub_type_id(String sub_type_id) {
+            this.sub_type_id = sub_type_id;
+        }
+
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {
             return mobiles;
         }
@@ -305,7 +324,7 @@ public class GetEmployeeModel {
             this.tag = tag;
         }
 
-        public static class MobilesBean {
+        public static class MobilesBean implements Serializable {
 
             private String id;
             private String mobile_number;
@@ -327,7 +346,7 @@ public class GetEmployeeModel {
             }
         }
 
-        public static class LandlineBean {
+        public static class LandlineBean implements Serializable {
 
             private String id;
             private String landline_numbers;
@@ -349,7 +368,7 @@ public class GetEmployeeModel {
             }
         }
 
-        public static class TagBean {
+        public static class TagBean implements Serializable {
 
             private String id;
             private String tag_name;

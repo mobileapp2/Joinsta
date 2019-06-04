@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,10 +22,14 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.models.RequirementsListModel;
 import in.oriange.joinsta.pojos.MainCategoryListPojo;
@@ -41,13 +46,14 @@ public class ViewRequirements_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-
+    private CheckBox cb_like;
     private CircleImageView imv_user;
     private ImageView imv_mobile, imv_email;
     private TextView tv_reqby_name;
     private MaterialEditText edt_categoryname, edt_reqmtitle, edt_reqmdesc, edt_city;
 
     private RequirementsListModel reqDetails;
+    private String userId, isFav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,7 @@ public class ViewRequirements_Activity extends AppCompatActivity {
         context = ViewRequirements_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context);
+        cb_like = findViewById(R.id.cb_like);
         imv_user = findViewById(R.id.imv_user);
         imv_mobile = findViewById(R.id.imv_mobile);
         imv_email = findViewById(R.id.imv_email);
@@ -96,6 +103,9 @@ public class ViewRequirements_Activity extends AppCompatActivity {
                     });
         }
 
+        if (reqDetails.getIsStarred().equals("1"))
+            cb_like.setChecked(true);
+
         tv_reqby_name.setText(reqDetails.getFname() + " " + reqDetails.getMname() + " " + reqDetails.getLname());
         edt_reqmtitle.setText(reqDetails.getTitle());
         edt_reqmdesc.setText(reqDetails.getDescription());
@@ -110,9 +120,46 @@ public class ViewRequirements_Activity extends AppCompatActivity {
 
     private void getSessionData() {
 
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setEventHandler() {
+        cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isFav = reqDetails.getIsStarred();
+
+                if (cb_like.isChecked())
+                    isFav = "1";
+                else
+                    isFav = "0";
+
+                JsonObject mainObj = new JsonObject();
+
+                mainObj.addProperty("type", "starrequirement");
+                mainObj.addProperty("IsStarred", isFav);
+                mainObj.addProperty("StarredBy", userId);
+                mainObj.addProperty("reqId", reqDetails.getId());
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new StarRequirement().execute(mainObj.toString());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
+        });
+
+
         imv_mobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +246,47 @@ public class ViewRequirements_Activity extends AppCompatActivity {
             }
         }
     }
+
+    private class StarRequirement extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.REQUIREMENTAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Request_Fragment.GetRequirementList().execute();
+                    } else {
+                        cb_like.setChecked(false);
+                    }
+                }
+            } catch (Exception e) {
+                cb_like.setChecked(false);
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

@@ -12,9 +12,11 @@ public class ApplicationConstants {
 
     // BETA API LINK
     public static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     //LIVE API LINK
-//    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
+//    public static final String API_LINK = "http://joinsta.in/Api/";
+//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";
@@ -29,4 +31,5 @@ public class ApplicationConstants {
     public static final String FAVOURITEAPI = API_LINK + "fav.php";
     public static final String REQUIREMENTAPI = API_LINK + "requirements.php";
     public static final String FILEUPLOADAPI = API_LINK + "upload.php";
+    public static final String DEVICEREGAPI = API_LINK + "deviceregistration.php";
 }

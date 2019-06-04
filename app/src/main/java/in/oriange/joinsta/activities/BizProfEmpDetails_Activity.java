@@ -23,6 +23,8 @@ import in.oriange.joinsta.fragments.AddEmployee_Fragment;
 import in.oriange.joinsta.fragments.AddProfessional_Fragment;
 import in.oriange.joinsta.utilities.UserSessionManager;
 
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+
 public class BizProfEmpDetails_Activity extends AppCompatActivity {
 
     private Context context;
@@ -134,5 +136,10 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
         AddBusiness_Fragment.selectContryCode(v);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(BizProfEmpDetails_Activity.this);
+    }
 
 }

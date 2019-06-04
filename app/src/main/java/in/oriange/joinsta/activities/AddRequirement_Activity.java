@@ -35,6 +35,8 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+
 public class AddRequirement_Activity extends AppCompatActivity {
 
     private Context context;
@@ -313,4 +315,11 @@ public class AddRequirement_Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(AddRequirement_Activity.this);
+    }
+
 }

@@ -1,11 +1,13 @@
 package in.oriange.joinsta.activities;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +25,7 @@ import com.goodiebag.pinview.Pinview;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -266,6 +269,8 @@ public class Login_Activity extends AppCompatActivity {
                         if (is_registered.equals("-1")) {
                             Utilities.showAlertDialog(context, "Mobile number is not registered", false);
                             edt_mobile.setText("");
+                        } else {
+                            Utilities.showMessage("Mobile number is verified. You can proceed.", context, 1);
                         }
 
                     } else if (type.equalsIgnoreCase("failure")) {
@@ -283,7 +288,6 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private class SendOTP extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected void onPreExecute() {
@@ -379,12 +383,7 @@ public class Login_Activity extends AppCompatActivity {
                         if (jsonarr.length() > 0) {
                             for (int i = 0; i < jsonarr.length(); i++) {
                                 session.createUserLoginSession(jsonarr.toString());
-                                startActivity(new Intent(context, MainDrawer_Activity.class));
-                                if (session.isLocationSet())
-                                    startActivity(new Intent(context, MainDrawer_Activity.class));
-                                else
-                                    startActivity(new Intent(context, SelectLocation_Activity.class));
-                                finish();
+                                saveRegistrationID();
                             }
                         }
                     } else {
@@ -449,13 +448,7 @@ public class Login_Activity extends AppCompatActivity {
                         JSONArray jsonarr = mainObj.getJSONArray("result");
                         if (jsonarr.length() > 0) {
                             session.createUserLoginSession(jsonarr.toString());
-                            startActivity(new Intent(context, MainDrawer_Activity.class));
-                            if (session.isLocationSet())
-                                startActivity(new Intent(context, MainDrawer_Activity.class));
-                            else
-                                startActivity(new Intent(context, SelectLocation_Activity.class));
-
-                            finish();
+                            saveRegistrationID();
                         }
                     } else {
                         Utilities.showMessage("Username or password is invalid", context, 3);
@@ -465,6 +458,26 @@ public class Login_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void saveRegistrationID() {
+        String user_id = "", regToken = "";
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+
+            for (int j = 0; j < user_info.length(); j++) {
+                JSONObject json = user_info.getJSONObject(j);
+                user_id = json.getString("userid");
+            }
+
+            regToken = session.getAndroidToken().get(ApplicationConstants.KEY_ANDROIDTOKETID);
+
+            if (regToken != null && !regToken.isEmpty() && !regToken.equals("null"))
+                new SendRegistrationToken().execute(user_id, regToken);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -529,6 +542,77 @@ public class Login_Activity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         hideSoftKeyboard(Login_Activity.this);
+    }
+
+    public class SendRegistrationToken extends AsyncTask<String, Integer, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            String s = "";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "registerDevice");
+                obj.put("device_type", "Android");
+                obj.put("ram", totalRAMSize());
+                obj.put("processor", Build.CPU_ABI);
+                obj.put("device_os", Build.VERSION.RELEASE);
+                obj.put("location", "0.0, 0.0");
+                obj.put("device_model", Build.MODEL);
+                obj.put("manufacturer", Build.MANUFACTURER);
+                obj.put("customers_id", params[0]);
+                obj.put("device_id", params[1]);
+                s = obj.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            res = APICall.JSONAPICall(ApplicationConstants.DEVICEREGAPI, s);
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            if (result != null && result.length() > 0 && !result.equalsIgnoreCase("[]")) {
+                try {
+                    int c = 0;
+                    JSONObject obj1 = new JSONObject(result);
+                    String success = obj1.getString("success");
+                    String message = obj1.getString("message");
+                    if (success.equalsIgnoreCase("1")) {
+                        if (session.isLocationSet())
+                            startActivity(new Intent(context, MainDrawer_Activity.class));
+                        else
+                            startActivity(new Intent(context, SelectLocation_Activity.class));
+
+                        finish();
+                    } else {
+                        Utilities.showMessage("Please Try After Sometime", context, 3);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String totalRAMSize() {
+        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        activityManager.getMemoryInfo(memoryInfo);
+        double totalRAM = memoryInfo.totalMem / 1048576.0;
+        return String.valueOf(totalRAM);
     }
 
 }

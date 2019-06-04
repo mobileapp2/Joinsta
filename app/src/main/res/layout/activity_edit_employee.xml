@@ -24,7 +24,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Edit Professional Details"
+                android:text="Edit Business Details"
                 android:textColor="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -51,28 +51,40 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="170dp">
+                    android:layout_height="160dp">
 
-                    <ImageView
-                        android:id="@+id/imv_photo1"
+                    <RelativeLayout
+                        android:id="@+id/rl_profilepic"
                         android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone"/>
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/imv_photo2"
-                        android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        android:padding="50dp"
-                        android:src="@drawable/icon_color_camera"
-                        android:visibility="gone" />
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imv_user"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_centerInParent="true"
+                            android:layout_margin="15dp"
+                            android:elevation="15dp"
+                            android:src="@drawable/icon_userphoto" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/imv_user"
+                            android:layout_alignRight="@id/imv_user"
+                            android:layout_marginTop="-30dp"
+                            android:layout_marginRight="20dp"
+                            android:elevation="15dp"
+                            android:src="@drawable/icon_camera" />
+
+                    </RelativeLayout>
 
                     <ProgressBar
                         android:id="@+id/progressBar"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true" />
 
                 </RelativeLayout>
 
@@ -95,15 +107,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Professional Details"
+                        android:text="Employee Details"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_firm"
+                        android:id="@+id/edt_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Name of the Firm"
+                        android:hint="Name of Organization"
                         android:inputType="textCapWords|textNoSuggestions"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
@@ -111,14 +123,13 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_nature"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/icon_arrowdown"
                         android:focusable="false"
-                        android:hint="Select You Profession"
+                        android:hint="Nature of Employee"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -138,12 +149,11 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_designation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Designation (Optional)"
+                        android:hint="Designation"
                         android:inputType="textCapWords|textNoSuggestions"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
@@ -444,7 +454,7 @@
                         android:id="@+id/edt_pincode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Pincode (Optional)"
+                        android:hint="Pincode"
                         android:inputType="number"
                         android:maxLength="6"
                         android:textSize="16sp"
@@ -517,5 +527,6 @@
 
 
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>

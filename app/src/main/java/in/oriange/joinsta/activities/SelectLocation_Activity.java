@@ -41,6 +41,7 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
@@ -138,7 +139,7 @@ public class SelectLocation_Activity extends AppCompatActivity
         btn_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tv_city.getText().toString().trim().equals("")){
+                if (tv_city.getText().toString().trim().equals("")) {
                     return;
                 }
 
@@ -264,4 +265,11 @@ public class SelectLocation_Activity extends AppCompatActivity
     public void onLocationChanged(Location location) {
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(SelectLocation_Activity.this);
+    }
+
 }

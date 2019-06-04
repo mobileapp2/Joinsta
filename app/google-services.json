@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "996778986231",
+    "firebase_url": "https://joinsta-9e514.firebaseio.com",
+    "project_id": "joinsta-9e514",
+    "storage_bucket": "joinsta-9e514.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996778986231:android:2e5e14698f1ea29a",
+        "android_client_info": {
+          "package_name": "in.oriange.joinsta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996778986231-bg8kb5rnaqh6164mricis3ng3705gs54.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbJV1S2i3HcrO9IADky8omovUTUC1FDU8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996778986231-bg8kb5rnaqh6164mricis3ng3705gs54.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

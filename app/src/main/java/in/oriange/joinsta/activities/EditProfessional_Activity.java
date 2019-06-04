@@ -85,8 +85,10 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
 import in.oriange.joinsta.R;
@@ -229,8 +231,9 @@ public class EditProfessional_Activity extends AppCompatActivity {
         searchDetails = (GetProfessionalModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
-                    .load(searchDetails.getImage_url().trim())
+                    .load(url)
                     .into(imv_photo1, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -281,12 +284,10 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (mobilesList.size() > 0)
                 for (int i = 0; i < mobilesList.size(); i++) {
                     if (i == mobilesList.size() - 1) {
-                        if (mobilesList.get(i).getMobile_number().length() > 10) {
-                            edt_mobile.setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
-                            String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
-                            if (!code.isEmpty())
-                                tv_countrycode_mobile.setText(code);
-                        }
+                        edt_mobile.setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
+                        String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
+                        if (!code.isEmpty())
+                            tv_countrycode_mobile.setText(code);
                     } else {
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View rowView = inflater.inflate(R.layout.layout_add_mobile2, null);
@@ -310,12 +311,10 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (landlineList.size() > 0)
                 for (int i = 0; i < landlineList.size(); i++) {
                     if (i == landlineList.size() - 1) {
-                        if (landlineList.get(i).getLandline_number().length() > 10) {
-                            edt_landline.setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
-                            String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
-                            if (!code.isEmpty())
-                                tv_countrycode_landline.setText(code);
-                        }
+                        edt_landline.setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
+                        String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                        if (!code.isEmpty())
+                            tv_countrycode_landline.setText(code);
                     } else {
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         final View rowView = inflater.inflate(R.layout.layout_add_landline2, null);
@@ -881,7 +880,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
 
         for (int i = 0; i < mobileList.size(); i++) {
             JsonObject mobileJSONObj = new JsonObject();
-            mobileJSONObj.addProperty("mobile", mobileList.get(i));
+            mobileJSONObj.addProperty("mobile_number", mobileList.get(i));
             mobileJSONArray.add(mobileJSONObj);
         }
 
@@ -918,6 +917,9 @@ public class EditProfessional_Activity extends AppCompatActivity {
 //        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
 //        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
         mainObj.addProperty("cat_id", "3");
+        mainObj.addProperty("is_deleted", "0");
+        mainObj.addProperty("profession_name", "");
+        mainObj.addProperty("is_verified", "0");
         mainObj.addProperty("type_id", categoryId);
         mainObj.addProperty("sub_type_id", subCategoryId);
         mainObj.addProperty("created_by", userId);
@@ -926,6 +928,8 @@ public class EditProfessional_Activity extends AppCompatActivity {
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
+
+        Log.i("EDITPROFESSIONAL", mainObj.toString());
 
         if (Utilities.isNetworkAvailable(context)) {
             new EditProfessional().execute(mainObj.toString());
@@ -1288,5 +1292,12 @@ public class EditProfessional_Activity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(EditProfessional_Activity.this);
+    }
+
 
 }

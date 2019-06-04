@@ -1,6 +1,7 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditProfessional_Activity;
 import in.oriange.joinsta.models.GetProfessionalModel;
 
 public class MyAddedProfessionalAdapter extends RecyclerView.Adapter<MyAddedProfessionalAdapter.MyViewHolder> {
@@ -40,13 +42,13 @@ public class MyAddedProfessionalAdapter extends RecyclerView.Adapter<MyAddedProf
         holder.tv_heading.setText(searchDetails.getFirm_name());
         holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
 
-//        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                context.startActivity(new Intent(context, ViewSearchProfDetails_Activity.class)
-//                        .putExtra("searchDetails", searchDetails));
-//            }
-//        });
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, EditProfessional_Activity.class)
+                        .putExtra("searchDetails", searchDetails));
+            }
+        });
 
     }
 

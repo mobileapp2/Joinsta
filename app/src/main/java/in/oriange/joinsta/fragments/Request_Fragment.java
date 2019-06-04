@@ -52,7 +52,7 @@ public class Request_Fragment extends Fragment {
     private static String userId;
     private static ArrayList<RequirementsListModel> requirementsList;
 
-    private boolean business, employment, professional, posted, starred;
+    private static boolean business, employment, professional, posted, starred;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -247,8 +247,6 @@ public class Request_Fragment extends Fragment {
 //                alertD.show();
 //            }
 //        });
-
-
         ib_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -392,8 +390,6 @@ public class Request_Fragment extends Fragment {
                         professional = false;
                         posted = false;
                         starred = false;
-
-
                         if (requirementsList.size() > 0) {
                             rv_requirementlist.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
@@ -452,7 +448,11 @@ public class Request_Fragment extends Fragment {
 
                     if (type.equalsIgnoreCase("success")) {
                         requirementsList = pojoDetails.getResult();
-
+                        business = false;
+                        employment = false;
+                        professional = false;
+                        posted = false;
+                        starred = false;
                         if (requirementsList.size() > 0) {
                             rv_requirementlist.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);

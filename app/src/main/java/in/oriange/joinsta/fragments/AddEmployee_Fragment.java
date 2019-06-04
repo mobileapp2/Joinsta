@@ -989,6 +989,8 @@ public class AddEmployee_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+
+                        new Profile_Fragment.GetEmployee().execute();
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -1064,5 +1066,6 @@ public class AddEmployee_Fragment extends Fragment {
 
         }
     }
+
 
 }

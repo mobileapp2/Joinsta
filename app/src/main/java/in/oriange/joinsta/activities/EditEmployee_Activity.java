@@ -1,8 +1,8 @@
 package in.oriange.joinsta.activities;
 
-import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -30,9 +30,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -68,12 +68,13 @@ import java.util.Locale;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.PickMapLoaction_Activity;
 import in.oriange.joinsta.fragments.Profile_Fragment;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
-import in.oriange.joinsta.models.GetBusinessModel;
+import in.oriange.joinsta.models.GetEmployeeModel;
 import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
@@ -85,20 +86,20 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
-import in.oriange.joinsta.R;
-
-public class EditBusiness_Activity extends AppCompatActivity {
+public class EditEmployee_Activity extends AppCompatActivity {
 
     private static Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private ProgressBar progressBar;
-    private ImageView imv_photo1, imv_photo2;
+    private CircleImageView imv_user;
+    private RelativeLayout rl_profilepic;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
             edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country, edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
@@ -122,12 +123,13 @@ public class EditBusiness_Activity extends AppCompatActivity {
 
     private static TextView tv_selected_forconcode = null;
 
-    private GetBusinessModel.ResultBean searchDetails;
+    private GetEmployeeModel.ResultBean searchDetails;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_business);
+        setContentView(R.layout.activity_edit_employee);
 
         init();
         getSessionData();
@@ -137,13 +139,13 @@ public class EditBusiness_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = EditBusiness_Activity.this;
+        context = EditEmployee_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        rl_profilepic = findViewById(R.id.rl_profilepic);
         progressBar = findViewById(R.id.progressBar);
-        imv_photo1 = findViewById(R.id.imv_photo1);
-        imv_photo2 = findViewById(R.id.imv_photo2);
+        imv_user = findViewById(R.id.imv_user);
         edt_name = findViewById(R.id.edt_name);
         edt_nature = findViewById(R.id.edt_nature);
         edt_subtype = findViewById(R.id.edt_subtype);
@@ -183,7 +185,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Business");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Employee");
         if (!profilPicFolder.exists())
             profilPicFolder.mkdirs();
 
@@ -227,33 +229,32 @@ public class EditBusiness_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
+        searchDetails = (GetEmployeeModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
-                    .load(searchDetails.getImage_url().trim())
-                    .into(imv_photo1, new Callback() {
+                    .load(url)
+                    .placeholder(getResources().getDrawable(R.drawable.icon_userphoto))
+                    .into(imv_user, new Callback() {
                         @Override
                         public void onSuccess() {
-                            imv_photo1.setVisibility(View.VISIBLE);
+                            rl_profilepic.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
-                            imv_photo2.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
-                            imv_photo2.setVisibility(View.VISIBLE);
+                            rl_profilepic.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
-                            imv_photo1.setVisibility(View.GONE);
                         }
                     });
         } else {
-            imv_photo2.setVisibility(View.VISIBLE);
+            rl_profilepic.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-            imv_photo1.setVisibility(View.GONE);
         }
 
-        edt_name.setText(searchDetails.getBusiness_name());
+        edt_name.setText(searchDetails.getOrganization_name());
         edt_nature.setText(searchDetails.getType_description());
         edt_subtype.setText(searchDetails.getSubtype_description());
         edt_designation.setText(searchDetails.getDesignation());
@@ -267,7 +268,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         edt_state.setText(searchDetails.getState());
         edt_country.setText(searchDetails.getCountry());
 
-        ArrayList<GetBusinessModel.ResultBean.TagBean> tagsList = new ArrayList<>();
+        ArrayList<GetEmployeeModel.ResultBean.TagBean> tagsList = new ArrayList<>();
         tagsList = searchDetails.getTag().get(0);
 
         if (tagsList != null)
@@ -275,7 +276,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
                 for (int i = 0; i < tagsList.size(); i++)
                     tag_container.addTag(tagsList.get(i).getTag_name());
 
-        ArrayList<GetBusinessModel.ResultBean.MobilesBean> mobilesList = new ArrayList<>();
+        ArrayList<GetEmployeeModel.ResultBean.MobilesBean> mobilesList = new ArrayList<>();
         mobilesList = searchDetails.getMobiles().get(0);
 
         if (mobilesList != null)
@@ -288,7 +289,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
                             tv_countrycode_mobile.setText(code);
                     } else {
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_mobile1, null);
+                        final View rowView = inflater.inflate(R.layout.layout_add_mobile2, null);
                         LinearLayout ll = (LinearLayout) rowView;
                         mobileLayoutsList.add(ll);
                         ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
@@ -301,7 +302,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
                 }
 
 
-        ArrayList<GetBusinessModel.ResultBean.LandlineBean> landlineList = new ArrayList<>();
+        ArrayList<GetEmployeeModel.ResultBean.LandlineBean> landlineList = new ArrayList<>();
         landlineList = searchDetails.getLandline().get(0);
 
 
@@ -309,18 +310,18 @@ public class EditBusiness_Activity extends AppCompatActivity {
             if (landlineList.size() > 0)
                 for (int i = 0; i < landlineList.size(); i++) {
                     if (i == landlineList.size() - 1) {
-                        edt_landline.setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
-                        String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                        edt_landline.setText(landlineList.get(i).getLandline_numbers().substring(landlineList.get(i).getLandline_numbers().length() - 10));
+                        String code = landlineList.get(i).getLandline_numbers().substring(0, landlineList.get(i).getLandline_numbers().length() - 10);
                         if (!code.isEmpty())
                             tv_countrycode_landline.setText(code);
                     } else {
                         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_landline1, null);
+                        final View rowView = inflater.inflate(R.layout.layout_add_landline2, null);
                         LinearLayout ll = (LinearLayout) rowView;
                         landlineLayoutsList.add(ll);
                         ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
-                        String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_numbers().substring(landlineList.get(i).getLandline_numbers().length() - 10));
+                        String code = landlineList.get(i).getLandline_numbers().substring(0, landlineList.get(i).getLandline_numbers().length() - 10);
                         if (!code.isEmpty())
                             ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
                     }
@@ -338,22 +339,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
     }
 
     private void setEventListner() {
-        imv_photo1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        imv_photo2.setOnClickListener(new View.OnClickListener() {
+        imv_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Utilities.isNetworkAvailable(context)) {
@@ -373,7 +359,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 if (categotyList.size() == 0) {
                     if (Utilities.isNetworkAvailable(context)) {
-                        new GetCategotyList().execute("0", "0", "1");
+                        new GetCategotyList().execute("0", "0", "2");
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
@@ -388,13 +374,13 @@ public class EditBusiness_Activity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (edt_nature.getText().toString().trim().isEmpty()) {
-                    edt_nature.setError("Please select the nature of business");
+                    edt_nature.setError("Please select the nature of employee");
                     edt_nature.requestFocus();
                     return;
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetSubCategotyList().execute(categoryId, "1", "1");
+                    new GetSubCategotyList().execute(categoryId, "1", "2");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -420,7 +406,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_mobile1, null);
+                final View rowView = inflater.inflate(R.layout.layout_add_mobile3, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 mobileLayoutsList.add(ll);
                 ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
@@ -431,13 +417,12 @@ public class EditBusiness_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_landline1, null);
+                final View rowView = inflater.inflate(R.layout.layout_add_landline3, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 landlineLayoutsList.add(ll);
                 ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
             }
         });
-
         edt_select_area.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -524,17 +509,17 @@ public class EditBusiness_Activity extends AppCompatActivity {
         alertD.show();
     }
 
-    public void removeMobileLayoutBiz(View v) {
+    public void removeMobileLayoutEmp(View v) {
         ll_mobile.removeView((View) v.getParent());
         mobileLayoutsList.remove(v.getParent());
     }
 
-    public void removeLandlineLayoutBiz(View view) {
+    public void removeLandlineLayoutEmp(View view) {
         ll_landline.removeView((View) view.getParent());
         landlineLayoutsList.remove(view.getParent());
     }
 
-    public void selectContryCode(View v) {
+    public static void selectContryCode(View v) {
         tv_selected_forconcode = (TextView) v;
         showContryCodeForSelectedDialog(countryCodeList);
     }
@@ -592,7 +577,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
 
     private void showCategoryListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Nature of Business");
+        builderSingle.setTitle("Select Nature of Employee");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -776,13 +761,13 @@ public class EditBusiness_Activity extends AppCompatActivity {
         tagJSONArray = new JsonArray();
 
         if (edt_name.getText().toString().trim().isEmpty()) {
-            edt_name.setError("Please enter the name of business");
+            edt_name.setError("Please enter organization name");
             edt_name.requestFocus();
             return;
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
-            edt_nature.setError("Please select the nature of business");
+            edt_nature.setError("Please select the nature of employee");
             edt_nature.requestFocus();
             return;
         }
@@ -897,9 +882,8 @@ public class EditBusiness_Activity extends AppCompatActivity {
             tagJSONArray.add(landlineJSONObj);
         }
 
-        mainObj.addProperty("type", "updatebusiness");
+        mainObj.addProperty("type", "updateemployee");
         mainObj.addProperty("address", edt_address.getText().toString().trim());
-        mainObj.addProperty("business_name", edt_name.getText().toString().trim());
         mainObj.addProperty("district", edt_district.getText().toString().trim());
         mainObj.addProperty("state", edt_state.getText().toString().trim());
         mainObj.addProperty("city", edt_city.getText().toString().trim());
@@ -911,28 +895,29 @@ public class EditBusiness_Activity extends AppCompatActivity {
         mainObj.addProperty("locality", edt_city.getText().toString().trim());
         mainObj.addProperty("email", edt_email.getText().toString().trim());
         mainObj.addProperty("designation", edt_designation.getText().toString().trim());
-        mainObj.addProperty("record_statusid", "1");
+        mainObj.addProperty("organization_name", edt_name.getText().toString().trim());
+        mainObj.addProperty("record_status_id", "0");
         mainObj.addProperty("website", edt_website.getText().toString().trim());
+        mainObj.addProperty("is_active", "0");
+        mainObj.addProperty("other_details", "");
         mainObj.addProperty("image_url", imageName);
-        mainObj.addProperty("busi_type_id", "2");
 //        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
 //        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
 //        mainObj.addProperty("cat_id", "1");
         mainObj.addProperty("type_id", categoryId);
         mainObj.addProperty("sub_type_id", subCategoryId);
-        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
-        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
-        mainObj.addProperty("business_id", searchDetails.getId());
+        mainObj.addProperty("emp_id", searchDetails.getId());
         mainObj.add("mobile_number", mobileJSONArray);
-        mainObj.add("landline_number", landlineJSONArray);
+        mainObj.add("landline_numbers", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
 
-        Log.i("EDITBUSINESS", mainObj.toString());
+        Log.i("ADDEMPLOYEE", mainObj.toString());
+
 
         if (Utilities.isNetworkAvailable(context)) {
-            new EditBusiness().execute(mainObj.toString());
+            new EditEmployee().execute(mainObj.toString());
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -946,11 +931,11 @@ public class EditBusiness_Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditBusiness_Activity.this);
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditEmployee_Activity.this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditBusiness_Activity.this);
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditEmployee_Activity.this);
             }
 
             if (requestCode == 10001) {
@@ -1018,7 +1003,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
         String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
-                + "Business/" + "uplimg.png";
+                + "Employee/" + "uplimg.png";
 
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
@@ -1095,8 +1080,8 @@ public class EditBusiness_Activity extends AppCompatActivity {
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
                                     .load(imageUrl)
-                                    .into(imv_photo1);
-                            imv_photo2.setVisibility(View.GONE);
+                                    .placeholder(R.drawable.icon_userphoto)
+                                    .into(imv_user);
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
@@ -1108,7 +1093,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         }
     }
 
-    private class EditBusiness extends AsyncTask<String, Void, String> {
+    private class EditEmployee extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1121,7 +1106,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.EMPLOYEEAPI, params[0]);
             return res.trim();
         }
 
@@ -1136,7 +1121,8 @@ public class EditBusiness_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetBusiness().execute();
+
+                        new Profile_Fragment.GetEmployee().execute();
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
@@ -1148,7 +1134,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Business details updated successfully");
+                        tv_title.setText("Employee details updated successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -1227,7 +1213,6 @@ public class EditBusiness_Activity extends AppCompatActivity {
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -1241,7 +1226,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                new DeleteBusiness().execute();
+                new DeleteEmployee().execute();
                 break;
 
             default:
@@ -1250,7 +1235,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         return true;
     }
 
-    public class DeleteBusiness extends AsyncTask<String, Void, String> {
+    public class DeleteEmployee extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
 
         @Override
@@ -1266,9 +1251,9 @@ public class EditBusiness_Activity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "deletebusiness");
-            obj.addProperty("business_id", searchDetails.getId());
-            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
+            obj.addProperty("type", "deleteemployee");
+            obj.addProperty("emp_id", searchDetails.getId());
+            res = APICall.JSONAPICall(ApplicationConstants.EMPLOYEEAPI, obj.toString());
             return res;
         }
 
@@ -1283,8 +1268,8 @@ public class EditBusiness_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetBusiness().execute();
-                        Utilities.showMessage("Business details deleted successfully", context, 1);
+                        new Profile_Fragment.GetEmployee().execute();
+                        Utilities.showMessage("Employee details deleted successfully", context, 1);
                         finish();
                     }
                 }
@@ -1297,7 +1282,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(EditBusiness_Activity.this);
+        hideSoftKeyboard(EditEmployee_Activity.this);
     }
 
 

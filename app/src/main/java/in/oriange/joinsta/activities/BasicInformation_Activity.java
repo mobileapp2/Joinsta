@@ -74,6 +74,7 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 
 public class BasicInformation_Activity extends AppCompatActivity {
 
@@ -1382,6 +1383,13 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(BasicInformation_Activity.this);
+    }
+
 
 
 }

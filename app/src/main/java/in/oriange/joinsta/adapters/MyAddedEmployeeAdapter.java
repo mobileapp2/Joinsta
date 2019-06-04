@@ -1,6 +1,7 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditEmployee_Activity;
 import in.oriange.joinsta.models.GetEmployeeModel;
 
 public class MyAddedEmployeeAdapter extends RecyclerView.Adapter<MyAddedEmployeeAdapter.MyViewHolder> {
@@ -40,13 +42,13 @@ public class MyAddedEmployeeAdapter extends RecyclerView.Adapter<MyAddedEmployee
         holder.tv_heading.setText(searchDetails.getOrganization_name());
         holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
 
-//        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                context.startActivity(new Intent(context, ViewSearchEmpDetails_Activity.class)
-//                        .putExtra("searchDetails", searchDetails));
-//            }
-//        });
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, EditEmployee_Activity.class)
+                        .putExtra("searchDetails", searchDetails));
+            }
+        });
 
     }
 
