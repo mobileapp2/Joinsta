@@ -17,8 +17,9 @@
         android:orientation="vertical"
         android:padding="5dp">
 
+
         <TextView
-            android:id="@+id/tv_heading"
+            android:id="@+id/tv_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:duplicateParentState="true"
@@ -27,16 +28,18 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tv_subheading"
-            android:layout_width="match_parent"
+        <RatingBar
+            android:id="@+id/rb_feedbackstars"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:duplicateParentState="true"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:text="This is the sub heading"
-            android:textColor="@color/darkGray" />
+            android:layout_gravity="end"
+            android:layout_margin="5dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.1" />
 
     </LinearLayout>
 

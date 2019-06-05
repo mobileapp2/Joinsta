@@ -72,7 +72,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        getSessionData();
+        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
@@ -80,7 +80,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private void init() {
         context = ViewSearchEmpDetails_Activity.this;
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         rl_profilepic = findViewById(R.id.rl_profilepic);
         ll_direction = findViewById(R.id.ll_direction);
@@ -166,7 +166,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         }
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
 
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(

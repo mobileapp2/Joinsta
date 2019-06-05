@@ -68,7 +68,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
 
 
         init();
-        getSessionData();
+        getSessionDetails();
         setEventHandler();
         setUpBottomNavigation();
 
@@ -83,7 +83,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         view_pager.setAdapter(adapter);
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
 
     }
 

@@ -113,7 +113,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        getSessionData();
+        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
@@ -177,7 +177,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
 
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(

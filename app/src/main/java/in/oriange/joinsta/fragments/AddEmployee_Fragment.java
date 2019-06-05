@@ -112,7 +112,7 @@ public class AddEmployee_Fragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_add_employee, container, false);
         context = getActivity();
         init(rootView);
-        getSessionData();
+        getSessionDetails();
         setDefault();
         setEventListner();
         return rootView;
@@ -174,7 +174,7 @@ public class AddEmployee_Fragment extends Fragment {
 
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));

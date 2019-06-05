@@ -36,7 +36,7 @@
         app:cursorVisible="false"
         app:forceKeyboard="true"
         app:hint="0"
-        app:inputType="text"
+        app:inputType="number"
         app:password="false"
         app:pinHeight="40dp"
         app:pinWidth="40dp" />

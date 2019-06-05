@@ -1,9 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,12 +30,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
@@ -69,7 +63,6 @@ import java.util.Locale;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.PickMapLoaction_Activity;
 import in.oriange.joinsta.fragments.Profile_Fragment;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
@@ -84,13 +77,10 @@ import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-import static android.app.Activity.RESULT_OK;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
-
-import in.oriange.joinsta.R;
 
 public class EditBusiness_Activity extends AppCompatActivity {
 
@@ -130,7 +120,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_business);
 
         init();
-        getSessionData();
+        getSessionDetails();
         setDefault();
         setEventListner();
         setUpToolbar();
@@ -195,7 +185,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
 
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
 
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
@@ -1241,7 +1231,24 @@ public class EditBusiness_Activity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                new DeleteBusiness().execute();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to delete this item?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_alertred);
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        new DeleteBusiness().execute();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
                 break;
 
             default:
@@ -1256,7 +1263,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();
@@ -1299,7 +1306,6 @@ public class EditBusiness_Activity extends AppCompatActivity {
         super.onPause();
         hideSoftKeyboard(EditBusiness_Activity.this);
     }
-
 
 
 }

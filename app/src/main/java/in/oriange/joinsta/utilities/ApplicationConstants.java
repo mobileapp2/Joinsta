@@ -9,6 +9,8 @@ public class ApplicationConstants {
     public static final String IS_LOCATION_SET = "IS_LOCATION_SET";
     public static final String KEY_LOCATION_INFO = "KEY_LOCATION_INFO";
 
+    public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
+
 
     // BETA API LINK
     public static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
@@ -32,4 +34,6 @@ public class ApplicationConstants {
     public static final String REQUIREMENTAPI = API_LINK + "requirements.php";
     public static final String FILEUPLOADAPI = API_LINK + "upload.php";
     public static final String DEVICEREGAPI = API_LINK + "deviceregistration.php";
+    public static final String FEEDBACKAPI = API_LINK + "userfeedback.php";
+    public static final String NOTIFICATIONAPI = API_LINK + "usernotification.php";
 }

@@ -80,7 +80,7 @@ public class Search_Fragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         Toolbar toolbar = rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);

@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -34,6 +33,7 @@ import java.util.ArrayList;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.BasicInformation_Activity;
 import in.oriange.joinsta.activities.BizProfEmpDetails_Activity;
+import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
 import in.oriange.joinsta.adapters.MyAddedBusinessAdapter;
 import in.oriange.joinsta.adapters.MyAddedEmployeeAdapter;
@@ -110,6 +110,7 @@ public class Profile_Fragment extends Fragment {
     }
 
     private void setDefault() {
+
         if (Utilities.isNetworkAvailable(context))
             new GetBusiness().execute();
     }
@@ -363,6 +364,7 @@ public class Profile_Fragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_notification:
+                startActivity(new Intent(context, Notification_Activity.class));
                 break;
             case R.id.action_settings:
                 startActivity(new Intent(context, Settings_Activity.class));

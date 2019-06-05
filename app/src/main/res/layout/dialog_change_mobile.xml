@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mobile"
+        android:inputType="number"
+        android:maxLength="10"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="16sp"
+        app:met_floatingLabel="highlight"
+        app:met_textColorHint="@color/darkGray"
+        app:met_underlineColor="@color/mediumGray" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_background"
+        android:text="SEND OTP"
+        android:textColor="@color/colorAccent" />
+
+
+</LinearLayout>

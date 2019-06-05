@@ -70,7 +70,7 @@ public class Home_Fragment extends Fragment {
     }
 
     private void init(View rootView) {
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_location = rootView.findViewById(R.id.edt_location);
 

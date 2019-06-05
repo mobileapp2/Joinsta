@@ -60,7 +60,7 @@ public class EditRequirements_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        getSessionData();
+        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
@@ -68,7 +68,7 @@ public class EditRequirements_Activity extends AppCompatActivity {
     private void init() {
         context = EditRequirements_Activity.this;
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         edt_category = findViewById(R.id.edt_category);
         edt_city = findViewById(R.id.edt_city);
@@ -94,7 +94,7 @@ public class EditRequirements_Activity extends AppCompatActivity {
         }
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));

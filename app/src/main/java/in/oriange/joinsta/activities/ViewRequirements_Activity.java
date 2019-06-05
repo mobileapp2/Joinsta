@@ -62,7 +62,7 @@ public class ViewRequirements_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        getSessionData();
+        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
@@ -70,7 +70,7 @@ public class ViewRequirements_Activity extends AppCompatActivity {
     private void init() {
         context = ViewRequirements_Activity.this;
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         cb_like = findViewById(R.id.cb_like);
         imv_user = findViewById(R.id.imv_user);
         imv_mobile = findViewById(R.id.imv_mobile);
@@ -118,7 +118,7 @@ public class ViewRequirements_Activity extends AppCompatActivity {
         }
     }
 
-    private void getSessionData() {
+    private void getSessionDetails() {
 
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(

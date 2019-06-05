@@ -15,12 +15,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.goodiebag.pinview.Pinview;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -54,8 +56,10 @@ public class Login_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private LinearLayout ll_password, ll_otp, ll_loginwithpwd, ll_loginwithotp;
     private View v_password, v_otp;
+    private TextView tv_forgotpass;
     private MaterialEditText edt_username, edt_password, edt_mobile;
     private Button btn_login, btn_register, btn_sendotp;
+    private String MOBILE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,7 @@ public class Login_Activity extends AppCompatActivity {
         edt_username = findViewById(R.id.edt_username);
         edt_password = findViewById(R.id.edt_password);
         edt_mobile = findViewById(R.id.edt_mobile);
+        tv_forgotpass = findViewById(R.id.tv_forgotpass);
         ll_password = findViewById(R.id.ll_password);
         ll_otp = findViewById(R.id.ll_otp);
         ll_loginwithpwd = findViewById(R.id.ll_loginwithpwd);
@@ -131,7 +136,7 @@ public class Login_Activity extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new SendOTP().execute(edt_mobile.getText().toString().trim());
+                    new SendOTP().execute(edt_mobile.getText().toString().trim(), "1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -180,6 +185,13 @@ public class Login_Activity extends AppCompatActivity {
 
             }
         });
+
+        tv_forgotpass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createMobileForPassword();
+            }
+        });
     }
 
     private void submitData() {
@@ -200,7 +212,7 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
-    private void createDialogForOTP(final String otp) {
+    private void createDialogForOTP(final String otp, final String TYPE) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_layout_otp, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -216,16 +228,23 @@ public class Login_Activity extends AppCompatActivity {
             @Override
             public void onDataEntered(Pinview pinview, boolean fromUser) {
                 if (pinview.getValue().length() == otp.length()) {
+
+
                     if (pinview.getValue().equals(otp)) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            alertD.dismiss();
-                            new LoginUserWithOtp().execute(edt_mobile.getText().toString().trim());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        alertD.dismiss();
+                        if (TYPE.equals("1")) {
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new LoginUserWithOtp().execute(edt_mobile.getText().toString().trim());
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                        } else if (TYPE.equals("2")) {
+                            changePasswordAlert();
                         }
                     } else {
                         Utilities.showMessage("OTP did not match", context, 3);
                     }
+
                 }
             }
         });
@@ -288,6 +307,7 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private class SendOTP extends AsyncTask<String, Void, String> {
+        private String TYPE = "";
 
         @Override
         protected void onPreExecute() {
@@ -299,6 +319,7 @@ public class Login_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            TYPE = params[1];
             String res = "[]";
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("type", "send"));
@@ -319,7 +340,7 @@ public class Login_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         String OTP = mainObj.getString("otp");
-                        createDialogForOTP(OTP);
+                        createDialogForOTP(OTP, TYPE);
                     } else if (type.equalsIgnoreCase("failure")) {
                         Utilities.showAlertDialog(context, "Failed to send otp. Please try again", false);
                     }
@@ -461,6 +482,154 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
+    private void createMobileForPassword() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_change_mobile, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Enter Mobile");
+        alertDialogBuilder.setView(promptView);
+
+        final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+        final Button btn_save = promptView.findViewById(R.id.btn_save);
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                    edt_mobile.setError("Please enter valid mobile number");
+                    edt_mobile.requestFocus();
+                    return;
+                }
+
+                MOBILE = edt_mobile.getText().toString().trim();
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    alertD.dismiss();
+                    new SendOTP().execute(edt_mobile.getText().toString().trim(), "2");
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        alertD.show();
+
+    }
+
+    private void changePasswordAlert() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_change_password, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Change Password");
+        alertDialogBuilder.setView(promptView);
+
+        final MaterialEditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
+        final MaterialEditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
+        final Button btn_save = promptView.findViewById(R.id.btn_save);
+
+        edt_oldpassword.setVisibility(View.GONE);
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (edt_newpassword.getText().toString().trim().isEmpty()) {
+                    edt_newpassword.setError("Please enter new password");
+                    edt_newpassword.requestFocus();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    alertD.dismiss();
+                    new ChangePassword().execute(
+                            "",
+                            edt_newpassword.getText().toString().trim()
+                    );
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        alertD.show();
+
+    }
+
+    public class ChangePassword extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "changepassword");
+                obj.put("userId", "");
+                obj.put("mobile", MOBILE);
+                obj.put("oldpassword", "");
+                obj.put("newpasssword", params[1]);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Password changed successfully. Please login again with new password.");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                session.logoutUser();
+                            }
+                        });
+
+                        alertD.show();
+                    } else if (type.equalsIgnoreCase("failure")) {
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void saveRegistrationID() {
         String user_id = "", regToken = "";
         try {
@@ -480,7 +649,6 @@ public class Login_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
     private void checkPermissions() {
         if (!PermissionUtil.askPermissions(this)) {
@@ -550,7 +718,7 @@ public class Login_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();

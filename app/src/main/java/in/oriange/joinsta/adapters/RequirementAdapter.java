@@ -179,7 +179,7 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
                             break;
 
                         case 1:
-                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                             builder.setMessage("Are you sure you want to delete this item?");
                             builder.setTitle("Alert");
                             builder.setIcon(R.drawable.icon_alertred);
@@ -242,7 +242,7 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();
