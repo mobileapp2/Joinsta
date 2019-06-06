@@ -13,12 +13,12 @@ public class ApplicationConstants {
 
 
     // BETA API LINK
-    public static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
-    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
+//    public static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
+//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     //LIVE API LINK
-//    public static final String API_LINK = "http://joinsta.in/Api/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+    public static final String API_LINK = "http://joinsta.in/Api/";
+    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";

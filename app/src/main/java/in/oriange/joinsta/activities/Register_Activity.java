@@ -171,9 +171,9 @@ public class Register_Activity extends AppCompatActivity {
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        String OTP = mainObj.getString("otp");
+                        JSONObject otpObj = mainObj.getJSONObject("OTP");
+                        String OTP = otpObj.getString("otp");
                         createDialogForOTP(OTP);
                     } else if (type.equalsIgnoreCase("failure")) {
                         Utilities.showAlertDialog(context, "Failed to send otp. Please try again", false);

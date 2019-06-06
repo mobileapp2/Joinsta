@@ -156,7 +156,7 @@ public class UserFeedbackAdapter extends RecyclerView.Adapter<UserFeedbackAdapte
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new UserFeedback_Activity.GetUserFeedback().execute();
+                        new UserFeedback_Activity.GetUserFeedback().execute(userId);
                         Utilities.showMessage("User feedback deleted successfully", context, 1);
                     } else {
 
