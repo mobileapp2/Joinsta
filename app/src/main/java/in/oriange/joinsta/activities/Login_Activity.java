@@ -59,7 +59,7 @@ public class Login_Activity extends AppCompatActivity {
     private TextView tv_forgotpass;
     private MaterialEditText edt_username, edt_password, edt_mobile;
     private Button btn_login, btn_register, btn_sendotp;
-    private String MOBILE;
+    private String MOBILE, USERID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,9 +337,10 @@ public class Login_Activity extends AppCompatActivity {
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        String OTP = mainObj.getString("otp");
+                        JSONObject otpObj = mainObj.getJSONObject("OTP");
+                        String OTP = otpObj.getString("otp");
+                        USERID = mainObj.getString("userId");
                         createDialogForOTP(OTP, TYPE);
                     } else if (type.equalsIgnoreCase("failure")) {
                         Utilities.showAlertDialog(context, "Failed to send otp. Please try again", false);
@@ -559,7 +560,7 @@ public class Login_Activity extends AppCompatActivity {
 
     }
 
-    public class ChangePassword extends AsyncTask<String, Void, String> {
+    private class ChangePassword extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -575,7 +576,7 @@ public class Login_Activity extends AppCompatActivity {
             JSONObject obj = new JSONObject();
             try {
                 obj.put("type", "changepassword");
-                obj.put("userId", "");
+                obj.put("userId", USERID);
                 obj.put("mobile", MOBILE);
                 obj.put("oldpassword", "");
                 obj.put("newpasssword", params[1]);
@@ -607,7 +608,7 @@ public class Login_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Password changed successfully. Please login again with new password.");
+                        tv_title.setText("Password changed successfully. Please login using new password.");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

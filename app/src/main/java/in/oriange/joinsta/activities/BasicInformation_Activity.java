@@ -1391,5 +1391,4 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
 
-
 }
