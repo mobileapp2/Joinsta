@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.github.florent37:shapeofview:1.4.7'
     implementation 'com.github.GoodieBag:Pinview:v1.3'
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
+    implementation 'com.github.iammert:ReadableBottomBar:0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
