@@ -32,6 +32,7 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private SmartTabLayout tabs;
     private ViewPager viewpager;
+    private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +55,18 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        currentPosition = getIntent().getIntExtra("currentPosition", 0);
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new AddBusiness_Fragment(), "Business");
         adapter.addFrag(new AddEmployee_Fragment(), "Employee");
         adapter.addFrag(new AddProfessional_Fragment(), "Professional");
         viewpager.setAdapter(adapter);
         tabs.setViewPager(viewpager);
+
+        viewpager.setCurrentItem(currentPosition);
+
+
     }
 
     private void setEventHandler() {

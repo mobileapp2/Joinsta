@@ -40,7 +40,11 @@ public class MyAddedProfessionalAdapter extends RecyclerView.Adapter<MyAddedProf
         final GetProfessionalModel.ResultBean searchDetails = resultArrayList.get(position);
 
         holder.tv_heading.setText(searchDetails.getFirm_name());
-        holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+
+        if (!searchDetails.getSubtype_description().isEmpty())
+            holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+        else
+            holder.tv_subheading.setText(searchDetails.getType_description());
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override

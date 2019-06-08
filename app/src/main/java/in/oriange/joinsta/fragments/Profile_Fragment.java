@@ -66,6 +66,8 @@ public class Profile_Fragment extends Fragment {
     public static ArrayList<GetEmployeeModel.ResultBean> employeeList;
     public static ArrayList<GetProfessionalModel.ResultBean> professionalList;
 
+    private int currentPosition = 0;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +140,8 @@ public class Profile_Fragment extends Fragment {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, BizProfEmpDetails_Activity.class));
+                startActivity(new Intent(context, BizProfEmpDetails_Activity.class)
+                        .putExtra("currentPosition", currentPosition));
             }
         });
 
@@ -146,6 +149,7 @@ public class Profile_Fragment extends Fragment {
         ll_business.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPosition = 0;
                 v_business.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 v_employee.setBackgroundColor(getResources().getColor(R.color.white));
                 v_professional.setBackgroundColor(getResources().getColor(R.color.white));
@@ -158,6 +162,7 @@ public class Profile_Fragment extends Fragment {
         ll_employee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPosition = 1;
                 v_business.setBackgroundColor(getResources().getColor(R.color.white));
                 v_employee.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 v_professional.setBackgroundColor(getResources().getColor(R.color.white));
@@ -171,6 +176,7 @@ public class Profile_Fragment extends Fragment {
         ll_professional.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                currentPosition = 2;
                 v_business.setBackgroundColor(getResources().getColor(R.color.white));
                 v_employee.setBackgroundColor(getResources().getColor(R.color.white));
                 v_professional.setBackgroundColor(getResources().getColor(R.color.colorPrimary));

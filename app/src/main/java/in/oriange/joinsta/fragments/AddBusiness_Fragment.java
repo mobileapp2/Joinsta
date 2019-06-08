@@ -97,7 +97,7 @@ public class AddBusiness_Fragment extends Fragment {
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", imageName = "", categoryId, subCategoryId, latitude, longitude;
+    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude, longitude;
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -658,11 +658,11 @@ public class AddBusiness_Fragment extends Fragment {
             return;
         }
 
-        if (edt_subtype.getText().toString().trim().isEmpty()) {
-            edt_subtype.setError("Please select subtype");
-            edt_subtype.requestFocus();
-            return;
-        }
+//        if (edt_subtype.getText().toString().trim().isEmpty()) {
+//            edt_subtype.setError("Please select subtype");
+//            edt_subtype.requestFocus();
+//            return;
+//        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
@@ -699,11 +699,12 @@ public class AddBusiness_Fragment extends Fragment {
             }
         }
 
-        if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-            edt_email.setError("Please enter valid email");
-            edt_email.requestFocus();
-            return;
-        }
+        if (!edt_email.getText().toString().trim().isEmpty())
+            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+                edt_email.setError("Please enter valid email");
+                edt_email.requestFocus();
+                return;
+            }
 
 
         if (edt_select_area.getText().toString().trim().isEmpty()) {

@@ -730,8 +730,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
 //            return;
 //        }
 
-        String genderId = "";
-
         if (rb_male.isChecked()) {
             genderId = "1";
         } else if (rb_female.isChecked()) {

@@ -47,7 +47,12 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
         final SearchDetailsModel.ResultBean.EmployeesBean searchDetails = resultArrayList.get(position);
 
         holder.tv_heading.setText(searchDetails.getOrganization_name());
-        holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+
+        if (!searchDetails.getSubtype_description().isEmpty())
+            holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+        else
+            holder.tv_subheading.setText(searchDetails.getType_description());
+
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {

@@ -47,7 +47,12 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         final SearchDetailsModel.ResultBean.BusinessesBean searchDetails = resultArrayList.get(position);
 
         holder.tv_heading.setText(searchDetails.getBusiness_name());
-        holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+
+        if (!searchDetails.getSubtype_description().isEmpty())
+            holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+        else
+            holder.tv_subheading.setText(searchDetails.getType_description());
+
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
