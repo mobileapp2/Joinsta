@@ -104,7 +104,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId= "0", latitude, longitude;
+    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude, longitude;
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -275,10 +275,17 @@ public class EditProfessional_Activity extends AppCompatActivity {
                 for (int i = 0; i < mobilesList.size(); i++) {
                     if (i == mobilesList.size() - 1) {
                         try {
-                            edt_mobile.setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
-                            String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
-                            if (!code.isEmpty())
-                                tv_countrycode_mobile.setText(code);
+                            if (mobilesList.get(i).getMobile_number().length() > 10) {
+                                edt_mobile.setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
+                                String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
+                                if (!code.isEmpty())
+                                    tv_countrycode_mobile.setText(code);
+                            } else {
+                                edt_mobile.setText(mobilesList.get(i).getMobile_number());
+                                String code = "";
+                                if (!code.isEmpty())
+                                    tv_countrycode_mobile.setText(code);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -289,10 +296,17 @@ public class EditProfessional_Activity extends AppCompatActivity {
                             LinearLayout ll = (LinearLayout) rowView;
                             mobileLayoutsList.add(ll);
                             ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-                            ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
-                            String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
-                            if (!code.isEmpty())
-                                ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                            if (mobilesList.get(i).getMobile_number().length() > 10) {
+                                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number().substring(mobilesList.get(i).getMobile_number().length() - 10));
+                                String code = mobilesList.get(i).getMobile_number().substring(0, mobilesList.get(i).getMobile_number().length() - 10);
+                                if (!code.isEmpty())
+                                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                            } else {
+                                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number());
+                                String code = "";
+                                if (!code.isEmpty())
+                                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -310,10 +324,18 @@ public class EditProfessional_Activity extends AppCompatActivity {
                 for (int i = 0; i < landlineList.size(); i++) {
                     if (i == landlineList.size() - 1) {
                         try {
-                            edt_landline.setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
-                            String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
-                            if (!code.isEmpty())
-                                tv_countrycode_landline.setText(code);
+
+                            if (landlineList.get(i).getLandline_number().length() > 10) {
+                                edt_landline.setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
+                                String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                                if (!code.isEmpty())
+                                    tv_countrycode_landline.setText(code);
+                            } else {
+                                edt_landline.setText(landlineList.get(i).getLandline_number());
+                                String code = "";
+                                if (!code.isEmpty())
+                                    tv_countrycode_landline.setText(code);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -324,10 +346,18 @@ public class EditProfessional_Activity extends AppCompatActivity {
                             LinearLayout ll = (LinearLayout) rowView;
                             landlineLayoutsList.add(ll);
                             ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-                            ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
-                            String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
-                            if (!code.isEmpty())
-                                ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
+
+                            if (landlineList.get(i).getLandline_number().length() > 10) {
+                                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number().substring(landlineList.get(i).getLandline_number().length() - 10));
+                                String code = landlineList.get(i).getLandline_number().substring(0, landlineList.get(i).getLandline_number().length() - 10);
+                                if (!code.isEmpty())
+                                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
+                            } else {
+                                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number());
+                                String code = "";
+                                if (!code.isEmpty())
+                                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -341,8 +371,10 @@ public class EditProfessional_Activity extends AppCompatActivity {
         latitude = searchDetails.getLatitude();
         longitude = searchDetails.getLongitude();
 
-        Uri uri = Uri.parse(searchDetails.getImage_url());
-        imageName = uri.getLastPathSegment();
+        if (!searchDetails.getImage_url().isEmpty()) {
+            Uri uri = Uri.parse(searchDetails.getImage_url());
+            imageName = uri.getLastPathSegment();
+        }
     }
 
     private void setEventListner() {

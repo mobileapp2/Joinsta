@@ -338,7 +338,7 @@ public class GetEmployeeModel implements Serializable {
             }
 
             public String getMobile_number() {
-                return mobile_number;
+                return mobile_number.replace("-", "");
             }
 
             public void setMobile_number(String mobile_number) {
@@ -360,7 +360,7 @@ public class GetEmployeeModel implements Serializable {
             }
 
             public String getLandline_numbers() {
-                return landline_numbers;
+                return landline_numbers.replace("-", "");
             }
 
             public void setLandline_numbers(String landline_numbers) {

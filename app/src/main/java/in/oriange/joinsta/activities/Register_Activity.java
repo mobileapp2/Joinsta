@@ -436,7 +436,7 @@ public class Register_Activity extends AppCompatActivity {
                 obj.put("device_model", Build.MODEL);
                 obj.put("manufacturer", Build.MANUFACTURER);
                 obj.put("customers_id", params[0]);
-                obj.put("device_id", params[2]);
+                obj.put("device_id", params[1]);
                 s = obj.toString();
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -311,7 +311,7 @@ public class GetBusinessModel implements Serializable {
             }
 
             public String getMobile_number() {
-                return mobile_number;
+                return mobile_number.replace("-", "");
             }
 
             public void setMobile_number(String mobile_number) {
@@ -333,7 +333,7 @@ public class GetBusinessModel implements Serializable {
             }
 
             public String getLandline_number() {
-                return landline_number;
+                return landline_number.replace("-", "");
             }
 
             public void setLandline_number(String landline_number) {

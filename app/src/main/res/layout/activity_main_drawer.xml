@@ -11,12 +11,18 @@
         android:layout_height="0px"
         android:layout_weight="1" />
 
-    <com.iammert.library.readablebottombar.ReadableBottomBar
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:rbb_activeItemType="text"
-        app:rbb_indicatorColor="@color/colorPrimary"
-        app:rbb_tabs="@xml/tabs" />
+        android:layout_gravity="bottom" />
+
+    <!--<com.iammert.library.readablebottombar.ReadableBottomBar-->
+        <!--android:id="@+id/bottomNavigation"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--app:rbb_activeItemType="text"-->
+        <!--app:rbb_indicatorColor="@color/colorPrimary"-->
+        <!--app:rbb_tabs="@xml/tabs" />-->
 
 </LinearLayout>

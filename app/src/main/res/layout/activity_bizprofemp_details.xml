@@ -32,6 +32,7 @@
         app:stl_defaultTabTextColor="@color/white"
         app:stl_defaultTabTextMinWidth="120dp"
         app:stl_dividerColor="@color/white"
+        app:stl_clickable="false"
         app:stl_dividerThickness="0.5dp"
         app:stl_indicatorAlwaysInCenter="true"
         app:stl_indicatorColor="@color/white"
@@ -40,7 +41,7 @@
         app:stl_indicatorThickness="4dp"
         app:stl_underlineColor="@android:color/transparent" />
 
-    <androidx.viewpager.widget.ViewPager
+    <in.oriange.joinsta.utilities.NonSwipeableViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

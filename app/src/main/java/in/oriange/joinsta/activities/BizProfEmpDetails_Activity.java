@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
@@ -21,6 +20,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.AddBusiness_Fragment;
 import in.oriange.joinsta.fragments.AddEmployee_Fragment;
 import in.oriange.joinsta.fragments.AddProfessional_Fragment;
+import in.oriange.joinsta.utilities.NonSwipeableViewPager;
 import in.oriange.joinsta.utilities.UserSessionManager;
 
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
@@ -31,7 +31,7 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private SmartTabLayout tabs;
-    private ViewPager viewpager;
+    private NonSwipeableViewPager viewpager;
     private int currentPosition;
 
     @Override
