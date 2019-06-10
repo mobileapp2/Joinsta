@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
@@ -44,6 +45,7 @@ public class Request_Fragment extends Fragment {
 
     private static Context context;
     private UserSessionManager session;
+    private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_requirementlist;
     private static LinearLayout ll_nopreview;
     private Button btn_post_requirement;
@@ -73,6 +75,7 @@ public class Request_Fragment extends Fragment {
 
         ib_filter = rootView.findViewById(R.id.ib_filter);
         progressBar = rootView.findViewById(R.id.progressBar);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         btn_post_requirement = rootView.findViewById(R.id.btn_post_requirement);
         rv_requirementlist = rootView.findViewById(R.id.rv_requirementlist);
@@ -105,148 +108,20 @@ public class Request_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
-//        ib_filter.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                LayoutInflater layoutInflater = LayoutInflater.from(context);
-//                View promptView = layoutInflater.inflate(R.layout.dialog_layout_filter, null);
-//                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//                alertDialogBuilder.setTitle("Filter");
-//                alertDialogBuilder.setCancelable(false);
-//                alertDialogBuilder.setView(promptView);
-//
-//                final CheckBox cb_business = promptView.findViewById(R.id.cb_business);
-//                final CheckBox cb_employment = promptView.findViewById(R.id.cb_employment);
-//                final CheckBox cb_professional = promptView.findViewById(R.id.cb_professional);
-//                final CheckBox cb_postedbyme = promptView.findViewById(R.id.cb_postedbyme);
-//                final CheckBox cb_staredbyme = promptView.findViewById(R.id.cb_staredbyme);
-//
-//                if (business)
-//                    cb_business.setChecked(true);
-//
-//                if (employment)
-//                    cb_employment.setChecked(true);
-//
-//                if (professional)
-//                    cb_professional.setChecked(true);
-//
-//                if (posted)
-//                    cb_postedbyme.setChecked(true);
-//
-//                if (starred)
-//                    cb_staredbyme.setChecked(true);
-//
-//
-//                alertDialogBuilder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                        ArrayList<RequirementsListModel> filteredRequirementsList = new ArrayList<>();
-//
-//
-//                        if (cb_business.isChecked()) {
-//                            business = true;
-//                            if (filteredRequirementsList.size() > 0) {
-//                                for (int i = 0; i < filteredRequirementsList.size(); i++)
-//                                    if (!filteredRequirementsList.get(i).getCategory_type_id().equals("1"))
-//                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
-//                            } else {
-//                                for (int j = 0; j < requirementsList.size(); j++)
-//                                    if (requirementsList.get(j).getCategory_type_id().equals("1"))
-//                                        filteredRequirementsList.add(requirementsList.get(j));
-//                            }
-//                        } else {
-//                            business = false;
-//                        }
-//
-//                        if (cb_employment.isChecked()) {
-//                            employment = true;
-//                            if (filteredRequirementsList.size() > 0) {
-//                                for (int i = 0; i < filteredRequirementsList.size(); i++)
-//                                    if (!(filteredRequirementsList.get(i).getCategory_type_id().equals("2") || filteredRequirementsList.get(i).getCategory_type_id().equals("3")))
-//                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
-//                            } else {
-//                                for (int j = 0; j < requirementsList.size(); j++) {
-//                                    if (requirementsList.get(j).getCategory_type_id().equals("2") || requirementsList.get(j).getCategory_type_id().equals("3")) {
-//                                        filteredRequirementsList.add(requirementsList.get(j));
-//                                    }
-//                                }
-//                            }
-//
-//                        } else {
-//                            employment = false;
-//                        }
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
 
-//                        if (cb_professional.isChecked()) {
-//                            professional = true;
-//                            if (filteredRequirementsList.size() > 0) {
-//                                for (int i = 0; i < filteredRequirementsList.size(); i++) {
-//                                    if (!filteredRequirementsList.get(i).getCategory_type_id().equals("4")) {
-//                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
-//                                    }
-//                                }
-//                            } else {
-//                                for (int j = 0; j < requirementsList.size(); j++) {
-//                                    if (requirementsList.get(j).getCategory_type_id().equals("4")) {
-//                                        filteredRequirementsList.add(requirementsList.get(j));
-//                                    }
-//                                }
-//                            }
-//
-//                        } else {
-//                            professional = false;
-//                        }
-//
-//                        if (cb_postedbyme.isChecked()) {
-//                            posted = true;
-//                            if (filteredRequirementsList.size() > 0) {
-//                                for (int i = 0; i < filteredRequirementsList.size(); i++)
-//                                    if (!filteredRequirementsList.get(i).getCreated_by().equals(userId)) {
-//                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
-//                                    }
-//                            } else {
-//                                for (int i = 0; i < requirementsList.size(); i++) {
-//                                    if (requirementsList.get(i).getCreated_by().equals(userId)) {
-//                                        filteredRequirementsList.add(requirementsList.get(i));
-//                                    }
-//                                }
-//                            }
-//                        } else {
-//                            posted = false;
-//                        }
-//
-//                        if (cb_staredbyme.isChecked()) {
-//                            starred = true;
-//                            if (filteredRequirementsList.size() > 0) {
-//                                for (int i = 0; i < filteredRequirementsList.size(); i++)
-//                                    if (!(filteredRequirementsList.get(i).getCreated_by().equals(userId) && filteredRequirementsList.get(i).getIsStarred().equals("1")))
-//                                        filteredRequirementsList.remove(filteredRequirementsList.get(i));
-//                            } else {
-//                                for (int i = 0; i < requirementsList.size(); i++)
-//                                    if ((requirementsList.get(i).getCreated_by().equals(userId) && requirementsList.get(i).getIsStarred().equals("1")))
-//                                        filteredRequirementsList.add(requirementsList.get(i));
-//                            }
-//                        } else {
-//                            starred = false;
-//                        }
-//
-//
-//                        rv_requirementlist.setAdapter(new RequirementAdapter(context, filteredRequirementsList));
-//                    }
-//                });
-//
-//                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                });
-//
-//
-//                final AlertDialog alertD = alertDialogBuilder.create();
-//                alertD.show();
-//            }
-//        });
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetRequirementList().execute();
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
+
         ib_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -422,6 +297,8 @@ public class Request_Fragment extends Fragment {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             rv_requirementlist.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -438,11 +315,9 @@ public class Request_Fragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            rv_requirementlist.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-
                     RequirementsListPojo pojoDetails = new Gson().fromJson(result, RequirementsListPojo.class);
                     type = pojoDetails.getType();
 
@@ -468,7 +343,8 @@ public class Request_Fragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.showAlertDialog(context, "Server Not Responding", false);
+                ll_nopreview.setVisibility(View.VISIBLE);
+                rv_requirementlist.setVisibility(View.GONE);
             }
         }
     }

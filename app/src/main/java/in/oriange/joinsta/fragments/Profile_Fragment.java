@@ -19,6 +19,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,6 +52,7 @@ public class Profile_Fragment extends Fragment {
     private static Context context;
     private CardView cv_basicinfo;
     private FloatingActionButton btn_add;
+    private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_details;
     private static SpinKitView progressBar;
 
@@ -93,6 +95,7 @@ public class Profile_Fragment extends Fragment {
 
         btn_add = rootView.findViewById(R.id.btn_add);
         cv_basicinfo = rootView.findViewById(R.id.cv_basicinfo);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         progressBar = rootView.findViewById(R.id.progressBar);
         rv_details = rootView.findViewById(R.id.rv_details);
         rv_details.setLayoutManager(new LinearLayoutManager(context));
@@ -118,10 +121,12 @@ public class Profile_Fragment extends Fragment {
     }
 
     private void getSessionDetails() {
+
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
+
             userId = json.getString("userid");
 
         } catch (Exception e) {
@@ -130,6 +135,40 @@ public class Profile_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                switch (currentPosition) {
+                    case 0:
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new GetBusiness().execute();
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                        break;
+                    case 1:
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new GetEmployee().execute();
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                        break;
+                    case 2:
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new GetProfessional().execute();
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                        break;
+                }
+            }
+        });
+
+
         cv_basicinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,7 +233,9 @@ public class Profile_Fragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            ll_nopreview.setVisibility(View.GONE);
             rv_details.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -211,7 +252,6 @@ public class Profile_Fragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            rv_details.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
@@ -251,7 +291,9 @@ public class Profile_Fragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            ll_nopreview.setVisibility(View.GONE);
             rv_details.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -268,7 +310,6 @@ public class Profile_Fragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            rv_details.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
@@ -308,7 +349,9 @@ public class Profile_Fragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            ll_nopreview.setVisibility(View.GONE);
             rv_details.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -325,7 +368,6 @@ public class Profile_Fragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            rv_details.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
@@ -344,11 +386,9 @@ public class Profile_Fragment extends Fragment {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_details.setVisibility(View.GONE);
                         }
-
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_details.setVisibility(View.GONE);
-
                     }
                 }
             } catch (Exception e) {

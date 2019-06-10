@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -50,6 +51,7 @@ public class Home_Fragment extends Fragment {
     private Context context;
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView rv_category;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
@@ -75,7 +77,7 @@ public class Home_Fragment extends Fragment {
         edt_location = rootView.findViewById(R.id.edt_location);
 
         progressBar = rootView.findViewById(R.id.progressBar);
-
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         rv_category = rootView.findViewById(R.id.rv_category);
         rv_category.setLayoutManager(new LinearLayoutManager(context));
 
@@ -105,6 +107,18 @@ public class Home_Fragment extends Fragment {
     }
 
     private void setEventHandlers() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetCategotyList().execute("0", "0", categoryTypeId);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
         edt_type.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,6 +164,7 @@ public class Home_Fragment extends Fragment {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             rv_category.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override

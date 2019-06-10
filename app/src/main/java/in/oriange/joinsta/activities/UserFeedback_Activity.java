@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,6 +37,7 @@ public class UserFeedback_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private FloatingActionButton btn_add;
     private static RecyclerView rv_feedback;
+    private static SwipeRefreshLayout swipeRefreshLayout;
     private static SpinKitView progressBar;
     private static LinearLayout ll_nopreview;
     private String userId;
@@ -59,6 +61,7 @@ public class UserFeedback_Activity extends AppCompatActivity {
 
         btn_add = findViewById(R.id.btn_add);
         progressBar = findViewById(R.id.progressBar);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         rv_feedback = findViewById(R.id.rv_feedback);
         rv_feedback.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = findViewById(R.id.ll_nopreview);
@@ -86,6 +89,18 @@ public class UserFeedback_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetUserFeedback().execute(userId);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +115,9 @@ public class UserFeedback_Activity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            ll_nopreview.setVisibility(View.GONE);
             rv_feedback.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -117,7 +134,6 @@ public class UserFeedback_Activity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
-            rv_feedback.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {

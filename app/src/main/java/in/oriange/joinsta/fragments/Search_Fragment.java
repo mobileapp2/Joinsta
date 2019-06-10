@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
@@ -50,6 +51,7 @@ public class Search_Fragment extends Fragment {
 
     private static Context context;
     private UserSessionManager session;
+    private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_searchlist;
     private static LinearLayout ll_nopreview;
     private static EditText edt_search;
@@ -88,6 +90,7 @@ public class Search_Fragment extends Fragment {
         progressBar = rootView.findViewById(R.id.progressBar);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_search = rootView.findViewById(R.id.edt_search);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
@@ -122,60 +125,19 @@ public class Search_Fragment extends Fragment {
         }
     }
 
-    public static class GetSearchList extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            rv_searchlist.setVisibility(View.GONE);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getDetailsByLocation");
-            obj.addProperty("user_id", userId);
-            obj.addProperty("location", params[0]);
-            res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            edt_search.setText("");
-            progressBar.setVisibility(View.GONE);
-            rv_searchlist.setVisibility(View.VISIBLE);
-            String type = "", message = "";
-            try {
-                if (!result.equals("")) {
-                    businessList = new ArrayList<>();
-                    professionalList = new ArrayList<>();
-                    employeeList = new ArrayList<>();
-                    SearchDetailsModel pojoDetails = new Gson().fromJson(result, SearchDetailsModel.class);
-                    type = pojoDetails.getType();
-
-                    if (type.equalsIgnoreCase("success")) {
-                        businessList = pojoDetails.getResult().getBusinesses();
-                        professionalList = pojoDetails.getResult().getProfessionals();
-                        employeeList = pojoDetails.getResult().getEmployees();
-
-                        setDataToRecyclerView(categoryTypeId);
-                    } else {
-                        Utilities.showAlertDialog(context, "Categories not available", false);
-
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Utilities.showAlertDialog(context, "Server Not Responding", false);
-            }
-        }
-    }
-
     private void setEventHandlers() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
         edt_type.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -267,6 +229,62 @@ public class Search_Fragment extends Fragment {
                 }
 
                 break;
+        }
+    }
+
+    public static class GetSearchList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            rv_searchlist.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getDetailsByLocation");
+            obj.addProperty("user_id", userId);
+            obj.addProperty("location", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            edt_search.setText("");
+            progressBar.setVisibility(View.GONE);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    businessList = new ArrayList<>();
+                    professionalList = new ArrayList<>();
+                    employeeList = new ArrayList<>();
+                    SearchDetailsModel pojoDetails = new Gson().fromJson(result, SearchDetailsModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        businessList = pojoDetails.getResult().getBusinesses();
+                        professionalList = pojoDetails.getResult().getProfessionals();
+                        employeeList = pojoDetails.getResult().getEmployees();
+
+                        setDataToRecyclerView(categoryTypeId);
+                    } else {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_searchlist.setVisibility(View.GONE);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ll_nopreview.setVisibility(View.VISIBLE);
+                rv_searchlist.setVisibility(View.GONE);
+            }
         }
     }
 
