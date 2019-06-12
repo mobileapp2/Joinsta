@@ -53,7 +53,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="Employee Details"
+                    android:text="Employment Details"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:drawableRight="@drawable/icon_arrowdown"
                     android:focusable="false"
-                    android:hint="Nature of Employee"
+                    android:hint="Nature of Employment"
                     android:longClickable="false"
                     android:textSize="16sp"
                     app:met_floatingLabel="highlight"

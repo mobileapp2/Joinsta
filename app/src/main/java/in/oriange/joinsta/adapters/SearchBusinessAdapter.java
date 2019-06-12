@@ -2,6 +2,9 @@ package in.oriange.joinsta.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Callback;
@@ -18,8 +22,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.MainDrawer_Activity;
 import in.oriange.joinsta.activities.ViewSearchBizDetails_Activity;
 import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.utilities.Utilities;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static in.oriange.joinsta.activities.MainDrawer_Activity.startLocationUpdates;
+import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
+import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
+import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAdapter.MyViewHolder> {
 
@@ -91,6 +103,47 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
 
+        holder.tv_distance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
+                    holder.tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Location of business not available</b></font>"));
+                    return;
+                }
+
+                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+                    provideLocationAccess(context);
+                    return;
+                }
+
+                if (!isLocationEnabled(context)) {
+                    turnOnLocation(context);
+                    return;
+                }
+
+                if (MainDrawer_Activity.latLng == null) {
+                    holder.tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available</b></font>"));
+
+                    return;
+                }
+
+                startLocationUpdates();
+
+                Location currentLocation = new Location("");
+                currentLocation.setLatitude(MainDrawer_Activity.latLng.latitude);
+                currentLocation.setLongitude(MainDrawer_Activity.latLng.longitude);
+
+                Location destinationLocation = new Location("");
+                destinationLocation.setLatitude(Double.parseDouble(searchDetails.getLatitude()));
+                destinationLocation.setLongitude(Double.parseDouble(searchDetails.getLongitude()));
+
+                float distanceInMeters = currentLocation.distanceTo(destinationLocation);
+                int dis = Math.round(distanceInMeters);
+                holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + (dis / 1000) + " km</b></font> <font color=\"#616161\">from current location</font>"));
+            }
+        });
+
     }
 
     @Override
@@ -103,7 +156,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         private ImageView imv_preview;
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
-        private TextView tv_heading, tv_subheading, tv_subsubheading;
+        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_distance;
 
         public MyViewHolder(View view) {
             super(view);
@@ -111,14 +164,14 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             tv_heading = view.findViewById(R.id.tv_heading);
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);
+            tv_distance = view.findViewById(R.id.tv_distance);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             progressBar = view.findViewById(R.id.progressBar);
         }
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return position;
     }
 

@@ -59,14 +59,12 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new AddBusiness_Fragment(), "Business");
-        adapter.addFrag(new AddEmployee_Fragment(), "Employee");
+        adapter.addFrag(new AddEmployee_Fragment(), "Employment");
         adapter.addFrag(new AddProfessional_Fragment(), "Professional");
         viewpager.setAdapter(adapter);
         tabs.setViewPager(viewpager);
 
         viewpager.setCurrentItem(currentPosition);
-
-
     }
 
     private void setEventHandler() {

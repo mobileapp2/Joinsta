@@ -179,8 +179,16 @@ public class Search_Fragment extends Fragment {
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.BusinessesBean businessDetails : businessList) {
+
+                        StringBuilder tag = new StringBuilder();
+                        if (businessDetails.getTag().get(0) != null)
+                            for (SearchDetailsModel.ResultBean.BusinessesBean.TagBeanXX tags : businessDetails.getTag().get(0)) {
+                                if (tags != null)
+                                    tag.append(tags.getTag_name());
+                            }
+
                         String businessToBeSearched = businessDetails.getBusiness_name().toLowerCase() +
-                                businessDetails.getCity().toLowerCase();
+                                businessDetails.getCity().toLowerCase() + tag.toString();
                         if (businessToBeSearched.contains(query.toLowerCase())) {
                             businessSearchedList.add(businessDetails);
                         }

@@ -211,7 +211,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr=" + searchDetails.getLatitude() + "&daddr=" + searchDetails.getLocality() + ""));
+                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
                 startActivity(intent);
             }
         });
@@ -248,7 +248,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                     } else
                         Utilities.showMessage("Landline number not added", context, 2);
                 else
-                    Utilities.showMessage("Mobile number not added", context, 2);
+                    Utilities.showMessage("Landline number not added", context, 2);
 
             }
         });

@@ -243,7 +243,7 @@ public class AddEmployee_Fragment extends Fragment {
             public void onClick(View v) {
 
                 if (edt_nature.getText().toString().trim().isEmpty()) {
-                    edt_nature.setError("Please select the nature of employee");
+                    edt_nature.setError("Please select the nature of employment");
                     edt_nature.requestFocus();
                     return;
                 }
@@ -446,7 +446,7 @@ public class AddEmployee_Fragment extends Fragment {
 
     private void showCategoryListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Nature of Employee");
+        builderSingle.setTitle("Select Nature of Employment");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -636,7 +636,7 @@ public class AddEmployee_Fragment extends Fragment {
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
-            edt_nature.setError("Please select the nature of employee");
+            edt_nature.setError("Please select the nature of employment");
             edt_nature.requestFocus();
             return;
         }
@@ -646,6 +646,12 @@ public class AddEmployee_Fragment extends Fragment {
 //            edt_subtype.requestFocus();
 //            return;
 //        }
+
+        if (edt_designation.getText().toString().trim().isEmpty()) {
+            edt_designation.setError("Please enter designation");
+            edt_designation.requestFocus();
+            return;
+        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
@@ -1002,7 +1008,7 @@ public class AddEmployee_Fragment extends Fragment {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Employee details submitted successfully");
+                        tv_title.setText("Employment details submitted successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

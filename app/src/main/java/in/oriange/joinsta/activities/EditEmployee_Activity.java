@@ -414,7 +414,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (edt_nature.getText().toString().trim().isEmpty()) {
-                    edt_nature.setError("Please select the nature of employee");
+                    edt_nature.setError("Please select the nature of employment");
                     edt_nature.requestFocus();
                     return;
                 }
@@ -617,7 +617,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
 
     private void showCategoryListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Nature of Employee");
+        builderSingle.setTitle("Select Nature of Employment");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -807,14 +807,20 @@ public class EditEmployee_Activity extends AppCompatActivity {
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
-            edt_nature.setError("Please select the nature of employee");
+            edt_nature.setError("Please select the nature of employment");
             edt_nature.requestFocus();
             return;
         }
 
-        if (edt_subtype.getText().toString().trim().isEmpty()) {
-            edt_subtype.setError("Please select subtype");
-            edt_subtype.requestFocus();
+//        if (edt_subtype.getText().toString().trim().isEmpty()) {
+//            edt_subtype.setError("Please select subtype");
+//            edt_subtype.requestFocus();
+//            return;
+//        }
+
+        if (edt_designation.getText().toString().trim().isEmpty()) {
+            edt_designation.setError("Please enter designation");
+            edt_designation.requestFocus();
             return;
         }
 
@@ -1175,7 +1181,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Employee details updated successfully");
+                        tv_title.setText("Employment details updated successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -1327,7 +1333,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         new Profile_Fragment.GetEmployee().execute();
-                        Utilities.showMessage("Employee details deleted successfully", context, 1);
+                        Utilities.showMessage("Employment details deleted successfully", context, 1);
                         finish();
                     }
                 }

@@ -1,9 +1,14 @@
 package in.oriange.joinsta.activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -11,23 +16,37 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.model.LatLng;
 import com.iammert.library.readablebottombar.ReadableBottomBar;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
+import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
+import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
+
 public class MainDrawer_Activity extends AppCompatActivity {
 
-    private Context context;
+    private static Context context;
     private AHBottomNavigation bottomNavigation;
-//    private ReadableBottomBar bottomNavigation;
+    //    private ReadableBottomBar bottomNavigation;
     private Fragment currentFragment;
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
@@ -83,6 +102,17 @@ public class MainDrawer_Activity extends AppCompatActivity {
         view_pager.setOffscreenPageLimit(4);
         adapter = new BotNavViewPagerAdapter(getSupportFragmentManager());
         view_pager.setAdapter(adapter);
+
+        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+            return;
+        }
+
+        if (!isLocationEnabled(context)) {
+            return;
+        }
+
+        startLocationUpdates();
+
     }
 
     private void getSessionDetails() {
@@ -149,4 +179,43 @@ public class MainDrawer_Activity extends AppCompatActivity {
 //        });
 
     }
+
+    private static LocationRequest mLocationRequest;
+
+    private static long UPDATE_INTERVAL = 10 * 10000000;  /* 10 secs */
+    private static long FASTEST_INTERVAL = 20000; /* 2 sec */
+    public static LatLng latLng;
+
+    @SuppressLint("RestrictedApi")
+    public static void startLocationUpdates() {
+
+        // Create the location request to start receiving updates
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+
+        SettingsClient settingsClient = LocationServices.getSettingsClient(context);
+        settingsClient.checkLocationSettings(locationSettingsRequest);
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        onLocationChanged(locationResult.getLastLocation());
+                    }
+                },
+                Looper.myLooper());
+    }
+
+    public static void onLocationChanged(Location location) {
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
 }
