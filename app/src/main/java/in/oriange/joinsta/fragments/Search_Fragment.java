@@ -206,8 +206,16 @@ public class Search_Fragment extends Fragment {
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.ProfessionalsBean professionalDetails : professionalList) {
+
+                        StringBuilder tag = new StringBuilder();
+                        if (professionalDetails.getTag().get(0) != null)
+                            for (SearchDetailsModel.ResultBean.ProfessionalsBean.TagBeanX tags : professionalDetails.getTag().get(0)) {
+                                if (tags != null)
+                                    tag.append(tags.getTag_name());
+                            }
+
                         String professionalToBeSearched = professionalDetails.getFirm_name().toLowerCase() +
-                                professionalDetails.getCity().toLowerCase();
+                                professionalDetails.getCity().toLowerCase() + tag.toString();
                         if (professionalToBeSearched.contains(query.toLowerCase())) {
                             professionalSearchedList.add(professionalDetails);
                         }
@@ -225,8 +233,17 @@ public class Search_Fragment extends Fragment {
                 if (!query.equals("")) {
                     ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.EmployeesBean employeeDetails : employeeList) {
+
+
+                        StringBuilder tag = new StringBuilder();
+                        if (employeeDetails.getTag().get(0) != null)
+                            for (SearchDetailsModel.ResultBean.EmployeesBean.TagBean tags : employeeDetails.getTag().get(0)) {
+                                if (tags != null)
+                                    tag.append(tags.getTag_name());
+                            }
+
                         String employeeToBeSearched = employeeDetails.getOrganization_name().toLowerCase() +
-                                employeeDetails.getCity().toLowerCase();
+                                employeeDetails.getCity().toLowerCase() + tag.toString();
                         if (employeeToBeSearched.contains(query.toLowerCase())) {
                             employeeSearchedList.add(employeeDetails);
                         }

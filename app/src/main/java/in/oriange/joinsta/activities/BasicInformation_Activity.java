@@ -90,7 +90,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
-    private String userId, password, bloodGroupId, educationId, genderId, imageUrl, isActive, referralCode;
+    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode;
     private JsonArray mobileJSONArray, landlineJSONArray, emailJSONArray;
 
     private JSONArray mobileJsonArray, landlinesonArray, emailJsonArray;
@@ -730,76 +730,87 @@ public class BasicInformation_Activity extends AppCompatActivity {
 //            return;
 //        }
 
-        if (rb_male.isChecked()) {
-            genderId = "1";
-        } else if (rb_female.isChecked()) {
-            genderId = "2";
-        } else {
-            Utilities.showMessage("Please select gender", context, 2);
-            return;
-        }
+//        if (rb_male.isChecked()) {
+//            genderId = "1";
+//        } else if (rb_female.isChecked()) {
+//            genderId = "2";
+//        } else {
+//            Utilities.showMessage("Please select gender", context, 2);
+//            return;
+//        }
 
-        if (edt_education.getText().toString().trim().isEmpty()) {
-            edt_education.setError("Please select education");
-            edt_education.requestFocus();
-            return;
-        }
+//        if (edt_education.getText().toString().trim().isEmpty()) {
+//            edt_education.setError("Please select education");
+//            edt_education.requestFocus();
+//            return;
+//        }
 
-        if (edt_specify.getText().toString().trim().isEmpty()) {
-            edt_specify.setError("Please enter specification");
-            edt_specify.requestFocus();
-            return;
-        }
+//        if (edt_specify.getText().toString().trim().isEmpty()) {
+//            edt_specify.setError("Please enter specification");
+//            edt_specify.requestFocus();
+//            return;
+//        }
 
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
-            if (!Utilities.isValidMobileno(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim())) {
-                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setError("Please enter mobile number");
-                (mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).requestFocus();
-                return;
+            if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
+                if (!Utilities.isValidMobileno(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim())) {
+                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setError("Please enter mobile number");
+                    (mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).requestFocus();
+                    return;
+                }
             }
         }
 
-        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-            edt_mobile.setError("Please enter valid mobile number");
-            edt_mobile.requestFocus();
-            return;
+        if (!edt_mobile.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                edt_mobile.setError("Please enter valid mobile number");
+                edt_mobile.requestFocus();
+                return;
+            }
         }
 
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
-            if (!Utilities.isLandlineValid(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim())) {
-                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setError("Please enter valid landline number");
-                (landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).requestFocus();
-                return;
+            if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().isEmpty()) {
+                if (!Utilities.isLandlineValid(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim())) {
+                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setError("Please enter valid landline number");
+                    (landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).requestFocus();
+                    return;
+                }
             }
         }
 
-        if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
-            edt_landline.setError("Please enter valid landline number");
-            edt_landline.requestFocus();
-            return;
+        if (!edt_landline.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
+                edt_landline.setError("Please enter valid landline number");
+                edt_landline.requestFocus();
+                return;
+            }
         }
-
 
         for (int i = 0; i < emailLayoutsList.size(); i++) {
-            if (!Utilities.isEmailValid(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim())) {
-                ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setError("Please enter valid email");
-                (emailLayoutsList.get(i).findViewById(R.id.edt_email)).requestFocus();
+            if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().isEmpty()) {
+                if (!Utilities.isEmailValid(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim())) {
+                    ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setError("Please enter valid email");
+                    (emailLayoutsList.get(i).findViewById(R.id.edt_email)).requestFocus();
+                    return;
+                }
+            }
+        }
+
+        if (!edt_email.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+                edt_email.setError("Please enter valid email");
+                edt_email.requestFocus();
                 return;
             }
         }
 
-        if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-            edt_email.setError("Please enter valid email");
-            edt_email.requestFocus();
-            return;
-        }
-
-        if (edt_nativeplace.getText().toString().trim().isEmpty()) {
-            edt_nativeplace.setError("Please enter native place");
-            edt_nativeplace.requestFocus();
-            return;
-        }
+//        if (edt_nativeplace.getText().toString().trim().isEmpty()) {
+//            edt_nativeplace.setError("Please enter native place");
+//            edt_nativeplace.requestFocus();
+//            return;
+//        }
 
 
         try {
@@ -855,7 +866,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        showPrimaryMobileDialog();
+//        showPrimaryMobileDialog();
+
+        submitData();
 
 
     }
@@ -1206,8 +1219,8 @@ public class BasicInformation_Activity extends AppCompatActivity {
         for (int i = 0; i < mobileList.size(); i++) {
             JsonObject mobileJSONObj = new JsonObject();
             mobileJSONObj.addProperty("mobile", mobileList.get(i).getDetails());
-            mobileJSONObj.addProperty("is_primary", mobileList.get(i).getIsPrimary());
-            mobileJSONObj.addProperty("is_public", mobileList.get(i).getIsPublic());
+            mobileJSONObj.addProperty("is_primary", "1");
+            mobileJSONObj.addProperty("is_public", "1");
             mobileJSONObj.addProperty("id", mobileList.get(i).getId());
             mobileJSONArray.add(mobileJSONObj);
         }
@@ -1215,7 +1228,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         for (int i = 0; i < landlineList.size(); i++) {
             JsonObject landlineJSONObj = new JsonObject();
             landlineJSONObj.addProperty("landline_number", landlineList.get(i).getDetails());
-            landlineJSONObj.addProperty("is_primary", landlineList.get(i).getIsPrimary());
+            landlineJSONObj.addProperty("is_primary", "1");
             landlineJSONObj.addProperty("id", landlineList.get(i).getId());
             landlineJSONArray.add(landlineJSONObj);
         }
@@ -1223,7 +1236,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         for (int i = 0; i < emailList.size(); i++) {
             JsonObject emailJSONObj = new JsonObject();
             emailJSONObj.addProperty("email_id", emailList.get(i).getDetails());
-            emailJSONObj.addProperty("is_primary", emailList.get(i).getIsPrimary());
+            emailJSONObj.addProperty("is_primary", "1");
             emailJSONObj.addProperty("id", emailList.get(i).getId());
             emailJSONArray.add(emailJSONObj);
         }

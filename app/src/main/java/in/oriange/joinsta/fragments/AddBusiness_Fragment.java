@@ -97,7 +97,7 @@ public class AddBusiness_Fragment extends Fragment {
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude, longitude;
+    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude= "", longitude= "";
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -674,15 +674,16 @@ public class AddBusiness_Fragment extends Fragment {
             }
         }
 
-        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-            edt_mobile.setError("Please enter valid mobile number");
-            edt_mobile.requestFocus();
-            return;
+        if (!edt_mobile.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                edt_mobile.setError("Please enter valid mobile number");
+                edt_mobile.requestFocus();
+                return;
+            }
         }
 
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
             if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().isEmpty()) {
-
                 if (!Utilities.isLandlineValid(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim())) {
                     ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setError("Please enter valid landline number");
                     (landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).requestFocus();
@@ -699,31 +700,34 @@ public class AddBusiness_Fragment extends Fragment {
             }
         }
 
-        if (!edt_email.getText().toString().trim().isEmpty())
+        if (!edt_email.getText().toString().trim().isEmpty()) {
             if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
                 edt_email.setError("Please enter valid email");
                 edt_email.requestFocus();
                 return;
             }
-
-
-        if (edt_select_area.getText().toString().trim().isEmpty()) {
-            edt_select_area.setError("Please select area");
-            edt_select_area.requestFocus();
-            return;
         }
 
-        if (edt_pincode.getText().toString().trim().length() != 6) {
-            edt_pincode.setError("Please enter pincode");
-            edt_pincode.requestFocus();
-            return;
+
+//        if (edt_select_area.getText().toString().trim().isEmpty()) {
+//            edt_select_area.setError("Please select area");
+//            edt_select_area.requestFocus();
+//            return;
+//        }
+
+        if (!edt_pincode.getText().toString().trim().isEmpty()) {
+            if (edt_pincode.getText().toString().trim().length() != 6) {
+                edt_pincode.setError("Please enter pincode");
+                edt_pincode.requestFocus();
+                return;
+            }
         }
 
-        if (edt_city.getText().toString().trim().isEmpty()) {
-            edt_city.setError("Please select area");
-            edt_city.requestFocus();
-            return;
-        }
+//        if (edt_city.getText().toString().trim().isEmpty()) {
+//            edt_city.setError("Please select area");
+//            edt_city.requestFocus();
+//            return;
+//        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
