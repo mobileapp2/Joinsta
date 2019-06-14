@@ -14,6 +14,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.EditBusiness_Activity;
+import in.oriange.joinsta.activities.ViewMyBizDetails_Activity;
 import in.oriange.joinsta.models.GetBusinessModel;
 
 public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusinessAdapter.MyViewHolder> {
@@ -49,7 +50,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditBusiness_Activity.class)
+                context.startActivity(new Intent(context, ViewMyBizDetails_Activity.class)
                         .putExtra("searchDetails", searchDetails));
             }
         });

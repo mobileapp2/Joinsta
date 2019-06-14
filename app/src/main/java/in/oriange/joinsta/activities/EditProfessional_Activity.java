@@ -104,7 +104,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude = "", longitude= "";
+    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude = "", longitude = "";
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -1274,88 +1274,6 @@ public class EditProfessional_Activity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menus_delete, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_delete:
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this item?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_alertred);
-                builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        new DeleteProfessional().execute();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
-                break;
-
-            default:
-                break;
-        }
-        return true;
-    }
-
-    public class DeleteProfessional extends AsyncTask<String, Void, String> {
-        ProgressDialog pd;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "deleteprofessional");
-            obj.addProperty("professional_id", searchDetails.getId());
-            res = APICall.JSONAPICall(ApplicationConstants.PROFESSIONALAPI, obj.toString());
-            return res;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String type = "", message = "";
-            try {
-                pd.dismiss();
-                if (!result.equals("")) {
-                    JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetProfessional().execute();
-                        Utilities.showMessage("Professional details deleted successfully", context, 1);
-                        finish();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     @Override
     protected void onPause() {

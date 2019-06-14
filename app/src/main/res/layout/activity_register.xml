@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    tools:targetApi="lollipop">
+    tools:targetApi="lollipop"
+    android:scrollbars="none">
 
     <RelativeLayout
         android:layout_width="match_parent"

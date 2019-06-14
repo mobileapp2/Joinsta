@@ -14,6 +14,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.EditEmployee_Activity;
+import in.oriange.joinsta.activities.ViewMyEmpDetails_Activity;
 import in.oriange.joinsta.models.GetEmployeeModel;
 
 public class MyAddedEmployeeAdapter extends RecyclerView.Adapter<MyAddedEmployeeAdapter.MyViewHolder> {
@@ -49,7 +50,7 @@ public class MyAddedEmployeeAdapter extends RecyclerView.Adapter<MyAddedEmployee
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditEmployee_Activity.class)
+                context.startActivity(new Intent(context, ViewMyEmpDetails_Activity.class)
                         .putExtra("searchDetails", searchDetails));
             }
         });

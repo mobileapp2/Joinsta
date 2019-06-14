@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -24,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Edit Professional Details"
+                android:text="Business Details"
                 android:textColor="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -33,8 +34,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="5dp"
+        android:layout_height="wrap_content"
         android:scrollbars="none">
 
         <LinearLayout
@@ -51,31 +51,49 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="170dp">
+                    android:layout_height="256dp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_nopreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:layout_width="90dp"
+                            android:layout_height="90dp"
+                            android:fitsSystemWindows="true"
+                            android:src="@drawable/icon_nopreview" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="No Preview Available"
+                            android:textColor="@color/black"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/imv_photo1"
+                        android:id="@+id/imv_image"
                         android:layout_width="match_parent"
-                        android:layout_height="170dp"
+                        android:layout_height="match_parent"
+                        android:fitsSystemWindows="true"
                         android:scaleType="centerCrop"
-                        android:visibility="gone"/>
-
-                    <ImageView
-                        android:id="@+id/imv_photo2"
-                        android:layout_width="match_parent"
-                        android:layout_height="170dp"
-                        android:padding="50dp"
-                        android:src="@drawable/icon_color_camera"
+                        android:src="@drawable/icon_image_not_available"
                         android:visibility="gone" />
 
                     <ProgressBar
                         android:id="@+id/progressBar"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true" />
 
                 </RelativeLayout>
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -91,23 +109,26 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <TextView
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Professional Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Name of Business"
+                        android:longClickable="false"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_nature"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_arrowdown"
+                        android:clickable="false"
                         android:focusable="false"
-                        android:hint="Select You Profession"
+                        android:hint="Nature of Business"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -118,7 +139,7 @@
                         android:id="@+id/edt_subtype"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_arrowdown"
+                        android:clickable="false"
                         android:focusable="false"
                         android:hint="Subtype"
                         android:longClickable="false"
@@ -127,13 +148,15 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_designation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Designation (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Designation"
                         android:inputType="textCapWords|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -200,23 +223,16 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.75"
+                                android:clickable="false"
+                                android:focusable="false"
                                 android:hint="Mobile"
                                 android:inputType="number"
+                                android:longClickable="false"
                                 android:maxLength="10"
                                 android:textSize="16sp"
                                 app:met_floatingLabel="highlight"
                                 app:met_textColorHint="@color/darkGray"
                                 app:met_underlineColor="@color/mediumGray" />
-
-                            <ImageButton
-                                android:id="@+id/ib_add_mobile"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical|end"
-                                android:layout_weight="0.1"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@drawable/icon_add"
-                                android:tint="@color/black" />
 
                         </LinearLayout>
 
@@ -256,23 +272,16 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.75"
-                                android:hint="Landline (Optional)"
+                                android:clickable="false"
+                                android:focusable="false"
+                                android:hint="Landline"
                                 android:inputType="number"
+                                android:longClickable="false"
                                 android:maxLength="10"
                                 android:textSize="16sp"
                                 app:met_floatingLabel="highlight"
                                 app:met_textColorHint="@color/darkGray"
                                 app:met_underlineColor="@color/mediumGray" />
-
-                            <ImageButton
-                                android:id="@+id/ib_add_landline"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical|end"
-                                android:layout_weight="0.1"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@drawable/icon_add"
-                                android:tint="@color/black" />
 
                         </LinearLayout>
 
@@ -283,8 +292,11 @@
                         android:id="@+id/edt_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Email (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Email"
                         android:inputType="textEmailAddress|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -295,8 +307,11 @@
                         android:id="@+id/edt_website"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Website (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Website"
                         android:inputType="textWebEditText|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -309,6 +324,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@android:color/white"
@@ -320,42 +336,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="5dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Add Tags (Keywords of Product/Service)"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_tag"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.8"
-                            android:hint="Tag"
-                            android:inputType="textWebEditText|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <Button
-                            android:id="@+id/btn_add_tag"
-                            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.2"
-                            android:text="ADD" />
-
-                    </LinearLayout>
 
                     <co.lujun.androidtagview.TagContainerLayout
                         android:id="@+id/tag_container"
@@ -373,7 +353,7 @@
                         app:tag_border_color="@color/colorPrimary"
                         app:tag_border_width="1dp"
                         app:tag_clickable="true"
-                        app:tag_enable_cross="true"
+                        app:tag_enable_cross="false"
                         app:tag_text_color="@color/black"
                         app:tag_text_size="16sp"
                         app:tag_theme="none"
@@ -408,9 +388,9 @@
                         android:id="@+id/edt_select_area"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_current_location"
+                        android:clickable="false"
                         android:focusable="false"
-                        android:hint="Select Your Area"
+                        android:hint="Landmark"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -421,8 +401,11 @@
                         android:id="@+id/edt_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Address (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Address"
                         android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -433,8 +416,11 @@
                         android:id="@+id/edt_pincode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Pincode (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Pincode"
                         android:inputType="number"
+                        android:longClickable="false"
                         android:maxLength="6"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -445,8 +431,11 @@
                         android:id="@+id/edt_city"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
                         android:hint="City"
                         android:inputType="textCapWords|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -457,8 +446,11 @@
                         android:id="@+id/edt_district"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="District (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="District"
                         android:inputType="textCapWords|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -469,8 +461,11 @@
                         android:id="@+id/edt_state"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="State (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="State"
                         android:inputType="textCapWords|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -481,30 +476,23 @@
                         android:id="@+id/edt_country"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Country (Optional)"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:hint="Country"
                         android:inputType="textCapWords|textNoSuggestions"
+                        android:longClickable="false"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-                    <Button
-                        android:id="@+id/btn_save"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/button_background"
-                        android:text="Save"
-                        android:textColor="@color/colorAccent" />
-
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>
