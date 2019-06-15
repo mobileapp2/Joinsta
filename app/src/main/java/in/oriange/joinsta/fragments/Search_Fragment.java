@@ -2,6 +2,7 @@ package in.oriange.joinsta.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
 import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
 import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
@@ -51,11 +53,11 @@ public class Search_Fragment extends Fragment {
 
     private static Context context;
     private UserSessionManager session;
+    private AppCompatEditText edt_type, edt_location;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_searchlist;
     private static LinearLayout ll_nopreview;
     private static EditText edt_search;
-    private AppCompatEditText edt_type;
     private static SpinKitView progressBar;
     private PowerMenu iconMenu;
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
@@ -88,6 +90,7 @@ public class Search_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         progressBar = rootView.findViewById(R.id.progressBar);
+        edt_location = rootView.findViewById(R.id.edt_location);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_search = rootView.findViewById(R.id.edt_search);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
@@ -119,6 +122,14 @@ public class Search_Fragment extends Fragment {
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
             userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,6 +178,15 @@ public class Search_Fragment extends Fragment {
 
             }
         });
+
+        edt_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, SelectLocation_Activity.class)
+                        .putExtra("startOrigin", 1));
+            }
+        });
+
     }
 
     private void searchDetails(String categoryTypeId, String query) {
@@ -197,35 +217,9 @@ public class Search_Fragment extends Fragment {
                 } else {
                     rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessList, "1"));
                 }
+
                 break;
             case "2":
-                if (professionalList.size() == 0) {
-                    return;
-                }
-
-                if (!query.equals("")) {
-                    ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalSearchedList = new ArrayList<>();
-                    for (SearchDetailsModel.ResultBean.ProfessionalsBean professionalDetails : professionalList) {
-
-                        StringBuilder tag = new StringBuilder();
-                        if (professionalDetails.getTag().get(0) != null)
-                            for (SearchDetailsModel.ResultBean.ProfessionalsBean.TagBeanX tags : professionalDetails.getTag().get(0)) {
-                                if (tags != null)
-                                    tag.append(tags.getTag_name());
-                            }
-
-                        String professionalToBeSearched = professionalDetails.getFirm_name().toLowerCase() +
-                                professionalDetails.getCity().toLowerCase() + tag.toString();
-                        if (professionalToBeSearched.contains(query.toLowerCase())) {
-                            professionalSearchedList.add(professionalDetails);
-                        }
-                    }
-                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalSearchedList, "1"));
-                } else {
-                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalList, "1"));
-                }
-                break;
-            case "3":
                 if (employeeList.size() == 0) {
                     return;
                 }
@@ -251,6 +245,34 @@ public class Search_Fragment extends Fragment {
                     rv_searchlist.setAdapter(new SearchEmployeeAdapter(context, employeeSearchedList, "1"));
                 } else {
                     rv_searchlist.setAdapter(new SearchEmployeeAdapter(context, employeeList, "1"));
+                }
+
+                break;
+            case "3":
+                if (professionalList.size() == 0) {
+                    return;
+                }
+
+                if (!query.equals("")) {
+                    ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalSearchedList = new ArrayList<>();
+                    for (SearchDetailsModel.ResultBean.ProfessionalsBean professionalDetails : professionalList) {
+
+                        StringBuilder tag = new StringBuilder();
+                        if (professionalDetails.getTag().get(0) != null)
+                            for (SearchDetailsModel.ResultBean.ProfessionalsBean.TagBeanX tags : professionalDetails.getTag().get(0)) {
+                                if (tags != null)
+                                    tag.append(tags.getTag_name());
+                            }
+
+                        String professionalToBeSearched = professionalDetails.getFirm_name().toLowerCase() +
+                                professionalDetails.getCity().toLowerCase() + tag.toString();
+                        if (professionalToBeSearched.contains(query.toLowerCase())) {
+                            professionalSearchedList.add(professionalDetails);
+                        }
+                    }
+                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalSearchedList, "1"));
+                } else {
+                    rv_searchlist.setAdapter(new SearchProfessionalAdapter(context, professionalList, "1"));
                 }
 
                 break;
@@ -379,6 +401,7 @@ public class Search_Fragment extends Fragment {
     }
 
     private static void setDataToRecyclerView(String categoryTypeId) {
+        edt_search.setText("");
         switch (categoryTypeId) {
             case "1":
                 if (businessList.size() > 0) {

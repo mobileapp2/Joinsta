@@ -99,7 +99,17 @@
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
-
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_firm"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name of the Firm"
+                        android:inputType="textCapWords|textNoSuggestions"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_nature"

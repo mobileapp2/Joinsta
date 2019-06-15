@@ -10,9 +10,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.15"
+        android:clickable="false"
+        android:focusable="false"
         android:gravity="center"
+        android:longClickable="false"
         android:text="+91"
-        android:onClick="selectContryCode"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -29,23 +31,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.75"
-        android:hint="Mobile (Optional)"
+        android:clickable="false"
+        android:focusable="false"
+        android:hint="Mobile"
         android:inputType="number"
+        android:longClickable="false"
         android:maxLength="10"
         android:textSize="16sp"
         app:met_floatingLabel="highlight"
         app:met_textColorHint="@color/darkGray"
         app:met_underlineColor="@color/mediumGray" />
-
-    <ImageButton
-        android:id="@+id/ib_remove_mobile"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|end"
-        android:layout_weight="0.1"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:onClick="removeMobileLayoutEmp"
-        android:src="@drawable/icon_cross"
-        android:tint="@color/black" />
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package in.oriange.joinsta.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
 import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
 import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
@@ -51,11 +53,11 @@ public class Favourite_Fragment extends Fragment {
 
     private static Context context;
     private UserSessionManager session;
+    private AppCompatEditText edt_type, edt_location;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_searchlist;
     private static LinearLayout ll_nopreview;
     private static EditText edt_search;
-    private AppCompatEditText edt_type;
     private static SpinKitView progressBar;
     private PowerMenu iconMenu;
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
@@ -87,6 +89,7 @@ public class Favourite_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        edt_location = rootView.findViewById(R.id.edt_location);
         progressBar = rootView.findViewById(R.id.progressBar);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_search = rootView.findViewById(R.id.edt_search);
@@ -119,6 +122,14 @@ public class Favourite_Fragment extends Fragment {
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
             userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,6 +178,15 @@ public class Favourite_Fragment extends Fragment {
 
             }
         });
+
+        edt_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, SelectLocation_Activity.class)
+                        .putExtra("startOrigin", 2));
+            }
+        });
+
     }
 
     private void searchDetails(String categoryTypeId, String query) {

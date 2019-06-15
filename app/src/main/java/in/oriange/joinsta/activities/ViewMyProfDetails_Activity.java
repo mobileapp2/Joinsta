@@ -1,10 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,12 +11,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -37,11 +36,12 @@ import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Profile_Fragment;
 import in.oriange.joinsta.models.GetProfessionalModel;
-import in.oriange.joinsta.models.GetProfessionalModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
+
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private Context context;
@@ -50,7 +50,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private ImageView imv_image;
     private ProgressBar progressBar;
     private LinearLayout ll_nopreview;
-    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_mobile, edt_landline,  edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
+    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_mobile, edt_landline, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_email, edt_district, edt_state, edt_country;
     private CardView cv_tabs;
     private LinearLayout ll_mobile, ll_landline;
@@ -60,12 +60,12 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private GetProfessionalModel.ResultBean searchDetails;
     private String userId;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewmy_profdetails);
-        
+
         init();
         getSessionDetails();
         setDefault();
@@ -140,8 +140,9 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
 
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
-                    .load(searchDetails.getImage_url().trim())
+                    .load(url)
                     .into(imv_image, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -188,7 +189,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                     } else {
                         try {
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_add_mobile2, null);
+                            final View rowView = inflater.inflate(R.layout.layout_add_mobile4, null);
                             LinearLayout ll = (LinearLayout) rowView;
                             mobileLayoutsList.add(ll);
                             ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
@@ -238,7 +239,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                     } else {
                         try {
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_add_landline2, null);
+                            final View rowView = inflater.inflate(R.layout.layout_add_landline4, null);
                             LinearLayout ll = (LinearLayout) rowView;
                             landlineLayoutsList.add(ll);
                             ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
@@ -280,7 +281,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.anim_toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

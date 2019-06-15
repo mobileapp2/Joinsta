@@ -43,13 +43,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="256dp">
+                android:layout_height="170dp">
 
                 <RelativeLayout
                     android:id="@+id/rl_profilepic"
                     android:layout_width="match_parent"
-                    android:layout_height="256dp"
-                    android:visibility="gone">
+                    android:layout_height="170dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imv_user"

@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
-import com.iammert.library.readablebottombar.ReadableBottomBar;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
@@ -39,8 +38,6 @@ import in.oriange.joinsta.utilities.Utilities;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
-import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class MainDrawer_Activity extends AppCompatActivity {
 
@@ -50,6 +47,8 @@ public class MainDrawer_Activity extends AppCompatActivity {
     private Fragment currentFragment;
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
+
+    private int startOrigin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,8 @@ public class MainDrawer_Activity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     alertD.dismiss();
-                    startActivity(new Intent(context, MainDrawer_Activity.class));
+                    startActivity(new Intent(context, MainDrawer_Activity.class)
+                            .putExtra("startOrigin", 0));
                     finish();
                 }
             });
@@ -89,8 +89,6 @@ public class MainDrawer_Activity extends AppCompatActivity {
 
 
         init();
-        getSessionDetails();
-        setEventHandler();
         setUpBottomNavigation();
 
 
@@ -112,14 +110,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         }
 
         startLocationUpdates();
-
-    }
-
-    private void getSessionDetails() {
-
-    }
-
-    private void setEventHandler() {
+        startOrigin = getIntent().getIntExtra("startOrigin", 0);
 
     }
 
@@ -165,6 +156,8 @@ public class MainDrawer_Activity extends AppCompatActivity {
                 return true;
             }
         });
+
+        bottomNavigation.setCurrentItem(startOrigin);
 
 //        bottomNavigation.setOnItemSelectListener(new ReadableBottomBar.ItemSelectListener() {
 //            @Override

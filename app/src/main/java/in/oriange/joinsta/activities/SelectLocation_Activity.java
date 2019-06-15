@@ -56,6 +56,8 @@ public class SelectLocation_Activity extends AppCompatActivity
     private Button btn_current_location, btn_select;
     private LottieAnimationView animationView;
 
+    private int startOrigin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,14 +74,12 @@ public class SelectLocation_Activity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-            provideLocationAccess(context);
-        } else {
-            if (!isLocationEnabled(context)) {
-                turnOnLocation(context);
-            } else {
-                startLocationUpdates();
-            }
+            return;
         }
+        if (isLocationEnabled(context)) {
+            startLocationUpdates();
+        }
+
     }
 
     private void init() {
@@ -102,7 +102,7 @@ public class SelectLocation_Activity extends AppCompatActivity
     }
 
     private void setDefault() {
-
+        startOrigin = getIntent().getIntExtra("startOrigin", 0);
     }
 
     private void getSessionDetails() {
@@ -146,7 +146,8 @@ public class SelectLocation_Activity extends AppCompatActivity
                 UserSessionManager session = new UserSessionManager(context);
                 session.setLocation(tv_city.getText().toString());
                 finishAffinity();
-                startActivity(new Intent(context, MainDrawer_Activity.class));
+                startActivity(new Intent(context, MainDrawer_Activity.class)
+                        .putExtra("startOrigin", startOrigin));
             }
         });
     }

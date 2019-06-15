@@ -14,6 +14,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.EditProfessional_Activity;
+import in.oriange.joinsta.activities.ViewMyProfDetails_Activity;
 import in.oriange.joinsta.models.GetProfessionalModel;
 
 public class MyAddedProfessionalAdapter extends RecyclerView.Adapter<MyAddedProfessionalAdapter.MyViewHolder> {
@@ -49,7 +50,7 @@ public class MyAddedProfessionalAdapter extends RecyclerView.Adapter<MyAddedProf
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditProfessional_Activity.class)
+                context.startActivity(new Intent(context, ViewMyProfDetails_Activity.class)
                         .putExtra("searchDetails", searchDetails));
             }
         });

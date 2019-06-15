@@ -1,10 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,14 +11,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -39,11 +37,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Profile_Fragment;
 import in.oriange.joinsta.models.GetEmployeeModel;
-import in.oriange.joinsta.models.GetEmployeeModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
+
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class ViewMyEmpDetails_Activity extends AppCompatActivity {
 
@@ -142,11 +141,11 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
         else
             cv_tabs.setVisibility(View.GONE);
 
-
         if (!searchDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
-                    .load(searchDetails.getImage_url().trim())
-                    .placeholder(R.drawable.icon_userphoto)
+                    .load(url)
+                    .placeholder(getResources().getDrawable(R.drawable.icon_userphoto))
                     .into(imv_user, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -164,7 +163,6 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
             rl_profilepic.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
-
 
         ArrayList<GetEmployeeModel.ResultBean.MobilesBean> mobilesList = new ArrayList<>();
         mobilesList = searchDetails.getMobiles().get(0);
@@ -191,7 +189,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
                     } else {
                         try {
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_add_mobile3, null);
+                            final View rowView = inflater.inflate(R.layout.layout_add_mobile4, null);
                             LinearLayout ll = (LinearLayout) rowView;
                             mobileLayoutsList.add(ll);
                             ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
@@ -241,7 +239,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
                     } else {
                         try {
                             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_add_landline3, null);
+                            final View rowView = inflater.inflate(R.layout.layout_add_landline4, null);
                             LinearLayout ll = (LinearLayout) rowView;
                             landlineLayoutsList.add(ll);
                             ll_landline.addView(rowView, ll_landline.getChildCount() - 1);

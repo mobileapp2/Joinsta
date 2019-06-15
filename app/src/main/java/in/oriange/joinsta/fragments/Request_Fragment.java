@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AddRequirement_Activity;
+import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.RequirementAdapter;
 import in.oriange.joinsta.models.RequirementsListModel;
 import in.oriange.joinsta.pojos.RequirementsListPojo;
@@ -45,6 +47,7 @@ public class Request_Fragment extends Fragment {
 
     private static Context context;
     private UserSessionManager session;
+    private AppCompatEditText edt_location;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_requirementlist;
     private static LinearLayout ll_nopreview;
@@ -73,6 +76,7 @@ public class Request_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        edt_location = rootView.findViewById(R.id.edt_location);
         ib_filter = rootView.findViewById(R.id.ib_filter);
         progressBar = rootView.findViewById(R.id.progressBar);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
@@ -101,6 +105,14 @@ public class Request_Fragment extends Fragment {
             JSONObject json = user_info.getJSONObject(0);
 
             userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -286,6 +298,15 @@ public class Request_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, AddRequirement_Activity.class));
+            }
+        });
+
+
+        edt_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, SelectLocation_Activity.class)
+                        .putExtra("startOrigin", 3));
             }
         });
     }

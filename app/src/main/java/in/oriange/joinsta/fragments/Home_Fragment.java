@@ -44,8 +44,6 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-import static android.app.Activity.RESULT_OK;
-
 public class Home_Fragment extends Fragment {
 
     private Context context;
@@ -137,7 +135,8 @@ public class Home_Fragment extends Fragment {
         edt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(context, SelectLocation_Activity.class), 10000);
+                startActivity(new Intent(context, SelectLocation_Activity.class)
+                        .putExtra("startOrigin", 0));
             }
         });
 
@@ -335,16 +334,5 @@ public class Home_Fragment extends Fragment {
                 .setMenuShadow(10f)
                 .build();
         iconMenu.showAsDropDown(edt_type);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 10000 && resultCode == RESULT_OK) {
-            String requiredValue = data.getStringExtra("locationname");
-            edt_location.setText(requiredValue);
-        }
-
     }
 }
