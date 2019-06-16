@@ -17,9 +17,6 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -1141,6 +1138,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
                             Picasso.with(context)
                                     .load(imageUrl)
                                     .into(imv_photo1);
+                            imv_photo1.setVisibility(View.VISIBLE);
                             imv_photo2.setVisibility(View.GONE);
                         }
                     } else {

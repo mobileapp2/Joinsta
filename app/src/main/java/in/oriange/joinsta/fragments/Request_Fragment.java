@@ -46,7 +46,7 @@ import in.oriange.joinsta.utilities.Utilities;
 public class Request_Fragment extends Fragment {
 
     private static Context context;
-    private UserSessionManager session;
+    private static UserSessionManager session;
     private AppCompatEditText edt_location;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_requirementlist;
@@ -111,7 +111,6 @@ public class Request_Fragment extends Fragment {
         }
 
         try {
-            UserSessionManager session = new UserSessionManager(context);
             edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
         } catch (Exception e) {
@@ -350,9 +349,21 @@ public class Request_Fragment extends Fragment {
                         posted = false;
                         starred = false;
                         if (requirementsList.size() > 0) {
-                            rv_requirementlist.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_requirementlist.setAdapter(new RequirementAdapter(context, requirementsList));
+                            ArrayList<RequirementsListModel> foundEmp = new ArrayList<>();
+                            for (RequirementsListModel empdetails : requirementsList) {
+                                if (!empdetails.getCity().equals(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO))) {
+                                    foundEmp.add(empdetails);
+                                }
+                            }
+                            requirementsList.removeAll(foundEmp);
+                            if (requirementsList.size() > 0) {
+                                rv_requirementlist.setVisibility(View.VISIBLE);
+                                ll_nopreview.setVisibility(View.GONE);
+                                rv_requirementlist.setAdapter(new RequirementAdapter(context, requirementsList));
+                            } else {
+                                ll_nopreview.setVisibility(View.VISIBLE);
+                                rv_requirementlist.setVisibility(View.GONE);
+                            }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_requirementlist.setVisibility(View.GONE);

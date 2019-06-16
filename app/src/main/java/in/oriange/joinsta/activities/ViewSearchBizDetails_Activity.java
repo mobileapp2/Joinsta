@@ -1,9 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,16 +8,22 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -40,11 +42,17 @@ import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.CalculateDistanceTime;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinsta.activities.MainDrawer_Activity.startLocationUpdates;
+import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
+import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
+import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class ViewSearchBizDetails_Activity extends AppCompatActivity {
 
@@ -53,6 +61,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private ImageView imv_image;
     private ProgressBar progressBar;
+    private TextView tv_distance;
     private CheckBox cb_like;
     private LinearLayout ll_direction, ll_mobile, ll_landline, ll_email, ll_nopreview;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
@@ -85,6 +94,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
         ll_mobile = findViewById(R.id.ll_mobile);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
+        tv_distance = findViewById(R.id.tv_distance);
 
         cb_like = findViewById(R.id.cb_like);
         imv_image = findViewById(R.id.imv_image);
@@ -267,6 +277,52 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                 }
             }
         });
+
+        tv_distance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
+                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Location of business not available</b></font>"));
+                    return;
+                }
+
+                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+                    provideLocationAccess(context);
+                    return;
+                }
+
+                if (!isLocationEnabled(context)) {
+                    turnOnLocation(context);
+                    return;
+                }
+
+                if (MainDrawer_Activity.latLng == null) {
+                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available. Please try again</b></font>"));
+
+                    return;
+                }
+
+                startLocationUpdates();
+
+                LatLng currentLocation = new LatLng(MainDrawer_Activity.latLng.latitude, MainDrawer_Activity.latLng.longitude);
+                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
+
+                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
+
+                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
+
+                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
+                    @Override
+                    public void taskCompleted(String[] time_distance) {
+                        tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
+
+                    }
+
+                });
+            }
+        });
+
     }
 
     private void showMobileListDialog(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> mobileList) {

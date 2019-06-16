@@ -2,6 +2,8 @@ package in.oriange.joinsta.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +12,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.MainDrawer_Activity;
 import in.oriange.joinsta.activities.ViewSearchProfDetails_Activity;
 import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.utilities.CalculateDistanceTime;
+
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static in.oriange.joinsta.activities.MainDrawer_Activity.startLocationUpdates;
+import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
+import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
+import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfessionalAdapter.MyViewHolder> {
 
@@ -91,6 +103,52 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
 
+        holder.tv_distance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
+                    holder.tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Location of professional not available</b></font>"));
+                    return;
+                }
+
+                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+                    provideLocationAccess(context);
+                    return;
+                }
+
+                if (!isLocationEnabled(context)) {
+                    turnOnLocation(context);
+                    return;
+                }
+
+                if (MainDrawer_Activity.latLng == null) {
+                    holder.tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available. Please try again</b></font>"));
+
+                    return;
+                }
+
+                startLocationUpdates();
+
+                LatLng currentLocation = new LatLng(MainDrawer_Activity.latLng.latitude, MainDrawer_Activity.latLng.longitude);
+                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
+
+                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
+
+                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
+
+                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
+                    @Override
+                    public void taskCompleted(String[] time_distance) {
+                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
+
+                    }
+
+                });
+            }
+        });
+
+
     }
 
     @Override
@@ -103,7 +161,7 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
         private ImageView imv_preview;
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
-        private TextView tv_heading, tv_subheading, tv_subsubheading;
+        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_distance;
 
         public MyViewHolder(View view) {
             super(view);
@@ -111,14 +169,14 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             tv_heading = view.findViewById(R.id.tv_heading);
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);
+            tv_distance = view.findViewById(R.id.tv_distance);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             progressBar = view.findViewById(R.id.progressBar);
         }
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return position;
     }
 

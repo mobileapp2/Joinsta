@@ -3,7 +3,6 @@ package in.oriange.joinsta.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +25,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.MainDrawer_Activity;
 import in.oriange.joinsta.activities.ViewSearchBizDetails_Activity;
 import in.oriange.joinsta.models.SearchDetailsModel;
-import in.oriange.joinsta.utilities.Utilities;
+import in.oriange.joinsta.utilities.CalculateDistanceTime;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static in.oriange.joinsta.activities.MainDrawer_Activity.startLocationUpdates;
@@ -123,24 +123,28 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
                 }
 
                 if (MainDrawer_Activity.latLng == null) {
-                    holder.tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available</b></font>"));
+                    holder.tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available. Please try again</b></font>"));
 
                     return;
                 }
 
                 startLocationUpdates();
 
-                Location currentLocation = new Location("");
-                currentLocation.setLatitude(MainDrawer_Activity.latLng.latitude);
-                currentLocation.setLongitude(MainDrawer_Activity.latLng.longitude);
+                LatLng currentLocation = new LatLng(MainDrawer_Activity.latLng.latitude, MainDrawer_Activity.latLng.longitude);
+                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
 
-                Location destinationLocation = new Location("");
-                destinationLocation.setLatitude(Double.parseDouble(searchDetails.getLatitude()));
-                destinationLocation.setLongitude(Double.parseDouble(searchDetails.getLongitude()));
+                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
 
-                float distanceInMeters = currentLocation.distanceTo(destinationLocation);
-                int dis = Math.round(distanceInMeters);
-                holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + (dis / 1000) + " km</b></font> <font color=\"#616161\">from current location</font>"));
+                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
+
+                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
+                    @Override
+                    public void taskCompleted(String[] time_distance) {
+                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
+
+                    }
+
+                });
             }
         });
 
@@ -174,5 +178,4 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
     public int getItemViewType(int position) {
         return position;
     }
-
 }

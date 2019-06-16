@@ -166,7 +166,7 @@
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/icon_arrowdown"
                         android:focusable="false"
-                        android:hint="Blood Group (Optional)"
+                        android:hint="Blood Group"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"

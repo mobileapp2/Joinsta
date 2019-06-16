@@ -17,9 +17,6 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -1133,6 +1130,8 @@ public class EditEmployee_Activity extends AppCompatActivity {
                                     .load(imageUrl)
                                     .placeholder(R.drawable.icon_userphoto)
                                     .into(imv_user);
+
+                            imv_user.setVisibility(View.VISIBLE);
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
