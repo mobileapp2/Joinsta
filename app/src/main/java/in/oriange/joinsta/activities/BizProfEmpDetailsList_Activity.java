@@ -38,7 +38,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
     public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
-    private String userId, categoryTypeId, subCategoryTypeId;
+    private String userId, mainCategoryTypeId, categoryTypeId,subCategoryTypeId;
 
 
     @Override
@@ -69,6 +69,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
 
     private void setDefault() {
 
+        mainCategoryTypeId = getIntent().getStringExtra("mainCategoryTypeId");
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
         subCategoryTypeId = getIntent().getStringExtra("subCategoryTypeId");
 
@@ -141,16 +142,27 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
     }
 
     private void setDataToRecyclerView() {
-        switch (categoryTypeId) {
+        switch (mainCategoryTypeId) {
             case "1":
                 if (businessList.size() > 0) {
-                    ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
-                    for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
-                        if (!bizdetails.getSub_type_id().equals(subCategoryTypeId)) {
-                            foundbiz.add(bizdetails);
+
+                    if (!subCategoryTypeId.equals("NA")) {
+                        ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
+                        for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
+                            if (!bizdetails.getSub_type_id().equals(subCategoryTypeId)) {
+                                foundbiz.add(bizdetails);
+                            }
                         }
+                        businessList.removeAll(foundbiz);
+                    } else {
+                        ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
+                        for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
+                            if (!bizdetails.getType_id().equals(categoryTypeId)) {
+                                foundbiz.add(bizdetails);
+                            }
+                        }
+                        businessList.removeAll(foundbiz);
                     }
-                    businessList.removeAll(foundbiz);
 
                     if (businessList.size() == 0) {
                         ll_nopreview.setVisibility(View.VISIBLE);
@@ -162,13 +174,24 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                 break;
             case "2":
                 if (employeeList.size() > 0) {
-                    ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> foundEmp = new ArrayList<SearchDetailsModel.ResultBean.EmployeesBean>();
-                    for (SearchDetailsModel.ResultBean.EmployeesBean empdetails : employeeList) {
-                        if (!empdetails.getSub_type_id().equals(subCategoryTypeId)) {
-                            foundEmp.add(empdetails);
+
+                    if (!subCategoryTypeId.equals("NA")) {
+                        ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> foundEmp = new ArrayList<SearchDetailsModel.ResultBean.EmployeesBean>();
+                        for (SearchDetailsModel.ResultBean.EmployeesBean empdetails : employeeList) {
+                            if (!empdetails.getSub_type_id().equals(subCategoryTypeId)) {
+                                foundEmp.add(empdetails);
+                            }
                         }
+                        employeeList.removeAll(foundEmp);
+                    } else {
+                        ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> foundEmp = new ArrayList<SearchDetailsModel.ResultBean.EmployeesBean>();
+                        for (SearchDetailsModel.ResultBean.EmployeesBean empdetails : employeeList) {
+                            if (!empdetails.getType_id().equals(categoryTypeId)) {
+                                foundEmp.add(empdetails);
+                            }
+                        }
+                        employeeList.removeAll(foundEmp);
                     }
-                    employeeList.removeAll(foundEmp);
 
                     if (employeeList.size() == 0) {
                         ll_nopreview.setVisibility(View.VISIBLE);
@@ -180,13 +203,24 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                 break;
             case "3":
                 if (professionalList.size() > 0) {
-                    ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> foundProf = new ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean>();
-                    for (SearchDetailsModel.ResultBean.ProfessionalsBean profdetails : professionalList) {
-                        if (!profdetails.getSub_type_id().equals(subCategoryTypeId)) {
-                            foundProf.add(profdetails);
+
+                    if (!subCategoryTypeId.equals("NA")) {
+                        ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> foundProf = new ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean>();
+                        for (SearchDetailsModel.ResultBean.ProfessionalsBean profdetails : professionalList) {
+                            if (!profdetails.getSub_type_id().equals(subCategoryTypeId)) {
+                                foundProf.add(profdetails);
+                            }
                         }
+                        professionalList.removeAll(foundProf);
+                    } else {
+                        ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> foundProf = new ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean>();
+                        for (SearchDetailsModel.ResultBean.ProfessionalsBean profdetails : professionalList) {
+                            if (!profdetails.getType_id().equals(categoryTypeId)) {
+                                foundProf.add(profdetails);
+                            }
+                        }
+                        professionalList.removeAll(foundProf);
                     }
-                    professionalList.removeAll(foundProf);
 
                     if (professionalList.size() == 0) {
                         ll_nopreview.setVisibility(View.VISIBLE);

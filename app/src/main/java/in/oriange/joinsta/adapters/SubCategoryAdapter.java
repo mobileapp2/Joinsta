@@ -20,11 +20,12 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
 
     private List<SubCategotyListModel> resultArrayList;
     private Context context;
-    private String categoryTypeId;
+    private String mainCategoryTypeId, categoryTypeId;
 
-    public SubCategoryAdapter(Context context, List<SubCategotyListModel> resultArrayList, String categoryTypeId) {
+    public SubCategoryAdapter(Context context, List<SubCategotyListModel> resultArrayList, String mainCategoryTypeId, String categoryTypeId) {
         this.context = context;
         this.resultArrayList = resultArrayList;
+        this.mainCategoryTypeId = mainCategoryTypeId;
         this.categoryTypeId = categoryTypeId;
     }
 
@@ -46,6 +47,7 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, BizProfEmpDetailsList_Activity.class)
+                        .putExtra("mainCategoryTypeId", mainCategoryTypeId)
                         .putExtra("categoryTypeId", categoryTypeId)
                         .putExtra("subCategoryTypeId", subCategotyDetails.getId()));
             }

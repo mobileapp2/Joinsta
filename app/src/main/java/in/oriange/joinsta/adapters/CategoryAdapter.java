@@ -1,6 +1,7 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.BizProfEmpDetailsList_Activity;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
 import in.oriange.joinsta.pojos.SubCategotyListPojo;
@@ -37,16 +39,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     private Context context;
     private ArrayList<SubCategotyListModel> subCategoryList;
     private ImageButton imv_arrow1;
-    private String categoryTypeId;
+    private String mainCategoryTypeId;
     private RecyclerView rv_sub_catrgory1;
     private SpinKitView progressBar1;
     private TextView tv_subcst_notavailable1;
 
 
-    public CategoryAdapter(Context context, List<CategotyListModel> resultArrayList, String categoryTypeId) {
+    public CategoryAdapter(Context context, List<CategotyListModel> resultArrayList, String mainCategoryTypeId) {
         this.context = context;
         this.resultArrayList = resultArrayList;
-        this.categoryTypeId = categoryTypeId;
+        this.mainCategoryTypeId = mainCategoryTypeId;
         subCategoryList = new ArrayList<>();
     }
 
@@ -64,13 +66,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
         holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
 
-
         holder.tv_categoty.setText(categotyDetails.getName());
 
         holder.cv_main_row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setUpSubcategoryData(holder, categotyDetails);
+//                setUpSubcategoryData(holder, categotyDetails);
+                context.startActivity(new Intent(context, BizProfEmpDetailsList_Activity.class)
+                        .putExtra("mainCategoryTypeId", mainCategoryTypeId)
+                        .putExtra("categoryTypeId", categotyDetails.getId())
+                        .putExtra("subCategoryTypeId", "NA"));
             }
         });
 
@@ -82,7 +87,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         });
 
 
-        switch (categoryTypeId) {
+        switch (mainCategoryTypeId) {
             case "1":
                 switch (position) {
                     case 0:
@@ -200,7 +205,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
             progressBar1 = holder.progressBar;
             tv_subcst_notavailable1 = holder.tv_subcst_notavailable;
             if (Utilities.isNetworkAvailable(context)) {
-                new GetSubCategotyList().execute(categotyDetails.getId(), "1", categoryTypeId);
+                new GetSubCategotyList().execute(categotyDetails.getId(), "1", mainCategoryTypeId);
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
@@ -253,6 +258,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     }
 
     public class GetSubCategotyList extends AsyncTask<String, Void, String> {
+        String categoryTypeId = "";
 
         @Override
         protected void onPreExecute() {
@@ -262,6 +268,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
 
         @Override
         protected String doInBackground(String... params) {
+            categoryTypeId = params[0];
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getcategory");
@@ -289,7 +296,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
                             rv_sub_catrgory1.setVisibility(View.VISIBLE);
                             tv_subcst_notavailable1.setVisibility(View.GONE);
                             rv_sub_catrgory1.setLayoutManager(new LinearLayoutManager(context));
-                            rv_sub_catrgory1.setAdapter(new SubCategoryAdapter(context, subCategoryList, categoryTypeId));
+                            rv_sub_catrgory1.setAdapter(new SubCategoryAdapter(context, subCategoryList, mainCategoryTypeId, categoryTypeId));
                         }
                     } else {
                         rv_sub_catrgory1.setVisibility(View.GONE);
