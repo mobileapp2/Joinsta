@@ -824,11 +824,11 @@ public class EditProfessional_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_subtype.getText().toString().trim().isEmpty()) {
-            edt_subtype.setError("Please select subtype");
-            edt_subtype.requestFocus();
-            return;
-        }
+//        if (edt_subtype.getText().toString().trim().isEmpty()) {
+//            edt_subtype.setError("Please select subtype");
+//            edt_subtype.requestFocus();
+//            return;
+//        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {

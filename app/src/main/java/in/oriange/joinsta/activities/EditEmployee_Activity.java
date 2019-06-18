@@ -803,11 +803,11 @@ public class EditEmployee_Activity extends AppCompatActivity {
             return;
         }
 
-//        if (edt_nature.getText().toString().trim().isEmpty()) {
-//            edt_nature.setError("Please select the nature of employment");
-//            edt_nature.requestFocus();
-//            return;
-//        }
+        if (edt_nature.getText().toString().trim().isEmpty()) {
+            edt_nature.setError("Please select the nature of employment");
+            edt_nature.requestFocus();
+            return;
+        }
 
 //        if (edt_subtype.getText().toString().trim().isEmpty()) {
 //            edt_subtype.setError("Please select subtype");
@@ -961,7 +961,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
         mainObj.add("landline_numbers", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
 
-        Log.i("ADDEMPLOYEE", mainObj.toString());
+        Log.i("EDITEMPLOYEE", mainObj.toString());
 
 
         if (Utilities.isNetworkAvailable(context)) {

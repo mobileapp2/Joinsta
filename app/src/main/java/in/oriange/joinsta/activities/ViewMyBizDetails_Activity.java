@@ -329,7 +329,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
                 alertD.show();
                 break;
             case R.id.action_edit:
-                startActivity(new Intent(context, EditEmployee_Activity.class)
+                startActivity(new Intent(context, EditBusiness_Activity.class)
                         .putExtra("searchDetails", searchDetails));
                 finish();
                 break;

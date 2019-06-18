@@ -730,11 +730,12 @@ public class BasicInformation_Activity extends AppCompatActivity {
 //            return;
 //        }
 
-//        if (rb_male.isChecked()) {
-//            genderId = "1";
-//        } else if (rb_female.isChecked()) {
-//            genderId = "2";
-//        } else {
+        if (rb_male.isChecked()) {
+            genderId = "1";
+        } else if (rb_female.isChecked()) {
+            genderId = "2";
+        }
+//        else {
 //            Utilities.showMessage("Please select gender", context, 2);
 //            return;
 //        }

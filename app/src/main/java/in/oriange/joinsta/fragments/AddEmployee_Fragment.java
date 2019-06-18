@@ -97,7 +97,7 @@ public class AddEmployee_Fragment extends Fragment {
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude= "", longitude= "";
+    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude = "", longitude = "";
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -635,11 +635,11 @@ public class AddEmployee_Fragment extends Fragment {
             return;
         }
 
-//        if (edt_nature.getText().toString().trim().isEmpty()) {
-//            edt_nature.setError("Please select the nature of employment");
-//            edt_nature.requestFocus();
-//            return;
-//        }
+        if (edt_nature.getText().toString().trim().isEmpty()) {
+            edt_nature.setError("Please select the nature of employment");
+            edt_nature.requestFocus();
+            return;
+        }
 
 //        if (edt_subtype.getText().toString().trim().isEmpty()) {
 //            edt_subtype.setError("Please select subtype");
