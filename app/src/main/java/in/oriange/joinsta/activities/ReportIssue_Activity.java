@@ -31,7 +31,7 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class UserFeedback_Activity extends AppCompatActivity {
+public class ReportIssue_Activity extends AppCompatActivity {
 
     private static Context context;
     private UserSessionManager session;
@@ -45,7 +45,7 @@ public class UserFeedback_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_feedback);
+        setContentView(R.layout.activity_report_issue);
 
         init();
         getSessionDetails();
@@ -56,7 +56,7 @@ public class UserFeedback_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = UserFeedback_Activity.this;
+        context = ReportIssue_Activity.this;
         session = new UserSessionManager(context);
 
         btn_add = findViewById(R.id.btn_add);
@@ -104,7 +104,7 @@ public class UserFeedback_Activity extends AppCompatActivity {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddUserFeedback_Activity.class));
+                startActivity(new Intent(context, AddReportIssue_Activity.class));
             }
         });
     }
@@ -153,12 +153,10 @@ public class UserFeedback_Activity extends AppCompatActivity {
                             }
                         }
 
-                        feedbackList.removeAll(filterfeedbackList);
-
-                        if (feedbackList.size() > 0) {
+                        if (filterfeedbackList.size() > 0) {
                             rv_feedback.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_feedback.setAdapter(new UserFeedbackAdapter(context, feedbackList));
+                            rv_feedback.setAdapter(new UserFeedbackAdapter(context, filterfeedbackList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_feedback.setVisibility(View.GONE);

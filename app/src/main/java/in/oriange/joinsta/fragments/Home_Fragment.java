@@ -263,7 +263,7 @@ public class Home_Fragment extends Fragment {
             ll_employee.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    edt_type.setText("Employee");
+                    edt_type.setText("Employment");
                     bottomDialog.dismiss();
                 }
             });

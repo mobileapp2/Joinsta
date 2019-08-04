@@ -208,7 +208,7 @@ public class Search_Fragment extends Fragment {
                             }
 
                         String businessToBeSearched = businessDetails.getBusiness_name().toLowerCase() +
-                                businessDetails.getCity().toLowerCase() + tag.toString();
+                                businessDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
                         if (businessToBeSearched.contains(query.toLowerCase())) {
                             businessSearchedList.add(businessDetails);
                         }
@@ -237,7 +237,7 @@ public class Search_Fragment extends Fragment {
                             }
 
                         String employeeToBeSearched = employeeDetails.getOrganization_name().toLowerCase() +
-                                employeeDetails.getCity().toLowerCase() + tag.toString();
+                                employeeDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
                         if (employeeToBeSearched.contains(query.toLowerCase())) {
                             employeeSearchedList.add(employeeDetails);
                         }
@@ -265,7 +265,7 @@ public class Search_Fragment extends Fragment {
                             }
 
                         String professionalToBeSearched = professionalDetails.getFirm_name().toLowerCase() +
-                                professionalDetails.getCity().toLowerCase() + tag.toString();
+                                professionalDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
                         if (professionalToBeSearched.contains(query.toLowerCase())) {
                             professionalSearchedList.add(professionalDetails);
                         }

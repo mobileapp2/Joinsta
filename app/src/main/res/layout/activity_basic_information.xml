@@ -94,6 +94,21 @@
                         app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_reg_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Registered Mobile No."
+                        android:inputType="number"
+                        android:clickable="false"
+                        android:longClickable="false"
+                        android:focusable="false"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_mname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -202,7 +217,8 @@
                         android:id="@+id/edt_nativeplace"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Native Place"
+                        android:drawableRight="@drawable/icon_current_location"
+                        android:hint="Current City"
                         android:inputType="textCapWords|textNoSuggestions"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"

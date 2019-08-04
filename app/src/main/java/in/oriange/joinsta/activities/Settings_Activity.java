@@ -36,7 +36,7 @@ public class Settings_Activity extends AppCompatActivity {
 
     private Context context;
     private ProgressDialog pd;
-    private CardView cv_logout, cv_feedback, cv_invite, cv_password;
+    private CardView cv_logout, cv_feedback, cv_invite, cv_password, cv_report_issue;
     private UserSessionManager session;
     private String userId, password, mobile;
 
@@ -60,6 +60,7 @@ public class Settings_Activity extends AppCompatActivity {
         cv_invite = findViewById(R.id.cv_invite);
         cv_feedback = findViewById(R.id.cv_feedback);
         cv_logout = findViewById(R.id.cv_logout);
+        cv_report_issue = findViewById(R.id.cv_report_issue);
     }
 
     private void setDefault() {
@@ -105,6 +106,13 @@ public class Settings_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, UserFeedback_Activity.class));
+            }
+        });
+
+        cv_report_issue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, ReportIssue_Activity.class));
             }
         });
 

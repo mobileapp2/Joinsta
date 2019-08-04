@@ -231,8 +231,8 @@ public class SelectLocation_Activity extends AppCompatActivity
 
     private LocationRequest mLocationRequest;
 
-//    private long UPDATE_INTERVAL = 10 * 10000000;  /* 10 secs */
-//    private long FASTEST_INTERVAL = 0; /* 2 sec */
+    private long UPDATE_INTERVAL = 10 * 10000000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 0; /* 2 sec */
     private LatLng latLng;
 
     @SuppressLint({"RestrictedApi", "MissingPermission"})
@@ -241,6 +241,8 @@ public class SelectLocation_Activity extends AppCompatActivity
         // Create the location request to start receiving updates
         mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);

@@ -139,7 +139,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:padding="10dp"
-                        android:text="Employee"
+                        android:text="Employment"
                         android:textSize="16sp" />
 
                     <View

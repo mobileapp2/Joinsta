@@ -60,10 +60,25 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 
         holder.tv_heading.setText(searchDetails.getOrganization_name());
 
-        if (!searchDetails.getSubtype_description().isEmpty())
-            holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-        else
-            holder.tv_subheading.setText(searchDetails.getType_description());
+        if (searchDetails.getTag().get(0) != null || searchDetails.getTag().get(0).size() > 0) {
+            StringBuilder tag = new StringBuilder();
+            try {
+                for (int i = 0; i < 4; i++) {
+                    tag.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
+                }
+                holder.tv_subheading.setText(tag.toString().substring(0, tag.toString().length() - 2));
+            } catch (IndexOutOfBoundsException e) {
+                holder.tv_subheading.setText(tag.toString().substring(0, tag.toString().length() - 2));
+            }
+
+        } else {
+            if (!searchDetails.getSubtype_description().isEmpty())
+                holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+            else
+                holder.tv_subheading.setText(searchDetails.getType_description());
+
+        }
+
 
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 

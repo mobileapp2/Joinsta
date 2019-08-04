@@ -1,16 +1,21 @@
 package in.oriange.joinsta.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Looper;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -18,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -38,6 +44,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -58,6 +71,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
@@ -72,9 +86,14 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
+import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
+import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class BasicInformation_Activity extends AppCompatActivity {
 
@@ -83,7 +102,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private CircleImageView imv_user;
     private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
-            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace;
+            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton ib_add_mobile, ib_add_landline, ib_add_email;
@@ -134,6 +153,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_landline = findViewById(R.id.edt_landline);
         edt_email = findViewById(R.id.edt_email);
+        edt_reg_mobile = findViewById(R.id.edt_reg_mobile);
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
 
         rb_male = findViewById(R.id.rb_male);
@@ -195,6 +215,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             edt_fname.setText(json.getString("first_name"));
             edt_mname.setText(json.getString("middle_name"));
             edt_lname.setText(json.getString("last_name"));
+            edt_reg_mobile.setText(json.getString("mobile"));
             genderId = json.getString("gender_id");
             imageUrl = json.getString("image_url");
             isActive = json.getString("is_active");
@@ -281,6 +302,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
 
         imv_user.setOnClickListener(new View.OnClickListener() {
@@ -353,6 +375,44 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 ll_email.addView(rowView, ll_email.getChildCount() - 1);
             }
         });
+
+
+        edt_nativeplace.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (edt_nativeplace.getRight() - edt_nativeplace.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+                            provideLocationAccess(context);
+                        } else {
+                            if (!isLocationEnabled(context)) {
+                                turnOnLocation(context);
+                            } else {
+                                startLocationUpdates();
+                                if (latLng != null) {
+                                    if (Utilities.isNetworkAvailable(context)) {
+                                        new GetAddress().execute(
+                                                String.valueOf(latLng.latitude),
+                                                String.valueOf(latLng.longitude));
+                                    } else {
+                                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                    }
+                                } else {
+                                    edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
+            }
+        });
+
     }
 
     private void selectImage() {
@@ -1394,6 +1454,78 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
 
         }
+    }
+
+    private class GetAddress extends AsyncTask<String, Void, List<Address>> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected List<Address> doInBackground(String... params) {
+            Geocoder geocoder;
+            List<Address> addresses = null;
+
+            try {
+                geocoder = new Geocoder(context, Locale.getDefault());
+                addresses = geocoder.getFromLocation(Double.parseDouble(params[0]), Double.parseDouble(params[1]), 1); // Here 1 represent max icon_location result to returned, by documents it recommended 1 to 5
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return addresses;
+        }
+
+        @Override
+        protected void onPostExecute(List<Address> addresses) {
+            super.onPostExecute(addresses);
+
+            if (addresses != null && !addresses.isEmpty()) {
+                edt_nativeplace.setText(addresses.get(0).getLocality());
+            } else {
+                edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
+            }
+
+        }
+    }
+
+    private LocationRequest mLocationRequest;
+
+    private long UPDATE_INTERVAL = 10 * 10000000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 1000; /* 2 sec */
+    private LatLng latLng;
+
+    @SuppressLint({"RestrictedApi", "MissingPermission"})
+    protected void startLocationUpdates() {
+
+        // Create the location request to start receiving updates
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+
+        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        settingsClient.checkLocationSettings(locationSettingsRequest);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        onLocationChanged(locationResult.getLocations().get(0));
+                    }
+                },
+                Looper.myLooper());
+    }
+
+    public void onLocationChanged(Location location) {
+        latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     @Override

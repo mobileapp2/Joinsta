@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -37,7 +36,7 @@ import in.oriange.joinsta.utilities.Utilities;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
-public class AddUserFeedback_Activity extends AppCompatActivity {
+public class AddReportIssue_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -45,17 +44,15 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
     private TextView tv_countrycode;
     private MaterialEditText edt_mobile;
     private EditText edt_feedback;
-    private RatingBar rb_feedbackstars;
     private Button btn_save;
 
     private ArrayList<ContryCodeModel> countryCodeList;
     private String userId, name, mobile;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_userfeedback);
+        setContentView(R.layout.activity_add_report_issue);
 
         init();
         getSessionDetails();
@@ -66,14 +63,13 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = AddUserFeedback_Activity.this;
+        context = AddReportIssue_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         tv_countrycode = findViewById(R.id.tv_countrycode);
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_feedback = findViewById(R.id.edt_feedback);
-        rb_feedbackstars = findViewById(R.id.rb_feedbackstars);
         btn_save = findViewById(R.id.btn_save);
     }
 
@@ -186,7 +182,7 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
         mainObj.addProperty("userid", userId);
         mainObj.addProperty("feedback_text", edt_feedback.getText().toString().trim());
         mainObj.addProperty("mobile", edt_mobile.getText().toString().trim());
-        mainObj.addProperty("Rating", String.valueOf(rb_feedbackstars.getRating()));
+        mainObj.addProperty("Rating", "0");
 
         if (Utilities.isNetworkAvailable(context)) {
             new AddRequirement().execute(mainObj.toString());
@@ -225,7 +221,7 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new UserFeedback_Activity.GetUserFeedback().execute(userId);
+                        new ReportIssue_Activity.GetUserFeedback().execute(userId);
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -236,7 +232,7 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Feedback submitted successfully");
+                        tv_title.setText("Issue submitted successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -250,7 +246,7 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
 
                         alertD.show();
                     } else {
-                        Utilities.showMessage("Failed to submit your feedback", context, 3);
+                        Utilities.showMessage("Failed to report your issue", context, 3);
                     }
 
                 }
@@ -276,7 +272,7 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(AddUserFeedback_Activity.this);
+        hideSoftKeyboard(AddReportIssue_Activity.this);
     }
 
 }
