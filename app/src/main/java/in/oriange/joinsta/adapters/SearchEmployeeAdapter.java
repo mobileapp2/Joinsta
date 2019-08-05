@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -78,7 +79,6 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
                 holder.tv_subheading.setText(searchDetails.getType_description());
 
         }
-
 
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 
@@ -163,6 +163,79 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             }
         });
 
+        holder.imv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder sb = new StringBuilder();
+
+                if (!searchDetails.getOrganization_name().equals("")) {
+                    sb.append("Organization Name - " + searchDetails.getOrganization_name() + "\n");
+                }
+
+                if (!searchDetails.getType_description().equals("")) {
+                    sb.append("Type - " + searchDetails.getType_description() + "\n");
+                }
+
+                if (!searchDetails.getSubtype_description().equals("")) {
+                    sb.append("Subtype - " + searchDetails.getType_description() + "\n");
+                }
+
+                if (!searchDetails.getWebsite().equals("")) {
+                    sb.append("Website - " + searchDetails.getWebsite() + "\n");
+                }
+
+                if (!searchDetails.getAddress().equals("")) {
+                    sb.append("Address - " + searchDetails.getAddress() + "\n");
+                }
+
+                if (!searchDetails.getEmail().equals("")) {
+                    sb.append("Email - " + searchDetails.getEmail() + "\n");
+                }
+
+                if (searchDetails.getMobiles().get(0) != null)
+                    if (searchDetails.getMobiles().get(0).size() != 0) {
+                        StringBuilder mobile = new StringBuilder();
+                        for (int i = 0; i < searchDetails.getMobiles().get(0).size(); i++) {
+                            mobile.append(searchDetails.getMobiles().get(0).get(i).getMobile_number() + ", ");
+                        }
+
+                        sb.append("Mobile - " + mobile.toString().substring(0, mobile.toString().length() - 2) + "\n");
+                    }
+
+                if (searchDetails.getLandline().get(0) != null)
+                    if (searchDetails.getLandline().get(0).size() != 0) {
+                        StringBuilder landline = new StringBuilder();
+                        for (int i = 0; i < searchDetails.getLandline().get(0).size(); i++) {
+                            landline.append(searchDetails.getLandline().get(0).get(i).getLandline_numbers() + ", ");
+                        }
+
+                        sb.append("Landline - " + landline.toString().substring(0, landline.toString().length() - 2) + "\n");
+                    }
+
+                if (!searchDetails.getLatitude().equals("") || !searchDetails.getLongitude().equals("")) {
+                    sb.append("Location - " + "https://www.google.com/maps/?q="
+                            + searchDetails.getLatitude() + "," + searchDetails.getLongitude() + "\n");
+
+                }
+
+                if (searchDetails.getTag().get(0) != null)
+                    if (searchDetails.getTag().get(0).size() != 0) {
+                        StringBuilder tags = new StringBuilder();
+                        for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
+                            tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
+                        }
+
+                        sb.append("Tags - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
+                    }
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+            }
+        });
+
 
     }
 
@@ -176,6 +249,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
         private ImageView imv_preview;
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
+        private ImageButton imv_share;
         private TextView tv_heading, tv_subheading, tv_subsubheading, tv_distance;
 
         public MyViewHolder(View view) {
@@ -185,14 +259,14 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);
             tv_distance = view.findViewById(R.id.tv_distance);
+            imv_share = view.findViewById(R.id.imv_share);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             progressBar = view.findViewById(R.id.progressBar);
         }
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return position;
     }
 
