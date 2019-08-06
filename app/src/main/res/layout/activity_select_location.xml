@@ -89,7 +89,6 @@
                 android:scaleType="centerCrop"
                 android:visibility="gone"
                 app:lottie_autoPlay="true"
-                app:lottie_cacheStrategy="strong"
                 app:lottie_fileName="loading.json"
                 app:lottie_loop="true" />
 

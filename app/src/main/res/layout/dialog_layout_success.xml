@@ -15,7 +15,6 @@
         android:cropToPadding="true"
         android:scaleType="centerCrop"
         app:lottie_autoPlay="true"
-        app:lottie_cacheStrategy="strong"
         app:lottie_fileName="success.json"
         app:lottie_loop="false" />
 

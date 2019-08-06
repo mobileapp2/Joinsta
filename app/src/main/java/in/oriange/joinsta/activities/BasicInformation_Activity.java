@@ -1490,14 +1490,15 @@ public class BasicInformation_Activity extends AppCompatActivity {
         }
     }
 
-    private LocationRequest mLocationRequest;
+
+    private static LocationRequest mLocationRequest;
 
     private long UPDATE_INTERVAL = 10 * 10000000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 1000; /* 2 sec */
+    private long FASTEST_INTERVAL = 20000; /* 2 sec */
     private LatLng latLng;
 
-    @SuppressLint({"RestrictedApi", "MissingPermission"})
-    protected void startLocationUpdates() {
+    @SuppressLint("RestrictedApi")
+    private void startLocationUpdates() {
 
         // Create the location request to start receiving updates
         mLocationRequest = new LocationRequest();
@@ -1509,22 +1510,22 @@ public class BasicInformation_Activity extends AppCompatActivity {
         builder.addLocationRequest(mLocationRequest);
         LocationSettingsRequest locationSettingsRequest = builder.build();
 
-        SettingsClient settingsClient = LocationServices.getSettingsClient(this);
+        SettingsClient settingsClient = LocationServices.getSettingsClient(context);
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        getFusedLocationProviderClient(this).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+        getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
-                        onLocationChanged(locationResult.getLocations().get(0));
+                        onLocationChanged(locationResult.getLastLocation());
                     }
                 },
                 Looper.myLooper());
     }
 
-    public void onLocationChanged(Location location) {
+    private void onLocationChanged(Location location) {
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 

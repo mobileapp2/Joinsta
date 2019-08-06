@@ -86,11 +86,21 @@
                 android:checked="false"
                 android:stateListAnimator="@animator/scale" />
 
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/layout_biz_details" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/icon_share"
+        android:tint="@color/white" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

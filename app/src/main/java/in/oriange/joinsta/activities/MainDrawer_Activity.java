@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -20,8 +19,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -30,6 +27,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
+import com.iammert.library.readablebottombar.ReadableBottomBar;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
@@ -42,8 +40,8 @@ import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 public class MainDrawer_Activity extends AppCompatActivity {
 
     private static Context context;
-    private AHBottomNavigation bottomNavigation;
-    //    private ReadableBottomBar bottomNavigation;
+//    private AHBottomNavigation bottomNavigation;
+        private ReadableBottomBar bottomNavigation;
     private Fragment currentFragment;
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
@@ -117,59 +115,59 @@ public class MainDrawer_Activity extends AppCompatActivity {
     private void setUpBottomNavigation() {
 //         Create items
 
-        AHBottomNavigationItem botHome = new AHBottomNavigationItem("HOME", R.drawable.icon_home, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("SEARCH", R.drawable.icon_search, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("FAVOURITE", R.drawable.icon_favourite, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("REQUIREMENTS", R.drawable.icon_request, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("PROFILE", R.drawable.icon_profile, R.color.colorPrimaryDark);
-
+//        AHBottomNavigationItem botHome = new AHBottomNavigationItem("HOME", R.drawable.icon_home, R.color.colorPrimaryDark);
+//        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("SEARCH", R.drawable.icon_search, R.color.colorPrimaryDark);
+//        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("FAVOURITE", R.drawable.icon_favourite, R.color.colorPrimaryDark);
+//        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("REQUIREMENTS", R.drawable.icon_request, R.color.colorPrimaryDark);
+//        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("PROFILE", R.drawable.icon_profile, R.color.colorPrimaryDark);
+//
 //         Add items
-
-        bottomNavigation.addItem(botHome);
-        bottomNavigation.addItem(botSearch);
-        bottomNavigation.addItem(botFavourite);
-        bottomNavigation.addItem(botRequest);
-        bottomNavigation.addItem(botProfile);
-
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
-        bottomNavigation.setAccentColor(Color.parseColor("#FFA000"));
-        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
-        bottomNavigation.setForceTint(true);
-        bottomNavigation.setTranslucentNavigationEnabled(true);
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
-
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-
-                if (currentFragment == null) {
-                    currentFragment = adapter.getCurrentFragment();
-                }
-
-                view_pager.setCurrentItem(position, true);
-
-                if (currentFragment == null) {
-                    return true;
-                }
-
-                currentFragment = adapter.getCurrentFragment();
-                return true;
-            }
-        });
-
-        bottomNavigation.setCurrentItem(startOrigin);
-
-//        bottomNavigation.setOnItemSelectListener(new ReadableBottomBar.ItemSelectListener() {
+//
+//        bottomNavigation.addItem(botHome);
+//        bottomNavigation.addItem(botSearch);
+//        bottomNavigation.addItem(botFavourite);
+//        bottomNavigation.addItem(botRequest);
+//        bottomNavigation.addItem(botProfile);
+//
+//        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
+//        bottomNavigation.setAccentColor(Color.parseColor("#FFA000"));
+//        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
+//        bottomNavigation.setForceTint(true);
+//        bottomNavigation.setTranslucentNavigationEnabled(true);
+//        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+//
+//        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
 //            @Override
-//            public void onItemSelected(int i) {
+//            public boolean onTabSelected(int position, boolean wasSelected) {
+//
 //                if (currentFragment == null) {
 //                    currentFragment = adapter.getCurrentFragment();
 //                }
 //
-//                view_pager.setCurrentItem(i, true);
+//                view_pager.setCurrentItem(position, true);
+//
+//                if (currentFragment == null) {
+//                    return true;
+//                }
+//
 //                currentFragment = adapter.getCurrentFragment();
+//                return true;
 //            }
 //        });
+//
+//        bottomNavigation.setCurrentItem(startOrigin);
+
+        bottomNavigation.setOnItemSelectListener(new ReadableBottomBar.ItemSelectListener() {
+            @Override
+            public void onItemSelected(int i) {
+                if (currentFragment == null) {
+                    currentFragment = adapter.getCurrentFragment();
+                }
+
+                view_pager.setCurrentItem(i, true);
+                currentFragment = adapter.getCurrentFragment();
+            }
+        });
 
     }
 

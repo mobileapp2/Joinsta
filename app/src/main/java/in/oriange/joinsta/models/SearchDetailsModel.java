@@ -395,7 +395,11 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<TagBean>> getTag() {
-                return tag;
+                if (tag == null) {
+                    return new ArrayList<ArrayList<TagBean>>();
+                } else {
+                    return tag;
+                }
             }
 
             public void setTag(ArrayList<ArrayList<TagBean>> tag) {
@@ -803,7 +807,11 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<TagBeanX>> getTag() {
-                return tag;
+                if (tag == null) {
+                    return new ArrayList<ArrayList<TagBeanX>>();
+                } else {
+                    return tag;
+                }
             }
 
             public void setTag(ArrayList<ArrayList<TagBeanX>> tag) {
@@ -1175,7 +1183,11 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<TagBeanXX>> getTag() {
-                return tag;
+                if (tag == null) {
+                    return new ArrayList<ArrayList<TagBeanXX>>();
+                } else {
+                    return tag;
+                }
             }
 
             public void setTag(ArrayList<ArrayList<TagBeanXX>> tag) {
