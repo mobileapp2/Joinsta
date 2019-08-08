@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,104 +89,124 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         });
 
 
-        switch (mainCategoryTypeId) {
-            case "1":
-                switch (position) {
-                    case 0:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
-                        break;
-                    case 1:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_contractor1));
-                        break;
-                    case 2:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_manufacturer1));
-                        break;
-                    case 3:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_service1));
-                        break;
-                    case 4:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_showroon));
-                        break;
-                    case 5:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_trader1));
-                        break;
-                    case 6:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
-                        break;
-                    default:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-                        break;
+        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(categotyDetails.getCategory_icon().trim())
+                    .placeholder(R.drawable.icon_preview)
+                    .into(holder.imv_category, new Callback() {
+                        @Override
+                        public void onSuccess() {
 
-                }
+                        }
 
-                break;
-            case "2":
-                switch (position) {
-                    case 0:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_corporate));
-                        break;
-                    case 1:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_government));
-                        break;
-                    case 2:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_mnc));
-                        break;
-                    case 3:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_private));
-                        break;
-                    case 4:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
-                        break;
-                    default:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-                        break;
-
-                }
-
-                break;
-            case "3":
-                switch (position) {
-                    case 0:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_advocate));
-                        break;
-                    case 1:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_architect));
-                        break;
-                    case 2:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_ca));
-                        break;
-                    case 3:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cs));
-                        break;
-                    case 4:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cwa));
-                        break;
-                    case 5:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_doctor));
-                        break;
-                    case 6:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_engineer));
-                        break;
-                    case 7:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_interiordesign));
-                        break;
-                    case 8:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_lecture));
-                        break;
-                    case 9:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_teacher));
-                        break;
-                    case 10:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
-                        break;
-                    default:
-                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-                        break;
-
-                }
-
-                break;
+                        @Override
+                        public void onError() {
+                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        }
+                    });
+        } else {
+            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }
+
+
+//        switch (mainCategoryTypeId) {
+//            case "1":
+//                switch (position) {
+//                    case 0:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
+//                        break;
+//                    case 1:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_contractor1));
+//                        break;
+//                    case 2:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_manufacturer1));
+//                        break;
+//                    case 3:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_service1));
+//                        break;
+//                    case 4:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_showroon));
+//                        break;
+//                    case 5:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_trader1));
+//                        break;
+//                    case 6:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
+//                        break;
+//                    default:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//                        break;
+//
+//                }
+//
+//                break;
+//            case "2":
+//                switch (position) {
+//                    case 0:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_corporate));
+//                        break;
+//                    case 1:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_government));
+//                        break;
+//                    case 2:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_mnc));
+//                        break;
+//                    case 3:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_private));
+//                        break;
+//                    case 4:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
+//                        break;
+//                    default:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//                        break;
+//
+//                }
+//
+//                break;
+//            case "3":
+//                switch (position) {
+//                    case 0:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_advocate));
+//                        break;
+//                    case 1:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_architect));
+//                        break;
+//                    case 2:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_ca));
+//                        break;
+//                    case 3:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cs));
+//                        break;
+//                    case 4:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cwa));
+//                        break;
+//                    case 5:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_doctor));
+//                        break;
+//                    case 6:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_engineer));
+//                        break;
+//                    case 7:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_interiordesign));
+//                        break;
+//                    case 8:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_lecture));
+//                        break;
+//                    case 9:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_teacher));
+//                        break;
+//                    case 10:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_other1));
+//                        break;
+//                    default:
+//                        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//                        break;
+//
+//                }
+//
+//                break;
+//        }
 
 
     }

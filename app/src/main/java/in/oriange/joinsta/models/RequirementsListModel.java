@@ -177,7 +177,12 @@ public class RequirementsListModel implements Serializable {
     }
 
     public String getImageURL() {
-        return ImageURL;
+
+        if (ImageURL == null){
+            return "";
+        } else {
+            return ImageURL;
+        }
     }
 
     public void setImageURL(String imageURL) {

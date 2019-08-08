@@ -40,8 +40,8 @@ import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 public class MainDrawer_Activity extends AppCompatActivity {
 
     private static Context context;
-//    private AHBottomNavigation bottomNavigation;
-        private ReadableBottomBar bottomNavigation;
+    //    private AHBottomNavigation bottomNavigation;
+    private ReadableBottomBar bottomNavigation;
     private Fragment currentFragment;
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;

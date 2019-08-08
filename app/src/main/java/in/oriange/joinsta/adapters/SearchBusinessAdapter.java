@@ -176,27 +176,28 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
                 StringBuilder sb = new StringBuilder();
 
                 if (!searchDetails.getBusiness_name().equals("")) {
-                    sb.append("Name of Business - " + searchDetails.getBusiness_name() + "\n");
-                }
-
-                if (!searchDetails.getType_description().equals("")) {
-                    sb.append("Nature of Business - " + searchDetails.getType_description() + "\n");
+                    sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
                 }
 
                 if (!searchDetails.getSubtype_description().equals("")) {
-                    sb.append("Subtype - " + searchDetails.getType_description() + "\n");
+                    sb.append("Nature of Business - " + searchDetails.getType_description() + "/" + searchDetails.getSubtype_description() + "\n");
+                } else {
+                    sb.append("Nature of Business - " + searchDetails.getType_description() + "\n");
                 }
 
-                if (!searchDetails.getWebsite().equals("")) {
-                    sb.append("Website - " + searchDetails.getWebsite() + "\n");
-                }
+                if (searchDetails.getTag().get(0) != null)
+                    if (searchDetails.getTag().get(0).size() != 0) {
+                        StringBuilder tags = new StringBuilder();
+                        for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
+                            tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
+                        }
+
+                        sb.append("Products - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
+                    }
+
 
                 if (!searchDetails.getAddress().equals("")) {
                     sb.append("Address - " + searchDetails.getAddress() + "\n");
-                }
-
-                if (!searchDetails.getEmail().equals("")) {
-                    sb.append("Email - " + searchDetails.getEmail() + "\n");
                 }
 
                 if (searchDetails.getMobiles().get(0) != null)
@@ -209,31 +210,30 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
                         sb.append("Mobile - " + mobile.toString().substring(0, mobile.toString().length() - 2) + "\n");
                     }
 
-                if (searchDetails.getLandline().get(0) != null)
-                    if (searchDetails.getLandline().get(0).size() != 0) {
-                        StringBuilder landline = new StringBuilder();
-                        for (int i = 0; i < searchDetails.getLandline().get(0).size(); i++) {
-                            landline.append(searchDetails.getLandline().get(0).get(i).getLandline_number() + ", ");
-                        }
-
-                        sb.append("Landline - " + landline.toString().substring(0, landline.toString().length() - 2) + "\n");
-                    }
-
                 if (!searchDetails.getLatitude().equals("") || !searchDetails.getLongitude().equals("")) {
                     sb.append("Location - " + "https://www.google.com/maps/?q="
                             + searchDetails.getLatitude() + "," + searchDetails.getLongitude() + "\n");
 
                 }
 
-                if (searchDetails.getTag().get(0) != null)
-                    if (searchDetails.getTag().get(0).size() != 0) {
-                        StringBuilder tags = new StringBuilder();
-                        for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
-                            tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
-                        }
+                if (!searchDetails.getWebsite().equals("")) {
+                    sb.append("Website - " + searchDetails.getWebsite() + "\n");
+                }
 
-                        sb.append("Tags - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
-                    }
+//                if (!searchDetails.getEmail().equals("")) {
+//                    sb.append("Email - " + searchDetails.getEmail() + "\n");
+//                }
+
+
+//                if (searchDetails.getLandline().get(0) != null)
+//                    if (searchDetails.getLandline().get(0).size() != 0) {
+//                        StringBuilder landline = new StringBuilder();
+//                        for (int i = 0; i < searchDetails.getLandline().get(0).size(); i++) {
+//                            landline.append(searchDetails.getLandline().get(0).get(i).getLandline_number() + ", ");
+//                        }
+//
+//                        sb.append("Landline - " + landline.toString().substring(0, landline.toString().length() - 2) + "\n");
+//                    }
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");

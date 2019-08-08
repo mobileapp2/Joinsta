@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -55,6 +56,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_email, edt_district, edt_state, edt_country;
     private CardView cv_tabs;
+    private FloatingActionButton btn_share;
     private LinearLayout ll_mobile, ll_landline;
     private TextView tv_countrycode_mobile, tv_countrycode_landline;
     private TagContainerLayout tag_container;
@@ -99,6 +101,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
         edt_district = findViewById(R.id.edt_district);
         edt_state = findViewById(R.id.edt_state);
         edt_country = findViewById(R.id.edt_country);
+        btn_share = findViewById(R.id.btn_share);
 
         tag_container = findViewById(R.id.tag_container);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
@@ -279,6 +282,83 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+        btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder sb = new StringBuilder();
+
+                if (!searchDetails.getOrganization_name().equals("")) {
+                    sb.append("Name of the company - " + searchDetails.getOrganization_name() + "\n");
+                }
+
+                if (!searchDetails.getDesignation().equals("")) {
+                    sb.append("Designation - " + searchDetails.getDesignation() + "\n");
+                }
+
+                if (searchDetails.getTag().get(0) != null)
+                    if (searchDetails.getTag().get(0).size() != 0) {
+                        StringBuilder tags = new StringBuilder();
+                        for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
+                            tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
+                        }
+
+                        sb.append("Product/Services Offered - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
+                    }
+
+                if (!searchDetails.getAddress().equals("")) {
+                    sb.append("Address - " + searchDetails.getAddress() + "\n");
+                }
+
+                if (searchDetails.getMobiles().get(0) != null)
+                    if (searchDetails.getMobiles().get(0).size() != 0) {
+                        StringBuilder mobile = new StringBuilder();
+                        for (int i = 0; i < searchDetails.getMobiles().get(0).size(); i++) {
+                            mobile.append(searchDetails.getMobiles().get(0).get(i).getMobile_number() + ", ");
+                        }
+
+                        sb.append("Mobile - " + mobile.toString().substring(0, mobile.toString().length() - 2) + "\n");
+                    }
+
+                if (!searchDetails.getLatitude().equals("") || !searchDetails.getLongitude().equals("")) {
+                    sb.append("Location - " + "https://www.google.com/maps/?q="
+                            + searchDetails.getLatitude() + "," + searchDetails.getLongitude() + "\n");
+
+                }
+
+                if (!searchDetails.getWebsite().equals("")) {
+                    sb.append("Website - " + searchDetails.getWebsite() + "\n");
+                }
+
+//                if (!searchDetails.getType_description().equals("")) {
+//                    sb.append("Type - " + searchDetails.getType_description() + "\n");
+//                }
+//
+//                if (!searchDetails.getSubtype_description().equals("")) {
+//                    sb.append("Subtype - " + searchDetails.getType_description() + "\n");
+//                }
+//
+//                if (!searchDetails.getEmail().equals("")) {
+//                    sb.append("Email - " + searchDetails.getEmail() + "\n");
+//                }
+//
+//                if (searchDetails.getLandline().get(0) != null)
+//                    if (searchDetails.getLandline().get(0).size() != 0) {
+//                        StringBuilder landline = new StringBuilder();
+//                        for (int i = 0; i < searchDetails.getLandline().get(0).size(); i++) {
+//                            landline.append(searchDetails.getLandline().get(0).get(i).getLandline_numbers() + ", ");
+//                        }
+//
+//                        sb.append("Landline - " + landline.toString().substring(0, landline.toString().length() - 2) + "\n");
+//                    }
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+            }
+        });
+
     }
 
     private void setUpToolbar() {
