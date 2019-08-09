@@ -109,7 +109,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
-    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode;
+    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode, latitude, longitude;
     private JsonArray mobileJSONArray, landlineJSONArray, emailJSONArray;
 
     private JSONArray mobileJsonArray, landlinesonArray, emailJsonArray;
@@ -183,8 +183,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
 
         profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Basic Info");
-        if (!profilPicFolder.exists())
+        if (!profilPicFolder.exists()) {
             profilPicFolder.mkdirs();
+        }
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -220,6 +221,14 @@ public class BasicInformation_Activity extends AppCompatActivity {
             imageUrl = json.getString("image_url");
             isActive = json.getString("is_active");
             referralCode = json.getString("referral_code");
+
+            try {
+                latitude = json.getString("latitude");
+                longitude = json.getString("longitude");
+            } catch (Exception e) {
+                latitude = "0.0";
+                longitude = "0.0";
+            }
 
             if (edt_bloodgroup.getText().toString().trim().equals("null"))
                 edt_bloodgroup.setText("");
@@ -1315,6 +1324,8 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mainObj.addProperty("password", password);
         mainObj.addProperty("image_url", imageUrl);
         mainObj.addProperty("native_place", edt_nativeplace.getText().toString().trim());
+        mainObj.addProperty("latitude", latitude);
+        mainObj.addProperty("longitude", longitude);
         mainObj.add("mobile1", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("email", emailJSONArray);
@@ -1388,7 +1399,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
                                 alertD.show();
                             }
                         }
-
 
                     } else {
                         Utilities.showMessage("User details failed to update", context, 3);
@@ -1483,13 +1493,16 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
             if (addresses != null && !addresses.isEmpty()) {
                 edt_nativeplace.setText(addresses.get(0).getLocality());
+                if (latLng != null) {
+                    longitude = String.valueOf(latLng.longitude);
+                    latitude = String.valueOf(latLng.latitude);
+                }
             } else {
                 edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
             }
 
         }
     }
-
 
     private static LocationRequest mLocationRequest;
 

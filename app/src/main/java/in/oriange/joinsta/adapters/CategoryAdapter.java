@@ -92,7 +92,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
             Picasso.with(context)
                     .load(categotyDetails.getCategory_icon().trim())
-                    .placeholder(R.drawable.icon_preview)
                     .into(holder.imv_category, new Callback() {
                         @Override
                         public void onSuccess() {

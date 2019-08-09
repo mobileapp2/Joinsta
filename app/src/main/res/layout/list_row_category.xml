@@ -27,8 +27,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_weight="0.2"
-                android:padding="5dp"
-                tools:src="@drawable/icon_builder1" />
+                android:padding="5dp"/>
 
             <TextView
                 android:id="@+id/tv_categoty"
