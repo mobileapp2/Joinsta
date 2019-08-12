@@ -178,7 +178,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         new Notification_Activity.GetNotification().execute();
-                        Utilities.showMessage("User feedback deleted successfully", context, 1);
+                        Utilities.showMessage("Notification deleted successfully", context, 1);
                     } else {
 
                     }

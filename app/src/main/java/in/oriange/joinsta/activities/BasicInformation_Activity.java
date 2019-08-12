@@ -105,7 +105,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
-    private ImageButton ib_add_mobile, ib_add_landline, ib_add_email;
+    private ImageButton ib_add_mobile, ib_add_landline, ib_add_email, ib_location;
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
@@ -166,6 +166,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         ib_add_mobile = findViewById(R.id.ib_add_mobile);
         ib_add_landline = findViewById(R.id.ib_add_landline);
         ib_add_email = findViewById(R.id.ib_add_email);
+        ib_location = findViewById(R.id.ib_location);
 
         bloodGroupList = new ArrayList<>();
         educationList = new ArrayList<>();
@@ -385,43 +386,44 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
         });
 
-
-        edt_nativeplace.setOnTouchListener(new View.OnTouchListener() {
+        ib_location.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                final int DRAWABLE_LEFT = 0;
-                final int DRAWABLE_TOP = 1;
-                final int DRAWABLE_RIGHT = 2;
-                final int DRAWABLE_BOTTOM = 3;
-
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (event.getRawX() >= (edt_nativeplace.getRight() - edt_nativeplace.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
-                        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                            provideLocationAccess(context);
-                        } else {
-                            if (!isLocationEnabled(context)) {
-                                turnOnLocation(context);
+            public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+                    provideLocationAccess(context);
+                } else {
+                    if (!isLocationEnabled(context)) {
+                        turnOnLocation(context);
+                    } else {
+                        startLocationUpdates();
+                        if (MainDrawer_Activity.latLng != null) {
+                            latLng = MainDrawer_Activity.latLng;
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new GetAddress().execute(
+                                        String.valueOf(latLng.latitude),
+                                        String.valueOf(latLng.longitude));
                             } else {
-                                startLocationUpdates();
-                                if (latLng != null) {
-                                    if (Utilities.isNetworkAvailable(context)) {
-                                        new GetAddress().execute(
-                                                String.valueOf(latLng.latitude),
-                                                String.valueOf(latLng.longitude));
-                                    } else {
-                                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                                    }
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                        } else {
+                            if (latLng != null) {
+                                if (Utilities.isNetworkAvailable(context)) {
+                                    new GetAddress().execute(
+                                            String.valueOf(latLng.latitude),
+                                            String.valueOf(latLng.longitude));
                                 } else {
-                                    edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                                 }
+                            } else {
+                                edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
                             }
                         }
+
+
                     }
                 }
-                return false;
             }
         });
-
     }
 
     private void selectImage() {
@@ -1403,7 +1405,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     } else {
                         Utilities.showMessage("User details failed to update", context, 3);
                     }
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();

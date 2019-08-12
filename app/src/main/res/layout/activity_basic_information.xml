@@ -213,17 +213,34 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_nativeplace"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_current_location"
-                        android:hint="Current City"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:orientation="horizontal">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_nativeplace"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.9"
+                            android:hint="Current City"
+                            android:inputType="textCapWords|textNoSuggestions"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray"
+                            app:met_underlineColor="@color/mediumGray" />
+
+                        <ImageButton
+                            android:id="@+id/ib_location"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_weight="0.1"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/icon_current_location"
+                            android:tint="@color/black" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
