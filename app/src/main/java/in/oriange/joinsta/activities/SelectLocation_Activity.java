@@ -214,18 +214,24 @@ public class SelectLocation_Activity extends AppCompatActivity
 
             animationView.pauseAnimation();
             animationView.setVisibility(View.GONE);
-            if (addresses != null && !addresses.isEmpty()) {
 
-                cv_locationdetails.setVisibility(View.VISIBLE);
-                tv_state.setText(addresses.get(0).getAdminArea());
-                tv_city.setText(addresses.get(0).getLocality());
-                tv_locality.setText(addresses.get(0).getSubLocality());
-                tv_pincode.setText(addresses.get(0).getPostalCode());
+            if (addresses != null){
+
+                if (addresses.size() != 0){
+                    cv_locationdetails.setVisibility(View.VISIBLE);
+                    tv_state.setText(addresses.get(0).getAdminArea());
+                    tv_city.setText(addresses.get(0).getLocality());
+                    tv_locality.setText(addresses.get(0).getSubLocality());
+                    tv_pincode.setText(addresses.get(0).getPostalCode());
+                } else {
+                    Utilities.showAlertDialog(context, "Unable to get address from this location. Please try again or search manually", false);
+                    cv_locationdetails.setVisibility(View.GONE);
+                }
+
             } else {
                 Utilities.showAlertDialog(context, "Unable to get address from this location. Please try again or search manually", false);
                 cv_locationdetails.setVisibility(View.GONE);
             }
-
         }
     }
 
