@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -58,7 +57,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
     private LinearLayout ll_mobile, ll_landline;
     private TextView tv_countrycode_mobile, tv_countrycode_landline;
     private CardView cv_tabs;
-    private FloatingActionButton btn_share;
+    private ImageView imv_share;
     private TagContainerLayout tag_container;
     private GetBusinessModel.ResultBean searchDetails;
     private String userId;
@@ -101,7 +100,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
         edt_district = findViewById(R.id.edt_district);
         edt_state = findViewById(R.id.edt_state);
         edt_country = findViewById(R.id.edt_country);
-        btn_share = findViewById(R.id.btn_share);
+        imv_share = findViewById(R.id.imv_share);
 
         tag_container = findViewById(R.id.tag_container);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
@@ -283,7 +282,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        btn_share.setOnClickListener(new View.OnClickListener() {
+        imv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StringBuilder sb = new StringBuilder();

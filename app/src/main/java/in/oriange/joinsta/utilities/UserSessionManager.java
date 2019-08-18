@@ -7,9 +7,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Build;
 
-import java.util.HashMap;
-
 import androidx.core.app.ActivityCompat;
+
+import java.util.HashMap;
 
 import in.oriange.joinsta.activities.Login_Activity;
 
@@ -102,7 +102,6 @@ public class UserSessionManager {
     public boolean isLocationSet() {
         return pref.getBoolean(ApplicationConstants.IS_LOCATION_SET, false);
     }
-
 
 
     public void createAndroidToken(String tokenID) {

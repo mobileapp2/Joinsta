@@ -760,12 +760,12 @@ public class Login_Activity extends AppCompatActivity {
                     String success = obj1.getString("success");
                     String message = obj1.getString("message");
                     if (success.equalsIgnoreCase("1")) {
-                        if (session.isLocationSet())
-                            startActivity(new Intent(context, MainDrawer_Activity.class)
-                                    .putExtra("startOrigin", 0));
-                        else
-                            startActivity(new Intent(context, SelectLocation_Activity.class)
-                                    .putExtra("startOrigin", 0));
+//                        if (session.isLocationSet())
+                        startActivity(new Intent(context, MainDrawer_Activity.class)
+                                .putExtra("startOrigin", 0));
+//                        else
+//                            startActivity(new Intent(context, SelectLocation_Activity.class)
+//                                    .putExtra("startOrigin", 0));
                         finish();
                     } else {
                         Utilities.showMessage("Please Try After Sometime", context, 3);

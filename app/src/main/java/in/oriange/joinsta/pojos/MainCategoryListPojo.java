@@ -12,33 +12,27 @@ public class MainCategoryListPojo {
 
     private String message;
 
-    public ArrayList<MainCategoryListModel> getResult ()
-    {
+    public ArrayList<MainCategoryListModel> getResult() {
         return result;
     }
 
-    public void setResult (ArrayList<MainCategoryListModel> result)
-    {
+    public void setResult(ArrayList<MainCategoryListModel> result) {
         this.result = result;
     }
 
-    public String getType ()
-    {
+    public String getType() {
         return type;
     }
 
-    public void setType (String type)
-    {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public String getMessage ()
-    {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage (String message)
-    {
+    public void setMessage(String message) {
         this.message = message;
     }
 }

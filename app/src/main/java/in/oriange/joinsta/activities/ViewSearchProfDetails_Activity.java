@@ -25,7 +25,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -64,8 +63,8 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView tv_distance;
     private CheckBox cb_like;
-    private FloatingActionButton btn_share;
-    private LinearLayout ll_direction, ll_mobile, ll_landline, ll_email, ll_nopreview;
+    private ImageView imv_share;
+    private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_district, edt_state, edt_country;
     private CardView cv_tabs;
@@ -94,6 +93,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ll_nopreview = findViewById(R.id.ll_nopreview);
         ll_direction = findViewById(R.id.ll_direction);
         ll_mobile = findViewById(R.id.ll_mobile);
+        ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
 
@@ -115,7 +115,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         edt_district = findViewById(R.id.edt_district);
         edt_state = findViewById(R.id.edt_state);
         edt_country = findViewById(R.id.edt_country);
-        btn_share = findViewById(R.id.btn_share);
+        imv_share = findViewById(R.id.imv_share);
 
         tag_container = findViewById(R.id.tag_container);
     }
@@ -143,15 +143,18 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.TagBeanX> tagsList = new ArrayList<>();
         tagsList = searchDetails.getTag().get(0);
 
-        if (tagsList != null)
-            if (tagsList.size() > 0)
-                for (int i = 0; i < tagsList.size(); i++)
-                    tag_container.addTag(tagsList.get(i).getTag_name());
-            else
-                cv_tabs.setVisibility(View.GONE);
-        else
-            cv_tabs.setVisibility(View.GONE);
+        if (tagsList != null) {
+            if (tagsList.size() > 0) {
+                for (int i = 0; i < tagsList.size(); i++) {
 
+                    if (!tagsList.get(i).getTag_name().trim().equals("")) {
+                        tag_container.addTag(tagsList.get(i).getTag_name());
+                    }
+                }
+            } else
+                cv_tabs.setVisibility(View.GONE);
+        } else
+            cv_tabs.setVisibility(View.GONE);
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
@@ -248,6 +251,26 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             }
         });
 
+        ll_whatsapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (searchDetails.getMobiles().get(0) != null)
+                    if (searchDetails.getMobiles().get(0).size() > 0) {
+                        if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                            provideCallPremission(context);
+                        } else {
+                            showWhatsAppListDialog(searchDetails.getMobiles().get(0));
+                        }
+                    } else
+                        Utilities.showMessage("Mobile number not added", context, 2);
+
+                else
+                    Utilities.showMessage("Mobile number not added", context, 2);
+            }
+        });
+
+
         ll_landline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -325,7 +348,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             }
         });
 
-        btn_share.setOnClickListener(new View.OnClickListener() {
+        imv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 StringBuilder sb = new StringBuilder();
@@ -427,6 +450,36 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(Intent.ACTION_CALL,
                         Uri.parse("tel:" + mobileList.get(which).getMobile_number())));
+            }
+        });
+        builderSingle.show();
+    }
+
+    private void showWhatsAppListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select mobile number");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < mobileList.size(); i++) {
+            arrayAdapter.add(String.valueOf(mobileList.get(i).getMobile_number()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String URL = "https://wa.me/" + mobileList.get(which).getMobile_number();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL)));
             }
         });
         builderSingle.show();

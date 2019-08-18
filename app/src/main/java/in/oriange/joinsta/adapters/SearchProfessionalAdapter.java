@@ -239,7 +239,6 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
 //                    }
 
 
-
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());

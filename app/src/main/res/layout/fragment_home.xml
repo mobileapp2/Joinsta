@@ -42,13 +42,13 @@
                     app:backgroundTint="@color/white" />
 
                 <!--<TextView-->
-                    <!--android:id="@+id/toolbar_title"-->
-                    <!--style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerInParent="true"-->
-                    <!--android:text="Home"-->
-                    <!--android:textColor="@color/white" />-->
+                <!--android:id="@+id/toolbar_title"-->
+                <!--style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:text="Home"-->
+                <!--android:textColor="@color/white" />-->
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/edt_type"

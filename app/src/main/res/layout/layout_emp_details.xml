@@ -39,8 +39,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -51,9 +51,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="DIRECTION"
-                            android:textSize="14sp" />
+                            android:text="Direction"
+                            android:textSize="12sp" />
                     </LinearLayout>
+
 
                     <LinearLayout
                         android:id="@+id/ll_mobile"
@@ -66,8 +67,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -78,9 +79,37 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="MOBLIE"
-                            android:textSize="14sp" />
+                            android:text="Mobile"
+                            android:textSize="12sp" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_whatsapp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_ring"
+                            android:padding="10dp"
+                            android:src="@drawable/icon_color_whatsapp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:text="WhatsApp"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
 
                     <LinearLayout
                         android:id="@+id/ll_landline"
@@ -93,8 +122,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -105,8 +134,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="LANDLINE"
-                            android:textSize="14sp" />
+                            android:text="Landline"
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -120,8 +149,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -132,12 +161,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:gravity="center"
-                            android:text="EMAIL"
-                            android:textSize="14sp" />
+                            android:text="Email"
+                            android:textSize="12sp" />
                     </LinearLayout>
 
 
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/tv_distance"
                     android:layout_width="match_parent"

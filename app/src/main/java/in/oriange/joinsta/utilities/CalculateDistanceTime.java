@@ -35,6 +35,7 @@ public class CalculateDistanceTime {
     public void setLoadListener(taskCompleteListener taskListener) {
         mTaskListener = taskListener;
     }
+
     public void getDirectionsUrl(LatLng origin, LatLng dest) {
 
         // Origin of route
@@ -200,7 +201,7 @@ public class CalculateDistanceTime {
     }
 
 
-    public class DistanceTimeParser{
+    public class DistanceTimeParser {
         public List<HashMap<String, String>> parse(JSONObject jObject) {
 
 

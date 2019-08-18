@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.EditProfessional_Activity;
 import in.oriange.joinsta.activities.ViewMyProfDetails_Activity;
 import in.oriange.joinsta.models.GetProfessionalModel;
 

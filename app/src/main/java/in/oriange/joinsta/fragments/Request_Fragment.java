@@ -34,7 +34,6 @@ import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AddRequirement_Activity;
-import in.oriange.joinsta.activities.SelectLocation_Activity;
 import in.oriange.joinsta.adapters.RequirementAdapter;
 import in.oriange.joinsta.models.RequirementsListModel;
 import in.oriange.joinsta.pojos.RequirementsListPojo;

@@ -8,7 +8,6 @@ public class ApplicationConstants {
     public static final String KEY_ANDROIDTOKETID = "KEY_ANDROIDTOKETID";
     public static final String IS_LOCATION_SET = "IS_LOCATION_SET";
     public static final String KEY_LOCATION_INFO = "KEY_LOCATION_INFO";
-
     public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
 
 
@@ -22,12 +21,12 @@ public class ApplicationConstants {
 
 
     // BETA API LINK V2
-//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
     //LIVE API LINK V2
-    private static final String API_LINK = "http://joinsta.in/Api_v2/";
-    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+//    private static final String API_LINK = "http://joinsta.in/Api_v2/";
+//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";
@@ -45,4 +44,5 @@ public class ApplicationConstants {
     public static final String DEVICEREGAPI = API_LINK + "deviceregistration.php";
     public static final String FEEDBACKAPI = API_LINK + "userfeedback.php";
     public static final String NOTIFICATIONAPI = API_LINK + "usernotification.php";
+    public static final String TAGSAPI = API_LINK + "tags.php";
 }

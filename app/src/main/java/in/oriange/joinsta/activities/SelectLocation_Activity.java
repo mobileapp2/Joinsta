@@ -215,9 +215,9 @@ public class SelectLocation_Activity extends AppCompatActivity
             animationView.pauseAnimation();
             animationView.setVisibility(View.GONE);
 
-            if (addresses != null){
+            if (addresses != null) {
 
-                if (addresses.size() != 0){
+                if (addresses.size() != 0) {
                     cv_locationdetails.setVisibility(View.VISIBLE);
                     tv_state.setText(addresses.get(0).getAdminArea());
                     tv_city.setText(addresses.get(0).getLocality());

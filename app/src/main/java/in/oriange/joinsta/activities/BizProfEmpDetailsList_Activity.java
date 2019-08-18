@@ -38,7 +38,7 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
     public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
-    private String userId, mainCategoryTypeId, categoryTypeId,subCategoryTypeId;
+    private String userId, mainCategoryTypeId, categoryTypeId, subCategoryTypeId;
 
 
     @Override

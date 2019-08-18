@@ -3,9 +3,12 @@ package in.oriange.joinsta.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -23,17 +27,25 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
-import com.iammert.library.readablebottombar.ReadableBottomBar;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -50,6 +62,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
     private AHBottomNavigationViewPager view_pager;
 
     private int startOrigin;
+    private UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +70,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main_drawer);
 
         context = MainDrawer_Activity.this;
-
+        session = new UserSessionManager(context);
         if (!Utilities.isNetworkAvailable(context)) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.dialog_layout_error, null);
@@ -93,6 +106,23 @@ public class MainDrawer_Activity extends AppCompatActivity {
         setUpBottomNavigation();
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!session.isLocationSet()) {
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+            try {
+                startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     private void init() {
@@ -172,6 +202,71 @@ public class MainDrawer_Activity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            try {
+                Place place = PlacePicker.getPlace(this, data);
+                Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+
+                if (addresses.size() != 0) {
+                    session.setLocation(addresses.get(0).getLocality());
+                    finishAffinity();
+                    startActivity(new Intent(context, MainDrawer_Activity.class)
+                            .putExtra("startOrigin", 0));
+
+
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setTitle("Alert");
+                    builder.setMessage("City not found, please try again");
+                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                            try {
+                                startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
+                            } catch (GooglePlayServicesRepairableException e) {
+                                e.printStackTrace();
+                            } catch (GooglePlayServicesNotAvailableException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    builder.create();
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("Alert");
+                builder.setMessage("City not found, please try again");
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                        try {
+                            startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
+                        } catch (GooglePlayServicesRepairableException e) {
+                            e.printStackTrace();
+                        } catch (GooglePlayServicesNotAvailableException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                builder.create();
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        }
     }
 
     private static LocationRequest mLocationRequest;

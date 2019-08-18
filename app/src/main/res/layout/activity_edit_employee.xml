@@ -355,18 +355,14 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
+                        <AutoCompleteTextView
                             android:id="@+id/edt_tag"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.8"
                             android:hint="Tag"
                             android:inputType="textWebEditText|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp" />
 
                         <Button
                             android:id="@+id/btn_add_tag"

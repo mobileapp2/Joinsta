@@ -63,7 +63,7 @@
                         android:id="@+id/tv_heading"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.95"
+                        android:layout_weight="1"
                         android:duplicateParentState="true"
                         android:ellipsize="end"
                         android:gravity="center_vertical"
@@ -78,6 +78,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_weight="0.05"
+                        android:visibility="gone"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/icon_share"
                         android:tint="@color/colorPrimary" />

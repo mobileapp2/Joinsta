@@ -19,7 +19,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,6 +36,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,11 +65,11 @@ import java.util.Locale;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.PickMapLoaction_Activity;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
-import in.oriange.joinsta.models.MapAddressListModel;
+import in.oriange.joinsta.models.GetTagsListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
+import in.oriange.joinsta.models.TagsListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
 import in.oriange.joinsta.pojos.SubCategotyListPojo;
 import in.oriange.joinsta.utilities.APICall;
@@ -84,7 +90,8 @@ public class AddBusiness_Fragment extends Fragment {
     private ProgressDialog pd;
     private ImageView imv_photo1, imv_photo2;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
-            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country, edt_tag;
+            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country;
+    private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
     private TextView tv_countrycode_mobile, tv_countrycode_landline;
     private ImageButton ib_add_mobile, ib_add_landline;
@@ -92,12 +99,14 @@ public class AddBusiness_Fragment extends Fragment {
     private Button btn_save, btn_add_tag;
 
     private ArrayList<CategotyListModel> categotyList;
+    private ArrayList<GetTagsListModel.ResultBean> tagsListFromAPI;
+    private ArrayList<TagsListModel> tagsListTobeSubmitted;
     private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
     private ArrayList<String> mobileList, landlineList;
     private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
     private static ArrayList<ContryCodeModel> countryCodeList;
 
-    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude= "", longitude= "";
+    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude = "", longitude = "";
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
@@ -155,6 +164,8 @@ public class AddBusiness_Fragment extends Fragment {
         btn_save = rootView.findViewById(R.id.btn_save);
 
         categotyList = new ArrayList<>();
+        tagsListTobeSubmitted = new ArrayList<>();
+        tagsListFromAPI = new ArrayList<>();
         mobileLayoutsList = new ArrayList<>();
         landlineLayoutsList = new ArrayList<>();
         mobileJSONArray = new JsonArray();
@@ -204,6 +215,10 @@ public class AddBusiness_Fragment extends Fragment {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new GetTagsList().execute("0");
         }
 
     }
@@ -312,8 +327,19 @@ public class AddBusiness_Fragment extends Fragment {
         edt_select_area.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, PickMapLoaction_Activity.class);
-                startActivityForResult(intent, 10001);
+//                Intent intent = new Intent(context, PickMapLoaction_Activity.class);
+//                startActivityForResult(intent, 10001);
+
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                try {
+                    startActivityForResult(builder.build(getActivity()), 10001);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
 
@@ -328,8 +354,45 @@ public class AddBusiness_Fragment extends Fragment {
                     return;
                 }
 
-                tag_container.addTag(edt_tag.getText().toString().trim());
+                boolean isTagSelected = false;
+
+                for (TagsListModel tagObj : tagsListTobeSubmitted) {
+
+                    if (tagObj.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+                        isTagSelected = true;
+                        break;
+
+                    }
+
+                }
+
+                if (!isTagSelected) {
+
+                    boolean isTagPresent = false;
+
+                    for (GetTagsListModel.ResultBean tagObj : tagsListFromAPI) {
+                        if (tagObj.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+
+                            tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
+
+                            isTagPresent = true;
+
+                            break;
+                        }
+                    }
+
+                    if (!isTagPresent) {
+                        tagsListTobeSubmitted.add(new TagsListModel("0", edt_tag.getText().toString().trim(), "0"));
+                    }
+
+                    tag_container.addTag(edt_tag.getText().toString().trim());
+                } else {
+                    Utilities.showMessage("Tag aleady added", context, 2);
+                }
+
+
                 edt_tag.setText("");
+
             }
         });
 
@@ -353,7 +416,37 @@ public class AddBusiness_Fragment extends Fragment {
             public void onTagCrossClick(int position) {
                 if (position < tag_container.getChildCount()) {
                     tag_container.removeTag(position);
+                    tagsListTobeSubmitted.remove(position);
                 }
+            }
+        });
+
+        edt_tag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                                    long arg3) {
+                GetTagsListModel.ResultBean tagObj = (GetTagsListModel.ResultBean) arg0.getAdapter().getItem(arg2);
+
+
+                boolean isTagSelected = false;
+
+                for (TagsListModel tagObj1 : tagsListTobeSubmitted) {
+                    if (tagObj1.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+                        isTagSelected = true;
+                        break;
+
+                    }
+                }
+
+                if (!isTagSelected) {
+                    tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
+                    tag_container.addTag(edt_tag.getText().toString().trim());
+                } else {
+                    Utilities.showMessage("Tag aleady added", context, 2);
+                }
+
+                edt_tag.setText("");
             }
         });
 
@@ -408,6 +501,57 @@ public class AddBusiness_Fragment extends Fragment {
     public static void selectContryCode(View v) {
         tv_selected_forconcode = (TextView) v;
         showContryCodeForSelectedDialog(countryCodeList);
+    }
+
+    private class GetTagsList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getTags");
+            obj.addProperty("category_type_id", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.TAGSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    tagsListFromAPI = new ArrayList<>();
+                    GetTagsListModel pojoDetails = new Gson().fromJson(result, GetTagsListModel.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        tagsListFromAPI = pojoDetails.getResult();
+
+                        ArrayAdapter<GetTagsListModel.ResultBean> adapter = new ArrayAdapter<GetTagsListModel.ResultBean>(
+                                context, R.layout.list_row, tagsListFromAPI);
+                        edt_tag.setAdapter(adapter);
+
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
     }
 
     private class GetCategotyList extends AsyncTask<String, Void, String> {
@@ -708,7 +852,6 @@ public class AddBusiness_Fragment extends Fragment {
             }
         }
 
-
 //        if (edt_select_area.getText().toString().trim().isEmpty()) {
 //            edt_select_area.setError("Please select area");
 //            edt_select_area.requestFocus();
@@ -751,8 +894,6 @@ public class AddBusiness_Fragment extends Fragment {
             landlineList.add(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim());
         }
 
-        List<String> tagList = tag_container.getTags();
-
         JsonObject mainObj = new JsonObject();
 
         for (int i = 0; i < mobileList.size(); i++) {
@@ -767,10 +908,12 @@ public class AddBusiness_Fragment extends Fragment {
             landlineJSONArray.add(landlineJSONObj);
         }
 
-        for (int i = 0; i < tagList.size(); i++) {
-            JsonObject landlineJSONObj = new JsonObject();
-            landlineJSONObj.addProperty("tag_name", tagList.get(i));
-            tagJSONArray.add(landlineJSONObj);
+        for (int i = 0; i < tagsListTobeSubmitted.size(); i++) {
+            JsonObject tagsJSONObj = new JsonObject();
+            tagsJSONObj.addProperty("tag_id", tagsListTobeSubmitted.get(i).getTag_id());
+            tagsJSONObj.addProperty("tag_name", tagsListTobeSubmitted.get(i).getTag_name());
+            tagsJSONObj.addProperty("is_approved", tagsListTobeSubmitted.get(i).getIs_approved());
+            tagJSONArray.add(tagsJSONObj);
         }
 
         mainObj.addProperty("type", "createbusiness");
@@ -831,15 +974,30 @@ public class AddBusiness_Fragment extends Fragment {
             }
 
             if (requestCode == 10001) {
-                latitude = data.getStringExtra("latitude");
-                longitude = data.getStringExtra("longitude");
-                new GetAddress().execute(latitude, longitude);
-                MapAddressListModel address = (MapAddressListModel) data.getSerializableExtra("mapAddressDetails");
-                edt_address.setText(address.getAddress_line_one());
-                edt_country.setText(address.getCountry());
-                edt_state.setText(address.getState());
-                edt_district.setText(address.getDistrict());
-                edt_pincode.setText(address.getPincode());
+                try {
+                    Place place = PlacePicker.getPlace(getActivity(), data);
+                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses = null;
+                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+
+                    if (addresses.size() != 0) {
+
+                        latitude = String.valueOf(place.getLatLng().latitude);
+                        longitude = String.valueOf(place.getLatLng().longitude);
+                        edt_address.setText(addresses.get(0).getAddressLine(0));
+                        edt_country.setText(addresses.get(0).getCountryName());
+                        edt_state.setText(addresses.get(0).getAdminArea());
+                        edt_district.setText(addresses.get(0).getSubAdminArea());
+                        edt_pincode.setText(addresses.get(0).getPostalCode());
+                        edt_select_area.setText(addresses.get(0).getFeatureName());
+                        edt_city.setText(addresses.get(0).getLocality());
+                    } else {
+                        Utilities.showMessage("Address not found, please try again", context, 3);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.showMessage("Address not found, please try again", context, 3);
+                }
             }
 
         }
@@ -852,42 +1010,6 @@ public class AddBusiness_Fragment extends Fragment {
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
-        }
-    }
-
-    private class GetAddress extends AsyncTask<String, Void, List<Address>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected List<Address> doInBackground(String... params) {
-            Geocoder geocoder;
-            List<Address> addresses = null;
-
-            try {
-                geocoder = new Geocoder(context, Locale.getDefault());
-                addresses = geocoder.getFromLocation(Double.parseDouble(params[0]), Double.parseDouble(params[1]), 1); // Here 1 represent max icon_location result to returned, by documents it recommended 1 to 5
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return addresses;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            super.onPostExecute(addresses);
-            pd.dismiss();
-            if (addresses != null && !addresses.isEmpty()) {
-                edt_select_area.setText(addresses.get(0).getFeatureName());
-                edt_city.setText(addresses.get(0).getSubAdminArea());
-            }
-
         }
     }
 
