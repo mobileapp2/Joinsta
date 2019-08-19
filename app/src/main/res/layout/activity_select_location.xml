@@ -68,13 +68,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/button_background"
+                android:background="@drawable/button_background_filled"
                 android:drawableLeft="@drawable/icon_current_location"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="DETECT MY CURRENT LOCATION"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/white"
                 android:textSize="14sp" />
 
             <com.airbnb.lottie.LottieAnimationView
@@ -251,12 +251,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/button_background"
+                        android:background="@drawable/button_background_filled"
                         android:gravity="center"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
                         android:text="SELECT"
-                        android:textColor="@color/colorAccent"
+                        android:textColor="@color/white"
                         android:textSize="14sp" />
 
                 </LinearLayout>

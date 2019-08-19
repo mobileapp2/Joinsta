@@ -163,6 +163,43 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <co.lujun.androidtagview.TagContainerLayout
+                            android:id="@+id/tag_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            app:container_background_color="@color/white"
+                            app:container_border_color="@color/white"
+                            app:container_border_width="0dp"
+                            app:container_enable_drag="true"
+                            app:horizontal_interval="10dp"
+                            app:tag_background_color="@color/colorPrimary"
+                            app:tag_border_color="@color/colorPrimary"
+                            app:tag_border_width="1dp"
+                            app:tag_clickable="true"
+                            app:tag_enable_cross="false"
+                            app:tag_text_color="@color/white"
+                            app:tag_text_size="16sp"
+                            app:tag_theme="none"
+                            app:vertical_interval="10dp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@android:color/white"
@@ -319,46 +356,6 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <co.lujun.androidtagview.TagContainerLayout
-                            android:id="@+id/tag_container"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="0dp"
-                            android:padding="10dp"
-                            app:container_background_color="@color/white"
-                            app:container_border_color="@color/colorPrimary"
-                            app:container_border_radius="3dp"
-                            app:container_border_width="2dp"
-                            app:container_enable_drag="true"
-                            app:horizontal_interval="10dp"
-                            app:tag_background_color="@color/white"
-                            app:tag_border_color="@color/colorPrimary"
-                            app:tag_border_width="1dp"
-                            app:tag_clickable="true"
-                            app:tag_enable_cross="false"
-                            app:tag_text_color="@color/black"
-                            app:tag_text_size="16sp"
-                            app:tag_theme="none"
-                            app:vertical_interval="10dp" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@android:color/white"
@@ -496,10 +493,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginRight="20dp"
-            android:visibility="gone"
             android:layout_marginBottom="20dp"
             android:src="@drawable/icon_share"
-            android:tint="@color/white" />
+            android:tint="@color/white"
+            android:visibility="gone" />
 
     </FrameLayout>
 

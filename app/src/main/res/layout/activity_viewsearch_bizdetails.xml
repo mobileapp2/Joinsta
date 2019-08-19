@@ -102,7 +102,14 @@
 
             </RelativeLayout>
 
-
+            <ImageView
+                android:id="@+id/imv_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="start"
+                android:layout_margin="12dp"
+                android:src="@drawable/icon_backarrow"
+                android:tint="@color/colorPrimary" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

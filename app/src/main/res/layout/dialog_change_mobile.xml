@@ -25,9 +25,9 @@
         android:layout_height="40dp"
         android:layout_gravity="end"
         android:layout_margin="10dp"
-        android:background="@drawable/button_background"
+        android:background="@drawable/button_background_filled"
         android:text="SEND OTP"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@color/white"/>
 
 
 </LinearLayout>

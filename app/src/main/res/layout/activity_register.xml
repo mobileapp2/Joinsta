@@ -104,13 +104,13 @@
                     android:layout_gravity="end"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/button_background"
+                    android:background="@drawable/button_background_filled"
                     android:drawablePadding="10dp"
                     android:gravity="center"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:text="REGISTER"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
             </LinearLayout>

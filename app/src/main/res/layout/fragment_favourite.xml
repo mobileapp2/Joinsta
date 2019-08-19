@@ -32,10 +32,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:drawableRight="@drawable/icon_dropdown"
                     android:focusable="false"
                     android:longClickable="false"
-                    android:text="Pick Location"
+                    android:text="Favourites"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:backgroundTint="@color/white" />

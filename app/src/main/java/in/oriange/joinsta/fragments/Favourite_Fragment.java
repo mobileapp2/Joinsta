@@ -130,7 +130,7 @@ public class Favourite_Fragment extends Fragment {
 
         try {
             UserSessionManager session = new UserSessionManager(context);
-            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,23 +180,23 @@ public class Favourite_Fragment extends Fragment {
             }
         });
 
-        edt_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                startActivity(new Intent(context, SelectLocation_Activity.class)
-//                        .putExtra("startOrigin", 2));
-
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                try {
-                    startActivityForResult(builder.build(getActivity()), 0);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        edt_location.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                startActivity(new Intent(context, SelectLocation_Activity.class)
+////                        .putExtra("startOrigin", 2));
+//
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    startActivityForResult(builder.build(getActivity()), 0);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
     }
 
@@ -280,7 +280,7 @@ public class Favourite_Fragment extends Fragment {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getDetailsByLocation");
             obj.addProperty("user_id", userId);
-            obj.addProperty("location", params[0]);
+            obj.addProperty("location", "");
             res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
             return res.trim();
         }

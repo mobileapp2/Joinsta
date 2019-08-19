@@ -24,6 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -102,7 +105,7 @@ public class Request_Fragment extends Fragment {
             JSONObject json = user_info.getJSONObject(0);
 
             userId = json.getString("userid");
-
+            edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -291,13 +294,23 @@ public class Request_Fragment extends Fragment {
         });
 
 
-//        edt_location.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        edt_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                startActivity(new Intent(context, SelectLocation_Activity.class)
-//                        .putExtra("startOrigin", 3));
-//            }
-//        });
+//                        .putExtra("startOrigin", 2));
+
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                try {
+                    startActivityForResult(builder.build(getActivity()), 0);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public static class GetRequirementList extends AsyncTask<String, Void, String> {
@@ -339,13 +352,13 @@ public class Request_Fragment extends Fragment {
                         posted = false;
                         starred = false;
                         if (requirementsList.size() > 0) {
-//                            ArrayList<RequirementsListModel> foundEmp = new ArrayList<>();
-//                            for (RequirementsListModel empdetails : requirementsList) {
-//                                if (!empdetails.getCity().equals(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO))) {
-//                                    foundEmp.add(empdetails);
-//                                }
-//                            }
-//                            requirementsList.removeAll(foundEmp);
+                            ArrayList<RequirementsListModel> foundEmp = new ArrayList<>();
+                            for (RequirementsListModel empdetails : requirementsList) {
+                                if (!empdetails.getCity().equals(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO))) {
+                                    foundEmp.add(empdetails);
+                                }
+                            }
+                            requirementsList.removeAll(foundEmp);
                             if (requirementsList.size() > 0) {
                                 rv_requirementlist.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);

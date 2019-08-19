@@ -120,9 +120,9 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:layout_weight="0.5"
-                android:background="@drawable/button_background"
+                android:background="@drawable/button_background_filled"
                 android:text="Submit"
-                android:textColor="@color/colorAccent" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

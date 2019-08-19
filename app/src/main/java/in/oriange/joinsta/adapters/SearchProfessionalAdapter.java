@@ -99,32 +99,32 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             }
         });
 
-        float scale = context.getResources().getDisplayMetrics().density;
-        final int dpAsPixels = (int) (5 * scale + 0.5f);
-        if (!searchDetails.getImage_url().trim().isEmpty()) {
-            Picasso.with(context)
-                    .load(searchDetails.getImage_url().trim())
-                    .into(holder.imv_preview, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            holder.progressBar.setVisibility(View.GONE);
-                            holder.imv_preview.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            holder.progressBar.setVisibility(View.GONE);
-                            holder.imv_preview.setVisibility(View.VISIBLE);
-                            holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
-                            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-                        }
-                    });
-        } else {
-            holder.progressBar.setVisibility(View.GONE);
-            holder.imv_preview.setVisibility(View.VISIBLE);
-            holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
-            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-        }
+//        float scale = context.getResources().getDisplayMetrics().density;
+//        final int dpAsPixels = (int) (5 * scale + 0.5f);
+//        if (!searchDetails.getImage_url().trim().isEmpty()) {
+//            Picasso.with(context)
+//                    .load(searchDetails.getImage_url().trim())
+//                    .into(holder.imv_preview, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            holder.progressBar.setVisibility(View.GONE);
+//                            holder.imv_preview.setVisibility(View.VISIBLE);
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            holder.progressBar.setVisibility(View.GONE);
+//                            holder.imv_preview.setVisibility(View.VISIBLE);
+//                            holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
+//                            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//                        }
+//                    });
+//        } else {
+//            holder.progressBar.setVisibility(View.GONE);
+//            holder.imv_preview.setVisibility(View.VISIBLE);
+//            holder.imv_preview.setPadding(dpAsPixels, dpAsPixels, dpAsPixels, dpAsPixels);
+//            holder.imv_preview.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//        }
 
         holder.tv_distance.setOnClickListener(new View.OnClickListener() {
             @Override
