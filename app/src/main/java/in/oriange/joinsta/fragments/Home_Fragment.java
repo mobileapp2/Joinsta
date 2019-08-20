@@ -26,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mlsdev.animatedrv.AnimatedRecyclerView;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.MenuEffect;
 import com.skydoves.powermenu.OnMenuItemClickListener;
@@ -51,7 +52,7 @@ public class Home_Fragment extends Fragment {
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView rv_category;
+    private AnimatedRecyclerView rv_category;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
     private String categoryTypeId;

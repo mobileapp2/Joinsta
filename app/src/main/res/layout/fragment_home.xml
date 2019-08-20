@@ -83,11 +83,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.recyclerview.widget.RecyclerView
+            <!--<androidx.recyclerview.widget.RecyclerView-->
+                <!--android:id="@+id/rv_category"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:visibility="gone" />-->
+
+            <com.mlsdev.animatedrv.AnimatedRecyclerView
                 android:id="@+id/rv_category"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone" />
+                app:animationDuration="600"
+                app:layoutAnimation="@anim/layout_animation_from_bottom"
+                app:layoutManagerOrientation="vertical"
+                app:layoutManagerReverse="false"
+                app:layoutManagerType="linear"
+                android:visibility="gone"  />
+
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.github.ybq.android.spinkit.SpinKitView
