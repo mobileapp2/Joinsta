@@ -167,7 +167,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         bottomNavigation.addItem(botRequest);
         bottomNavigation.addItem(botProfile);
 
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#EEEEEE"));
         bottomNavigation.setAccentColor(Color.parseColor("#FFA000"));
         bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
         bottomNavigation.setForceTint(true);
