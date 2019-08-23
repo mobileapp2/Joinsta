@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 import in.oriange.joinsta.fragments.Favourite_Fragment;
 import in.oriange.joinsta.fragments.Home_Fragment;
-import in.oriange.joinsta.fragments.Profile_Fragment;
+import in.oriange.joinsta.fragments.More_Fragment;
 import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 
@@ -27,7 +27,7 @@ public class BotNavViewPagerAdapter extends FragmentPagerAdapter {
         fragments.add(new Search_Fragment());
         fragments.add(new Favourite_Fragment());
         fragments.add(new Request_Fragment());
-        fragments.add(new Profile_Fragment());
+        fragments.add(new More_Fragment());
     }
 
     @Override
