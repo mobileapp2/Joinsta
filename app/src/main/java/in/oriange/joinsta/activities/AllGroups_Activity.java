@@ -3,6 +3,8 @@ package in.oriange.joinsta.activities;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -88,6 +90,43 @@ public class AllGroups_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (groupsList.size() == 0) {
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<AllGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (AllGroupsListModel.ResultBean groupsDetails : groupsList) {
+
+                        String groupsToBeSearched = groupsDetails.getGroup_name().toLowerCase() +
+                                groupsDetails.getGroup_code().toLowerCase();
+
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
+                            groupsSearchedList.add(groupsDetails);
+                        }
+                    }
+                    rv_groups.setAdapter(new AllGroupsAdapter(context, groupsSearchedList));
+                } else {
+                    rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private class GetGroupsList extends AsyncTask<String, Void, String> {
@@ -127,7 +166,6 @@ public class AllGroups_Activity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         groupsList = pojoDetails.getResult();
                         rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
-
                         rv_groups.setVisibility(View.VISIBLE);
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
@@ -141,7 +179,6 @@ public class AllGroups_Activity extends AppCompatActivity {
             }
         }
     }
-
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

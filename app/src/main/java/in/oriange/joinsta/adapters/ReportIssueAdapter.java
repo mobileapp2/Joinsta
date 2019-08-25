@@ -7,7 +7,7 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -15,8 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,23 +22,21 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.Notification_Activity;
-import in.oriange.joinsta.models.NotificationListModel;
+import in.oriange.joinsta.activities.ReportIssue_Activity;
+import in.oriange.joinsta.models.UserFeedbackListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+public class ReportIssueAdapter extends RecyclerView.Adapter<ReportIssueAdapter.MyViewHolder> {
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
-
-    private List<NotificationListModel.ResultBean> resultArrayList;
+    private List<UserFeedbackListModel.ResultBean> resultArrayList;
     private Context context;
     private UserSessionManager session;
     private String userId;
 
-    public NotificationAdapter(Context context, List<NotificationListModel.ResultBean> resultArrayList) {
+    public ReportIssueAdapter(Context context, List<UserFeedbackListModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
         session = new UserSessionManager(context);
@@ -61,53 +57,35 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_notification, parent, false);
+        View view = inflater.inflate(R.layout.list_row_userfeedback, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
-        final NotificationListModel.ResultBean searchDetails = resultArrayList.get(position);
+        final UserFeedbackListModel.ResultBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_title.setText(searchDetails.getTitle());
-        holder.tv_message.setText(searchDetails.getDescription());
+        holder.tv_feedback.setText(searchDetails.getFeedback_text());
 
-        if (!searchDetails.getImage().equals("")) {
-            String url = IMAGE_LINK + "notifications/" + searchDetails.getImage();
-            Picasso.with(context)
-                    .load(url)
-                    .into(holder.imv_notificationimg, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            holder.imv_notificationimg.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            holder.imv_notificationimg.setVisibility(View.GONE);
-                        }
-                    });
-        } else {
-            holder.imv_notificationimg.setVisibility(View.GONE);
-        }
+        holder.rb_feedbackstars.setVisibility(View.GONE);
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this notification?");
+                builder.setMessage("Are you sure you want to delete this reported issue?");
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
                         if (Utilities.isNetworkAvailable(context)) {
-                            new DeleteNotification().execute(searchDetails.getUsernotification_id());
+                            new DeleteUserFeedback().execute(searchDetails.getUser_feedback_id());
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
-
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -131,15 +109,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private ImageView imv_notificationimg;
-        private TextView tv_title, tv_message;
+        private RatingBar rb_feedbackstars;
+        private TextView tv_feedback;
+
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
-            imv_notificationimg = view.findViewById(R.id.imv_notificationimg);
-            tv_title = view.findViewById(R.id.tv_title);
-            tv_message = view.findViewById(R.id.tv_message);
+            tv_feedback = view.findViewById(R.id.tv_feedback);
+            rb_feedbackstars = view.findViewById(R.id.rb_feedbackstars);
         }
     }
 
@@ -148,7 +126,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return position;
     }
 
-    public class DeleteNotification extends AsyncTask<String, Void, String> {
+    public class DeleteUserFeedback extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -165,9 +143,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "deleteusernotification");
-            obj.addProperty("usernotification_id", params[0]);
-            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+            obj.addProperty("type", "deleteuserfeedback");
+            obj.addProperty("userid", userId);
+            obj.addProperty("user_feedback_id", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.FEEDBACKAPI, obj.toString());
             return res;
         }
 
@@ -182,8 +161,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Notification_Activity.GetNotification().execute();
-                        Utilities.showMessage("Notification deleted successfully", context, 1);
+                        new ReportIssue_Activity.GetUserFeedback().execute(userId);
+                        Utilities.showMessage("Reported issue deleted successfully", context, 1);
                     } else {
 
                     }

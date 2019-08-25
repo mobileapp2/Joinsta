@@ -85,7 +85,7 @@
                         android:id="@+id/edt_fname"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="First Name"
+                        android:hint="Name"
                         android:inputType="textCapWords|textNoSuggestions"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"

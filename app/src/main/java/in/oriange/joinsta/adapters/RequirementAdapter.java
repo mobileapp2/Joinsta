@@ -186,7 +186,11 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
                             builder.setCancelable(false);
                             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    new DeleteRequirement().execute(String.valueOf(positionToDelete));
+                                    if (Utilities.isNetworkAvailable(context)) {
+                                        new DeleteRequirement().execute(String.valueOf(positionToDelete));
+                                    } else {
+                                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                    }
                                 }
                             });
                             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

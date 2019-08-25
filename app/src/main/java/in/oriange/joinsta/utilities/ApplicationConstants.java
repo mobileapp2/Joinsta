@@ -53,4 +53,5 @@ public class ApplicationConstants {
     public static final String NOTIFICATIONAPI = API_LINK + "usernotification.php";
     public static final String TAGSAPI = API_LINK + "tags.php";
     public static final String GROUPSAPI = API_LINK + "group.php";
+    public static final String ENQUIRYAPI = API_LINK + "enquiries.php";
 }

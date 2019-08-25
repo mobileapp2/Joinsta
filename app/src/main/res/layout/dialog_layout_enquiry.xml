@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="wrap_content">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:inputType="textCapWords|textNoSuggestions"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="16sp"
+        app:met_floatingLabel="highlight"
+        app:met_textColorHint="@color/darkGray"
+        app:met_underlineColor="@color/mediumGray" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_mobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mobile"
+        android:inputType="number"
+        android:maxLength="10"
+        android:textSize="16sp"
+        app:met_floatingLabel="highlight"
+        app:met_textColorHint="@color/darkGray"
+        app:met_underlineColor="@color/mediumGray" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Subject"
+        android:inputType="textNoSuggestions"
+        android:textColorHint="@color/colorAccent"
+        android:textSize="16sp"
+        app:met_floatingLabel="highlight"
+        app:met_textColorHint="@color/darkGray"
+        app:met_underlineColor="@color/mediumGray" />
+
+    <EditText
+        android:id="@+id/edt_details"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_outline"
+        android:gravity="top"
+        android:hint="Details"
+        android:inputType="textCapSentences|textMultiLine"
+        android:padding="5dp"
+        android:textColorHint="@color/darkGray"
+        android:textSize="16sp" />
+
+    <android.widget.Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_background_filled"
+        android:text="Send"
+        android:textColor="@color/white" />
+
+
+</LinearLayout>

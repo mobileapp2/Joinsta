@@ -783,7 +783,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         emailList = new ArrayList<>();
 
         if (edt_fname.getText().toString().trim().isEmpty()) {
-            edt_fname.setError("Please enter first name");
+            edt_fname.setError("Please enter name");
             edt_fname.requestFocus();
             return;
         }

@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.ReportIssueAdapter;
 import in.oriange.joinsta.adapters.UserFeedbackAdapter;
 import in.oriange.joinsta.models.UserFeedbackListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -156,7 +157,7 @@ public class ReportIssue_Activity extends AppCompatActivity {
                         if (filterfeedbackList.size() > 0) {
                             rv_feedback.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_feedback.setAdapter(new UserFeedbackAdapter(context, filterfeedbackList));
+                            rv_feedback.setAdapter(new ReportIssueAdapter(context, filterfeedbackList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_feedback.setVisibility(View.GONE);

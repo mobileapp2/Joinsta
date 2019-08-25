@@ -3,6 +3,9 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
@@ -24,21 +28,24 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.Groups_Fragment;
-import in.oriange.joinsta.models.MyGroupsListModel;
+import in.oriange.joinsta.activities.Enquires_Activity;
+import in.oriange.joinsta.models.EnquiriesListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyViewHolder> {
+import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
-    private List<MyGroupsListModel.ResultBean> resultArrayList;
+public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyViewHolder> {
+
+    private List<EnquiriesListModel.ResultBean> resultArrayList;
     private Context context;
     private UserSessionManager session;
     private String userId;
 
-    public MyGroupsAdapter(Context context, List<MyGroupsListModel.ResultBean> resultArrayList) {
+    public EnquiriesAdapter(Context context, List<EnquiriesListModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
         session = new UserSessionManager(context);
@@ -59,101 +66,79 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_mygroups, parent, false);
+        View view = inflater.inflate(R.layout.list_row_enquiry, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
-        final MyGroupsListModel.ResultBean groupDetails = resultArrayList.get(position);
+        final EnquiriesListModel.ResultBean enquiryDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(groupDetails.getGroup_name() + " (" + groupDetails.getGroup_code() + ")");
+        holder.tv_subject.setText(enquiryDetails.getSubject());
+        holder.tv_message.setText(enquiryDetails.getMessage());
+        holder.tv_createdby.setText("By: " + enquiryDetails.getName());
 
-        holder.ib_settings.setOnClickListener(new View.OnClickListener() {
+        if (enquiryDetails.getIs_attended().equals("1")) {
+            holder.sw_attend.setChecked(true);
+        } else {
+            holder.sw_attend.setChecked(false);
+        }
+
+        holder.ib_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                LayoutInflater layoutInflater = LayoutInflater.from(context);
-                View promptView = layoutInflater.inflate(R.layout.dialog_layout_groupsettings, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                alertDialogBuilder.setTitle("Group Settings");
-                alertDialogBuilder.setView(promptView);
-
-                final SwitchCompat sw_notifications = promptView.findViewById(R.id.sw_notifications);
-                final SwitchCompat sw_hidden = promptView.findViewById(R.id.sw_hidden);
-                final Button btn_save = promptView.findViewById(R.id.btn_save);
-
-                if (groupDetails.getAllow_notifiication().equals("1")) {
-                    sw_notifications.setChecked(true);
-                }
-
-                if (groupDetails.getIs_hidden().equals("1")) {
-                    sw_hidden.setChecked(true);
-                }
-
-                final AlertDialog alertD = alertDialogBuilder.create();
-
-                btn_save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (Utilities.isNetworkAvailable(context)) {
-                            alertD.dismiss();
-
-                            String allow_notification = "0";
-                            String is_hidden = "0";
-
-                            if (sw_notifications.isChecked()) {
-                                allow_notification = "1";
-                            }
-
-                            if (sw_hidden.isChecked()) {
-                                is_hidden = "1";
-                            }
-
-                            if (Utilities.isNetworkAvailable(context)) {
-                                new UpdateGroupSettings().execute(
-                                        groupDetails.getUser_id(),
-                                        groupDetails.getGroup_id(),
-                                        allow_notification,
-                                        is_hidden);
-                            } else {
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            }
-
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    provideCallPremission(context);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to make a call?");
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.icon_call);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            context.startActivity(new Intent(Intent.ACTION_CALL,
+                                    Uri.parse("tel:" + enquiryDetails.getMobile())));
                         }
-                    }
-                });
-
-                alertD.show();
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
             }
         });
 
-        holder.ib_notifications.setOnClickListener(new View.OnClickListener() {
+        holder.sw_attend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String is_attended = "0";
+
+                if (holder.sw_attend.isChecked()) {
+                    is_attended = "1";
+                }
+
+                new AttendEnquiry().execute(enquiryDetails.getId(), is_attended);
 
             }
         });
 
-        holder.ib_exit.setOnClickListener(new View.OnClickListener() {
+        holder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to exit this group?");
+                builder.setMessage("Are you sure you want to delete this enquiry?");
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        new ExitGroup().execute(
-                                groupDetails.getUser_id(),
-                                groupDetails.getGroup_id(),
-                                "left"
-                        );
+                        new DeleteEnquiry().execute(enquiryDetails.getId());
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -176,16 +161,20 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_heading;
-        private ImageButton ib_settings, ib_notifications, ib_exit;
+        private ImageButton ib_call;
+        private TextView tv_subject, tv_message, tv_createdby;
+        private SwitchCompat sw_attend;
+        private Button btn_delete;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
-            tv_heading = view.findViewById(R.id.tv_heading);
-            ib_settings = view.findViewById(R.id.ib_settings);
-            ib_notifications = view.findViewById(R.id.ib_notifications);
-            ib_exit = view.findViewById(R.id.ib_exit);
+            ib_call = view.findViewById(R.id.ib_call);
+            tv_subject = view.findViewById(R.id.tv_subject);
+            tv_message = view.findViewById(R.id.tv_message);
+            tv_createdby = view.findViewById(R.id.tv_createdby);
+            sw_attend = view.findViewById(R.id.sw_attend);
+            btn_delete = view.findViewById(R.id.btn_delete);
         }
     }
 
@@ -194,7 +183,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         return position;
     }
 
-    private class UpdateGroupSettings extends AsyncTask<String, Void, String> {
+    private class DeleteEnquiry extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -211,12 +200,9 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "updatesetting");
-            obj.addProperty("user_id", params[0]);
-            obj.addProperty("group_id", params[1]);
-            obj.addProperty("allow_notification", params[2]);
-            obj.addProperty("is_hidden", params[3]);
-            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            obj.addProperty("type", "deleteenquiry");
+            obj.addProperty("id", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res;
         }
 
@@ -231,8 +217,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
-                        Utilities.showMessage("Group settings updated successfully", context, 1);
+                        new Enquires_Activity.GetEnquires().execute();
+                        Utilities.showMessage("Enquiry deleted successfully", context, 1);
                     } else {
 
                     }
@@ -243,7 +229,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         }
     }
 
-    private class ExitGroup extends AsyncTask<String, Void, String> {
+    private class AttendEnquiry extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -260,11 +246,10 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "exitgroup");
-            obj.addProperty("user_id", params[0]);
-            obj.addProperty("group_id", params[1]);
-            obj.addProperty("status", params[2]);
-            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            obj.addProperty("type", "attendedenquiry");
+            obj.addProperty("id", params[0]);
+            obj.addProperty("is_attended", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res;
         }
 
@@ -276,20 +261,12 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
-                        Utilities.showMessage("Group left successfully", context, 1);
-                    } else {
 
-                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
 
 }

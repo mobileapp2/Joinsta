@@ -1,8 +1,9 @@
 package in.oriange.joinsta.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class AllGroupsListModel {
+public class AllGroupsListModel implements Serializable {
 
     private String type;
     private String message;
@@ -32,7 +33,7 @@ public class AllGroupsListModel {
         this.result = result;
     }
 
-    public static class ResultBean {
+    public static class ResultBean implements Serializable {
 
         private String id;
         private String group_name;

@@ -68,19 +68,22 @@ public class UserFeedbackAdapter extends RecyclerView.Adapter<UserFeedbackAdapte
 
         holder.tv_feedback.setText(searchDetails.getFeedback_text());
 
-        holder.rb_feedbackstars.setVisibility(View.GONE);
-
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this reported issue?");
+                builder.setMessage("Are you sure you want to delete this feedback?");
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        new DeleteUserFeedback().execute(searchDetails.getUser_feedback_id());
+
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DeleteUserFeedback().execute(searchDetails.getUser_feedback_id());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -157,7 +160,7 @@ public class UserFeedbackAdapter extends RecyclerView.Adapter<UserFeedbackAdapte
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         new UserFeedback_Activity.GetUserFeedback().execute(userId);
-                        Utilities.showMessage("Reported issue deleted successfully", context, 1);
+                        Utilities.showMessage("Feedback deleted successfully", context, 1);
                     } else {
 
                     }
