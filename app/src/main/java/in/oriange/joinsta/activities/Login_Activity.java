@@ -68,7 +68,7 @@ public class Login_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        setEventHandlers();
+        setEventHandler();
     }
 
     private void init() {
@@ -95,7 +95,7 @@ public class Login_Activity extends AppCompatActivity {
         checkPermissions();
     }
 
-    private void setEventHandlers() {
+    private void setEventHandler() {
         ll_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -18,56 +18,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/edt_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:focusable="false"
-                    android:longClickable="false"
-                    android:text="Favourites"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/white" />
-
-                <!--<TextView-->
-                <!--android:id="@+id/toolbar_title"-->
-                <!--style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:text="Favourite"-->
-                <!--android:textColor="@color/white" />-->
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/edt_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:drawableRight="@drawable/icon_dropdown"
-                    android:focusable="false"
-                    android:inputType="textNoSuggestions"
-                    android:longClickable="false"
-                    android:text="Type"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/white" />
-
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/toolbar_title"
+                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="All Groups"
+                android:textColor="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -115,7 +75,7 @@
             android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_searchlist"
+                android:id="@+id/rv_groups"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

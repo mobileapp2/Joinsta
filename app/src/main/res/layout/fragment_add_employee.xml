@@ -145,7 +145,7 @@
                         android:inputType="textWebEditText|textNoSuggestions"
                         android:textSize="16sp" />
 
-                    <Button
+                    <android.widget.Button
                         android:id="@+id/btn_add_tag"
                         style="@style/Widget.AppCompat.Button.Borderless.Colored"
                         android:layout_width="0dp"
@@ -451,7 +451,7 @@
                     app:met_textColorHint="@color/darkGray"
                     app:met_underlineColor="@color/mediumGray" />
 
-                <Button
+                <android.widget.Button
                     android:id="@+id/btn_save"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

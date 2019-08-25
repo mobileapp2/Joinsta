@@ -547,15 +547,15 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                         if (typeFrom.equals("1")) {               //  1 = from search
                             int position = Search_Fragment.professionalList.indexOf(searchDetails);
                             Search_Fragment.professionalList.get(position).setIsFavourite(isFav);
-                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                         } else if (typeFrom.equals("2")) {        // 2 = from favorite
-                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                             new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                         } else if (typeFrom.equals("3")) {        // 3 = from home
                             int position = BizProfEmpDetailsList_Activity.professionalList.indexOf(searchDetails);
                             BizProfEmpDetailsList_Activity.professionalList.get(position).setIsFavourite(isFav);
                             new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                         }
                     } else {
                         cb_like.setChecked(false);

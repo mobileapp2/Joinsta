@@ -187,52 +187,6 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_settings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardBackgroundColor="@android:color/white"
-                    android:layout_marginBottom="5dp"
-                    app:cardElevation="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:orientation="horizontal"
-                        android:padding="10dp"
-                        android:weightSum="1">
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="30dp"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_settings_1"
-                            android:tint="@color/colorPrimary" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="0.8"
-                            android:paddingLeft="10dp"
-                            android:text="Settings"
-                            android:textSize="18sp"
-                            android:tint="@color/black" />
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="25dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright"
-                            android:tint="@color/darkGray" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
                     android:id="@+id/cv_enquires"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -355,6 +309,52 @@
                             android:layout_weight="0.8"
                             android:paddingLeft="10dp"
                             android:text="Contact Us"
+                            android:textSize="18sp"
+                            android:tint="@color/black" />
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.1"
+                            android:src="@drawable/icon_arrowright"
+                            android:tint="@color/darkGray" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="@android:color/white"
+                    android:layout_marginBottom="5dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:orientation="horizontal"
+                        android:padding="10dp"
+                        android:weightSum="1">
+
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="0.1"
+                            android:src="@drawable/icon_settings_1"
+                            android:tint="@color/colorPrimary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.8"
+                            android:paddingLeft="10dp"
+                            android:text="Settings"
                             android:textSize="18sp"
                             android:tint="@color/black" />
 

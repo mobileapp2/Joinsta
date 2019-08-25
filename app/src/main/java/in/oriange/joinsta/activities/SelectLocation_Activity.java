@@ -66,7 +66,7 @@ public class SelectLocation_Activity extends AppCompatActivity
         init();
         setDefault();
         getSessionDetails();
-        setEventHandlers();
+        setEventHandler();
         setUpToolbar();
     }
 
@@ -109,7 +109,7 @@ public class SelectLocation_Activity extends AppCompatActivity
 
     }
 
-    private void setEventHandlers() {
+    private void setEventHandler() {
         btn_current_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -23,28 +23,29 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.NotificationAdapter;
-import in.oriange.joinsta.models.NotificationListModel;
+import in.oriange.joinsta.adapters.AllGroupsAdapter;
+import in.oriange.joinsta.models.AllGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class Notification_Activity extends AppCompatActivity {
+public class AllGroups_Activity extends AppCompatActivity {
 
-    private static Context context;
+    private Context context;
     private UserSessionManager session;
-    private FloatingActionButton btn_add;
-    private static RecyclerView rv_notification;
-    private static SwipeRefreshLayout swipeRefreshLayout;
-    private static SpinKitView progressBar;
-    private static LinearLayout ll_nopreview;
-    private static String userId;
+    private EditText edt_search;
+    private RecyclerView rv_groups;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private SpinKitView progressBar;
+    private LinearLayout ll_nopreview;
+    private String userId;
+    private ArrayList<AllGroupsListModel.ResultBean> groupsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notification);
+        setContentView(R.layout.activity_all_groups);
 
         init();
         getSessionDetails();
@@ -54,24 +55,16 @@ public class Notification_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = Notification_Activity.this;
+        context = AllGroups_Activity.this;
         session = new UserSessionManager(context);
-
-        btn_add = findViewById(R.id.btn_add);
-        progressBar = findViewById(R.id.progressBar);
+        edt_search = findViewById(R.id.edt_search);
+        rv_groups = findViewById(R.id.rv_groups);
+        rv_groups.setLayoutManager(new LinearLayoutManager(context));
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        rv_notification = findViewById(R.id.rv_notification);
-        rv_notification.setLayoutManager(new LinearLayoutManager(context));
+        progressBar = findViewById(R.id.progressBar);
         ll_nopreview = findViewById(R.id.ll_nopreview);
 
-    }
-
-    private void setDefault() {
-        if (Utilities.isNetworkAvailable(context)) {
-            new GetNotification().execute();
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-        }
+        groupsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -86,28 +79,25 @@ public class Notification_Activity extends AppCompatActivity {
         }
     }
 
-    private void setEventHandler() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetNotification().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-        });
+    private void setDefault() {
+        if (Utilities.isNetworkAvailable(context)) {
+            new GetGroupsList().execute();
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
     }
 
-    public static class GetNotification extends AsyncTask<String, Void, String> {
+    private void setEventHandler() {
+    }
+
+    private class GetGroupsList extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
+            rv_groups.setVisibility(View.GONE);
             ll_nopreview.setVisibility(View.GONE);
-            rv_notification.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
         }
 
@@ -115,49 +105,43 @@ public class Notification_Activity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getusernotification");
-            obj.addProperty("userid", userId);
-            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+            obj.addProperty("type", "searchgroup");
+            obj.addProperty("code", "");
+            obj.addProperty("search_term", "");
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
             return res.trim();
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
-            rv_notification.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    ArrayList<NotificationListModel.ResultBean> feedbackList = new ArrayList<>();
-                    NotificationListModel pojoDetails = new Gson().fromJson(result, NotificationListModel.class);
+                    groupsList = new ArrayList<>();
+                    AllGroupsListModel pojoDetails = new Gson().fromJson(result, AllGroupsListModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
-                        feedbackList = pojoDetails.getResult();
+                        groupsList = pojoDetails.getResult();
+                        rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
 
-                        if (feedbackList.size() > 0) {
-                            rv_notification.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_notification.setAdapter(new NotificationAdapter(context, feedbackList));
-                        } else {
-                            ll_nopreview.setVisibility(View.VISIBLE);
-                            rv_notification.setVisibility(View.GONE);
-                        }
-
+                        rv_groups.setVisibility(View.VISIBLE);
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
-                        rv_notification.setVisibility(View.GONE);
-
+                        rv_groups.setVisibility(View.GONE);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 ll_nopreview.setVisibility(View.VISIBLE);
-                rv_notification.setVisibility(View.GONE);
+                rv_groups.setVisibility(View.GONE);
             }
         }
     }
+
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

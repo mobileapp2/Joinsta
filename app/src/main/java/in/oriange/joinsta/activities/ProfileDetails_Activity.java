@@ -1,22 +1,15 @@
-package in.oriange.joinsta.fragments;
+package in.oriange.joinsta.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -32,10 +25,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.BasicInformation_Activity;
-import in.oriange.joinsta.activities.BizProfEmpDetails_Activity;
-import in.oriange.joinsta.activities.Notification_Activity;
-import in.oriange.joinsta.activities.Settings_Activity;
 import in.oriange.joinsta.adapters.MyAddedBusinessAdapter;
 import in.oriange.joinsta.adapters.MyAddedEmployeeAdapter;
 import in.oriange.joinsta.adapters.MyAddedProfessionalAdapter;
@@ -47,7 +36,7 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class Profile_Fragment extends Fragment {
+public class ProfileDetails_Activity extends AppCompatActivity {
 
     private static Context context;
     private CardView cv_basicinfo;
@@ -71,42 +60,34 @@ public class Profile_Fragment extends Fragment {
     private int currentPosition = 0;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
+        setContentView(R.layout.activity_profile_details);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-        context = getActivity();
-        init(rootView);
-        setDefault();
+        init();
         getSessionDetails();
+        setDefault();
         setEventHandler();
-        return rootView;
+        setUpToolbar();
     }
 
-    private void init(View rootView) {
+    private void init() {
+        context = ProfileDetails_Activity.this;
         session = new UserSessionManager(context);
-        Toolbar toolbar = rootView.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        btn_add = rootView.findViewById(R.id.btn_add);
-        cv_basicinfo = rootView.findViewById(R.id.cv_basicinfo);
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
-        progressBar = rootView.findViewById(R.id.progressBar);
-        rv_details = rootView.findViewById(R.id.rv_details);
+        btn_add = findViewById(R.id.btn_add);
+        cv_basicinfo = findViewById(R.id.cv_basicinfo);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        progressBar = findViewById(R.id.progressBar);
+        rv_details = findViewById(R.id.rv_details);
         rv_details.setLayoutManager(new LinearLayoutManager(context));
 
-        ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
-        ll_business = rootView.findViewById(R.id.ll_business);
-        ll_employee = rootView.findViewById(R.id.ll_employee);
-        ll_professional = rootView.findViewById(R.id.ll_professional);
-        v_business = rootView.findViewById(R.id.v_business);
-        v_employee = rootView.findViewById(R.id.v_employee);
-        v_professional = rootView.findViewById(R.id.v_professional);
+        ll_nopreview = findViewById(R.id.ll_nopreview);
+        ll_business = findViewById(R.id.ll_business);
+        ll_employee = findViewById(R.id.ll_employee);
+        ll_professional = findViewById(R.id.ll_professional);
+        v_business = findViewById(R.id.v_business);
+        v_employee = findViewById(R.id.v_employee);
+        v_professional = findViewById(R.id.v_professional);
 
         businessList = new ArrayList<>();
         professionalList = new ArrayList<>();
@@ -399,25 +380,17 @@ public class Profile_Fragment extends Fragment {
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menus_profile, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    private void setUpToolbar() {
+        Toolbar mToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_notification:
-                startActivity(new Intent(context, Notification_Activity.class));
-                break;
-            case R.id.action_settings:
-                startActivity(new Intent(context, Settings_Activity.class));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
 }

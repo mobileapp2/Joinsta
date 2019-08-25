@@ -11,7 +11,7 @@
         android:layout_weight="1"
         android:scrollbars="vertical" />
 
-    <Button
+    <android.widget.Button
         android:id="@+id/btn_next"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"

@@ -14,9 +14,10 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.BasicInformation_Activity;
+import in.oriange.joinsta.activities.ContactUs_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
+import in.oriange.joinsta.activities.ProfileDetails_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
 
 public class More_Fragment extends Fragment {
@@ -25,18 +26,12 @@ public class More_Fragment extends Fragment {
     private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_settings, cv_enquires, cv_policies, cv_contactus;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);
         context = getActivity();
         init(rootView);
         setDefault();
-        setEventHandlers();
+        setEventHandler();
         return rootView;
     }
 
@@ -58,11 +53,11 @@ public class More_Fragment extends Fragment {
 
     }
 
-    private void setEventHandlers() {
+    private void setEventHandler() {
         cv_profiledetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, BasicInformation_Activity.class));
+                startActivity(new Intent(context, ProfileDetails_Activity.class));
             }
         });
 
@@ -104,7 +99,7 @@ public class More_Fragment extends Fragment {
         cv_contactus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(context, BasicInformation_Activity.class));
+                startActivity(new Intent(context, ContactUs_Activity.class));
             }
         });
     }

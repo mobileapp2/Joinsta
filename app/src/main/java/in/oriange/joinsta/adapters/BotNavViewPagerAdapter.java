@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.fragments.Favourite_Fragment;
+import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.fragments.Home_Fragment;
 import in.oriange.joinsta.fragments.More_Fragment;
 import in.oriange.joinsta.fragments.Request_Fragment;
@@ -25,7 +26,7 @@ public class BotNavViewPagerAdapter extends FragmentPagerAdapter {
         fragments.clear();
         fragments.add(new Home_Fragment());
         fragments.add(new Search_Fragment());
-        fragments.add(new Favourite_Fragment());
+        fragments.add(new Groups_Fragment());
         fragments.add(new Request_Fragment());
         fragments.add(new More_Fragment());
     }

@@ -550,16 +550,16 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                         if (typeFrom.equals("1")) {               //  1 = from search
                             int position = Search_Fragment.businessList.indexOf(searchDetails);
                             Search_Fragment.businessList.get(position).setIsFavourite(isFav);
-                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                         } else if (typeFrom.equals("2")) {        // 2 = from favorite
-                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                             new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
 
                         } else if (typeFrom.equals("3")) {        // 3 = from home
                             int position = BizProfEmpDetailsList_Activity.businessList.indexOf(searchDetails);
                             BizProfEmpDetailsList_Activity.businessList.get(position).setIsFavourite(isFav);
                             new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                         }
 
                     } else {

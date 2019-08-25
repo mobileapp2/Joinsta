@@ -67,7 +67,7 @@ public class Home_Fragment extends Fragment {
         init(rootView);
         setDefault();
         getSessionDetails();
-        setEventHandlers();
+        setEventHandler();
         return rootView;
     }
 
@@ -106,7 +106,7 @@ public class Home_Fragment extends Fragment {
         }
     }
 
-    private void setEventHandlers() {
+    private void setEventHandler() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

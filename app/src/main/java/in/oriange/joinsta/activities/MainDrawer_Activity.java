@@ -150,10 +150,11 @@ public class MainDrawer_Activity extends AppCompatActivity {
 
         AHBottomNavigationItem botHome = new AHBottomNavigationItem("Home", R.drawable.icon_home_1, R.color.colorPrimaryDark);
         AHBottomNavigationItem botSearch = new AHBottomNavigationItem("Search", R.drawable.icon_search_1, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("Favourite", R.drawable.icon_favourite_1, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botGroup = new AHBottomNavigationItem("Groups", R.drawable.icon_group, R.color.colorPrimaryDark);
+//        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("Favourite", R.drawable.icon_favourite_1, R.color.colorPrimaryDark);
         AHBottomNavigationItem botRequest = new AHBottomNavigationItem("Requirements", R.drawable.icon_request_1, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("Profile", R.drawable.icon_profile_1, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("More", R.drawable.icon_more_1, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botMore = new AHBottomNavigationItem("More", R.drawable.icon_more_1, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botHome = new AHBottomNavigationItem("Home", R.drawable.icon_nav_home, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("Search", R.drawable.icon_nav_search, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("Favourite", R.drawable.icon_nav_favourite, R.color.colorPrimaryDark);
@@ -164,9 +165,9 @@ public class MainDrawer_Activity extends AppCompatActivity {
 
         bottomNavigation.addItem(botHome);
         bottomNavigation.addItem(botSearch);
-        bottomNavigation.addItem(botFavourite);
+        bottomNavigation.addItem(botGroup);
         bottomNavigation.addItem(botRequest);
-        bottomNavigation.addItem(botProfile);
+        bottomNavigation.addItem(botMore);
 
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#EEEEEE"));
         bottomNavigation.setAccentColor(Color.parseColor("#FFA000"));
