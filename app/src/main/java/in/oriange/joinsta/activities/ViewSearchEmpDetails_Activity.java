@@ -9,9 +9,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -26,6 +29,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -39,7 +43,6 @@ import java.util.ArrayList;
 import co.lujun.androidtagview.TagContainerLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.Favourite_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -70,11 +73,12 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_district, edt_state, edt_country;
+    private MaterialButton btn_enquire, btn_caldist;
     private CardView cv_tabs;
     private TagContainerLayout tag_container;
 
     private SearchDetailsModel.ResultBean.EmployeesBean searchDetails;
-    private String userId, isFav, typeFrom;
+    private String userId, isFav, typeFrom, name, mobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +103,8 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
-
         tv_distance = findViewById(R.id.tv_distance);
+
         cb_like = findViewById(R.id.cb_like);
         imv_user = findViewById(R.id.imv_user);
         progressBar = findViewById(R.id.progressBar);
@@ -120,10 +124,24 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         edt_country = findViewById(R.id.edt_country);
         imv_share = findViewById(R.id.imv_share);
 
+        btn_enquire = findViewById(R.id.btn_enquire);
+        btn_caldist = findViewById(R.id.btn_caldist);
         tag_container = findViewById(R.id.tag_container);
     }
 
     private void setDefault() {
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            name = json.getString("first_name");
+            mobile = json.getString("mobile");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         searchDetails = (SearchDetailsModel.ResultBean.EmployeesBean) getIntent().getSerializableExtra("searchDetails");
         typeFrom = getIntent().getStringExtra("type");
 
@@ -224,7 +242,6 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             }
         });
 
-
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,12 +322,11 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             }
         });
 
-        tv_distance.setOnClickListener(new View.OnClickListener() {
+        btn_caldist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
-                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Location of employment not available</b></font>"));
                     return;
                 }
 
@@ -325,8 +341,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                 }
 
                 if (MainDrawer_Activity.latLng == null) {
-                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available. Please try again</b></font>"));
-
+                    btn_caldist.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Try again</b></font>"));
                     return;
                 }
 
@@ -342,13 +357,134 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                 distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
                     @Override
                     public void taskCompleted(String[] time_distance) {
-                        tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
+                        btn_caldist.setText(Html.fromHtml("<font color=\"#FFA000\">" + time_distance[0] + "</font>"));
+//                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
 
                     }
 
                 });
             }
         });
+        btn_enquire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                View promptView = layoutInflater.inflate(R.layout.dialog_layout_enquiry, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertDialogBuilder.setTitle("Enquiry");
+                alertDialogBuilder.setView(promptView);
+
+                final MaterialEditText edt_name = promptView.findViewById(R.id.edt_name);
+                final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+                final MaterialEditText edt_subject = promptView.findViewById(R.id.edt_subject);
+                final EditText edt_details = promptView.findViewById(R.id.edt_details);
+                final Button btn_save = promptView.findViewById(R.id.btn_save);
+
+                edt_name.setText(name);
+                edt_mobile.setText(mobile);
+
+                final AlertDialog alertD = alertDialogBuilder.create();
+
+                btn_save.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (edt_name.getText().toString().trim().isEmpty()) {
+                            edt_name.setError("Please enter name");
+                            edt_name.requestFocus();
+                            return;
+                        }
+
+                        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                            edt_mobile.setError("Please enter valid mobile");
+                            edt_mobile.requestFocus();
+                            return;
+                        }
+
+                        if (edt_subject.getText().toString().trim().isEmpty()) {
+                            edt_subject.setError("Please enter subject");
+                            edt_subject.requestFocus();
+                            return;
+                        }
+
+                        if (edt_details.getText().toString().trim().isEmpty()) {
+                            edt_details.setError("Please enter details");
+                            edt_details.requestFocus();
+                            return;
+                        }
+
+
+                        if (Utilities.isNetworkAvailable(context)) {
+                            alertD.dismiss();
+
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new SendEnquiryDetails().execute(
+                                        searchDetails.getCreated_by(),
+                                        edt_name.getText().toString().trim(),
+                                        edt_mobile.getText().toString().trim(),
+                                        "",
+                                        edt_subject.getText().toString().trim(),
+                                        edt_details.getText().toString().trim(),
+                                        "1"
+                                );
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    }
+                });
+
+                alertD.show();
+            }
+        });
+
+//        tv_distance.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
+//                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Location of employment not available</b></font>"));
+//                    return;
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+//                    provideLocationAccess(context);
+//                    return;
+//                }
+//
+//                if (!isLocationEnabled(context)) {
+//                    turnOnLocation(context);
+//                    return;
+//                }
+//
+//                if (MainDrawer_Activity.latLng == null) {
+//                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available. Please try again</b></font>"));
+//
+//                    return;
+//                }
+//
+//                startLocationUpdates();
+//
+//                LatLng currentLocation = new LatLng(MainDrawer_Activity.latLng.latitude, MainDrawer_Activity.latLng.longitude);
+//                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
+//
+//                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
+//
+//                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
+//
+//                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
+//                    @Override
+//                    public void taskCompleted(String[] time_distance) {
+//                        tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
+//
+//                    }
+//
+//                });
+//            }
+//        });
 
         imv_share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -570,6 +706,57 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 cb_like.setChecked(false);
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class SendEnquiryDetails extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "createenquiry");
+            obj.addProperty("userid", params[0]);
+            obj.addProperty("name", params[1]);
+            obj.addProperty("mobile", params[2]);
+            obj.addProperty("email", params[3]);
+            obj.addProperty("subject", params[4]);
+            obj.addProperty("message", params[5]);
+            obj.addProperty("category_type_id", params[6]);
+            res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Enquiry sent successfully", context, 1);
+                    } else {
+
+                    }
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
