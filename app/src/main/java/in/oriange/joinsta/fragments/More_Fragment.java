@@ -18,6 +18,7 @@ import in.oriange.joinsta.activities.ContactUs_Activity;
 import in.oriange.joinsta.activities.Enquires_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
+import in.oriange.joinsta.activities.PolicyDetails_Activity;
 import in.oriange.joinsta.activities.ProfileDetails_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
 
@@ -93,7 +94,7 @@ public class More_Fragment extends Fragment {
         cv_policies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(context, BasicInformation_Activity.class));
+                startActivity(new Intent(context, PolicyDetails_Activity.class));
             }
         });
 
