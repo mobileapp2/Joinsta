@@ -113,7 +113,6 @@ public class Enquires_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getenquiry");
             obj.addProperty("user_id", userId);
-            obj.addProperty("user_id", "7");
             res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res.trim();
         }

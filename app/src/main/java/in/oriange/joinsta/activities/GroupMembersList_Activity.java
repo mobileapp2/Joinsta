@@ -108,17 +108,27 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    ArrayList<GroupMemebersListModel.ResultBean> feedbackList = new ArrayList<>();
+                    ArrayList<GroupMemebersListModel.ResultBean> groupMembersList = new ArrayList<>();
                     GroupMemebersListModel pojoDetails = new Gson().fromJson(result, GroupMemebersListModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
-                        feedbackList = pojoDetails.getResult();
+                        groupMembersList = pojoDetails.getResult();
 
-                        if (feedbackList.size() > 0) {
+                        ArrayList<GroupMemebersListModel.ResultBean> foundMembers = new ArrayList<GroupMemebersListModel.ResultBean>();
+                        for (GroupMemebersListModel.ResultBean groupDetails : groupMembersList) {
+                            if (groupDetails.getRole().equals("group_member")) {
+                                foundMembers.add(groupDetails);
+                            }
+                        }
+
+                        groupMembersList.clear();
+                        groupMembersList.addAll(foundMembers);
+
+                        if (groupMembersList.size() > 0) {
                             rv_group_members.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_group_members.setAdapter(new GroupMembersAdapter(context, feedbackList));
+                            rv_group_members.setAdapter(new GroupMembersAdapter(context, groupMembersList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_group_members.setVisibility(View.GONE);

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -70,6 +71,20 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
         holder.tv_heading.setText(groupDetails.getGroup_name() + " (" + groupDetails.getGroup_code() + ")");
 
+        if (groupDetails.getStatus().equals("accepted")) {
+            holder.ll_buttons.setVisibility(View.VISIBLE);
+            holder.tv_status.setVisibility(View.GONE);
+        } else if (groupDetails.getStatus().equals("left")) {
+            holder.ll_buttons.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Left");
+        } else if (groupDetails.getStatus().equals("requested")) {
+            holder.ll_buttons.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Requested");
+        }
+
+
         holder.ib_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,8 +129,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
                             if (Utilities.isNetworkAvailable(context)) {
                                 new UpdateGroupSettings().execute(
-                                        groupDetails.getUser_id(),
-                                        groupDetails.getGroup_id(),
+                                        userId,
+                                        groupDetails.getId(),
                                         allow_notification,
                                         is_hidden);
                             } else {
@@ -150,8 +165,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         new ExitGroup().execute(
-                                groupDetails.getUser_id(),
-                                groupDetails.getGroup_id(),
+                                userId,
+                                groupDetails.getId(),
                                 "left"
                         );
                     }
@@ -177,6 +192,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
         private CardView cv_mainlayout;
         private TextView tv_heading;
+        private LinearLayout ll_buttons;
+        private TextView tv_status;
         private ImageButton ib_settings, ib_notifications, ib_exit;
 
         public MyViewHolder(View view) {
@@ -186,6 +203,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             ib_settings = view.findViewById(R.id.ib_settings);
             ib_notifications = view.findViewById(R.id.ib_notifications);
             ib_exit = view.findViewById(R.id.ib_exit);
+            ll_buttons = view.findViewById(R.id.ll_buttons);
+            tv_status = view.findViewById(R.id.tv_status);
         }
     }
 

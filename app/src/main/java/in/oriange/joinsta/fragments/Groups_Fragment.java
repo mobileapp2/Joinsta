@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +39,7 @@ public class Groups_Fragment extends Fragment {
 
     private static Context context;
     private UserSessionManager session;
+    private CardView cv_search;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_groups;
     private static LinearLayout ll_nopreview;
@@ -61,6 +63,7 @@ public class Groups_Fragment extends Fragment {
     private void init(View rootView) {
         session = new UserSessionManager(context);
 
+        cv_search = rootView.findViewById(R.id.cv_search);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         rv_groups = rootView.findViewById(R.id.rv_groups);
         rv_groups.setLayoutManager(new LinearLayoutManager(context));
@@ -102,7 +105,7 @@ public class Groups_Fragment extends Fragment {
             }
         });
 
-        edt_search.setOnClickListener(new View.OnClickListener() {
+        cv_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, AllGroups_Activity.class));

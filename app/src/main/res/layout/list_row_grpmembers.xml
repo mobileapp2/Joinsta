@@ -42,11 +42,10 @@
                     android:layout_weight="0.8"
                     android:text="Priyesh Pawar"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_grp_admin"
+                    android:id="@+id/tv_role"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"

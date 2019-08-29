@@ -35,12 +35,16 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         final int position = holder.getAdapterPosition();
         final GroupMemebersListModel.ResultBean groupDetails = resultArrayList.get(position);
 
-        holder.tv_initletter.setText(groupDetails.getFirst_name().substring(0, 1));
-        holder.tv_name.setText(groupDetails.getFirst_name());
+        holder.tv_initletter.setText(groupDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
+        holder.tv_name.setText(groupDetails.getFirst_name().trim());
         holder.tv_mobile.setText(groupDetails.getMobile());
 
         if (groupDetails.getRole().equalsIgnoreCase("group_admin")) {
-            holder.tv_grp_admin.setVisibility(View.VISIBLE);
+            holder.tv_role.setVisibility(View.VISIBLE);
+            holder.tv_role.setText("Admin");
+        } else if (groupDetails.getRole().equalsIgnoreCase("group_supervisor")) {
+            holder.tv_role.setVisibility(View.VISIBLE);
+            holder.tv_role.setText("Supervisor");
         }
 
     }
@@ -52,13 +56,13 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_initletter, tv_name, tv_grp_admin, tv_mobile;
+        private TextView tv_initletter, tv_name, tv_role, tv_mobile;
 
         public MyViewHolder(View view) {
             super(view);
             tv_initletter = view.findViewById(R.id.tv_initletter);
             tv_name = view.findViewById(R.id.tv_name);
-            tv_grp_admin = view.findViewById(R.id.tv_grp_admin);
+            tv_role = view.findViewById(R.id.tv_role);
             tv_mobile = view.findViewById(R.id.tv_mobile);
         }
     }

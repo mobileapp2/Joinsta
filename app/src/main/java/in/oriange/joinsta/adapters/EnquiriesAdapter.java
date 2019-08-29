@@ -75,7 +75,13 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
         final int position = holder.getAdapterPosition();
         final EnquiriesListModel.ResultBean enquiryDetails = resultArrayList.get(position);
 
-        holder.tv_record_name.setText(enquiryDetails.getBusiness_name());
+        if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("1")) {
+            holder.tv_record_name.setText(enquiryDetails.getBusiness_name());
+        } else if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("2")) {
+            holder.tv_record_name.setText(enquiryDetails.getOrganization_name());
+        } else if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("3")) {
+            holder.tv_record_name.setText(enquiryDetails.getProfession_name());
+        }
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
         holder.tv_createdby.setText("By: " + enquiryDetails.getName());

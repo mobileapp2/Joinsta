@@ -94,7 +94,7 @@ public class More_Fragment extends Fragment {
         cv_policies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, PolicyDetails_Activity.class));
+//                startActivity(new Intent(context, PolicyDetails_Activity.class));
             }
         });
 

@@ -1,31 +1,56 @@
 package in.oriange.joinsta.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.AllGroupsListModel;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
+import in.oriange.joinsta.utilities.Utilities;
 
 public class GroupDetails_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
+    private ProgressDialog pd;
 
     private MaterialEditText edt_grp_admin, edt_grp_name, edt_grp_code, edt_grp_description, edt_noofmembers;
     private MaterialButton btn_members;
+    private RecyclerView rv_group_members;
     private Button btn_connect;
+    private ImageButton ib_more;
 
     private AllGroupsListModel.ResultBean groupDetails;
+    private ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> leadsList;
+    private boolean isExpanded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,26 +67,48 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private void init() {
         context = GroupDetails_Activity.this;
         session = new UserSessionManager(context);
+        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         edt_grp_admin = findViewById(R.id.edt_grp_admin);
         edt_grp_name = findViewById(R.id.edt_grp_name);
         edt_grp_code = findViewById(R.id.edt_grp_code);
         edt_grp_description = findViewById(R.id.edt_grp_description);
         edt_noofmembers = findViewById(R.id.edt_noofmembers);
+        rv_group_members = findViewById(R.id.rv_group_members);
+        rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         btn_members = findViewById(R.id.btn_members);
         btn_connect = findViewById(R.id.btn_connect);
+        ib_more = findViewById(R.id.ib_more);
+
+        leadsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
+
     }
 
     private void setDefault() {
         groupDetails = (AllGroupsListModel.ResultBean) getIntent().getSerializableExtra("groupDetails");
-        edt_grp_admin.setText("");
-        edt_grp_name.setText(groupDetails.getGroup_name());
-        edt_grp_code.setText(groupDetails.getGroup_code());
-        edt_grp_description.setText(groupDetails.getGroup_description());
-        edt_noofmembers.setText(groupDetails.getGroup_description());
+        leadsList = groupDetails.getGroup_Member_Details();
+
+
+        ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> foundMembers = new ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean>();
+        for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean groupDetails : leadsList) {
+            if (groupDetails.getRole().equals("group_admin") || groupDetails.getRole().equals("group_supervisor")) {
+                foundMembers.add(groupDetails);
+            }
+        }
+
+        leadsList.clear();
+        leadsList.addAll(foundMembers);
+
+        rv_group_members.setAdapter(new GroupMembersAdapter());
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new GetSingleGroupDetails().execute();
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
     }
 
     private void setEventHandler() {
@@ -72,6 +119,148 @@ public class GroupDetails_Activity extends AppCompatActivity {
                         .putExtra("groupId", groupDetails.getId()));
             }
         });
+
+        ib_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isExpanded) {
+                    isExpanded = true;
+                    animateExpand();
+                    rv_group_members.setVisibility(View.VISIBLE);
+                } else {
+                    isExpanded = false;
+                    animateCollapse();
+                    rv_group_members.setVisibility(View.GONE);
+                }
+
+
+            }
+        });
+    }
+
+    private class GetSingleGroupDetails extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please Wait...");
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getsinglegroupDetails");
+            obj.addProperty("id", groupDetails.getId());
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+
+                    JSONObject jsonObject = new JSONObject(result);
+                    type = jsonObject.getString("type");
+                    message = jsonObject.getString("message");
+
+                    if (type.equalsIgnoreCase("success")) {
+
+                        JSONArray jsonArray = jsonObject.getJSONArray("result");
+                        JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+
+                        edt_grp_admin.setText(jsonObject1.getString("first_name"));
+                        edt_grp_name.setText(jsonObject1.getString("group_name"));
+                        edt_grp_code.setText(jsonObject1.getString("group_code"));
+                        edt_grp_description.setText(jsonObject1.getString("group_description"));
+                        edt_noofmembers.setText(jsonObject1.getString("no_of_member"));
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void animateExpand() {
+        RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(300);
+        rotate.setFillAfter(true);
+        rotate.setInterpolator(new LinearInterpolator());
+        ib_more.startAnimation(rotate);
+    }
+
+    private void animateCollapse() {
+        RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(300);
+        rotate.setFillAfter(true);
+        rotate.setInterpolator(new LinearInterpolator());
+        ib_more.startAnimation(rotate);
+    }
+
+    public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
+
+        public GroupMembersAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_grpmembers, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+            final AllGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails = leadsList.get(position);
+
+            holder.tv_initletter.setText(memberDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
+            holder.tv_name.setText(memberDetails.getFirst_name().trim());
+            holder.tv_mobile.setText(memberDetails.getMobile());
+
+            if (memberDetails.getRole().equalsIgnoreCase("group_admin")) {
+                holder.tv_role.setVisibility(View.VISIBLE);
+                holder.tv_role.setText("Admin");
+            } else if (memberDetails.getRole().equalsIgnoreCase("group_supervisor")) {
+                holder.tv_role.setVisibility(View.VISIBLE);
+                holder.tv_role.setText("Supervisor");
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return leadsList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_initletter, tv_name, tv_role, tv_mobile;
+
+            public MyViewHolder(View view) {
+                super(view);
+                tv_initletter = view.findViewById(R.id.tv_initletter);
+                tv_name = view.findViewById(R.id.tv_name);
+                tv_role = view.findViewById(R.id.tv_role);
+                tv_mobile = view.findViewById(R.id.tv_mobile);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
     }
 
     private void setUpToolbar() {

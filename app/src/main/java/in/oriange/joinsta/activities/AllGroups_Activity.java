@@ -34,15 +34,15 @@ import in.oriange.joinsta.utilities.Utilities;
 
 public class AllGroups_Activity extends AppCompatActivity {
 
-    private Context context;
+    private static Context context;
     private UserSessionManager session;
     private EditText edt_search;
-    private RecyclerView rv_groups;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private SpinKitView progressBar;
-    private LinearLayout ll_nopreview;
+    private static RecyclerView rv_groups;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static SpinKitView progressBar;
+    private static LinearLayout ll_nopreview;
     private String userId;
-    private ArrayList<AllGroupsListModel.ResultBean> groupsList;
+    private static ArrayList<AllGroupsListModel.ResultBean> groupsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +129,7 @@ public class AllGroups_Activity extends AppCompatActivity {
 
     }
 
-    private class GetGroupsList extends AsyncTask<String, Void, String> {
+    public static class GetGroupsList extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -147,6 +147,8 @@ public class AllGroups_Activity extends AppCompatActivity {
             obj.addProperty("type", "searchgroup");
             obj.addProperty("code", "");
             obj.addProperty("search_term", "");
+//            obj.addProperty("userid", userId);
+            obj.addProperty("userid", "1");
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
             return res.trim();
         }
@@ -154,7 +156,6 @@ public class AllGroups_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
             String type = "", message = "";
             try {

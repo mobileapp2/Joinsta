@@ -148,18 +148,13 @@ public class MainDrawer_Activity extends AppCompatActivity {
     private void setUpBottomNavigation() {
         //Create items
 
-        AHBottomNavigationItem botHome = new AHBottomNavigationItem("Home", R.drawable.icon_home_1, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("Search", R.drawable.icon_search_1, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botHome = new AHBottomNavigationItem("Home", R.drawable.icon_home, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("Search", R.drawable.icon_search, R.color.colorPrimaryDark);
         AHBottomNavigationItem botGroup = new AHBottomNavigationItem("Groups", R.drawable.icon_group, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("Favourite", R.drawable.icon_favourite_1, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("Requirements", R.drawable.icon_request_1, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("Requirements", R.drawable.icon_request, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("Profile", R.drawable.icon_profile_1, R.color.colorPrimaryDark);
         AHBottomNavigationItem botMore = new AHBottomNavigationItem("More", R.drawable.icon_more_1, R.color.colorPrimaryDark);
-//        AHBottomNavigationItem botHome = new AHBottomNavigationItem("Home", R.drawable.icon_nav_home, R.color.colorPrimaryDark);
-//        AHBottomNavigationItem botSearch = new AHBottomNavigationItem("Search", R.drawable.icon_nav_search, R.color.colorPrimaryDark);
-//        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("Favourite", R.drawable.icon_nav_favourite, R.color.colorPrimaryDark);
-//        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("Requirements", R.drawable.icon_nav_request, R.color.colorPrimaryDark);
-//        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("Profile", R.drawable.icon_nav_profile, R.color.colorPrimaryDark);
 
         //Add items
 
