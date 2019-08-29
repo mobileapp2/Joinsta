@@ -75,6 +75,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
         final int position = holder.getAdapterPosition();
         final EnquiriesListModel.ResultBean enquiryDetails = resultArrayList.get(position);
 
+        holder.tv_record_name.setText(enquiryDetails.getBusiness_name());
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
         holder.tv_createdby.setText("By: " + enquiryDetails.getName());
@@ -123,8 +124,11 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
                     is_attended = "1";
                 }
 
-                new AttendEnquiry().execute(enquiryDetails.getId(), is_attended);
-
+                if (Utilities.isNetworkAvailable(context)) {
+                    new AttendEnquiry().execute(enquiryDetails.getId(), is_attended);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
@@ -138,7 +142,11 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        new DeleteEnquiry().execute(enquiryDetails.getId());
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DeleteEnquiry().execute(enquiryDetails.getId());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -162,7 +170,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 
         private CardView cv_mainlayout;
         private ImageButton ib_call;
-        private TextView tv_subject, tv_message, tv_createdby;
+        private TextView tv_record_name,tv_subject, tv_message, tv_createdby;
         private SwitchCompat sw_attend;
         private Button btn_delete;
 
@@ -170,6 +178,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             ib_call = view.findViewById(R.id.ib_call);
+            tv_record_name = view.findViewById(R.id.tv_record_name);
             tv_subject = view.findViewById(R.id.tv_subject);
             tv_message = view.findViewById(R.id.tv_message);
             tv_createdby = view.findViewById(R.id.tv_createdby);

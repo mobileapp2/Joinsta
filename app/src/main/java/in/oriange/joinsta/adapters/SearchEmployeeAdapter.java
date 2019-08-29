@@ -50,7 +50,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 
     private Context context;
     private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
-    private String name, mobile;
+    private String userId, name, mobile;
     private List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList;
 
     public SearchEmployeeAdapter(Context context, List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList, String type) {
@@ -63,6 +63,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
+            userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
 
@@ -247,13 +248,15 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 
                             if (Utilities.isNetworkAvailable(context)) {
                                 new SendEnquiryDetails().execute(
+                                        userId,
                                         searchDetails.getCreated_by(),
                                         edt_name.getText().toString().trim(),
                                         edt_mobile.getText().toString().trim(),
                                         "",
                                         edt_subject.getText().toString().trim(),
                                         edt_details.getText().toString().trim(),
-                                        "2"
+                                        "2",
+                                        searchDetails.getId()
                                 );
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -328,6 +331,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             obj.addProperty("subject", params[4]);
             obj.addProperty("message", params[5]);
             obj.addProperty("category_type_id", params[6]);
+            obj.addProperty("record_id", params[7]);
             res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res;
         }

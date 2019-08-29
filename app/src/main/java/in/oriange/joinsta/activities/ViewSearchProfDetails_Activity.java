@@ -41,7 +41,6 @@ import java.util.ArrayList;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.Favourite_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -418,13 +417,15 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
                             if (Utilities.isNetworkAvailable(context)) {
                                 new SendEnquiryDetails().execute(
+                                        userId,
                                         searchDetails.getCreated_by(),
                                         edt_name.getText().toString().trim(),
                                         edt_mobile.getText().toString().trim(),
                                         "",
                                         edt_subject.getText().toString().trim(),
                                         edt_details.getText().toString().trim(),
-                                        "1"
+                                        "3",
+                                        searchDetails.getId()
                                 );
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -732,6 +733,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             obj.addProperty("subject", params[4]);
             obj.addProperty("message", params[5]);
             obj.addProperty("category_type_id", params[6]);
+            obj.addProperty("record_id", params[7]);
             res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res;
         }
