@@ -41,7 +41,7 @@ public class AllGroups_Activity extends AppCompatActivity {
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static SpinKitView progressBar;
     private static LinearLayout ll_nopreview;
-    private String userId;
+    private static String userId;
     private static ArrayList<AllGroupsListModel.ResultBean> groupsList;
 
     @Override
@@ -147,8 +147,7 @@ public class AllGroups_Activity extends AppCompatActivity {
             obj.addProperty("type", "searchgroup");
             obj.addProperty("code", "");
             obj.addProperty("search_term", "");
-//            obj.addProperty("userid", userId);
-            obj.addProperty("userid", "1");
+            obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
             return res.trim();
         }
