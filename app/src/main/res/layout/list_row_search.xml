@@ -119,7 +119,7 @@
             android:weightSum="1">
 
             <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_enquire"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
@@ -131,7 +131,7 @@
                 android:layout_weight="0.5" />
 
             <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_caldist"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
