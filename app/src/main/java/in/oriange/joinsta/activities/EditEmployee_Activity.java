@@ -1033,11 +1033,11 @@ public class EditEmployee_Activity extends AppCompatActivity {
             }
         }
 
-//        if (edt_city.getText().toString().trim().isEmpty()) {
-//            edt_city.setError("Please select area");
-//            edt_city.requestFocus();
-//            return;
-//        }
+        if (edt_city.getText().toString().trim().isEmpty()) {
+            edt_city.setError("Please select area");
+            edt_city.requestFocus();
+            return;
+        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
@@ -1145,17 +1145,17 @@ public class EditEmployee_Activity extends AppCompatActivity {
                     Geocoder gcd = new Geocoder(context, Locale.getDefault());
                     List<Address> addresses = null;
                     addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-
+                    place.getAddress();
                     if (addresses.size() != 0) {
 
                         latitude = String.valueOf(place.getLatLng().latitude);
                         longitude = String.valueOf(place.getLatLng().longitude);
-                        edt_address.setText(addresses.get(0).getAddressLine(0));
+                        edt_address.setText(place.getAddress());
                         edt_country.setText(addresses.get(0).getCountryName());
                         edt_state.setText(addresses.get(0).getAdminArea());
                         edt_district.setText(addresses.get(0).getSubAdminArea());
                         edt_pincode.setText(addresses.get(0).getPostalCode());
-                        edt_select_area.setText(addresses.get(0).getFeatureName());
+                        edt_select_area.setText(place.getName());
                         edt_city.setText(addresses.get(0).getLocality());
                     } else {
                         Utilities.showMessage("Address not found, please try again", context, 3);
