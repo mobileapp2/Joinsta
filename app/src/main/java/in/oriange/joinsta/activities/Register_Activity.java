@@ -194,6 +194,7 @@ public class Register_Activity extends AppCompatActivity {
         alertDialogBuilder.setView(promptView);
 
         Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
+        Button btn_cancel = promptView.findViewById(R.id.btn_cancel);
         pinview_opt.setPinLength(otp.length());
 
         alertDialogBuilder.setCancelable(false);
@@ -220,6 +221,14 @@ public class Register_Activity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+            }
+        });
+
         alertD.show();
     }
 
