@@ -15,11 +15,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -30,6 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.AllGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -45,12 +48,13 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private MaterialEditText edt_grp_admin, edt_grp_name, edt_grp_code, edt_grp_description, edt_noofmembers;
     private MaterialButton btn_members;
     private RecyclerView rv_group_members;
-    private Button btn_connect;
+    private Button btn_connect, btn_status;
     private ImageButton ib_more;
 
     private AllGroupsListModel.ResultBean groupDetails;
     private ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> leadsList;
     private boolean isExpanded;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,19 +82,44 @@ public class GroupDetails_Activity extends AppCompatActivity {
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         btn_members = findViewById(R.id.btn_members);
         btn_connect = findViewById(R.id.btn_connect);
+        btn_status = findViewById(R.id.btn_status);
         ib_more = findViewById(R.id.ib_more);
 
         leadsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            userId = json.getString("userid");
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setDefault() {
         groupDetails = (AllGroupsListModel.ResultBean) getIntent().getSerializableExtra("groupDetails");
         leadsList = groupDetails.getGroup_Member_Details();
 
+        if (groupDetails.getStatus().equals("")) {
+            btn_connect.setVisibility(View.VISIBLE);
+            btn_status.setVisibility(View.GONE);
+        } else if (groupDetails.getStatus().equals("left")) {
+            btn_connect.setVisibility(View.GONE);
+            btn_status.setVisibility(View.VISIBLE);
+            btn_status.setText("Left");
+        } else if (groupDetails.getStatus().equals("requested")) {
+            btn_connect.setVisibility(View.GONE);
+            btn_status.setVisibility(View.VISIBLE);
+            btn_status.setText("Requested");
+        } else if (groupDetails.getStatus().equals("accepted")) {
+            btn_connect.setVisibility(View.GONE);
+            btn_status.setVisibility(View.VISIBLE);
+            btn_status.setText("Accepted");
+        }
 
         ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> foundMembers = new ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean>();
         for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean groupDetails : leadsList) {
@@ -132,8 +161,17 @@ public class GroupDetails_Activity extends AppCompatActivity {
                     animateCollapse();
                     rv_group_members.setVisibility(View.GONE);
                 }
+            }
+        });
 
-
+        btn_connect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new JoinGroup().execute(groupDetails.getId());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
     }
@@ -262,6 +300,80 @@ public class GroupDetails_Activity extends AppCompatActivity {
         }
 
     }
+
+    private class JoinGroup extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "joingroup");
+            obj.addProperty("status", "requested");
+            obj.addProperty("group_id", params[0]);
+            obj.addProperty("user_id", userId);
+            obj.addProperty("role", "group_member");
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Your request to join this group is submitted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("Failed to submit the details", context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

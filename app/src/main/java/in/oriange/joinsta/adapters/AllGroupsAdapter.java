@@ -26,6 +26,7 @@ import java.util.List;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroups_Activity;
 import in.oriange.joinsta.activities.GroupDetails_Activity;
+import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.AllGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -70,6 +71,23 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
 
         holder.tv_heading.setText(groupDetails.getGroup_name() + " (" + groupDetails.getGroup_code() + ")");
 
+        if (groupDetails.getStatus().equals("")) {
+            holder.btn_connect.setVisibility(View.VISIBLE);
+            holder.tv_status.setVisibility(View.GONE);
+        } else if (groupDetails.getStatus().equals("left")) {
+            holder.btn_connect.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Left");
+        } else if (groupDetails.getStatus().equals("requested")) {
+            holder.btn_connect.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Requested");
+        } else if (groupDetails.getStatus().equals("accepted")) {
+            holder.btn_connect.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Accepted");
+        }
+
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +99,6 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         holder.btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (Utilities.isNetworkAvailable(context)) {
                     new JoinGroup().execute(groupDetails.getId());
                 } else {
@@ -101,12 +118,14 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         private CardView cv_mainlayout;
         private TextView tv_heading;
         private MaterialButton btn_connect;
+        private TextView tv_status;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             tv_heading = view.findViewById(R.id.tv_heading);
             btn_connect = view.findViewById(R.id.btn_connect);
+            tv_status = view.findViewById(R.id.tv_status);
         }
     }
 
@@ -153,6 +172,7 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

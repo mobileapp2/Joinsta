@@ -53,6 +53,7 @@ public class AllGroupsListModel implements Serializable {
         private String group_name;
         private String group_code;
         private String group_description;
+        private String status;
         private ArrayList<GroupMemberDetailsBean> Group_Member_Details;
 
         public String getId() {
@@ -85,6 +86,14 @@ public class AllGroupsListModel implements Serializable {
 
         public void setGroup_description(String group_description) {
             this.group_description = group_description;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
 
         public ArrayList<GroupMemberDetailsBean> getGroup_Member_Details() {

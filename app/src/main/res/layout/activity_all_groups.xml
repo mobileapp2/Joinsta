@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="Favourites not added in this category"
+                android:text="No groups available here"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
