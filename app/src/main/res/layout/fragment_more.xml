@@ -216,7 +216,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="0.8"
                             android:paddingLeft="10dp"
-                            android:text="Enquires"
+                            android:text="Enquiries"
                             android:textSize="18sp"
                             android:tint="@color/black" />
 
