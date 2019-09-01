@@ -15,7 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -77,15 +76,15 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         } else if (groupDetails.getStatus().equals("left")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Left");
+            holder.tv_status.setText("LEFT");
         } else if (groupDetails.getStatus().equals("requested")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Requested");
+            holder.tv_status.setText("REQUESTED");
         } else if (groupDetails.getStatus().equals("accepted")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Accepted");
+            holder.tv_status.setText("ACCEPTED");
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +116,7 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
 
         private CardView cv_mainlayout;
         private TextView tv_heading;
-        private MaterialButton btn_connect;
+        private Button btn_connect;
         private TextView tv_status;
 
         public MyViewHolder(View view) {

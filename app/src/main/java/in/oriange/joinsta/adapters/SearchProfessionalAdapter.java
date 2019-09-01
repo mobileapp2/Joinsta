@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -185,7 +184,7 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
                 distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
                     @Override
                     public void taskCompleted(String[] time_distance) {
-                        holder.btn_caldist.setText(Html.fromHtml("<font color=\"#FFA000\">" + time_distance[0] + "</font>"));
+                        holder.btn_caldist.setText(time_distance[0]);
 //                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
 
                     }
@@ -286,7 +285,7 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
         private ImageView imv_preview;
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
-        private MaterialButton btn_enquire, btn_caldist;
+        private Button btn_enquire, btn_caldist;
         private TextView tv_heading, tv_subheading, tv_subsubheading;
 
         public MyViewHolder(View view) {

@@ -28,7 +28,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -70,7 +69,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
             edt_district, edt_state, edt_country;
-    private MaterialButton btn_enquire, btn_caldist;
+    private Button btn_enquire, btn_caldist;
     private CardView cv_tabs;
     private TagContainerLayout tag_container;
 
@@ -354,7 +353,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                 distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
                     @Override
                     public void taskCompleted(String[] time_distance) {
-                        btn_caldist.setText(Html.fromHtml("<font color=\"#FFA000\">" + time_distance[0] + "</font>"));
+                        btn_caldist.setText(time_distance[0]);
 //                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
 
                     }
