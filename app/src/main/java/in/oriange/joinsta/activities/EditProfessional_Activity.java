@@ -1308,7 +1308,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetProfessional().execute();
+                        new ProfileDetails_Activity.GetProfessional().execute();
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

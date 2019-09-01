@@ -1304,7 +1304,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new Profile_Fragment.GetEmployee().execute();
+                        new ProfileDetails_Activity.GetEmployee().execute();
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

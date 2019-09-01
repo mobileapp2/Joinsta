@@ -76,15 +76,15 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         } else if (groupDetails.getStatus().equals("left")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("LEFT");
+            holder.tv_status.setText("Left");
         } else if (groupDetails.getStatus().equals("requested")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("REQUESTED");
+            holder.tv_status.setText("Requested");
         } else if (groupDetails.getStatus().equals("accepted")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("ACCEPTED");
+            holder.tv_status.setText("Joined");
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {

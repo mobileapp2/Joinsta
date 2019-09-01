@@ -449,7 +449,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetProfessional().execute();
+                        new ProfileDetails_Activity.GetProfessional().execute();
                         Utilities.showMessage("Professional details deleted successfully", context, 1);
                         finish();
                     }

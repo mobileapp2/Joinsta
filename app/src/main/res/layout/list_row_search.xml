@@ -113,7 +113,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="1">
@@ -122,7 +122,7 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_enquire"
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:textSize="14sp"
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
@@ -134,7 +134,7 @@
                 style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_caldist"
                 android:layout_width="0dp"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:textSize="14sp"
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"

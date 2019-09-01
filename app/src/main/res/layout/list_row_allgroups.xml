@@ -38,7 +38,8 @@
             android:layout_height="40dp"
             android:textSize="12sp"
             android:text="Connect"
-            android:layout_weight="0.3" />
+            android:layout_weight="0.3"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_status"
@@ -46,10 +47,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:singleLine="true"
             android:layout_gravity="center"
             android:background="@drawable/bg_outline"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textColor="@color/colorPrimary"
             android:text=""
             android:visibility="gone" />

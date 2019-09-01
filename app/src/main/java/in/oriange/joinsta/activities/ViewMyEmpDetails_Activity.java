@@ -450,7 +450,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetEmployee().execute();
+                        new ProfileDetails_Activity.GetEmployee().execute();
                         Utilities.showMessage("Employment details deleted successfully", context, 1);
                         finish();
                     }

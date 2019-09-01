@@ -446,7 +446,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetBusiness().execute();
+                        new ProfileDetails_Activity.GetBusiness().execute();
                         Utilities.showMessage("Business details deleted successfully", context, 1);
                         finish();
                     }

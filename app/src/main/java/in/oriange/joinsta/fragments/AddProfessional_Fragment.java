@@ -65,6 +65,7 @@ import java.util.Locale;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.ProfileDetails_Activity;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.GetTagsListModel;
@@ -1087,7 +1088,7 @@ public class AddProfessional_Fragment extends Fragment {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Profile_Fragment.GetProfessional().execute();
+                        new ProfileDetails_Activity.GetProfessional().execute();
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

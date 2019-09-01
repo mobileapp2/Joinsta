@@ -34,7 +34,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
-            android:weightSum="3">
+            android:weightSum="3"
+            android:visibility="gone">
 
             <ImageButton
                 android:id="@+id/ib_settings"
@@ -99,7 +100,7 @@
             android:textSize="14sp"
             android:textColor="@color/colorPrimary"
             android:text=""
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 
