@@ -116,6 +116,7 @@
             android:layout_height="35dp"
             android:gravity="center"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="1">
 
             <Button
