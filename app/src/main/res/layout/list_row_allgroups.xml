@@ -31,15 +31,34 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        <Button
+            style="@style/Widget.MaterialComponents.Button"
             android:id="@+id/btn_connect"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textAllCaps="false"
+            android:layout_height="40dp"
+            android:textSize="12sp"
             android:text="Connect"
-            android:layout_weight="0.3" />
+            android:layout_weight="0.3"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:singleLine="true"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_outline"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimary"
+            android:text=""
+            android:visibility="gone" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

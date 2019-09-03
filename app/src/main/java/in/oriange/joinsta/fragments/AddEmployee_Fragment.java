@@ -65,6 +65,7 @@ import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.ProfileDetails_Activity;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.GetTagsListModel;
@@ -814,11 +815,11 @@ public class AddEmployee_Fragment extends Fragment {
             }
         }
 
-//        if (edt_city.getText().toString().trim().isEmpty()) {
-//            edt_city.setError("Please select area");
-//            edt_city.requestFocus();
-//            return;
-//        }
+        if (edt_city.getText().toString().trim().isEmpty()) {
+            edt_city.setError("Please select area");
+            edt_city.requestFocus();
+            return;
+        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
@@ -925,17 +926,17 @@ public class AddEmployee_Fragment extends Fragment {
                     Geocoder gcd = new Geocoder(context, Locale.getDefault());
                     List<Address> addresses = null;
                     addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-
+                    place.getAddress();
                     if (addresses.size() != 0) {
 
                         latitude = String.valueOf(place.getLatLng().latitude);
                         longitude = String.valueOf(place.getLatLng().longitude);
-                        edt_address.setText(addresses.get(0).getAddressLine(0));
+                        edt_address.setText(place.getAddress());
                         edt_country.setText(addresses.get(0).getCountryName());
                         edt_state.setText(addresses.get(0).getAdminArea());
                         edt_district.setText(addresses.get(0).getSubAdminArea());
                         edt_pincode.setText(addresses.get(0).getPostalCode());
-                        edt_select_area.setText(addresses.get(0).getFeatureName());
+                        edt_select_area.setText(place.getName());
                         edt_city.setText(addresses.get(0).getLocality());
                     } else {
                         Utilities.showMessage("Address not found, please try again", context, 3);
@@ -1082,7 +1083,7 @@ public class AddEmployee_Fragment extends Fragment {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        new Profile_Fragment.GetEmployee().execute();
+                        new ProfileDetails_Activity.GetEmployee().execute();
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);

@@ -15,7 +15,6 @@ public class ApplicationConstants {
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
-
     // LIVE API LINK
 //    private static final String API_LINK = "http://joinsta.in/Api/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
@@ -25,15 +24,17 @@ public class ApplicationConstants {
 //    private static final String API_LINK = "http://joinsta.in/Api_v2/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
-
-    // BETA API LINK V2
-    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
-
-
     //LIVE API LINK V3
 //    private static final String API_LINK = "http://joinsta.in/Api_v3/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+
+    // BETA API LINK V2
+//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
+//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+
+    //LIVE API LINK V4
+    private static final String API_LINK = "http://joinsta.in/Api_v4/";
+    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,11 +32,13 @@ public class PolicyDetails_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        wv_policies_details.loadUrl("file:///android_asset/termsandconditions.html");
+        wv_policies_details.loadUrl("file:///android_asset/" + getIntent().getStringExtra("filePath"));
     }
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
+        TextView toolbar_title = findViewById(R.id.toolbar_title);
+        toolbar_title.setText(getIntent().getStringExtra("title"));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow);

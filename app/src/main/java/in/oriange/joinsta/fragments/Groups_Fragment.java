@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -43,7 +42,6 @@ public class Groups_Fragment extends Fragment {
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_groups;
     private static LinearLayout ll_nopreview;
-    private static EditText edt_search;
     private static SpinKitView progressBar;
 
     private static String userId;
@@ -68,7 +66,6 @@ public class Groups_Fragment extends Fragment {
         rv_groups = rootView.findViewById(R.id.rv_groups);
         rv_groups.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
-        edt_search = rootView.findViewById(R.id.edt_search);
         progressBar = rootView.findViewById(R.id.progressBar);
 
         myGroupsList = new ArrayList<>();
@@ -129,7 +126,6 @@ public class Groups_Fragment extends Fragment {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getgroupDetails");
-//            obj.addProperty("user_id", "1");
             obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
             return res.trim();
@@ -138,7 +134,6 @@ public class Groups_Fragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
             String type = "", message = "";
             try {

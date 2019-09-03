@@ -201,14 +201,25 @@
     </androidx.core.widget.NestedScrollView>
 
     <android.widget.Button
+        android:id="@+id/btn_status"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:background="@drawable/button_background_border"
+        android:text=""
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
+
+    <android.widget.Button
         android:id="@+id/btn_connect"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center"
-        android:visibility="gone"
         android:layout_margin="5dp"
         android:background="@drawable/button_background_filled"
         android:text="Connect"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:visibility="gone" />
 
 </LinearLayout>

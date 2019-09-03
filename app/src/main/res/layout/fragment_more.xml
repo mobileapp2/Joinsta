@@ -67,7 +67,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_basicinfo"
                             android:tint="@color/colorPrimary" />
@@ -113,7 +113,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_favourite"
                             android:tint="@color/colorPrimary" />
@@ -159,7 +159,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_notification_1"
                             android:tint="@color/colorPrimary" />
@@ -205,7 +205,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_enquires"
                             android:tint="@color/colorPrimary" />
@@ -216,7 +216,7 @@
                             android:layout_gravity="center_vertical"
                             android:layout_weight="0.8"
                             android:paddingLeft="10dp"
-                            android:text="Enquires"
+                            android:text="Enquiries"
                             android:textSize="18sp"
                             android:tint="@color/black" />
 
@@ -251,7 +251,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_policies"
                             android:tint="@color/colorPrimary" />
@@ -297,7 +297,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_contactus"
                             android:tint="@color/colorPrimary" />
@@ -343,7 +343,7 @@
 
                         <ImageView
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="25dp"
                             android:layout_weight="0.1"
                             android:src="@drawable/icon_settings_1"
                             android:tint="@color/colorPrimary" />

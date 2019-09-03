@@ -3,6 +3,7 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -83,7 +85,6 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Requested");
         }
-
 
         holder.ib_settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +152,14 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             @Override
             public void onClick(View v) {
 
+            }
+        });
+
+        holder.ib_notifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, GroupNotifications_Activity.class)
+                        .putExtra("groupId", groupDetails.getId()));
             }
         });
 

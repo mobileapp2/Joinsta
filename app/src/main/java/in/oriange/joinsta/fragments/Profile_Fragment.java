@@ -227,7 +227,7 @@ public class Profile_Fragment extends Fragment {
         });
     }
 
-    public static class GetBusiness extends AsyncTask<String, Void, String> {
+    private static class GetBusiness extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -285,7 +285,7 @@ public class Profile_Fragment extends Fragment {
         }
     }
 
-    public static class GetEmployee extends AsyncTask<String, Void, String> {
+    private static class GetEmployee extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -343,7 +343,7 @@ public class Profile_Fragment extends Fragment {
         }
     }
 
-    public static class GetProfessional extends AsyncTask<String, Void, String> {
+    private static class GetProfessional extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {

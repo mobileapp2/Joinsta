@@ -3,10 +3,7 @@ package in.oriange.joinsta.activities;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,29 +22,28 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.AllGroupsAdapter;
-import in.oriange.joinsta.models.AllGroupsListModel;
+import in.oriange.joinsta.adapters.GroupNotificationAdapter;
+import in.oriange.joinsta.models.GroupNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class AllGroups_Activity extends AppCompatActivity {
+public class GroupNotifications_Activity extends AppCompatActivity {
 
-    private static Context context;
+    private Context context;
     private UserSessionManager session;
-    private EditText edt_search;
-    private static RecyclerView rv_groups;
-    private static SwipeRefreshLayout swipeRefreshLayout;
-    private static SpinKitView progressBar;
-    private static LinearLayout ll_nopreview;
-    private static String userId;
-    private static ArrayList<AllGroupsListModel.ResultBean> groupsList;
+    private RecyclerView rv_notification;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private SpinKitView progressBar;
+    private LinearLayout ll_nopreview;
+    private String userId, groupId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_groups);
+        setContentView(R.layout.activity_group_notifications);
 
         init();
         getSessionDetails();
@@ -57,16 +53,14 @@ public class AllGroups_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = AllGroups_Activity.this;
+        context = GroupNotifications_Activity.this;
         session = new UserSessionManager(context);
-        edt_search = findViewById(R.id.edt_search);
-        rv_groups = findViewById(R.id.rv_groups);
-        rv_groups.setLayoutManager(new LinearLayoutManager(context));
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        progressBar = findViewById(R.id.progressBar);
-        ll_nopreview = findViewById(R.id.ll_nopreview);
 
-        groupsList = new ArrayList<>();
+        progressBar = findViewById(R.id.progressBar);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        rv_notification = findViewById(R.id.rv_notification);
+        rv_notification.setLayoutManager(new LinearLayoutManager(context));
+        ll_nopreview = findViewById(R.id.ll_nopreview);
     }
 
     private void getSessionDetails() {
@@ -82,8 +76,11 @@ public class AllGroups_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        groupId = getIntent().getStringExtra("groupId");
+
+
         if (Utilities.isNetworkAvailable(context)) {
-            new GetGroupsList().execute();
+            new GetGroupNotification().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -94,7 +91,7 @@ public class AllGroups_Activity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetGroupsList().execute();
+                    new GetGroupNotification().execute();
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     swipeRefreshLayout.setRefreshing(false);
@@ -102,54 +99,16 @@ public class AllGroups_Activity extends AppCompatActivity {
             }
         });
 
-
-        edt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-
-                if (groupsList.size() == 0) {
-                    return;
-                }
-
-                if (!query.toString().equals("")) {
-                    ArrayList<AllGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
-                    for (AllGroupsListModel.ResultBean groupsDetails : groupsList) {
-
-                        String groupsToBeSearched = groupsDetails.getGroup_name().toLowerCase() +
-                                groupsDetails.getGroup_code().toLowerCase();
-
-                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
-                            groupsSearchedList.add(groupsDetails);
-                        }
-                    }
-                    rv_groups.setAdapter(new AllGroupsAdapter(context, groupsSearchedList));
-                } else {
-                    rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
     }
 
-    public static class GetGroupsList extends AsyncTask<String, Void, String> {
+    private class GetGroupNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
-            rv_groups.setVisibility(View.GONE);
             ll_nopreview.setVisibility(View.GONE);
+            rv_notification.setVisibility(View.GONE);
             swipeRefreshLayout.setRefreshing(false);
         }
 
@@ -157,9 +116,8 @@ public class AllGroups_Activity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "searchgroup");
-            obj.addProperty("code", "");
-            obj.addProperty("search_term", "");
+            obj.addProperty("type", "getnotifications");
+            obj.addProperty("group_id", groupId);
             obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
             return res.trim();
@@ -169,26 +127,36 @@ public class AllGroups_Activity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
+            rv_notification.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    groupsList = new ArrayList<>();
-                    AllGroupsListModel pojoDetails = new Gson().fromJson(result, AllGroupsListModel.class);
+                    ArrayList<GroupNotificationListModel.ResultBean> notificationList = new ArrayList<>();
+                    GroupNotificationListModel pojoDetails = new Gson().fromJson(result, GroupNotificationListModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
-                        groupsList = pojoDetails.getResult();
-                        rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
-                        rv_groups.setVisibility(View.VISIBLE);
+                        notificationList = pojoDetails.getResult();
+
+                        if (notificationList.size() > 0) {
+                            rv_notification.setVisibility(View.VISIBLE);
+                            ll_nopreview.setVisibility(View.GONE);
+                            rv_notification.setAdapter(new GroupNotificationAdapter(context, notificationList));
+                        } else {
+                            ll_nopreview.setVisibility(View.VISIBLE);
+                            rv_notification.setVisibility(View.GONE);
+                        }
+
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
-                        rv_groups.setVisibility(View.GONE);
+                        rv_notification.setVisibility(View.GONE);
+
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 ll_nopreview.setVisibility(View.VISIBLE);
-                rv_groups.setVisibility(View.GONE);
+                rv_notification.setVisibility(View.GONE);
             }
         }
     }
