@@ -15,6 +15,9 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@android:color/white"
             app:cardElevation="2dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -222,6 +225,8 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@android:color/white"
             app:cardElevation="2dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -229,6 +234,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Employment Details"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_nature"
@@ -309,6 +322,8 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@android:color/white"
             app:cardElevation="2dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
@@ -316,6 +331,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Product/Services Offered"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
                 <co.lujun.androidtagview.TagContainerLayout
                     android:id="@+id/tag_container"
@@ -346,6 +369,9 @@
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@android:color/white"
             app:cardElevation="2dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
             app:cardUseCompatPadding="true">
 
             <LinearLayout

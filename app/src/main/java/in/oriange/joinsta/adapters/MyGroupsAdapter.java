@@ -26,7 +26,9 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.GroupDetails_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
+import in.oriange.joinsta.activities.MyGroupDetails_Activity;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -71,7 +73,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         final int position = holder.getAdapterPosition();
         final MyGroupsListModel.ResultBean groupDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(groupDetails.getGroup_name() + " (" + groupDetails.getGroup_code() + ")");
+        holder.tv_heading.setText(groupDetails.getGroup_code() + "-" + groupDetails.getGroup_name());
 
         if (groupDetails.getStatus().equals("accepted")) {
             holder.ll_buttons.setVisibility(View.VISIBLE);
@@ -85,6 +87,16 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Requested");
         }
+
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, MyGroupDetails_Activity.class)
+                        .putExtra("groupDetails", groupDetails)
+                        .putExtra("type", "2"));
+            }
+        });
+
 
         holder.ib_settings.setOnClickListener(new View.OnClickListener() {
             @Override

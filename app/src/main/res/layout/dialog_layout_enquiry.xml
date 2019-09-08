@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:padding="10dp"
     android:layout_height="wrap_content">
 
@@ -13,6 +14,9 @@
         android:hint="Name"
         android:inputType="textCapWords|textNoSuggestions"
         android:textColorHint="@color/colorAccent"
+        android:focusable="false"
+        android:longClickable="false"
+        android:clickable="false"
         android:textSize="16sp"
         app:met_floatingLabel="highlight"
         app:met_textColorHint="@color/darkGray"
@@ -24,6 +28,9 @@
         android:layout_height="wrap_content"
         android:hint="Mobile"
         android:inputType="number"
+        android:focusable="false"
+        android:longClickable="false"
+        android:clickable="false"
         android:maxLength="10"
         android:textSize="16sp"
         app:met_floatingLabel="highlight"

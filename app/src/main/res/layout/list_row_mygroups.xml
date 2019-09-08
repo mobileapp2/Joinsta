@@ -34,8 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.3"
-            android:weightSum="3"
-            android:visibility="gone">
+            android:weightSum="2">
 
             <ImageButton
                 android:id="@+id/ib_settings"
@@ -67,13 +66,6 @@
                 android:src="@drawable/icon_notification_1"
                 android:tint="@color/black" />
 
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/darkGray" />
-
             <ImageButton
                 android:id="@+id/ib_exit"
                 android:layout_width="0dp"
@@ -82,6 +74,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="5dp"
+                android:visibility="gone"
                 android:scaleType="fitCenter"
                 android:src="@drawable/icon_exit"
                 android:tint="@color/black" />

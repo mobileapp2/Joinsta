@@ -32,11 +32,13 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+
 public class AllGroups_Activity extends AppCompatActivity {
 
     private static Context context;
     private UserSessionManager session;
-    private EditText edt_search;
+    private static EditText edt_search;
     private static RecyclerView rv_groups;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static SpinKitView progressBar;
@@ -112,7 +114,15 @@ public class AllGroups_Activity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
+                if (query.toString().isEmpty()) {
+                    rv_groups.setVisibility(View.GONE);
+                } else {
+                    rv_groups.setVisibility(View.VISIBLE);
+                }
+
+
                 if (groupsList.size() == 0) {
+                    rv_groups.setVisibility(View.GONE);
                     return;
                 }
 
@@ -178,8 +188,23 @@ public class AllGroups_Activity extends AppCompatActivity {
 
                     if (type.equalsIgnoreCase("success")) {
                         groupsList = pojoDetails.getResult();
-                        rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
+
+                        if (!edt_search.getText().toString().trim().isEmpty()) {
+                            ArrayList<AllGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                            for (AllGroupsListModel.ResultBean groupsDetails : groupsList) {
+
+                                String groupsToBeSearched = groupsDetails.getGroup_name().toLowerCase() +
+                                        groupsDetails.getGroup_code().toLowerCase();
+
+                                if (groupsToBeSearched.contains(edt_search.getText().toString().toLowerCase())) {
+                                    groupsSearchedList.add(groupsDetails);
+                                }
+                            }
+
+                            rv_groups.setAdapter(new AllGroupsAdapter(context, groupsSearchedList));
+                        }
                         rv_groups.setVisibility(View.VISIBLE);
+                        edt_search.requestFocus();
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_groups.setVisibility(View.GONE);
@@ -204,5 +229,12 @@ public class AllGroups_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(AllGroups_Activity.this);
+
     }
 }

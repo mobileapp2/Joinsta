@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,7 +21,6 @@ import in.oriange.joinsta.activities.ContactUs_Activity;
 import in.oriange.joinsta.activities.Enquires_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
-import in.oriange.joinsta.activities.PolicyDetails_Activity;
 import in.oriange.joinsta.activities.Policy_Activity;
 import in.oriange.joinsta.activities.ProfileDetails_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
@@ -27,6 +29,12 @@ public class More_Fragment extends Fragment {
 
     private Context context;
     private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_settings, cv_enquires, cv_policies, cv_contactus;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -106,6 +114,24 @@ public class More_Fragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menus_notification, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_notification:
+                startActivity(new Intent(context, Notification_Activity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
 }

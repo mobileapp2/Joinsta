@@ -401,7 +401,7 @@ public class Profile_Fragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menus_profile, menu);
+        inflater.inflate(R.menu.menus_notification, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -411,9 +411,6 @@ public class Profile_Fragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_notification:
                 startActivity(new Intent(context, Notification_Activity.class));
-                break;
-            case R.id.action_settings:
-                startActivity(new Intent(context, Settings_Activity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
