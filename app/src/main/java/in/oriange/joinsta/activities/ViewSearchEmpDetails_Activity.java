@@ -40,6 +40,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import co.lujun.androidtagview.TagContainerLayout;
+import co.lujun.androidtagview.TagView;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
@@ -66,15 +67,13 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     private RelativeLayout rl_profilepic;
     private CircleImageView imv_user;
     private ProgressBar progressBar;
-    private TextView tv_distance;
     private CheckBox cb_like;
     private ImageView imv_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
-    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
-            edt_district, edt_state, edt_country;
+    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address;
     private Button btn_enquire, btn_caldist;
-    private CardView cv_tabs;
-    private TagContainerLayout tag_container;
+    private CardView cv_tabs, cv_contact_details, cv_address;
+    private TagContainerLayout container_tags, container_contacts;
 
     private SearchDetailsModel.ResultBean.EmployeesBean searchDetails;
     private String userId, isFav, typeFrom, name, mobile;
@@ -102,30 +101,26 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
-        tv_distance = findViewById(R.id.tv_distance);
 
         cb_like = findViewById(R.id.cb_like);
         imv_user = findViewById(R.id.imv_user);
         progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
+        cv_contact_details = findViewById(R.id.cv_contact_details);
+        cv_address = findViewById(R.id.cv_address);
 
-        edt_name = findViewById(R.id.edt_name);
-        edt_nature = findViewById(R.id.edt_nature);
-        edt_subtype = findViewById(R.id.edt_subtype);
-        edt_designation = findViewById(R.id.edt_designation);
-        edt_website = findViewById(R.id.edt_website);
-        edt_select_area = findViewById(R.id.edt_select_area);
-        edt_address = findViewById(R.id.edt_address);
-        edt_pincode = findViewById(R.id.edt_pincode);
-        edt_city = findViewById(R.id.edt_city);
-        edt_district = findViewById(R.id.edt_district);
-        edt_state = findViewById(R.id.edt_state);
-        edt_country = findViewById(R.id.edt_country);
+        tv_name = findViewById(R.id.tv_name);
+        tv_nature = findViewById(R.id.tv_nature);
+        tv_designation = findViewById(R.id.tv_designation);
+        tv_email = findViewById(R.id.tv_email);
+        tv_website = findViewById(R.id.tv_website);
+        tv_address = findViewById(R.id.tv_address);
         imv_share = findViewById(R.id.imv_share);
 
         btn_enquire = findViewById(R.id.btn_enquire);
         btn_caldist = findViewById(R.id.btn_caldist);
-        tag_container = findViewById(R.id.tag_container);
+        container_tags = findViewById(R.id.container_tags);
+        container_contacts = findViewById(R.id.container_contacts);
     }
 
     private void setDefault() {
@@ -143,38 +138,6 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
 
         searchDetails = (SearchDetailsModel.ResultBean.EmployeesBean) getIntent().getSerializableExtra("searchDetails");
         typeFrom = getIntent().getStringExtra("type");
-
-        edt_name.setText(searchDetails.getOrganization_name());
-        edt_nature.setText(searchDetails.getType_description());
-        edt_subtype.setText(searchDetails.getSubtype_description());
-        edt_designation.setText(searchDetails.getDesignation());
-        edt_website.setText(searchDetails.getWebsite());
-        edt_select_area.setText(searchDetails.getLandmark());
-        edt_address.setText(searchDetails.getAddress());
-        edt_pincode.setText(searchDetails.getPincode());
-        edt_city.setText(searchDetails.getCity());
-        edt_district.setText(searchDetails.getDistrict());
-        edt_state.setText(searchDetails.getState());
-        edt_country.setText(searchDetails.getCountry());
-
-        if (searchDetails.getIsFavourite().equals("1"))
-            cb_like.setChecked(true);
-
-        ArrayList<SearchDetailsModel.ResultBean.EmployeesBean.TagBean> tagsList = new ArrayList<>();
-        tagsList = searchDetails.getTag().get(0);
-
-        if (tagsList != null) {
-            if (tagsList.size() > 0) {
-                for (int i = 0; i < tagsList.size(); i++) {
-
-                    if (!tagsList.get(i).getTag_name().trim().equals("")) {
-                        tag_container.addTag(tagsList.get(i).getTag_name());
-                    }
-                }
-            } else
-                cv_tabs.setVisibility(View.GONE);
-        } else
-            cv_tabs.setVisibility(View.GONE);
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
@@ -196,6 +159,82 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         } else {
             rl_profilepic.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
+        }
+
+        if (searchDetails.getIsFavourite().equals("1"))
+            cb_like.setChecked(true);
+
+        if (!searchDetails.getOrganization_name().isEmpty()) {
+            tv_name.setText(searchDetails.getOrganization_name());
+        } else {
+            tv_name.setVisibility(View.GONE);
+        }
+
+        if (!searchDetails.getType_description().isEmpty() && !searchDetails.getSubtype_description().isEmpty()) {
+            tv_nature.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+        } else if (searchDetails.getType_description().isEmpty() && searchDetails.getSubtype_description().isEmpty()) {
+            tv_nature.setVisibility(View.GONE);
+        } else if (!searchDetails.getType_description().isEmpty()) {
+            tv_nature.setText(searchDetails.getType_description());
+        } else if (!searchDetails.getSubtype_description().isEmpty()) {
+            tv_nature.setText(searchDetails.getSubtype_description());
+        }
+
+        if (!searchDetails.getDesignation().isEmpty()) {
+            tv_designation.setText(searchDetails.getDesignation());
+        } else {
+            tv_designation.setVisibility(View.GONE);
+        }
+
+        if ((searchDetails.getMobiles().get(0) != null) && !searchDetails.getEmail().isEmpty() && !searchDetails.getWebsite().isEmpty()) {
+            cv_contact_details.setVisibility(View.GONE);
+        } else {
+
+            if (searchDetails.getMobiles().get(0) != null) {
+                if (searchDetails.getMobiles().get(0).size() > 0) {
+                    for (int i = 0; i < searchDetails.getMobiles().get(0).size(); i++) {
+                        container_contacts.addTag(searchDetails.getMobiles().get(0).get(i).getMobile_number());
+                    }
+                } else {
+                    container_contacts.setVisibility(View.GONE);
+                }
+            } else {
+                container_contacts.setVisibility(View.GONE);
+            }
+
+            if (!searchDetails.getEmail().isEmpty()) {
+                tv_email.setText(searchDetails.getEmail());
+            } else {
+                tv_email.setVisibility(View.GONE);
+            }
+
+            if (!searchDetails.getWebsite().isEmpty()) {
+                tv_website.setText(searchDetails.getWebsite());
+            } else {
+                tv_website.setVisibility(View.GONE);
+            }
+        }
+
+
+        if (searchDetails.getTag().get(0) != null) {
+            if (searchDetails.getTag().get(0).size() > 0) {
+                for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
+
+                    if (!searchDetails.getTag().get(0).get(i).getTag_name().trim().equals("")) {
+                        container_tags.addTag(searchDetails.getTag().get(0).get(i).getTag_name());
+                    }
+                }
+            } else {
+                cv_tabs.setVisibility(View.GONE);
+            }
+        } else {
+            cv_tabs.setVisibility(View.GONE);
+        }
+
+        if (!searchDetails.getAddress().isEmpty()) {
+            tv_address.setText(searchDetails.getAddress());
+        } else {
+            cv_address.setVisibility(View.GONE);
         }
     }
 
@@ -307,19 +346,74 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             }
         });
 
-        ll_email.setOnClickListener(new View.OnClickListener() {
+        container_contacts.setOnTagClickListener(new TagView.OnTagClickListener() {
             @Override
-            public void onClick(View v) {
-                if (!searchDetails.getEmail().isEmpty()) {
-                    Intent email = new Intent(Intent.ACTION_SEND);
-                    email.putExtra(Intent.EXTRA_EMAIL, new String[]{searchDetails.getEmail()});
-                    email.setType("message/rfc822");
-                    startActivity(Intent.createChooser(email, "Choose an Email client :"));
+            public void onTagClick(int position, final String mobile) {
+                if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    provideCallPremission(context);
                 } else {
-                    Utilities.showMessage("Email address not added", context, 2);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to make a call?");
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.icon_call);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(new Intent(Intent.ACTION_CALL,
+                                    Uri.parse("tel:" + mobile)));
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
                 }
             }
+
+            @Override
+            public void onTagLongClick(int position, String text) {
+
+            }
+
+            @Override
+            public void onSelectedTagDrag(int position, String text) {
+
+            }
+
+            @Override
+            public void onTagCrossClick(int position) {
+
+            }
         });
+
+        tv_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent email = new Intent(Intent.ACTION_SEND);
+                email.putExtra(Intent.EXTRA_EMAIL, new String[]{searchDetails.getEmail()});
+                email.setType("message/rfc822");
+                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+            }
+        });
+
+        tv_website.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = searchDetails.getWebsite();
+
+                if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                    url = "http://" + url;
+                }
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
 
         btn_caldist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -442,51 +536,6 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             }
         });
 
-//        tv_distance.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
-//                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Location of employment not available</b></font>"));
-//                    return;
-//                }
-//
-//                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-//                    provideLocationAccess(context);
-//                    return;
-//                }
-//
-//                if (!isLocationEnabled(context)) {
-//                    turnOnLocation(context);
-//                    return;
-//                }
-//
-//                if (MainDrawer_Activity.latLng == null) {
-//                    tv_distance.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Current location not available. Please try again</b></font>"));
-//
-//                    return;
-//                }
-//
-//                startLocationUpdates();
-//
-//                LatLng currentLocation = new LatLng(MainDrawer_Activity.latLng.latitude, MainDrawer_Activity.latLng.longitude);
-//                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
-//
-//                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
-//
-//                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
-//
-//                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
-//                    @Override
-//                    public void taskCompleted(String[] time_distance) {
-//                        tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
-//
-//                    }
-//
-//                });
-//            }
-//        });
-
         imv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -533,28 +582,6 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                 if (!searchDetails.getWebsite().equals("")) {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
-
-//                if (!searchDetails.getType_description().equals("")) {
-//                    sb.append("Type - " + searchDetails.getType_description() + "\n");
-//                }
-//
-//                if (!searchDetails.getSubtype_description().equals("")) {
-//                    sb.append("Subtype - " + searchDetails.getType_description() + "\n");
-//                }
-//
-//                if (!searchDetails.getEmail().equals("")) {
-//                    sb.append("Email - " + searchDetails.getEmail() + "\n");
-//                }
-//
-//                if (searchDetails.getLandline().get(0) != null)
-//                    if (searchDetails.getLandline().get(0).size() != 0) {
-//                        StringBuilder landline = new StringBuilder();
-//                        for (int i = 0; i < searchDetails.getLandline().get(0).size(); i++) {
-//                            landline.append(searchDetails.getLandline().get(0).get(i).getLandline_numbers() + ", ");
-//                        }
-//
-//                        sb.append("Landline - " + landline.toString().substring(0, landline.toString().length() - 2) + "\n");
-//                    }
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
