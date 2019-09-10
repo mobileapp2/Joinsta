@@ -2,6 +2,7 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,13 +34,13 @@ import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Groups_Fragment;
-import in.oriange.joinsta.models.AllGroupsListModel;
+import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class GroupDetails_Activity extends AppCompatActivity {
+public class MyGroupDetails_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -51,15 +52,15 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private Button btn_connect, btn_status;
     private ImageButton ib_more;
 
-    private AllGroupsListModel.ResultBean groupDetails;
-    private ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> leadsList;
+    private MyGroupsListModel.ResultBean groupDetails;
+    private ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> leadsList;
     private boolean isExpanded;
     private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_details);
+        setContentView(R.layout.activity_mygroup_details);
 
         init();
         getSessionDetails();
@@ -68,8 +69,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
         setUpToolbar();
     }
 
+
     private void init() {
-        context = GroupDetails_Activity.this;
+        context = MyGroupDetails_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -101,7 +103,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        groupDetails = (AllGroupsListModel.ResultBean) getIntent().getSerializableExtra("groupDetails");
+        groupDetails = (MyGroupsListModel.ResultBean) getIntent().getSerializableExtra("groupDetails");
         leadsList = groupDetails.getGroup_Member_Details();
 
         if (groupDetails.getStatus().equals("")) {
@@ -116,16 +118,16 @@ public class GroupDetails_Activity extends AppCompatActivity {
             btn_status.setVisibility(View.VISIBLE);
             btn_status.setText("Requested");
         } else if (groupDetails.getStatus().equals("accepted")) {
-            btn_connect.setVisibility(View.GONE);
-            btn_status.setVisibility(View.VISIBLE);
+            btn_connect.setVisibility(View.VISIBLE);
+            btn_status.setVisibility(View.GONE);
             btn_members.setVisibility(View.VISIBLE);
-            btn_status.setText("Accepted");
+            btn_connect.setText("EXIT");
         }
 
         if (leadsList != null) {
             if (leadsList.size() != 0) {
-                ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> foundMembers = new ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean>();
-                for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean groupDetails : leadsList) {
+                ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> foundMembers = new ArrayList<>();
+                for (MyGroupsListModel.ResultBean.GroupMemberDetailsBean groupDetails : leadsList) {
                     if (groupDetails.getRole().equals("group_admin") || groupDetails.getRole().equals("group_supervisor")) {
                         foundMembers.add(groupDetails);
                     }
@@ -149,9 +151,6 @@ public class GroupDetails_Activity extends AppCompatActivity {
         btn_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
                 startActivity(new Intent(context, GroupMembersList_Activity.class)
                         .putExtra("groupId", groupDetails.getId()));
             }
@@ -180,10 +179,36 @@ public class GroupDetails_Activity extends AppCompatActivity {
         btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new JoinGroup().execute(groupDetails.getId());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+
+                if (groupDetails.getStatus().equals("")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new JoinGroup().execute(groupDetails.getId());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                } else if (groupDetails.getStatus().equals("accepted")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to exit this group?");
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.icon_alertred);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            new ExitGroup().execute(
+                                    userId,
+                                    groupDetails.getId(),
+                                    "left"
+                            );
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
                 }
             }
         });
@@ -273,7 +298,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
-            final AllGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails = leadsList.get(position);
+            final MyGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails = leadsList.get(position);
 
             if (!memberDetails.getFirst_name().trim().isEmpty()) {
                 holder.tv_initletter.setText(memberDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
@@ -385,6 +410,54 @@ public class GroupDetails_Activity extends AppCompatActivity {
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ExitGroup extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "exitgroup");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("group_id", params[1]);
+            obj.addProperty("status", params[2]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        Utilities.showMessage("Group left successfully", context, 1);
+                    } else {
+
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

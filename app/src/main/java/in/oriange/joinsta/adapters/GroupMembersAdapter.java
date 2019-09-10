@@ -35,7 +35,9 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         final int position = holder.getAdapterPosition();
         final GroupMemebersListModel.ResultBean groupDetails = resultArrayList.get(position);
 
-        holder.tv_initletter.setText(groupDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
+        if (!groupDetails.getFirst_name().trim().isEmpty()) {
+            holder.tv_initletter.setText(groupDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
+        }
         holder.tv_name.setText(groupDetails.getFirst_name().trim());
         holder.tv_mobile.setText(groupDetails.getMobile());
 
@@ -45,6 +47,9 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         } else if (groupDetails.getRole().equalsIgnoreCase("group_supervisor")) {
             holder.tv_role.setVisibility(View.VISIBLE);
             holder.tv_role.setText("Supervisor");
+        } else if (groupDetails.getRole().equalsIgnoreCase("group_member")) {
+            holder.tv_role.setVisibility(View.VISIBLE);
+            holder.tv_role.setText("Member");
         }
 
     }

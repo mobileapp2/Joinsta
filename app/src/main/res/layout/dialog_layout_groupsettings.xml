@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:padding="10dp"
-        android:text="Hidden" />
+        android:text="Hide Me" />
 
     <android.widget.Button
         android:id="@+id/btn_save"

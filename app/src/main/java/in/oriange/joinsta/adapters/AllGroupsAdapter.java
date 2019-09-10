@@ -68,7 +68,7 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         final int position = holder.getAdapterPosition();
         final AllGroupsListModel.ResultBean groupDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(groupDetails.getGroup_name() + " (" + groupDetails.getGroup_code() + ")");
+        holder.tv_heading.setText(groupDetails.getGroup_code() + "-" + groupDetails.getGroup_name());
 
         if (groupDetails.getStatus().equals("")) {
             holder.btn_connect.setVisibility(View.VISIBLE);
@@ -91,7 +91,8 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupDetails_Activity.class)
-                        .putExtra("groupDetails", groupDetails));
+                        .putExtra("groupDetails", groupDetails)
+                        .putExtra("type", "1"));
             }
         });
 

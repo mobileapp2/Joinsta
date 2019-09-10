@@ -379,7 +379,11 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<MobilesBean>> getMobiles() {
-                return mobiles;
+                if (mobiles != null) {
+                    return mobiles;
+                } else {
+                    return new ArrayList<ArrayList<MobilesBean>>();
+                }
             }
 
             public void setMobiles(ArrayList<ArrayList<MobilesBean>> mobiles) {
@@ -476,7 +480,11 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getTag_name() {
-                    return tag_name;
+                    if (tag_name != null) {
+                        return tag_name;
+                    } else {
+                        return "";
+                    }
                 }
 
                 public void setTag_name(String tag_name) {
@@ -783,7 +791,11 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<MobilesBeanX>> getMobiles() {
-                return mobiles;
+                if (mobiles != null) {
+                    return mobiles;
+                } else {
+                    return new ArrayList<ArrayList<MobilesBeanX>>();
+                }
             }
 
             public void setMobiles(ArrayList<ArrayList<MobilesBeanX>> mobiles) {
@@ -888,7 +900,11 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getTag_name() {
-                    return tag_name;
+                    if (tag_name != null) {
+                        return tag_name;
+                    } else {
+                        return "";
+                    }
                 }
 
                 public void setTag_name(String tag_name) {
@@ -1167,7 +1183,11 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<MobilesBeanXX>> getMobiles() {
-                return mobiles;
+                if (mobiles != null) {
+                    return mobiles;
+                } else {
+                    return new ArrayList<ArrayList<MobilesBeanXX>>();
+                }
             }
 
             public void setMobiles(ArrayList<ArrayList<MobilesBeanXX>> mobiles) {
@@ -1183,10 +1203,10 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public ArrayList<ArrayList<TagBeanXX>> getTag() {
-                if (tag == null) {
-                    return new ArrayList<ArrayList<TagBeanXX>>();
-                } else {
+                if (tag != null) {
                     return tag;
+                } else {
+                    return new ArrayList<ArrayList<TagBeanXX>>();
                 }
             }
 
@@ -1272,7 +1292,11 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getTag_name() {
-                    return tag_name;
+                    if (tag_name != null) {
+                        return tag_name;
+                    } else {
+                        return "";
+                    }
                 }
 
                 public void setTag_name(String tag_name) {

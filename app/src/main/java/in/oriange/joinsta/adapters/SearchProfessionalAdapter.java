@@ -105,10 +105,16 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
                     holder.tv_subheading.setText(searchDetails.getType_description());
             }
         } else {
-            if (!searchDetails.getSubtype_description().isEmpty())
+            if (!searchDetails.getType_description().isEmpty() && !searchDetails.getSubtype_description().isEmpty()) {
                 holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-            else
+            } else if (searchDetails.getType_description().isEmpty() && searchDetails.getSubtype_description().isEmpty()) {
+                holder.tv_subheading.setVisibility(View.GONE);
+            } else if (!searchDetails.getType_description().isEmpty()) {
                 holder.tv_subheading.setText(searchDetails.getType_description());
+            } else if (!searchDetails.getSubtype_description().isEmpty()) {
+                holder.tv_subheading.setText(searchDetails.getSubtype_description());
+            }
+
         }
 
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
