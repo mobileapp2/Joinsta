@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -37,9 +40,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
-import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.SearchDetailsModel;
@@ -70,7 +73,8 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address;
     private Button btn_enquire, btn_caldist;
     private CardView cv_tabs, cv_contact_details, cv_address;
-    private TagContainerLayout container_tags, container_contacts;
+    private TagContainerLayout container_tags;
+    private RecyclerView rv_mobilenos;
 
     private SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails;
     private String userId, isFav, typeFrom, name, mobile;
@@ -116,7 +120,8 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         btn_enquire = findViewById(R.id.btn_enquire);
         btn_caldist = findViewById(R.id.btn_caldist);
         container_tags = findViewById(R.id.container_tags);
-        container_contacts = findViewById(R.id.container_contacts);
+        rv_mobilenos = findViewById(R.id.rv_mobilenos);
+        rv_mobilenos.setLayoutManager(new LinearLayoutManager(context));
     }
 
     private void setDefault() {
@@ -190,14 +195,12 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
             if (searchDetails.getMobiles().get(0) != null) {
                 if (searchDetails.getMobiles().get(0).size() > 0) {
-                    for (int i = 0; i < searchDetails.getMobiles().get(0).size(); i++) {
-                        container_contacts.addTag(searchDetails.getMobiles().get(0).get(i).getMobile_number());
-                    }
+                    rv_mobilenos.setAdapter(new MobileNumbersAdapter(searchDetails.getMobiles().get(0)));
                 } else {
-                    container_contacts.setVisibility(View.GONE);
+                    rv_mobilenos.setVisibility(View.GONE);
                 }
             } else {
-                container_contacts.setVisibility(View.GONE);
+                rv_mobilenos.setVisibility(View.GONE);
             }
 
             if (!searchDetails.getEmail().isEmpty()) {
@@ -344,58 +347,17 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             }
         });
 
-
-        container_contacts.setOnTagClickListener(new TagView.OnTagClickListener() {
+        ll_email.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTagClick(int position, final String mobile) {
-                if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    provideCallPremission(context);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setMessage("Are you sure you want to make a call?");
-                    builder.setTitle("Alert");
-                    builder.setIcon(R.drawable.icon_call);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:" + mobile)));
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
-            }
-
-            @Override
-            public void onTagLongClick(int position, String text) {
-
-            }
-
-            @Override
-            public void onSelectedTagDrag(int position, String text) {
-
-            }
-
-            @Override
-            public void onTagCrossClick(int position) {
-
+            public void onClick(View v) {
+                sendEmail();
             }
         });
 
         tv_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent email = new Intent(Intent.ACTION_SEND);
-                email.putExtra(Intent.EXTRA_EMAIL, new String[]{searchDetails.getEmail()});
-                email.setType("message/rfc822");
-                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                sendEmail();
             }
         });
 
@@ -684,6 +646,75 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
+    public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
+
+        private List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList;
+
+        public MobileNumbersAdapter(List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList) {
+            this.resultArrayList = resultArrayList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_mobile, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+            final SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX searchDetails = resultArrayList.get(position);
+
+            holder.tv_mobile.setText(searchDetails.getMobile_number());
+
+            holder.tv_mobile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to make a call?");
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.icon_call);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(new Intent(Intent.ACTION_CALL,
+                                    Uri.parse("tel:" + searchDetails.getMobile_number())));
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return resultArrayList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_mobile;
+
+            public MyViewHolder(View view) {
+                super(view);
+                tv_mobile = view.findViewById(R.id.tv_mobile);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
     private class SetFavourite extends AsyncTask<String, Void, String> {
 
         @Override
@@ -788,6 +819,22 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void sendEmail() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, searchDetails.getEmail());
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.putExtra(Intent.EXTRA_EMAIL, new String[]{searchDetails.getEmail()});
+            email.setType("message/rfc822");
+            startActivity(Intent.createChooser(email, "Choose an Email client :"));
         }
     }
 

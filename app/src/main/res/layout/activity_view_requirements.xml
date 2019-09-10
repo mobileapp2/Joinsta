@@ -110,6 +110,17 @@
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
+                    <CheckBox
+                        android:id="@+id/cb_like"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="-30dp"
+                        android:background="@drawable/star_icon"
+                        android:button="@null"
+                        android:checked="false"
+                        android:stateListAnimator="@animator/scale" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -139,18 +150,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/cb_like"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="-40dp"
-                android:layout_marginRight="10dp"
-                android:background="@drawable/star_icon"
-                android:button="@null"
-                android:checked="false"
-                android:stateListAnimator="@animator/scale" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.Enquires_Activity;
+import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.models.EnquiriesListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -232,7 +232,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Enquires_Activity.GetEnquires().execute();
+                        new Enquiries_Activity.GetEnquires().execute();
                         Utilities.showMessage("Enquiry deleted successfully", context, 1);
                     } else {
 

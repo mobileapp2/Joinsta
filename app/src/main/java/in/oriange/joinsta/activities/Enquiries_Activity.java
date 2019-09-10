@@ -29,7 +29,7 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class Enquires_Activity extends AppCompatActivity {
+public class Enquiries_Activity extends AppCompatActivity {
 
     private static Context context;
     private UserSessionManager session;
@@ -42,7 +42,7 @@ public class Enquires_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enquires);
+        setContentView(R.layout.activity_enquiries);
 
         init();
         getSessionDetails();
@@ -52,7 +52,7 @@ public class Enquires_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = Enquires_Activity.this;
+        context = Enquiries_Activity.this;
         session = new UserSessionManager(context);
         rv_enquiry = findViewById(R.id.rv_enquiry);
         rv_enquiry.setLayoutManager(new LinearLayoutManager(context));

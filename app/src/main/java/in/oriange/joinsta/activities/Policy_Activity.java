@@ -8,13 +8,14 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import in.oriange.joinsta.R;
 
 public class Policy_Activity extends AppCompatActivity {
 
     private Context context;
-    private LinearLayout ll_tandc, ll_pp, ll_smp, ll_ipp, ll_g, ll_mad, ll_ua;
+    private CardView cv_tandc, cv_pp, cv_smp, cv_ipp, cv_g, cv_mad, cv_ua;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,18 +30,18 @@ public class Policy_Activity extends AppCompatActivity {
     private void init() {
         context = Policy_Activity.this;
 
-        ll_tandc = findViewById(R.id.ll_tandc);
-        ll_pp = findViewById(R.id.ll_pp);
-        ll_smp = findViewById(R.id.ll_smp);
-        ll_ipp = findViewById(R.id.ll_ipp);
-        ll_g = findViewById(R.id.ll_g);
-        ll_mad = findViewById(R.id.ll_mad);
-        ll_ua = findViewById(R.id.ll_ua);
+        cv_tandc = findViewById(R.id.cv_tandc);
+        cv_pp = findViewById(R.id.cv_pp);
+        cv_smp = findViewById(R.id.cv_smp);
+        cv_ipp = findViewById(R.id.cv_ipp);
+        cv_g = findViewById(R.id.cv_g);
+        cv_mad = findViewById(R.id.cv_mad);
+        cv_ua = findViewById(R.id.cv_ua);
     }
 
     private void setEventHandler() {
 
-        ll_tandc.setOnClickListener(new View.OnClickListener() {
+        cv_tandc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)
@@ -49,7 +50,7 @@ public class Policy_Activity extends AppCompatActivity {
             }
         });
 
-        ll_pp.setOnClickListener(new View.OnClickListener() {
+        cv_pp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)
@@ -58,7 +59,7 @@ public class Policy_Activity extends AppCompatActivity {
             }
         });
 
-        ll_smp.setOnClickListener(new View.OnClickListener() {
+        cv_smp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)
@@ -67,7 +68,7 @@ public class Policy_Activity extends AppCompatActivity {
             }
         });
 
-        ll_ipp.setOnClickListener(new View.OnClickListener() {
+        cv_ipp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)
@@ -76,7 +77,7 @@ public class Policy_Activity extends AppCompatActivity {
             }
         });
 
-        ll_g.setOnClickListener(new View.OnClickListener() {
+        cv_g.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)
@@ -85,7 +86,7 @@ public class Policy_Activity extends AppCompatActivity {
             }
         });
 
-        ll_mad.setOnClickListener(new View.OnClickListener() {
+        cv_mad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)
@@ -94,7 +95,7 @@ public class Policy_Activity extends AppCompatActivity {
             }
         });
 
-        ll_ua.setOnClickListener(new View.OnClickListener() {
+        cv_ua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, PolicyDetails_Activity.class)

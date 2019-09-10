@@ -80,7 +80,7 @@
                             android:paddingLeft="10dp"
                             android:text="Profile Details"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -126,7 +126,7 @@
                             android:paddingLeft="10dp"
                             android:text="Favourites"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -147,8 +147,7 @@
                     android:foreground="?android:attr/selectableItemBackground"
                     app:cardBackgroundColor="@android:color/white"
                     android:layout_marginBottom="5dp"
-                    app:cardElevation="0dp"
-                    android:visibility="gone">
+                    app:cardElevation="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -173,7 +172,7 @@
                             android:paddingLeft="10dp"
                             android:text="Notifications"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -219,7 +218,7 @@
                             android:paddingLeft="10dp"
                             android:text="Enquiries"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -265,7 +264,7 @@
                             android:paddingLeft="10dp"
                             android:text="Policies"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -311,7 +310,7 @@
                             android:paddingLeft="10dp"
                             android:text="Contact Us"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -357,7 +356,7 @@
                             android:paddingLeft="10dp"
                             android:text="Settings"
                             android:textSize="18sp"
-                            android:tint="@color/black" />
+                            android:textColor="@color/darkGray" />
 
                         <ImageView
                             android:layout_width="0dp"
@@ -375,7 +374,6 @@
 
 
         </ScrollView>
-
 
     </LinearLayout>
 
