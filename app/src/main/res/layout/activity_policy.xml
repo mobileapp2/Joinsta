@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/lightGray">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -40,250 +40,260 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:src="@drawable/icon_launcher" />
-
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_tandc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                android:layout_margin="10dp"
-                app:cardUseCompatPadding="true">
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.9"
+                        android:layout_gravity="center_vertical"
+                        android:text="Terms and Conditions"
+                        android:textSize="18sp"
+                        android:textColor="@color/darkGray" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_pp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:id="@+id/ll_pp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:padding="10dp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_tandc"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
+                        android:layout_weight="0.9"
+                        android:text="Privacy Policy"
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="Terms and Conditions"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
+                </LinearLayout>
 
-                    </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_smp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_pp"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/ll_smp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
+                        android:layout_weight="0.9"
+                        android:text="Social Media Policy"
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="Privacy Policy"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
+                </LinearLayout>
 
-                    </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_ipp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_smp"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/ll_ipp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
+                        android:layout_weight="0.9"
+                        android:text="IP Policy"
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="Social Media Policy"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
+                </LinearLayout>
 
-                    </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_g"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_ipp"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/ll_g"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
+                        android:layout_weight="0.9"
+                        android:text="Grievance"
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="IP Policy"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
+                </LinearLayout>
 
-                    </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_mad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_g"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/ll_mad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
+                        android:layout_weight="0.9"
+                        android:text="Mobile App Disclaimer"
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="Grievance"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
+                </LinearLayout>
 
-                    </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_ua"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="5dp"
+                app:cardElevation="0dp">
 
-                    <LinearLayout
-                        android:id="@+id/ll_mad"
-                        android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/ll_ua"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
+                        android:layout_weight="0.9"
+                        android:text="User Agreement"
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="Mobile App Disclaimer"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
-
-                    <LinearLayout
-                        android:id="@+id/ll_ua"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:padding="5dp"
-                            android:text="User Agreement"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.1"
-                            android:src="@drawable/icon_arrowright" />
-
-                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-
 
     </ScrollView>
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,7 +13,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/background_color_1"
+            app:cardBackgroundColor="@color/white"
             app:cardElevation="2dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
@@ -44,8 +43,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -57,7 +56,7 @@
                             android:layout_marginTop="5dp"
                             android:gravity="center"
                             android:text="Direction"
-                            android:textSize="14sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -68,12 +67,11 @@
                         android:background="?android:attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -85,7 +83,7 @@
                             android:layout_marginTop="5dp"
                             android:gravity="center"
                             android:text="Mobile"
-                            android:textSize="14sp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -100,8 +98,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -113,9 +111,8 @@
                             android:layout_marginTop="5dp"
                             android:gravity="center"
                             android:text="WhatsApp"
-                            android:textSize="14sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/ll_landline"
@@ -128,8 +125,8 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -141,7 +138,7 @@
                             android:layout_marginTop="5dp"
                             android:gravity="center"
                             android:text="Landline"
-                            android:textSize="14sp" />
+                            android:textSize="12sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -152,12 +149,11 @@
                         android:background="?android:attr/selectableItemBackground"
                         android:clickable="true"
                         android:focusable="true"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:background="@drawable/bg_ring"
                             android:padding="10dp"
@@ -169,7 +165,7 @@
                             android:layout_marginTop="5dp"
                             android:gravity="center"
                             android:text="Email"
-                            android:textSize="14sp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -188,7 +184,7 @@
                         android:id="@+id/btn_enquire"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:layout_marginRight="5dp"
                         android:layout_marginLeft="5dp"
                         android:drawableRight="@drawable/icon_enquiry"
@@ -200,7 +196,7 @@
                         android:id="@+id/btn_caldist"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-                        android:textSize="14sp"
+                        android:textSize="16sp"
                         android:layout_marginRight="5dp"
                         android:layout_marginLeft="5dp"
                         android:drawableRight="@drawable/icon_distance"
@@ -217,7 +213,7 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/background_color_2"
+            app:cardBackgroundColor="@color/white"
             app:cardElevation="2dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
@@ -240,6 +236,12 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginBottom="4dp" />
+
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="match_parent"
@@ -251,7 +253,7 @@
                     android:paddingLeft="5dp"
                     android:paddingBottom="2dp"
                     android:longClickable="false"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -265,7 +267,7 @@
                     android:paddingLeft="5dp"
                     android:paddingBottom="2dp"
                     android:longClickable="false"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -279,7 +281,7 @@
                     android:paddingLeft="5dp"
                     android:paddingBottom="2dp"
                     android:longClickable="false"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="@color/black" />
 
             </LinearLayout>
@@ -290,7 +292,7 @@
             android:id="@+id/cv_contact_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/background_color_3"
+            app:cardBackgroundColor="@color/white"
             app:cardElevation="2dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
@@ -313,51 +315,45 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
-                <co.lujun.androidtagview.TagContainerLayout
-                    android:id="@+id/container_contacts"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:container_background_color="@color/background_color_3"
-                    app:container_border_color="@color/background_color_3"
-                    app:container_border_width="0dp"
-                    app:container_enable_drag="false"
-                    app:horizontal_interval="10dp"
-                    app:tag_horizontal_padding="5dp"
-                    app:tag_background_color="@color/background_color_3"
-                    app:tag_border_color="@color/background_color_3"
-                    app:tag_clickable="true"
-                    app:tag_vertical_padding="5dp"
-                    app:tag_text_color="@color/black"
-                    app:tag_text_size="14sp"
-                    app:tag_theme="none"
-                    app:vertical_interval="0dp" />
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginBottom="4dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_mobilenos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/tv_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
                     android:focusable="false"
                     android:text="Email"
+                    android:drawableRight="@drawable/icon_email"
                     android:paddingRight="5dp"
                     android:paddingLeft="5dp"
                     android:paddingBottom="2dp"
                     android:longClickable="false"
-                    android:textSize="14sp"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
                     android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/tv_website"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
                     android:focusable="false"
                     android:text="Website"
+                    android:drawableRight="@drawable/icon_website"
                     android:paddingRight="5dp"
                     android:paddingLeft="5dp"
                     android:paddingBottom="2dp"
                     android:longClickable="false"
-                    android:textSize="14sp"
+                    android:gravity="center_vertical"
+                    android:textSize="16sp"
                     android:textColor="@color/black" />
 
             </LinearLayout>
@@ -368,7 +364,7 @@
             android:id="@+id/cv_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/background_color_4"
+            app:cardBackgroundColor="@color/white"
             app:cardElevation="2dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
@@ -391,13 +387,19 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginBottom="4dp" />
+
                 <co.lujun.androidtagview.TagContainerLayout
                     android:id="@+id/container_tags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    app:container_background_color="@color/background_color_4"
-                    app:container_border_color="@color/background_color_4"
+                    app:container_background_color="@color/white"
+                    app:container_border_color="@color/white"
                     app:container_border_width="0dp"
                     app:container_enable_drag="false"
                     app:horizontal_interval="10dp"
@@ -407,7 +409,7 @@
                     app:tag_clickable="false"
                     app:tag_enable_cross="false"
                     app:tag_text_color="@color/white"
-                    app:tag_text_size="14sp"
+                    app:tag_text_size="16sp"
                     app:tag_theme="none"
                     app:vertical_interval="10dp" />
 
@@ -419,7 +421,7 @@
             android:id="@+id/cv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/background_color_5"
+            app:cardBackgroundColor="@color/white"
             app:cardElevation="2dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
@@ -443,6 +445,12 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginBottom="4dp" />
+
                 <TextView
                     android:id="@+id/tv_address"
                     android:layout_width="match_parent"
@@ -454,7 +462,7 @@
                     android:paddingLeft="5dp"
                     android:paddingBottom="2dp"
                     android:longClickable="false"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="@color/black" />
 
             </LinearLayout>

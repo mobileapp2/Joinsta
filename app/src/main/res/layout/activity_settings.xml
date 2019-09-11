@@ -53,38 +53,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:padding="10dp"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <FrameLayout
+                    <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.15">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_circularview" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/icon_password"
-                            android:tint="@color/white" />
-
-                    </FrameLayout>
+                        android:layout_height="25dp"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_password"
+                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.85"
+                        android:layout_gravity="center_vertical"
                         android:text="Reset Password"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_weight="0.8"
+                        android:paddingLeft="10dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/darkGray" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
                 </LinearLayout>
 
@@ -102,38 +98,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:padding="10dp"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <FrameLayout
+                    <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.15">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_circularview" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/icon_invite"
-                            android:tint="@color/white" />
-
-                    </FrameLayout>
+                        android:layout_height="25dp"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_invite"
+                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="0.85"
                         android:text="Invite People to Joinsta"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_weight="0.8"
+                        android:paddingLeft="10dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/darkGray" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
                 </LinearLayout>
 
@@ -151,38 +143,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:padding="10dp"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <FrameLayout
+                    <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.15">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_circularview" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/icon_feedback"
-                            android:tint="@color/white" />
-
-                    </FrameLayout>
+                        android:layout_height="25dp"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_policies"
+                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="0.85"
                         android:text="Feedback"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_weight="0.8"
+                        android:paddingLeft="10dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/darkGray" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
                 </LinearLayout>
 
@@ -200,38 +188,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:padding="10dp"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <FrameLayout
+                    <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.15">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_circularview" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/icon_issue"
-                            android:tint="@color/white" />
-
-                    </FrameLayout>
+                        android:layout_height="25dp"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_issue"
+                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="0.85"
                         android:text="Report Issue"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_weight="0.8"
+                        android:paddingLeft="10dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/darkGray" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
                 </LinearLayout>
 
@@ -249,38 +233,34 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="5dp"
+                    android:padding="10dp"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
-                    <FrameLayout
+                    <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.15">
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bg_circularview" />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/icon_logout"
-                            android:tint="@color/white" />
-
-                    </FrameLayout>
+                        android:layout_height="25dp"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_logout"
+                        android:tint="@color/colorPrimary" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_weight="0.85"
                         android:text="Logout"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_weight="0.8"
+                        android:paddingLeft="10dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/darkGray" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="0.1"
+                        android:src="@drawable/icon_arrowright"
+                        android:tint="@color/darkGray" />
 
                 </LinearLayout>
 

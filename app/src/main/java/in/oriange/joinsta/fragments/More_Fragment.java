@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.ContactUs_Activity;
-import in.oriange.joinsta.activities.Enquires_Activity;
+import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.Policy_Activity;
@@ -96,7 +96,7 @@ public class More_Fragment extends Fragment {
         cv_enquires.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, Enquires_Activity.class));
+                startActivity(new Intent(context, Enquiries_Activity.class));
             }
         });
 
