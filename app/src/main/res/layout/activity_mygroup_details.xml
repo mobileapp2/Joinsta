@@ -39,7 +39,7 @@
                 android:textAllCaps="false"
                 android:layout_marginRight="10dp"
                 android:text="Members"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -170,7 +170,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="0.9"
                             android:layout_height="wrap_content"
-                            android:text="Group Leads"
+                            android:text="Group Leaders"
                             android:padding="5dp"
                             android:textColor="@color/black"
                             android:textSize="16sp"

@@ -24,8 +24,12 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.Enquiries_Activity;
@@ -74,6 +78,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
     public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
         final EnquiriesListModel.ResultBean enquiryDetails = resultArrayList.get(position);
+        PrettyTime p = new PrettyTime();
 
         if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("1")) {
             holder.tv_record_name.setText(enquiryDetails.getBusiness_name());
@@ -82,9 +87,18 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
         } else if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("3")) {
             holder.tv_record_name.setText(enquiryDetails.getProfession_name());
         }
+
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
         holder.tv_createdby.setText("By: " + enquiryDetails.getName());
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            holder.tv_createdby.setText(p.format(formatter.parse(enquiryDetails.getCreated_at()))+" | "+enquiryDetails.getName());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         if (enquiryDetails.getIs_attended().equals("1")) {
             holder.sw_attend.setChecked(true);
@@ -176,7 +190,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 
         private CardView cv_mainlayout;
         private ImageButton ib_call;
-        private TextView tv_record_name,tv_subject, tv_message, tv_createdby;
+        private TextView tv_record_name, tv_subject, tv_message, tv_createdby, tv_time;
         private SwitchCompat sw_attend;
         private Button btn_delete;
 
@@ -188,6 +202,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
             tv_subject = view.findViewById(R.id.tv_subject);
             tv_message = view.findViewById(R.id.tv_message);
             tv_createdby = view.findViewById(R.id.tv_createdby);
+            tv_time = view.findViewById(R.id.tv_time);
             sw_attend = view.findViewById(R.id.sw_attend);
             btn_delete = view.findViewById(R.id.btn_delete);
         }

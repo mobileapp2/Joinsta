@@ -325,31 +325,13 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
 
                 }
 
+                if (!searchDetails.getEmail().equals("")) {
+                    sb.append("Email - " + searchDetails.getEmail() + "\n");
+                }
+
                 if (!searchDetails.getWebsite().equals("")) {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
-
-//                if (!searchDetails.getType_description().equals("")) {
-//                    sb.append("Type - " + searchDetails.getType_description() + "\n");
-//                }
-//
-//                if (!searchDetails.getSubtype_description().equals("")) {
-//                    sb.append("Subtype - " + searchDetails.getType_description() + "\n");
-//                }
-//
-//                if (!searchDetails.getEmail().equals("")) {
-//                    sb.append("Email - " + searchDetails.getEmail() + "\n");
-//                }
-//
-//                if (searchDetails.getLandline().get(0) != null)
-//                    if (searchDetails.getLandline().get(0).size() != 0) {
-//                        StringBuilder landline = new StringBuilder();
-//                        for (int i = 0; i < searchDetails.getLandline().get(0).size(); i++) {
-//                            landline.append(searchDetails.getLandline().get(0).get(i).getLandline_numbers() + ", ");
-//                        }
-//
-//                        sb.append("Landline - " + landline.toString().substring(0, landline.toString().length() - 2) + "\n");
-//                    }
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");

@@ -57,6 +57,7 @@ import in.oriange.joinsta.utilities.Utilities;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinsta.activities.MainDrawer_Activity.startLocationUpdates;
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
@@ -88,8 +89,8 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_viewsearch_empdetails);
 
         init();
-        setDefault();
         getSessionDetails();
+        setDefault();
         setEventHandler();
         setUpToolbar();
     }
@@ -128,24 +129,13 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        try {
-            UserSessionManager session = new UserSessionManager(context);
-            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-                    ApplicationConstants.KEY_LOGIN_INFO));
-            JSONObject json = user_info.getJSONObject(0);
-            name = json.getString("first_name");
-            mobile = json.getString("mobile");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         searchDetails = (SearchDetailsModel.ResultBean.EmployeesBean) getIntent().getSerializableExtra("searchDetails");
         typeFrom = getIntent().getStringExtra("type");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
-                    .load(searchDetails.getImage_url().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_userphoto)
                     .into(imv_user, new Callback() {
                         @Override
@@ -168,29 +158,29 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         if (searchDetails.getIsFavourite().equals("1"))
             cb_like.setChecked(true);
 
-        if (!searchDetails.getOrganization_name().isEmpty()) {
+        if (!searchDetails.getOrganization_name().trim().isEmpty()) {
             tv_name.setText(searchDetails.getOrganization_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }
 
-        if (!searchDetails.getType_description().isEmpty() && !searchDetails.getSubtype_description().isEmpty()) {
+        if (!searchDetails.getType_description().trim().isEmpty() && !searchDetails.getSubtype_description().trim().isEmpty()) {
             tv_nature.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-        } else if (searchDetails.getType_description().isEmpty() && searchDetails.getSubtype_description().isEmpty()) {
+        } else if (searchDetails.getType_description().trim().isEmpty() && searchDetails.getSubtype_description().trim().isEmpty()) {
             tv_nature.setVisibility(View.GONE);
-        } else if (!searchDetails.getType_description().isEmpty()) {
+        } else if (!searchDetails.getType_description().trim().isEmpty()) {
             tv_nature.setText(searchDetails.getType_description());
-        } else if (!searchDetails.getSubtype_description().isEmpty()) {
+        } else if (!searchDetails.getSubtype_description().trim().isEmpty()) {
             tv_nature.setText(searchDetails.getSubtype_description());
         }
 
-        if (!searchDetails.getDesignation().isEmpty()) {
+        if (!searchDetails.getDesignation().trim().isEmpty()) {
             tv_designation.setText(searchDetails.getDesignation());
         } else {
             tv_designation.setVisibility(View.GONE);
         }
 
-        if ((searchDetails.getMobiles().get(0) != null) && !searchDetails.getEmail().isEmpty() && !searchDetails.getWebsite().isEmpty()) {
+        if ((searchDetails.getMobiles().get(0) == null) && searchDetails.getEmail().trim().isEmpty() && searchDetails.getWebsite().trim().isEmpty()) {
             cv_contact_details.setVisibility(View.GONE);
         } else {
 
@@ -204,13 +194,13 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                 rv_mobilenos.setVisibility(View.GONE);
             }
 
-            if (!searchDetails.getEmail().isEmpty()) {
+            if (!searchDetails.getEmail().trim().isEmpty()) {
                 tv_email.setText(searchDetails.getEmail());
             } else {
                 tv_email.setVisibility(View.GONE);
             }
 
-            if (!searchDetails.getWebsite().isEmpty()) {
+            if (!searchDetails.getWebsite().trim().isEmpty()) {
                 tv_website.setText(searchDetails.getWebsite());
             } else {
                 tv_website.setVisibility(View.GONE);
@@ -232,7 +222,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             cv_tabs.setVisibility(View.GONE);
         }
 
-        if (!searchDetails.getAddress().isEmpty()) {
+        if (!searchDetails.getAddress().trim().isEmpty()) {
             tv_address.setText(searchDetails.getAddress());
         } else {
             cv_address.setVisibility(View.GONE);
@@ -246,9 +236,9 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
-
             userId = json.getString("userid");
-
+            name = json.getString("first_name");
+            mobile = json.getString("mobile");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -351,14 +341,22 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         ll_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendEmail();
+                if (!searchDetails.getEmail().trim().isEmpty()) {
+                    sendEmail();
+                } else {
+                    Utilities.showMessage("Email not added", context, 2);
+                }
             }
         });
 
         tv_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendEmail();
+                if (!searchDetails.getEmail().trim().isEmpty()) {
+                    sendEmail();
+                } else {
+                    Utilities.showMessage("Email not added", context, 2);
+                }
             }
         });
 
@@ -534,6 +532,10 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
 
                         sb.append("Mobile - " + mobile.toString().substring(0, mobile.toString().length() - 2) + "\n");
                     }
+
+                if (!searchDetails.getEmail().equals("")) {
+                    sb.append("Email - " + searchDetails.getEmail() + "\n");
+                }
 
                 if (!searchDetails.getLatitude().equals("") || !searchDetails.getLongitude().equals("")) {
                     sb.append("Location - " + "https://www.google.com/maps/?q="
@@ -822,19 +824,9 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
     }
 
     private void sendEmail() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:"));
-            intent.putExtra(Intent.EXTRA_EMAIL, searchDetails.getEmail());
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);
-            }
-        } catch (Exception e) {
-            Intent email = new Intent(Intent.ACTION_SEND);
-            email.putExtra(Intent.EXTRA_EMAIL, new String[]{searchDetails.getEmail()});
-            email.setType("message/rfc822");
-            startActivity(Intent.createChooser(email, "Choose an Email client :"));
-        }
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", searchDetails.getEmail(), null));
+        startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
     private void setUpToolbar() {

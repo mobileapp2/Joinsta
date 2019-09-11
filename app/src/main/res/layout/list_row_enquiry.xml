@@ -38,24 +38,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:padding="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
             android:maxLines="1"
             android:text="Joinsta Development"
             android:textColor="@color/darkGray"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
             android:text="Joinsta Development Joinsta Development Joinsta Development Joinsta Development"
             android:textColor="@color/darkGray"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -63,16 +69,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.9"
-                android:paddingLeft="5dp"
                 android:gravity="center_vertical"
                 android:text="Joinsta Development"
                 android:textColor="@color/darkGray"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <ImageButton
                 android:id="@+id/ib_call"
                 android:layout_width="0dp"
-                android:layout_height="30dp"
+                android:layout_height="25dp"
                 android:layout_weight="0.1"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/icon_call" />
@@ -111,6 +116,16 @@
                 android:layout_weight="1" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:visibility="gone"
+            android:gravity="end"
+            android:textColor="@color/darkGray"
+            android:textSize="16sp" />
 
 
     </LinearLayout>
