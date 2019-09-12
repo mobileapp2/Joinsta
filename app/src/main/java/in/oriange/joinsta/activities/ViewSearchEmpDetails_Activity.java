@@ -275,6 +275,11 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                    Utilities.showMessage("Location not added", context, 2);
+                    return;
+                }
+
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
                 startActivity(intent);

@@ -45,7 +45,7 @@ import java.util.List;
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
-import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.models.GetBusinessModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.CalculateDistanceTime;
@@ -61,7 +61,7 @@ import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
-public class ViewSearchProfDetails_Activity extends AppCompatActivity {
+public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -73,27 +73,28 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address;
     private Button btn_enquire, btn_caldist;
+    private CheckBox likeIcon;
     private CardView cv_tabs, cv_contact_details, cv_address;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
-    private SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails;
-    private String userId, isFav, typeFrom, name, mobile;
+    private GetBusinessModel.ResultBean searchDetails;
+    private String userId, isFav, name, mobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viewsearch_profdetails);
+        setContentView(R.layout.activity_viewgroupmember_bizdetails);
 
         init();
-        getSessionDetails();
         setDefault();
+        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
 
     private void init() {
-        context = ViewSearchProfDetails_Activity.this;
+        context = ViewGroupMemberBizDetails_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -126,9 +127,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-
-        searchDetails = (SearchDetailsModel.ResultBean.ProfessionalsBean) getIntent().getSerializableExtra("searchDetails");
-        typeFrom = getIntent().getStringExtra("type");
+        searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
@@ -158,8 +157,8 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         if (searchDetails.getIsFavourite().equals("1"))
             cb_like.setChecked(true);
 
-        if (!searchDetails.getFirm_name().trim().isEmpty()) {
-            tv_name.setText(searchDetails.getFirm_name());
+        if (!searchDetails.getBusiness_name().trim().isEmpty()) {
+            tv_name.setText(searchDetails.getBusiness_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }
@@ -261,7 +260,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
                 mainObj.addProperty("type", "createfav");
                 mainObj.addProperty("info_id", searchDetails.getId());
-                mainObj.addProperty("info_type", "2");
+                mainObj.addProperty("info_type", "1");
                 mainObj.addProperty("user_id", userId);
                 mainObj.addProperty("record_status_id", isFav);
 
@@ -277,7 +276,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()){
                     Utilities.showMessage("Location not added", context, 2);
                     return;
                 }
@@ -348,6 +347,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ll_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (!searchDetails.getEmail().trim().isEmpty()) {
                     sendEmail();
                 } else {
@@ -449,9 +449,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        if (edt_name.getText().toString().trim().isEmpty()) {
-                            edt_name.setError("Please enter name");
-                            edt_name.requestFocus();
+                        if (tv_name.getText().toString().trim().isEmpty()) {
+                            tv_name.setError("Please enter name");
+                            tv_name.requestFocus();
                             return;
                         }
 
@@ -473,21 +473,20 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                             return;
                         }
 
-
                         if (Utilities.isNetworkAvailable(context)) {
                             alertD.dismiss();
 
                             if (Utilities.isNetworkAvailable(context)) {
                                 new SendEnquiryDetails().execute(
                                         userId,
-                                        searchDetails.getCreated_by(),
-                                        edt_name.getText().toString().trim(),
+                                        tv_name.getText().toString().trim(),
                                         edt_mobile.getText().toString().trim(),
                                         "",
                                         edt_subject.getText().toString().trim(),
                                         edt_details.getText().toString().trim(),
-                                        "3",
+                                        "1",
                                         searchDetails.getId()
+
                                 );
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -508,14 +507,14 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 StringBuilder sb = new StringBuilder();
 
-                if (!searchDetails.getFirm_name().equals("")) {
-                    sb.append("Firm Name - " + searchDetails.getFirm_name() + "\n");
+                if (!searchDetails.getBusiness_name().equals("")) {
+                    sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
                 }
 
                 if (!searchDetails.getSubtype_description().equals("")) {
-                    sb.append("Name of the profession - " + searchDetails.getType_description() + "/" + searchDetails.getSubtype_description() + "\n");
+                    sb.append("Nature of Business - " + searchDetails.getType_description() + "/" + searchDetails.getSubtype_description() + "\n");
                 } else {
-                    sb.append("Name of the profession - " + searchDetails.getType_description() + "\n");
+                    sb.append("Nature of Business - " + searchDetails.getType_description() + "\n");
                 }
 
                 if (searchDetails.getTag().get(0) != null)
@@ -525,7 +524,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                             tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
                         }
 
-                        sb.append("Services Offered - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
+                        sb.append("Products - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
                     }
 
                 if (!searchDetails.getAddress().equals("")) {
@@ -561,12 +560,17 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
                 context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
 
+//                String url = "https://olawebcdn.com/assets/ola-universal-link.html?lat=12.935&lng=77.614&category=share&utm_source=xapp_token&landing_page=bk&drop_lat=12.979&drop_lng=77.590&affiliate_uid=12345";
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(url));
+//                startActivity(i);
+
             }
         });
 
     }
 
-    private void showMobileListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+    private void showMobileListDialog(final ArrayList<GetBusinessModel.ResultBean.MobilesBean> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number to make a call");
         builderSingle.setCancelable(false);
@@ -596,7 +600,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showWhatsAppListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+    private void showWhatsAppListDialog(final ArrayList<GetBusinessModel.ResultBean.MobilesBean> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number");
         builderSingle.setCancelable(false);
@@ -626,7 +630,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showLandlineListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.LandlineBeanX> landlineList) {
+    private void showLandlineListDialog(final ArrayList<GetBusinessModel.ResultBean.LandlineBean> landlineList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select landline number to make a call");
         builderSingle.setCancelable(false);
@@ -658,9 +662,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
     public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
 
-        private List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList;
+        private List<GetBusinessModel.ResultBean.MobilesBean> resultArrayList;
 
-        public MobileNumbersAdapter(List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList) {
+        public MobileNumbersAdapter(List<GetBusinessModel.ResultBean.MobilesBean> resultArrayList) {
             this.resultArrayList = resultArrayList;
         }
 
@@ -674,7 +678,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
-            final SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX searchDetails = resultArrayList.get(position);
+            final GetBusinessModel.ResultBean.MobilesBean searchDetails = resultArrayList.get(position);
 
             holder.tv_mobile.setText(searchDetails.getMobile_number());
 
@@ -753,21 +757,6 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-
-                        if (typeFrom.equals("1")) {               //  1 = from search
-                            int position = Search_Fragment.professionalList.indexOf(searchDetails);
-                            Search_Fragment.professionalList.get(position).setIsFavourite(isFav);
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                        } else if (typeFrom.equals("2")) {        // 2 = from favorite
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-
-                        } else if (typeFrom.equals("3")) {        // 3 = from home
-                            int position = BizProfEmpDetailsList_Activity.professionalList.indexOf(searchDetails);
-                            BizProfEmpDetailsList_Activity.professionalList.get(position).setIsFavourite(isFav);
-                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                        }
 
                     } else {
                         cb_like.setChecked(false);
@@ -855,5 +844,4 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
         collapsingToolbar.setTitle("");
     }
-
 }

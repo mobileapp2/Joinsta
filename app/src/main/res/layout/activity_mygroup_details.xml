@@ -74,7 +74,6 @@
                         android:layout_height="wrap_content"
                         android:text="Group Details"
                         android:textColor="@color/black"
-                        android:padding="5dp"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -171,7 +170,6 @@
                             android:layout_weight="0.9"
                             android:layout_height="wrap_content"
                             android:text="Group Leaders"
-                            android:padding="5dp"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />

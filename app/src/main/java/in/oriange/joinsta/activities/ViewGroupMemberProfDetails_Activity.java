@@ -45,7 +45,7 @@ import java.util.List;
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
-import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.models.GetProfessionalModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.CalculateDistanceTime;
@@ -61,7 +61,7 @@ import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
-public class ViewSearchProfDetails_Activity extends AppCompatActivity {
+public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -77,13 +77,13 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
-    private SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails;
-    private String userId, isFav, typeFrom, name, mobile;
+    private GetProfessionalModel.ResultBean searchDetails;
+    private String userId, isFav, name, mobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viewsearch_profdetails);
+        setContentView(R.layout.activity_viewgroupmember_profdetails);
 
         init();
         getSessionDetails();
@@ -93,7 +93,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = ViewSearchProfDetails_Activity.this;
+        context = ViewGroupMemberProfDetails_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -127,8 +127,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
     private void setDefault() {
 
-        searchDetails = (SearchDetailsModel.ResultBean.ProfessionalsBean) getIntent().getSerializableExtra("searchDetails");
-        typeFrom = getIntent().getStringExtra("type");
+        searchDetails = (GetProfessionalModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
@@ -277,7 +276,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()){
                     Utilities.showMessage("Location not added", context, 2);
                     return;
                 }
@@ -566,7 +565,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
     }
 
-    private void showMobileListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+    private void showMobileListDialog(final ArrayList<GetProfessionalModel.ResultBean.MobilesBean> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number to make a call");
         builderSingle.setCancelable(false);
@@ -596,7 +595,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showWhatsAppListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+    private void showWhatsAppListDialog(final ArrayList<GetProfessionalModel.ResultBean.MobilesBean> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number");
         builderSingle.setCancelable(false);
@@ -626,7 +625,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showLandlineListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.LandlineBeanX> landlineList) {
+    private void showLandlineListDialog(final ArrayList<GetProfessionalModel.ResultBean.LandlineBean> landlineList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select landline number to make a call");
         builderSingle.setCancelable(false);
@@ -658,9 +657,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
     public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
 
-        private List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList;
+        private List<GetProfessionalModel.ResultBean.MobilesBean> resultArrayList;
 
-        public MobileNumbersAdapter(List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList) {
+        public MobileNumbersAdapter(List<GetProfessionalModel.ResultBean.MobilesBean> resultArrayList) {
             this.resultArrayList = resultArrayList;
         }
 
@@ -674,7 +673,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
-            final SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX searchDetails = resultArrayList.get(position);
+            final GetProfessionalModel.ResultBean.MobilesBean searchDetails = resultArrayList.get(position);
 
             holder.tv_mobile.setText(searchDetails.getMobile_number());
 
@@ -753,21 +752,6 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-
-                        if (typeFrom.equals("1")) {               //  1 = from search
-                            int position = Search_Fragment.professionalList.indexOf(searchDetails);
-                            Search_Fragment.professionalList.get(position).setIsFavourite(isFav);
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                        } else if (typeFrom.equals("2")) {        // 2 = from favorite
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-
-                        } else if (typeFrom.equals("3")) {        // 3 = from home
-                            int position = BizProfEmpDetailsList_Activity.professionalList.indexOf(searchDetails);
-                            BizProfEmpDetailsList_Activity.professionalList.get(position).setIsFavourite(isFav);
-                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                        }
 
                     } else {
                         cb_like.setChecked(false);
@@ -855,5 +839,4 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
         collapsingToolbar.setTitle("");
     }
-
 }

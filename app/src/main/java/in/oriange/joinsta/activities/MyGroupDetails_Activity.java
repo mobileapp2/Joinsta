@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -317,6 +318,16 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 holder.tv_role.setText("Member");
             }
 
+            holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
+                            .putExtra("userId", "1")
+                            .putExtra("name", memberDetails.getFirst_name().trim()));
+                }
+            });
+
+
         }
 
         @Override
@@ -326,10 +337,12 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
+            private CardView cv_mainlayout;
             private TextView tv_initletter, tv_name, tv_role, tv_mobile;
 
             public MyViewHolder(View view) {
                 super(view);
+                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
                 tv_initletter = view.findViewById(R.id.tv_initletter);
                 tv_name = view.findViewById(R.id.tv_name);
                 tv_role = view.findViewById(R.id.tv_role);

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -43,9 +44,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
-import in.oriange.joinsta.models.SearchDetailsModel;
+import in.oriange.joinsta.models.GetEmployeeModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.CalculateDistanceTime;
@@ -61,12 +63,13 @@ import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
-public class ViewSearchProfDetails_Activity extends AppCompatActivity {
+public class ViewGroupMemberEmpDetails_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private ImageView imv_image;
+    private RelativeLayout rl_profilepic;
+    private CircleImageView imv_user;
     private ProgressBar progressBar;
     private CheckBox cb_like;
     private ImageView imv_share;
@@ -77,13 +80,13 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
-    private SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails;
-    private String userId, isFav, typeFrom, name, mobile;
+    private GetEmployeeModel.ResultBean searchDetails;
+    private String userId, isFav, name, mobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viewsearch_profdetails);
+        setContentView(R.layout.activity_viewgroupmember_empdetails);
 
         init();
         getSessionDetails();
@@ -93,18 +96,18 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = ViewSearchProfDetails_Activity.this;
+        context = ViewGroupMemberEmpDetails_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
-        ll_nopreview = findViewById(R.id.ll_nopreview);
+        rl_profilepic = findViewById(R.id.rl_profilepic);
         ll_direction = findViewById(R.id.ll_direction);
         ll_mobile = findViewById(R.id.ll_mobile);
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
         cb_like = findViewById(R.id.cb_like);
-        imv_image = findViewById(R.id.imv_image);
+        imv_user = findViewById(R.id.imv_user);
         progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
         cv_contact_details = findViewById(R.id.cv_contact_details);
@@ -126,40 +129,36 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-
-        searchDetails = (SearchDetailsModel.ResultBean.ProfessionalsBean) getIntent().getSerializableExtra("searchDetails");
-        typeFrom = getIntent().getStringExtra("type");
+        searchDetails = (GetEmployeeModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
             String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
                     .load(url)
-                    .into(imv_image, new Callback() {
+                    .placeholder(R.drawable.icon_userphoto)
+                    .into(imv_user, new Callback() {
                         @Override
                         public void onSuccess() {
-                            ll_nopreview.setVisibility(View.GONE);
-                            imv_image.setVisibility(View.VISIBLE);
+                            rl_profilepic.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
-                            imv_image.setVisibility(View.GONE);
-                            ll_nopreview.setVisibility(View.VISIBLE);
+                            rl_profilepic.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
                         }
                     });
         } else {
-            imv_image.setVisibility(View.GONE);
-            ll_nopreview.setVisibility(View.VISIBLE);
+            rl_profilepic.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
         }
 
         if (searchDetails.getIsFavourite().equals("1"))
             cb_like.setChecked(true);
 
-        if (!searchDetails.getFirm_name().trim().isEmpty()) {
-            tv_name.setText(searchDetails.getFirm_name());
+        if (!searchDetails.getOrganization_name().trim().isEmpty()) {
+            tv_name.setText(searchDetails.getOrganization_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }
@@ -236,11 +235,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
-
             userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -261,7 +258,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
                 mainObj.addProperty("type", "createfav");
                 mainObj.addProperty("info_id", searchDetails.getId());
-                mainObj.addProperty("info_type", "2");
+                mainObj.addProperty("info_type", "3");
                 mainObj.addProperty("user_id", userId);
                 mainObj.addProperty("record_status_id", isFav);
 
@@ -277,7 +274,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()){
                     Utilities.showMessage("Location not added", context, 2);
                     return;
                 }
@@ -486,7 +483,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                                         "",
                                         edt_subject.getText().toString().trim(),
                                         edt_details.getText().toString().trim(),
-                                        "3",
+                                        "2",
                                         searchDetails.getId()
                                 );
                             } else {
@@ -508,14 +505,12 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 StringBuilder sb = new StringBuilder();
 
-                if (!searchDetails.getFirm_name().equals("")) {
-                    sb.append("Firm Name - " + searchDetails.getFirm_name() + "\n");
+                if (!searchDetails.getOrganization_name().equals("")) {
+                    sb.append("Name of the company - " + searchDetails.getOrganization_name() + "\n");
                 }
 
-                if (!searchDetails.getSubtype_description().equals("")) {
-                    sb.append("Name of the profession - " + searchDetails.getType_description() + "/" + searchDetails.getSubtype_description() + "\n");
-                } else {
-                    sb.append("Name of the profession - " + searchDetails.getType_description() + "\n");
+                if (!searchDetails.getDesignation().equals("")) {
+                    sb.append("Designation - " + searchDetails.getDesignation() + "\n");
                 }
 
                 if (searchDetails.getTag().get(0) != null)
@@ -525,7 +520,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                             tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
                         }
 
-                        sb.append("Services Offered - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
+                        sb.append("Product/Services Offered - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
                     }
 
                 if (!searchDetails.getAddress().equals("")) {
@@ -566,7 +561,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
     }
 
-    private void showMobileListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+    private void showMobileListDialog(final ArrayList<GetEmployeeModel.ResultBean.MobilesBean> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number to make a call");
         builderSingle.setCancelable(false);
@@ -596,7 +591,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showWhatsAppListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> mobileList) {
+    private void showWhatsAppListDialog(final ArrayList<GetEmployeeModel.ResultBean.MobilesBean> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number");
         builderSingle.setCancelable(false);
@@ -626,7 +621,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showLandlineListDialog(final ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean.LandlineBeanX> landlineList) {
+    private void showLandlineListDialog(final ArrayList<GetEmployeeModel.ResultBean.LandlineBean> landlineList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select landline number to make a call");
         builderSingle.setCancelable(false);
@@ -634,7 +629,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
         for (int i = 0; i < landlineList.size(); i++) {
-            arrayAdapter.add(String.valueOf(landlineList.get(i).getLandline_number()));
+            arrayAdapter.add(String.valueOf(landlineList.get(i).getLandline_numbers()));
         }
 
         builderSingle.setNegativeButton(
@@ -650,7 +645,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(Intent.ACTION_CALL,
-                        Uri.parse("tel:" + landlineList.get(which).getLandline_number())));
+                        Uri.parse("tel:" + landlineList.get(which).getLandline_numbers())));
             }
         });
         builderSingle.show();
@@ -658,9 +653,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
     public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
 
-        private List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList;
+        private List<GetEmployeeModel.ResultBean.MobilesBean> resultArrayList;
 
-        public MobileNumbersAdapter(List<SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX> resultArrayList) {
+        public MobileNumbersAdapter(List<GetEmployeeModel.ResultBean.MobilesBean> resultArrayList) {
             this.resultArrayList = resultArrayList;
         }
 
@@ -674,7 +669,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
-            final SearchDetailsModel.ResultBean.ProfessionalsBean.MobilesBeanX searchDetails = resultArrayList.get(position);
+            final GetEmployeeModel.ResultBean.MobilesBean searchDetails = resultArrayList.get(position);
 
             holder.tv_mobile.setText(searchDetails.getMobile_number());
 
@@ -753,21 +748,6 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-
-                        if (typeFrom.equals("1")) {               //  1 = from search
-                            int position = Search_Fragment.professionalList.indexOf(searchDetails);
-                            Search_Fragment.professionalList.get(position).setIsFavourite(isFav);
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                        } else if (typeFrom.equals("2")) {        // 2 = from favorite
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-
-                        } else if (typeFrom.equals("3")) {        // 3 = from home
-                            int position = BizProfEmpDetailsList_Activity.professionalList.indexOf(searchDetails);
-                            BizProfEmpDetailsList_Activity.professionalList.get(position).setIsFavourite(isFav);
-                            new Search_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-//                            new Favourite_Fragment.GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                        }
 
                     } else {
                         cb_like.setChecked(false);
@@ -855,5 +835,4 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
 
         collapsingToolbar.setTitle("");
     }
-
 }
