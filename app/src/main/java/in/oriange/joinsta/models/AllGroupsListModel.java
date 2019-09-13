@@ -40,7 +40,7 @@ public class AllGroupsListModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean  implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
          * id : 6
          * group_name : New Group Admin By Namrata
@@ -107,14 +107,24 @@ public class AllGroupsListModel implements Serializable {
 
         public static class GroupMemberDetailsBean implements Serializable {
             /**
-             * first_name : Monika  
+             * first_name : Monika
              * mobile : 8830648438
              * role : group_admin
              */
 
+            private String id;
             private String first_name;
             private String mobile;
             private String role;
+
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
 
             public String getFirst_name() {
                 return first_name;

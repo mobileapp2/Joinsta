@@ -322,7 +322,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
-                            .putExtra("userId", "1")
+                            .putExtra("userId", memberDetails.getId())
                             .putExtra("name", memberDetails.getFirst_name().trim()));
                 }
             });

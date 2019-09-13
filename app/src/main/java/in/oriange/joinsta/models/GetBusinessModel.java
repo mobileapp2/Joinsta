@@ -36,6 +36,7 @@ public class GetBusinessModel implements Serializable {
     public static class ResultBean implements Serializable {
 
         private String id;
+        private String business_code;
         private String address;
         private String city;
         private String country;
@@ -51,6 +52,7 @@ public class GetBusinessModel implements Serializable {
         private String email;
         private String website;
         private String record_statusid;
+        private String is_verified;
         private String created_at;
         private String updated_at;
         private String type_id;
@@ -71,6 +73,22 @@ public class GetBusinessModel implements Serializable {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getBusiness_code() {
+            return business_code;
+        }
+
+        public void setBusiness_code(String business_code) {
+            this.business_code = business_code;
+        }
+
+        public String getIs_verified() {
+            return is_verified;
+        }
+
+        public void setIs_verified(String is_verified) {
+            this.is_verified = is_verified;
         }
 
         public String getAddress() {
@@ -377,7 +395,11 @@ public class GetBusinessModel implements Serializable {
             }
 
             public String getIs_approved() {
-                return is_approved;
+                if (is_approved == null) {
+                    return "0";
+                } else {
+                    return is_approved;
+                }
             }
 
             public void setIs_approved(String is_approved) {

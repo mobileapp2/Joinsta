@@ -36,6 +36,7 @@ public class GetProfessionalModel implements Serializable {
     public static class ResultBean implements Serializable {
 
         private String id;
+        private String professional_code;
         private String address;
         private String city;
         private String country;
@@ -73,6 +74,14 @@ public class GetProfessionalModel implements Serializable {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getProfessional_code() {
+            return professional_code;
+        }
+
+        public void setProfessional_code(String professional_code) {
+            this.professional_code = professional_code;
         }
 
         public String getAddress() {
@@ -394,7 +403,11 @@ public class GetProfessionalModel implements Serializable {
             }
 
             public String getIs_approved() {
-                return is_approved;
+                if (is_approved == null) {
+                    return "0";
+                } else {
+                    return is_approved;
+                }
             }
 
             public void setIs_approved(String is_approved) {

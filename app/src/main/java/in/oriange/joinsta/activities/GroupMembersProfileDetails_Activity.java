@@ -38,10 +38,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
     private SpinKitView progressBar;
 
     private TextView tv_name, tv_initletter;
-    private LinearLayout ll_nopreview;
-    private LinearLayout ll_business;
-    private LinearLayout ll_employee;
-    private LinearLayout ll_professional;
+    private LinearLayout ll_nopreview, ll_business, ll_employee, ll_professional;
     private View v_business, v_employee, v_professional;
     private String userId, name;
 
@@ -210,18 +207,30 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
                         businessList = pojoDetails.getResult();
 
                         if (businessList.size() > 0) {
-                            rv_details.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_details.setAdapter(new GroupMemberBusinessAdapter(context, businessList));
+
+                            ArrayList<GetBusinessModel.ResultBean> filteredBusinessList = new ArrayList<>();
+
+                            for (GetBusinessModel.ResultBean bizDetails : businessList) {
+                                if (bizDetails.getIs_verified().equalsIgnoreCase("1")) {
+                                    filteredBusinessList.add(bizDetails);
+                                }
+                            }
+
+                            businessList.clear();
+                            businessList.addAll(filteredBusinessList);
+
+                            if (businessList.size() > 0) {
+                                rv_details.setVisibility(View.VISIBLE);
+                                ll_nopreview.setVisibility(View.GONE);
+                                rv_details.setAdapter(new GroupMemberBusinessAdapter(context, businessList));
+                            }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_details.setVisibility(View.GONE);
                         }
-
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_details.setVisibility(View.GONE);
-
                     }
                 }
             } catch (Exception e) {
@@ -268,18 +277,30 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
                         employeeList = pojoDetails.getResult();
 
                         if (employeeList.size() > 0) {
-                            rv_details.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_details.setAdapter(new GroupMemberEmployeeAdapter(context, employeeList));
+
+                            ArrayList<GetEmployeeModel.ResultBean> filteredEmployeeList = new ArrayList<>();
+
+                            for (GetEmployeeModel.ResultBean empDetails : employeeList) {
+                                if (empDetails.getIs_verified().equalsIgnoreCase("1")) {
+                                    filteredEmployeeList.add(empDetails);
+                                }
+                            }
+
+                            employeeList.clear();
+                            employeeList.addAll(filteredEmployeeList);
+
+                            if (employeeList.size() > 0) {
+                                rv_details.setVisibility(View.VISIBLE);
+                                ll_nopreview.setVisibility(View.GONE);
+                                rv_details.setAdapter(new GroupMemberEmployeeAdapter(context, employeeList));
+                            }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_details.setVisibility(View.GONE);
                         }
-
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_details.setVisibility(View.GONE);
-
                     }
                 }
             } catch (Exception e) {
@@ -326,9 +347,23 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
                         professionalList = pojoDetails.getResult();
 
                         if (professionalList.size() > 0) {
-                            rv_details.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_details.setAdapter(new GroupMemberProfessionalAdapter(context, professionalList));
+
+                            ArrayList<GetProfessionalModel.ResultBean> filteredProfessionalList = new ArrayList<>();
+
+                            for (GetProfessionalModel.ResultBean profDetails : professionalList) {
+                                if (profDetails.getIs_verified().equalsIgnoreCase("1")) {
+                                    filteredProfessionalList.add(profDetails);
+                                }
+                            }
+
+                            professionalList.clear();
+                            professionalList.addAll(filteredProfessionalList);
+
+                            if (professionalList.size() > 0) {
+                                rv_details.setVisibility(View.VISIBLE);
+                                ll_nopreview.setVisibility(View.GONE);
+                                rv_details.setAdapter(new GroupMemberProfessionalAdapter(context, professionalList));
+                            }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_details.setVisibility(View.GONE);

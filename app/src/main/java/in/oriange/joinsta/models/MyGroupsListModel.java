@@ -132,9 +132,18 @@ public class MyGroupsListModel implements Serializable {
              * role : group_admin
              */
 
+            private String id;
             private String first_name;
             private String mobile;
             private String role;
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
 
             public String getFirst_name() {
                 return first_name;

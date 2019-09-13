@@ -105,6 +105,7 @@ public class SearchDetailsModel implements Serializable {
              */
 
             private String id;
+            private String employee_code;
             private String address;
             private String city;
             private String state;
@@ -144,6 +145,14 @@ public class SearchDetailsModel implements Serializable {
 
             public void setId(String id) {
                 this.id = id;
+            }
+
+            public String getEmployee_code() {
+                return employee_code;
+            }
+
+            public void setEmployee_code(String employee_code) {
+                this.employee_code = employee_code;
             }
 
             public String getAddress() {
@@ -534,6 +543,7 @@ public class SearchDetailsModel implements Serializable {
              */
 
             private String id;
+            private String professional_code;
             private String address;
             private String city;
             private String country;
@@ -572,6 +582,14 @@ public class SearchDetailsModel implements Serializable {
 
             public void setId(String id) {
                 this.id = id;
+            }
+
+            public String getProfessional_code() {
+                return professional_code;
+            }
+
+            public void setProfessional_code(String professional_code) {
+                this.professional_code = professional_code;
             }
 
             public String getAddress() {
@@ -953,6 +971,7 @@ public class SearchDetailsModel implements Serializable {
              */
 
             private String id;
+            private String business_code;
             private String address;
             private String city;
             private String country;
@@ -988,6 +1007,14 @@ public class SearchDetailsModel implements Serializable {
 
             public void setId(String id) {
                 this.id = id;
+            }
+
+            public String getBusiness_code() {
+                return business_code;
+            }
+
+            public void setBusiness_code(String business_code) {
+                this.business_code = business_code;
             }
 
             public String getAddress() {

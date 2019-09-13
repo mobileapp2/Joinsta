@@ -251,7 +251,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:gravity="center"
-                    android:text="Details are not added by you in this category"
+                    android:text="Details are not added in this category"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 

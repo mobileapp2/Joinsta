@@ -36,6 +36,7 @@ public class GetEmployeeModel implements Serializable {
     public static class ResultBean implements Serializable {
 
         private String id;
+        private String employee_code;
         private String address;
         private String city;
         private String state;
@@ -53,6 +54,7 @@ public class GetEmployeeModel implements Serializable {
         private String blood_group_id;
         private String website;
         private String is_active;
+        private String is_verified;
         private String other_details;
         private String image_url;
         private String created_at;
@@ -74,6 +76,14 @@ public class GetEmployeeModel implements Serializable {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getEmployee_code() {
+            return employee_code;
+        }
+
+        public void setEmployee_code(String employee_code) {
+            this.employee_code = employee_code;
         }
 
         public String getAddress() {
@@ -210,6 +220,14 @@ public class GetEmployeeModel implements Serializable {
 
         public void setIs_active(String is_active) {
             this.is_active = is_active;
+        }
+
+        public String getIs_verified() {
+            return is_verified;
+        }
+
+        public void setIs_verified(String is_verified) {
+            this.is_verified = is_verified;
         }
 
         public String getOther_details() {
@@ -403,7 +421,11 @@ public class GetEmployeeModel implements Serializable {
             }
 
             public String getIs_approved() {
-                return is_approved;
+                if (is_approved == null) {
+                    return "0";
+                } else {
+                    return is_approved;
+                }
             }
 
             public void setIs_approved(String is_approved) {

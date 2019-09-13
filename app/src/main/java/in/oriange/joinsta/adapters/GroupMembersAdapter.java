@@ -59,7 +59,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
-                        .putExtra("userId", "1")
+                        .putExtra("userId", groupDetails.getId())
                         .putExtra("name", groupDetails.getFirst_name().trim()));
             }
         });
