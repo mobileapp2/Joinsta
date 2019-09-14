@@ -323,7 +323,7 @@ public class Register_Activity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         new LoginUser().execute(edt_mobile.getText().toString().trim(), edt_password.getText().toString().trim());
                     } else if (type.equalsIgnoreCase("failure")) {
-                        Utilities.showAlertDialog(context, "Failed to register. Please try again", false);
+                        Utilities.showAlertDialog(context, message, false);
                     }
 
                 }
