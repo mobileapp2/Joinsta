@@ -90,11 +90,11 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
-        holder.tv_createdby.setText("By: " + enquiryDetails.getName());
+//        holder.tv_createdby.setText("By: " + enquiryDetails.getName());
 
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-            holder.tv_createdby.setText(p.format(formatter.parse(enquiryDetails.getCreated_at()))+" | "+enquiryDetails.getName());
+            holder.tv_createdby.setText(p.format(formatter.parse(enquiryDetails.getCreated_at())) + " | By - " + enquiryDetails.getName());
         } catch (ParseException e) {
             e.printStackTrace();
         }

@@ -114,7 +114,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
     private void setDefault() {
         searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
-        edt_name.setText(searchDetails.getBusiness_name());
+        edt_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
         edt_nature.setText(searchDetails.getType_description());
         edt_subtype.setText(searchDetails.getSubtype_description());
         edt_designation.setText(searchDetails.getDesignation());

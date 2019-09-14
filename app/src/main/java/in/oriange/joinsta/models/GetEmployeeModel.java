@@ -64,6 +64,7 @@ public class GetEmployeeModel implements Serializable {
         private String subtype_description;
         private String type_description;
         private String IsFavourite;
+        private String UserIsFavourite;
         private String type_id;
         private String sub_type_id;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
@@ -300,6 +301,14 @@ public class GetEmployeeModel implements Serializable {
 
         public void setIsFavourite(String IsFavourite) {
             this.IsFavourite = IsFavourite;
+        }
+
+        public String getUserIsFavourite() {
+            return UserIsFavourite;
+        }
+
+        public void setUserIsFavourite(String userIsFavourite) {
+            UserIsFavourite = userIsFavourite;
         }
 
         public String getType_id() {

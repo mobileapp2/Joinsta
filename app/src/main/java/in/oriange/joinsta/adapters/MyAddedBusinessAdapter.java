@@ -39,7 +39,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         final int position = holder.getAdapterPosition();
         final GetBusinessModel.ResultBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getBusiness_name());
+        holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
 
         if (!searchDetails.getSubtype_description().isEmpty())
             holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());

@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -84,7 +83,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
         final int position = holder.getAdapterPosition();
         final SearchDetailsModel.ResultBean.EmployeesBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getOrganization_name());
+        holder.tv_heading.setText(searchDetails.getEmployee_code() + " - " + searchDetails.getOrganization_name());
 
         if (searchDetails.getTag().get(0) != null) {
             if (searchDetails.getTag().get(0).size() > 0) {

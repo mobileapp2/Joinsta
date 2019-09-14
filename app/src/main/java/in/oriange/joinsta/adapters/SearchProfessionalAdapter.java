@@ -83,7 +83,7 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
         final int position = holder.getAdapterPosition();
         final SearchDetailsModel.ResultBean.ProfessionalsBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getFirm_name());
+        holder.tv_heading.setText(searchDetails.getProfessional_code() + " - " + searchDetails.getFirm_name());
 
 
         if (searchDetails.getTag().get(0) != null) {

@@ -225,6 +225,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getbusiness");
             obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
             return res.trim();
         }
@@ -283,6 +284,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getemployee");
             obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.EMPLOYEEAPI, obj.toString());
             return res.trim();
         }
@@ -341,6 +343,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getprofessional");
             obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.PROFESSIONALAPI, obj.toString());
             return res.trim();
         }

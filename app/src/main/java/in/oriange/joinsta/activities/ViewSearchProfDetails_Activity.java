@@ -159,7 +159,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
             cb_like.setChecked(true);
 
         if (!searchDetails.getFirm_name().trim().isEmpty()) {
-            tv_name.setText(searchDetails.getFirm_name());
+            tv_name.setText(searchDetails.getProfessional_code() + " - " + searchDetails.getFirm_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }

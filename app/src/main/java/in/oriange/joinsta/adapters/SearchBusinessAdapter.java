@@ -21,7 +21,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -84,7 +83,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         final int position = holder.getAdapterPosition();
         final SearchDetailsModel.ResultBean.BusinessesBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getBusiness_name());
+        holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
 
         if (searchDetails.getTag().get(0) != null) {
             if (searchDetails.getTag().get(0).size() > 0) {

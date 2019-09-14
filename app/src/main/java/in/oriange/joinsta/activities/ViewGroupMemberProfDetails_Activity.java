@@ -44,7 +44,6 @@ import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.GetProfessionalModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -154,11 +153,11 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
         }
 
-        if (searchDetails.getIsFavourite().equals("1"))
+        if (searchDetails.getUserIsFavourite().equals("1"))
             cb_like.setChecked(true);
 
         if (!searchDetails.getFirm_name().trim().isEmpty()) {
-            tv_name.setText(searchDetails.getFirm_name());
+            tv_name.setText(searchDetails.getProfessional_code() + " - " + searchDetails.getFirm_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }
@@ -276,7 +275,7 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()){
+                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
                     Utilities.showMessage("Location not added", context, 2);
                     return;
                 }
@@ -752,7 +751,7 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-
+                        new GroupMembersProfileDetails_Activity.GetProfessional().execute();
                     } else {
                         cb_like.setChecked(false);
                     }

@@ -113,7 +113,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private void setDefault() {
         searchDetails = (GetProfessionalModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
-        edt_name.setText(searchDetails.getFirm_name());
+        edt_name.setText(searchDetails.getProfessional_code() + " - " + searchDetails.getFirm_name());
         edt_nature.setText(searchDetails.getType_description());
         edt_subtype.setText(searchDetails.getSubtype_description());
         edt_designation.setText(searchDetails.getDesignation());

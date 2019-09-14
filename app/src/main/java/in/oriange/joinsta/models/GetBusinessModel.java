@@ -62,6 +62,7 @@ public class GetBusinessModel implements Serializable {
         private String subtype_description;
         private String type_description;
         private String IsFavourite;
+        private String UserIsFavourite;
         private String image_url;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
@@ -281,6 +282,18 @@ public class GetBusinessModel implements Serializable {
 
         public void setIsFavourite(String IsFavourite) {
             this.IsFavourite = IsFavourite;
+        }
+
+        public String getUserIsFavourite() {
+            if (UserIsFavourite != null) {
+                return UserIsFavourite;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setUserIsFavourite(String userIsFavourite) {
+            UserIsFavourite = userIsFavourite;
         }
 
         public String getImage_url() {

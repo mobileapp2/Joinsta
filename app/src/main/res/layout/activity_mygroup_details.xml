@@ -75,6 +75,8 @@
                         android:text="Group Details"
                         android:textColor="@color/black"
                         android:textSize="16sp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textStyle="bold" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
@@ -170,6 +172,8 @@
                             android:layout_weight="0.9"
                             android:layout_height="wrap_content"
                             android:text="Group Leaders"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:textStyle="bold" />

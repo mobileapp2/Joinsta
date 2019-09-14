@@ -17,6 +17,9 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
@@ -28,25 +31,27 @@ import in.oriange.joinsta.models.GetEmployeeModel;
 import in.oriange.joinsta.models.GetProfessionalModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
 
-    private Context context;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView rv_details;
-    private SpinKitView progressBar;
+    private static Context context;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static RecyclerView rv_details;
+    private static SpinKitView progressBar;
 
     private TextView tv_name, tv_initletter;
-    private LinearLayout ll_nopreview, ll_business, ll_employee, ll_professional;
+    private static LinearLayout ll_nopreview, ll_business, ll_employee, ll_professional;
     private View v_business, v_employee, v_professional;
-    private String userId, name;
+    private static String userId, name, currentUserId;
 
-    public ArrayList<GetBusinessModel.ResultBean> businessList;
-    public ArrayList<GetEmployeeModel.ResultBean> employeeList;
-    public ArrayList<GetProfessionalModel.ResultBean> professionalList;
+    public static ArrayList<GetBusinessModel.ResultBean> businessList;
+    public static ArrayList<GetEmployeeModel.ResultBean> employeeList;
+    public static ArrayList<GetProfessionalModel.ResultBean> professionalList;
 
     private int currentPosition = 0;
+    private UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_groupmembers_profiledetails);
 
         init();
+        getSessionDetails();
         setDefault();
         setEventHandler();
         setUpToolbar();
@@ -61,6 +67,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
 
     private void init() {
         context = GroupMembersProfileDetails_Activity.this;
+        session = new UserSessionManager(context);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progressBar);
         rv_details = findViewById(R.id.rv_details);
@@ -80,6 +87,20 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         professionalList = new ArrayList<>();
         employeeList = new ArrayList<>();
 
+    }
+
+    private void getSessionDetails() {
+
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            currentUserId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setDefault() {
@@ -171,7 +192,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         });
     }
 
-    private class GetBusiness extends AsyncTask<String, Void, String> {
+    public static class GetBusiness extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -188,6 +209,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getbusiness");
             obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", currentUserId);
             res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
             return res.trim();
         }
@@ -223,6 +245,9 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
                                 rv_details.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);
                                 rv_details.setAdapter(new GroupMemberBusinessAdapter(context, businessList));
+                            } else {
+                                ll_nopreview.setVisibility(View.VISIBLE);
+                                rv_details.setVisibility(View.GONE);
                             }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
@@ -241,7 +266,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         }
     }
 
-    private class GetEmployee extends AsyncTask<String, Void, String> {
+    public static class GetEmployee extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -258,6 +283,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getemployee");
             obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", currentUserId);
             res = APICall.JSONAPICall(ApplicationConstants.EMPLOYEEAPI, obj.toString());
             return res.trim();
         }
@@ -293,6 +319,9 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
                                 rv_details.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);
                                 rv_details.setAdapter(new GroupMemberEmployeeAdapter(context, employeeList));
+                            } else {
+                                ll_nopreview.setVisibility(View.VISIBLE);
+                                rv_details.setVisibility(View.GONE);
                             }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
@@ -311,7 +340,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         }
     }
 
-    private class GetProfessional extends AsyncTask<String, Void, String> {
+    public static class GetProfessional extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -328,6 +357,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getprofessional");
             obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", currentUserId);
             res = APICall.JSONAPICall(ApplicationConstants.PROFESSIONALAPI, obj.toString());
             return res.trim();
         }
@@ -363,6 +393,9 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
                                 rv_details.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);
                                 rv_details.setAdapter(new GroupMemberProfessionalAdapter(context, professionalList));
+                            } else {
+                                ll_nopreview.setVisibility(View.VISIBLE);
+                                rv_details.setVisibility(View.GONE);
                             }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);

@@ -159,7 +159,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
             cb_like.setChecked(true);
 
         if (!searchDetails.getBusiness_name().trim().isEmpty()) {
-            tv_name.setText(searchDetails.getBusiness_name());
+            tv_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }
@@ -277,7 +277,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()){
+                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
                     Utilities.showMessage("Location not added", context, 2);
                     return;
                 }
@@ -480,7 +480,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                             if (Utilities.isNetworkAvailable(context)) {
                                 new SendEnquiryDetails().execute(
                                         userId,
-                                        tv_name.getText().toString().trim(),
+                                        edt_name.getText().toString().trim(),
                                         edt_mobile.getText().toString().trim(),
                                         "",
                                         edt_subject.getText().toString().trim(),

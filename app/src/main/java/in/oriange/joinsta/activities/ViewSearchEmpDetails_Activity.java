@@ -159,7 +159,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             cb_like.setChecked(true);
 
         if (!searchDetails.getOrganization_name().trim().isEmpty()) {
-            tv_name.setText(searchDetails.getOrganization_name());
+            tv_name.setText(searchDetails.getEmployee_code() + " - " + searchDetails.getOrganization_name());
         } else {
             tv_name.setVisibility(View.GONE);
         }

@@ -217,7 +217,8 @@ public class Search_Fragment extends Fragment {
                                     tag.append(tags.getTag_name());
                             }
 
-                        String businessToBeSearched = businessDetails.getBusiness_name().toLowerCase() +
+                        String businessToBeSearched = businessDetails.getBusiness_code().toLowerCase() +
+                                businessDetails.getBusiness_name().toLowerCase() +
                                 businessDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
                         if (businessToBeSearched.contains(query.toLowerCase())) {
                             businessSearchedList.add(businessDetails);
@@ -238,7 +239,6 @@ public class Search_Fragment extends Fragment {
                     ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeSearchedList = new ArrayList<>();
                     for (SearchDetailsModel.ResultBean.EmployeesBean employeeDetails : employeeList) {
 
-
                         StringBuilder tag = new StringBuilder();
                         if (employeeDetails.getTag().get(0) != null)
                             for (SearchDetailsModel.ResultBean.EmployeesBean.TagBean tags : employeeDetails.getTag().get(0)) {
@@ -246,7 +246,8 @@ public class Search_Fragment extends Fragment {
                                     tag.append(tags.getTag_name());
                             }
 
-                        String employeeToBeSearched = employeeDetails.getOrganization_name().toLowerCase() +
+                        String employeeToBeSearched = employeeDetails.getEmployee_code().toLowerCase() +
+                                employeeDetails.getOrganization_name().toLowerCase() +
                                 employeeDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
                         if (employeeToBeSearched.contains(query.toLowerCase())) {
                             employeeSearchedList.add(employeeDetails);
@@ -274,7 +275,8 @@ public class Search_Fragment extends Fragment {
                                     tag.append(tags.getTag_name());
                             }
 
-                        String professionalToBeSearched = professionalDetails.getFirm_name().toLowerCase() +
+                        String professionalToBeSearched = professionalDetails.getProfessional_code().toLowerCase() +
+                                professionalDetails.getFirm_name().toLowerCase() +
                                 professionalDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
                         if (professionalToBeSearched.contains(query.toLowerCase())) {
                             professionalSearchedList.add(professionalDetails);
