@@ -19,14 +19,16 @@
             android:minHeight="?attr/actionBarSize"
             app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Group Members"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white"  />
 
         </androidx.appcompat.widget.Toolbar>
 
