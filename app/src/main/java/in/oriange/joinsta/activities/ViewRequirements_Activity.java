@@ -18,14 +18,17 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
@@ -50,7 +53,7 @@ public class ViewRequirements_Activity extends AppCompatActivity {
     private CircleImageView imv_user;
     private ImageView imv_mobile, imv_email;
     private TextView tv_reqby_name;
-    private MaterialEditText edt_categoryname, edt_reqmtitle, edt_reqmdesc, edt_city;
+    private TextView tv_categoryname, tv_reqmtitle, tv_reqmdesc, tv_city;
 
     private RequirementsListModel reqDetails;
     private String userId, isFav;
@@ -76,10 +79,10 @@ public class ViewRequirements_Activity extends AppCompatActivity {
         imv_mobile = findViewById(R.id.imv_mobile);
         imv_email = findViewById(R.id.imv_email);
         tv_reqby_name = findViewById(R.id.tv_reqby_name);
-        edt_categoryname = findViewById(R.id.edt_categoryname);
-        edt_reqmtitle = findViewById(R.id.edt_reqmtitle);
-        edt_reqmdesc = findViewById(R.id.edt_reqmdesc);
-        edt_city = findViewById(R.id.edt_city);
+        tv_categoryname = findViewById(R.id.tv_categoryname);
+        tv_reqmtitle = findViewById(R.id.tv_reqmtitle);
+        tv_reqmdesc = findViewById(R.id.tv_reqmdesc);
+        tv_city = findViewById(R.id.tv_city);
     }
 
     private void setDefault() {
@@ -106,10 +109,18 @@ public class ViewRequirements_Activity extends AppCompatActivity {
         if (reqDetails.getIsStarred().equals("1"))
             cb_like.setChecked(true);
 
+
+        PrettyTime p = new PrettyTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+
         tv_reqby_name.setText(reqDetails.getFname() + " " + reqDetails.getMname() + " " + reqDetails.getLname());
-        edt_reqmtitle.setText(reqDetails.getTitle());
-        edt_reqmdesc.setText(reqDetails.getDescription());
-        edt_city.setText(reqDetails.getCity());
+        tv_reqmtitle.setText(reqDetails.getTitle());
+        tv_reqmdesc.setText(reqDetails.getDescription());
+        try {
+            tv_city.setText(p.format(formatter.parse(reqDetails.getUpdated_at())) + " | " + reqDetails.getCity());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetMainCategotyList().execute();
@@ -230,7 +241,7 @@ public class ViewRequirements_Activity extends AppCompatActivity {
 
                             for (MainCategoryListModel catDetails : mainCategoryList) {
                                 if (catDetails.getId().equals(reqDetails.getCategory_type_id())) {
-                                    edt_categoryname.setText(catDetails.getType_description());
+                                    tv_categoryname.setText(catDetails.getType_description());
                                 }
                             }
 

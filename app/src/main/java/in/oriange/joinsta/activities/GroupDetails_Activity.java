@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,7 +45,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_grp_admin, edt_grp_name, edt_grp_code, edt_grp_description, edt_noofmembers;
+    private TextView tv_codename, tv_description, tv_praticipants;
     private MaterialButton btn_members;
     private RecyclerView rv_group_members;
     private Button btn_connect, btn_status;
@@ -74,11 +73,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
-        edt_grp_admin = findViewById(R.id.edt_grp_admin);
-        edt_grp_name = findViewById(R.id.edt_grp_name);
-        edt_grp_code = findViewById(R.id.edt_grp_code);
-        edt_grp_description = findViewById(R.id.edt_grp_description);
-        edt_noofmembers = findViewById(R.id.edt_noofmembers);
+        tv_codename = findViewById(R.id.tv_codename);
+        tv_description = findViewById(R.id.tv_description);
+        tv_praticipants = findViewById(R.id.tv_praticipants);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         btn_members = findViewById(R.id.btn_members);
@@ -150,9 +147,6 @@ public class GroupDetails_Activity extends AppCompatActivity {
         btn_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
                 startActivity(new Intent(context, GroupMembersList_Activity.class)
                         .putExtra("groupId", groupDetails.getId()));
             }
@@ -228,11 +222,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
                         JSONArray jsonArray = jsonObject.getJSONArray("result");
                         JSONObject jsonObject1 = jsonArray.getJSONObject(0);
 
-                        edt_grp_admin.setText(jsonObject1.getString("first_name"));
-                        edt_grp_name.setText(jsonObject1.getString("group_name"));
-                        edt_grp_code.setText(jsonObject1.getString("group_code"));
-                        edt_grp_description.setText(jsonObject1.getString("group_description"));
-                        edt_noofmembers.setText(jsonObject1.getString("no_of_member"));
+                        tv_codename.setText(jsonObject1.getString("group_code") + " - " + jsonObject1.getString("group_name"));
+                        tv_description.setText(jsonObject1.getString("group_description"));
+                        tv_praticipants.setText(jsonObject1.getString("no_of_member") + " Participants");
 
                     }
                 }

@@ -14,8 +14,8 @@ public class Joinsta extends Application {
         super.onCreate();
         context = getApplicationContext();
 
-//        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/ebrima.ttf"); // font from assets
-        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/WhitneyHTF-Book.ttf"); // font from assets
+        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/ebrima.ttf"); // font from assets
+//        TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "fonts/WhitneyHTF-Book.ttf"); // font from assets
     }
 
 }

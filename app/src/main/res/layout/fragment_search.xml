@@ -83,14 +83,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="15dp">
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/edt_search"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="0.9"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:padding="10dp"
                 android:background="@android:color/transparent"
                 android:hint="Search" />
 
@@ -98,6 +100,8 @@
                 android:layout_width="0dp"
                 android:layout_height="20dp"
                 android:layout_weight="0.1"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
                 android:src="@drawable/icon_search"
                 android:tint="@color/mediumGray" />
 

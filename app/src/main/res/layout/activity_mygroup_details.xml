@@ -55,15 +55,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
+                app:cardBackgroundColor="@color/white"
                 app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -72,79 +75,50 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/tv_codename"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Group Details"
+                        android:paddingRight="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingBottom="2dp"
+                        android:text=""
                         android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:paddingTop="5dp"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:id="@+id/tv_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:text=""
+                        android:paddingRight="5dp"
+                        android:paddingLeft="5dp"
                         android:paddingBottom="5dp"
-                        android:textStyle="bold" />
+                        android:longClickable="false"
+                        android:textSize="16sp"
+                        android:textColor="@color/black" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_grp_admin"
+                    <TextView
+                        android:id="@+id/tv_praticipants"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
-                        android:hint="Group Admin"
+                        android:text=""
+                        android:paddingRight="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingBottom="5dp"
                         android:longClickable="false"
-                        android:textSize="14sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_grp_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:hint="Group Name"
-                        android:longClickable="false"
-                        android:textSize="14sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_grp_code"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:hint="Group Code"
-                        android:longClickable="false"
-                        android:textSize="14sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_grp_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:hint="Description"
-                        android:longClickable="false"
-                        android:textSize="14sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_noofmembers"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:hint="No. of members"
-                        android:longClickable="false"
-                        android:textSize="14sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:textSize="16sp"
+                        android:textColor="@color/black" />
 
                 </LinearLayout>
 
@@ -153,9 +127,12 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
+                app:cardBackgroundColor="@color/white"
                 app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -173,12 +150,12 @@
                             android:layout_width="0dp"
                             android:layout_weight="0.9"
                             android:layout_height="wrap_content"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:text="Group Leaders"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
                             android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textSize="18sp" />
 
                         <ImageButton
                             android:id="@+id/ib_more"
@@ -187,15 +164,22 @@
                             android:layout_gravity="center"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
-                            android:src="@drawable/icon_arrowdown" />
+                            android:src="@drawable/icon_arrowdown"
+                            android:visibility="gone" />
 
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_group_members"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone" />
+                        android:layout_height="match_parent" />
 
                 </LinearLayout>
 

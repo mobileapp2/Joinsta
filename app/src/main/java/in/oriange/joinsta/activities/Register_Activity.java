@@ -321,6 +321,7 @@ public class Register_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        Utilities.showAlertDialog(context, message, false);
                         new LoginUser().execute(edt_mobile.getText().toString().trim(), edt_password.getText().toString().trim());
                     } else if (type.equalsIgnoreCase("failure")) {
                         Utilities.showAlertDialog(context, message, false);
