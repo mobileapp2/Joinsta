@@ -49,8 +49,9 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private ImageView imv_image;
     private ProgressBar progressBar;
     private LinearLayout ll_nopreview;
-    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_mobile, edt_landline, edt_designation, edt_website, edt_select_area, edt_address, edt_pincode, edt_city,
-            edt_email, edt_district, edt_state, edt_country;
+    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_mobile, edt_landline, edt_designation, edt_website,
+            edt_select_area, edt_address, edt_pincode, edt_city, edt_email, edt_district, edt_state, edt_country,
+            edt_tax_alias, edt_pan, edt_gst, edt_accholdername, edt_bank_alias, edt_bank_name, edt_ifsc, edt_account_no;
     private CardView cv_tabs;
     private ImageView imv_share;
     private LinearLayout ll_mobile, ll_landline;
@@ -98,6 +99,14 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         edt_district = findViewById(R.id.edt_district);
         edt_state = findViewById(R.id.edt_state);
         edt_country = findViewById(R.id.edt_country);
+        edt_tax_alias = findViewById(R.id.edt_tax_alias);
+        edt_pan = findViewById(R.id.edt_pan);
+        edt_gst = findViewById(R.id.edt_gst);
+        edt_accholdername = findViewById(R.id.edt_accholdername);
+        edt_bank_alias = findViewById(R.id.edt_bank_alias);
+        edt_bank_name = findViewById(R.id.edt_bank_name);
+        edt_ifsc = findViewById(R.id.edt_ifsc);
+        edt_account_no = findViewById(R.id.edt_account_no);
         imv_share = findViewById(R.id.imv_share);
 
         ll_mobile = findViewById(R.id.ll_mobile);
@@ -126,6 +135,14 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         edt_district.setText(searchDetails.getDistrict());
         edt_state.setText(searchDetails.getState());
         edt_country.setText(searchDetails.getCountry());
+        edt_tax_alias.setText(searchDetails.getTax_alias());
+        edt_pan.setText(searchDetails.getPan_number());
+        edt_gst.setText(searchDetails.getGst_number());
+        edt_accholdername.setText(searchDetails.getAccount_holder_name());
+        edt_bank_alias.setText(searchDetails.getBank_alias());
+        edt_bank_name.setText(searchDetails.getBank_name());
+        edt_ifsc.setText(searchDetails.getIfsc_code());
+        edt_account_no.setText(searchDetails.getAccount_no());
 
         ArrayList<GetProfessionalModel.ResultBean.TagBean> tagsList = new ArrayList<>();
         tagsList = searchDetails.getTag().get(0);
@@ -180,9 +197,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                                     tv_countrycode_mobile.setText(code);
                             } else {
                                 edt_mobile.setText(mobilesList.get(i).getMobile_number());
-                                String code = "";
-                                if (!code.isEmpty())
-                                    tv_countrycode_mobile.setText(code);
+                                tv_countrycode_mobile.setText("+91");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -201,9 +216,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                                     ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
                             } else {
                                 ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number());
-                                String code = "";
-                                if (!code.isEmpty())
-                                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                                ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText("+91");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

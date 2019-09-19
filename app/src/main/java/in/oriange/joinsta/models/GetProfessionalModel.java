@@ -45,6 +45,8 @@ public class GetProfessionalModel implements Serializable {
         private String longitude;
         private String latitude;
         private String landmark;
+        private String type_id;
+        private String sub_type_id;
         private String locality;
         private String email;
         private String is_verified;
@@ -63,8 +65,19 @@ public class GetProfessionalModel implements Serializable {
         private String designation;
         private String IsFavourite;
         private String UserIsFavourite;
-        private String type_id;
-        private String sub_type_id;
+        private String bank_id;
+        private String account_holder_name;
+        private String bank_alias;
+        private String bank_name;
+        private String ifsc_code;
+        private String account_no;
+        private String bank_status;
+        private String tax_id;
+        private String tax_name;
+        private String tax_alias;
+        private String pan_number;
+        private String gst_number;
+        private String tax_status;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -307,6 +320,162 @@ public class GetProfessionalModel implements Serializable {
 
         public void setSub_type_id(String sub_type_id) {
             this.sub_type_id = sub_type_id;
+        }
+
+        public String getBank_id() {
+            if (bank_id != null) {
+                return bank_id;
+            } else {
+                return "";
+            }
+        }
+
+        public void setBank_id(String bank_id) {
+            this.bank_id = bank_id;
+        }
+
+        public String getAccount_holder_name() {
+            if (account_holder_name != null) {
+                return account_holder_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setAccount_holder_name(String account_holder_name) {
+            this.account_holder_name = account_holder_name;
+        }
+
+        public String getBank_alias() {
+            if (bank_alias != null) {
+                return bank_alias;
+            } else {
+                return "";
+            }
+        }
+
+        public void setBank_alias(String bank_alias) {
+            this.bank_alias = bank_alias;
+        }
+
+        public String getBank_name() {
+            if (bank_name != null) {
+                return bank_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setBank_name(String bank_name) {
+            this.bank_name = bank_name;
+        }
+
+        public String getIfsc_code() {
+            if (ifsc_code != null) {
+                return ifsc_code;
+            } else {
+                return "";
+            }
+        }
+
+        public void setIfsc_code(String ifsc_code) {
+            this.ifsc_code = ifsc_code;
+        }
+
+        public String getAccount_no() {
+            if (account_no != null) {
+                return account_no;
+            } else {
+                return "";
+            }
+        }
+
+        public void setAccount_no(String account_no) {
+            this.account_no = account_no;
+        }
+
+        public String getBank_status() {
+            if (bank_status != null) {
+                return bank_status;
+            } else {
+                return "";
+            }
+        }
+
+        public void setBank_status(String bank_status) {
+            this.bank_status = bank_status;
+        }
+
+        public String getTax_id() {
+            if (tax_id != null) {
+                return tax_id;
+            } else {
+                return "";
+            }
+        }
+
+        public void setTax_id(String tax_id) {
+            this.tax_id = tax_id;
+        }
+
+        public String getTax_name() {
+            if (tax_name != null) {
+                return tax_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setTax_name(String tax_name) {
+            this.tax_name = tax_name;
+        }
+
+        public String getTax_alias() {
+            if (tax_alias != null) {
+                return tax_alias;
+            } else {
+                return "";
+            }
+        }
+
+        public void setTax_alias(String tax_alias) {
+            this.tax_alias = tax_alias;
+        }
+
+        public String getPan_number() {
+            if (pan_number != null) {
+                return pan_number;
+            } else {
+                return "";
+            }
+        }
+
+        public void setPan_number(String pan_number) {
+            this.pan_number = pan_number;
+        }
+
+        public String getGst_number() {
+            if (gst_number != null) {
+                return gst_number;
+            } else {
+                return "";
+            }
+        }
+
+        public void setGst_number(String gst_number) {
+            this.gst_number = gst_number;
+        }
+
+        public String getTax_status() {
+            if (tax_status != null) {
+                return tax_status;
+            } else {
+                return "";
+            }
+        }
+
+        public void setTax_status(String tax_status) {
+            this.tax_status = tax_status;
         }
 
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {

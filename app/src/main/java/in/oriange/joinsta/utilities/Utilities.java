@@ -81,18 +81,38 @@ public class Utilities {
         return matcher.matches();
     }
 
-
-    private static boolean isValidPincode(String pincode) {
+    public static boolean isValidPincode(String pincode) {
         String Pincode_PATTERN = "[4]{1}[0-9]{5}";
         Pattern pattern = Pattern.compile(Pincode_PATTERN);
         Matcher matcher = pattern.matcher(pincode);
         return matcher.matches();
     }
 
-    private static boolean isValidPanNum(String pannum) {
+    public static boolean isValidPanNum(String pannum) {
         String Pannum_PATTERN = "[A-Z]{5}[0-9]{4}[A-Z]{1}";
         Pattern pattern = Pattern.compile(Pannum_PATTERN);
         Matcher matcher = pattern.matcher(pannum);
+        return matcher.matches();
+    }
+
+    public static boolean isWebsiteValid(String website) {
+        String expression = "w{3}\\.[a-z]+\\.?[a-z]{2,3}(|\\.[a-z]{2,3})";
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(website);
+        return matcher.matches();
+    }
+
+    public static boolean isIfscValid(String ifsc) {
+        String expression = "^[A-Za-z]{4}0[A-Z0-9a-z]{6}$";
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(ifsc);
+        return matcher.matches();
+    }
+
+    public static boolean isGSTValid(String gst) {
+        String expression = "[0-9]{2}[a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9A-Za-z]{1}[Z]{1}[0-9a-zA-Z]{1}";
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(gst);
         return matcher.matches();
     }
 

@@ -91,7 +91,8 @@ public class AddEmployee_Fragment extends Fragment {
     private ProgressDialog pd;
     private CircleImageView imv_user;
     private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
-            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country;
+            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country,
+            edt_tax_alias, edt_pan, edt_gst, edt_accholdername, edt_bank_alias, edt_bank_name, edt_ifsc, edt_account_no;
     private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
     private TextView tv_countrycode_mobile, tv_countrycode_landline;
@@ -149,6 +150,14 @@ public class AddEmployee_Fragment extends Fragment {
         edt_state = rootView.findViewById(R.id.edt_state);
         edt_country = rootView.findViewById(R.id.edt_country);
         edt_tag = rootView.findViewById(R.id.edt_tag);
+        edt_tax_alias = rootView.findViewById(R.id.edt_tax_alias);
+        edt_pan = rootView.findViewById(R.id.edt_pan);
+        edt_gst = rootView.findViewById(R.id.edt_gst);
+        edt_accholdername = rootView.findViewById(R.id.edt_accholdername);
+        edt_bank_alias = rootView.findViewById(R.id.edt_bank_alias);
+        edt_bank_name = rootView.findViewById(R.id.edt_bank_name);
+        edt_ifsc = rootView.findViewById(R.id.edt_ifsc);
+        edt_account_no = rootView.findViewById(R.id.edt_account_no);
 
         tag_container = rootView.findViewById(R.id.tag_container);
         tv_countrycode_mobile = rootView.findViewById(R.id.tv_countrycode_mobile);
@@ -821,6 +830,30 @@ public class AddEmployee_Fragment extends Fragment {
             return;
         }
 
+        if (!edt_pan.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isValidPanNum(edt_pan.getText().toString().trim())) {
+                edt_pan.setError("Please enter valid PAN ");
+                edt_pan.requestFocus();
+                return;
+            }
+        }
+
+        if (!edt_gst.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isGSTValid(edt_gst.getText().toString().trim())) {
+                edt_gst.setError("Please enter valid GST number");
+                edt_gst.requestFocus();
+                return;
+            }
+        }
+
+        if (!edt_ifsc.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isIfscValid(edt_ifsc.getText().toString().trim())) {
+                edt_ifsc.setError("Please enter valid IFSC code");
+                edt_ifsc.requestFocus();
+                return;
+            }
+        }
+
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
                 mobileList.add(((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).getText().toString() + "" +
@@ -881,16 +914,25 @@ public class AddEmployee_Fragment extends Fragment {
         mainObj.addProperty("organization_name", edt_name.getText().toString().trim());
         mainObj.addProperty("record_status_id", "0");
         mainObj.addProperty("website", edt_website.getText().toString().trim());
-        mainObj.addProperty("is_active", "0");
         mainObj.addProperty("other_details", "");
         mainObj.addProperty("image_url", imageName);
-//        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
-//        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
-//        mainObj.addProperty("cat_id", "1");
         mainObj.addProperty("type_id", categoryId);
         mainObj.addProperty("sub_type_id", subCategoryId);
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
+        mainObj.addProperty("is_active", "0");
+        mainObj.addProperty("is_deleted", "0");
+        mainObj.addProperty("tax_name", edt_tax_alias.getText().toString().trim());
+        mainObj.addProperty("tax_alias", edt_tax_alias.getText().toString().trim());
+        mainObj.addProperty("pan_number", edt_pan.getText().toString().trim());
+        mainObj.addProperty("gst_number", edt_gst.getText().toString().trim());
+        mainObj.addProperty("tax_status", "online");
+        mainObj.addProperty("account_holder_name", edt_accholdername.getText().toString().trim());
+        mainObj.addProperty("alias", edt_bank_alias.getText().toString().trim());
+        mainObj.addProperty("bank_name", edt_bank_name.getText().toString().trim());
+        mainObj.addProperty("ifsc_code", edt_ifsc.getText().toString().trim());
+        mainObj.addProperty("account_no", edt_account_no.getText().toString().trim());
+        mainObj.addProperty("status","online");
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_numbers", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
