@@ -71,7 +71,8 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
     private CheckBox cb_like;
     private ImageView imv_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
-    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address;
+    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
     private Button btn_enquire, btn_caldist;
     private CheckBox likeIcon;
     private CardView cv_tabs, cv_contact_details, cv_address;
