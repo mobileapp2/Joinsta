@@ -206,6 +206,19 @@ public class Utilities {
         alertD.show();
     }
 
+    public static void showAlertDialogNormal(Context context, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialog.setMessage(message);
+        alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+            }
+        });
+        alertDialog.create();
+        alertDialog.show();
+    }
+
+
     public static boolean isNetworkAvailable(Context context) {
         try {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -344,4 +357,5 @@ public class Utilities {
         alertDialog.show();
 
     }
+
 }

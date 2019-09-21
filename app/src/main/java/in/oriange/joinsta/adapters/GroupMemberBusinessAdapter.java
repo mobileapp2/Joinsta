@@ -11,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,6 +27,7 @@ import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -48,10 +53,12 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
     private Context context;
     private String userId, name, mobile;
     private List<GetBusinessModel.ResultBean> resultArrayList;
+    private JSONArray emailJsonArray;
 
     public GroupMemberBusinessAdapter(Context context, List<GetBusinessModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
+        emailJsonArray = new JSONArray();
 
         try {
             UserSessionManager session = new UserSessionManager(context);
@@ -61,6 +68,7 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
             userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
+            emailJsonArray = new JSONArray(json.getString("email"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -170,7 +178,6 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
         holder.btn_enquire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 LayoutInflater layoutInflater = LayoutInflater.from(context);
                 View promptView = layoutInflater.inflate(R.layout.dialog_layout_enquiry, null);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -178,15 +185,86 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
                 alertDialogBuilder.setView(promptView);
 
                 final MaterialEditText edt_name = promptView.findViewById(R.id.edt_name);
+                final RadioGroup rg_communicationmode = promptView.findViewById(R.id.rg_communicationmode);
+                final RadioButton rb_mobile = promptView.findViewById(R.id.rb_mobile);
+                final RadioButton rb_email = promptView.findViewById(R.id.rb_email);
                 final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+                final MaterialEditText edt_email = promptView.findViewById(R.id.edt_email);
                 final MaterialEditText edt_subject = promptView.findViewById(R.id.edt_subject);
                 final EditText edt_details = promptView.findViewById(R.id.edt_details);
                 final Button btn_save = promptView.findViewById(R.id.btn_save);
 
                 edt_name.setText(name);
-                edt_mobile.setText(mobile);
 
                 final AlertDialog alertD = alertDialogBuilder.create();
+
+                rb_mobile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        edt_mobile.setVisibility(View.VISIBLE);
+                        edt_email.setVisibility(View.GONE);
+
+                        edt_email.setText("");
+
+                        edt_mobile.setText(mobile);
+                    }
+                });
+
+                rb_email.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        edt_mobile.setVisibility(View.GONE);
+                        edt_mobile.setText("");
+
+                        if (emailJsonArray == null) {
+                            Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
+                            rg_communicationmode.clearCheck();
+                            return;
+                        }
+
+                        if (emailJsonArray.length() == 0) {
+                            Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
+                            rg_communicationmode.clearCheck();
+                            return;
+
+                        }
+
+                        try {
+                            for (int i = 0; i < emailJsonArray.length(); i++) {
+                                JSONObject emailObj = emailJsonArray.getJSONObject(0);
+                                if (emailObj.getString("is_primary").equals("1")) {
+                                    if (emailObj.getString("email_verification").equals("1")) {
+                                        if (emailObj.getString("email").equals("")) {
+                                            Utilities.showAlertDialogNormal(context, "Please update your primary email from Basic Information");
+                                            rg_communicationmode.clearCheck();
+                                            return;
+                                        }
+
+                                        edt_email.setText(emailObj.getString("email"));
+                                    } else {
+                                        Utilities.showAlertDialogNormal(context, "Please verify your primary email from Basic Information");
+                                        rg_communicationmode.clearCheck();
+                                        return;
+                                    }
+                                } else {
+                                    Utilities.showAlertDialogNormal(context, "Please set a primary email from Basic Information");
+                                    rg_communicationmode.clearCheck();
+                                    return;
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Utilities.showAlertDialogNormal(context, "We have made some changes related to user email, please kindly logout and login again to refresh your session");
+                            rg_communicationmode.clearCheck();
+                            return;
+
+                        }
+
+                        edt_email.setVisibility(View.VISIBLE);
+
+                    }
+                });
 
                 btn_save.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -198,9 +276,22 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
                             return;
                         }
 
-                        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                            edt_mobile.setError("Please enter valid mobile");
-                            edt_mobile.requestFocus();
+                        if (rb_mobile.isChecked()) {
+                            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                                edt_mobile.setError("Please enter valid mobile");
+                                edt_mobile.requestFocus();
+                                return;
+                            }
+                            edt_email.setText("");
+                        } else if (rb_email.isChecked()) {
+                            if (!Utilities.isValidMobileno(edt_email.getText().toString().trim())) {
+                                edt_email.setError("Please enter valid email");
+                                edt_email.requestFocus();
+                                return;
+                            }
+                            edt_mobile.setText("");
+                        } else {
+                            Utilities.showMessage("Please select communication mode", context, 2);
                             return;
                         }
 
@@ -216,7 +307,6 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
                             return;
                         }
 
-
                         if (Utilities.isNetworkAvailable(context)) {
                             alertD.dismiss();
 
@@ -225,7 +315,7 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
                                         userId,
                                         edt_name.getText().toString().trim(),
                                         edt_mobile.getText().toString().trim(),
-                                        "",
+                                        edt_email.getText().toString().trim(),
                                         edt_subject.getText().toString().trim(),
                                         edt_details.getText().toString().trim(),
                                         "1",
