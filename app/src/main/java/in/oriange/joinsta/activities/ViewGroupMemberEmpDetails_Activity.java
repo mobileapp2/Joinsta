@@ -73,9 +73,10 @@ public class ViewGroupMemberEmpDetails_Activity extends AppCompatActivity {
     private CheckBox cb_like;
     private ImageView imv_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
-    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address;
+    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
     private Button btn_enquire, btn_caldist;
-    private CardView cv_tabs, cv_contact_details, cv_address;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -111,6 +112,8 @@ public class ViewGroupMemberEmpDetails_Activity extends AppCompatActivity {
         cv_tabs = findViewById(R.id.cv_tabs);
         cv_contact_details = findViewById(R.id.cv_contact_details);
         cv_address = findViewById(R.id.cv_address);
+        cv_tax = findViewById(R.id.cv_tax);
+        cv_bank = findViewById(R.id.cv_bank);
 
         tv_name = findViewById(R.id.tv_name);
         tv_nature = findViewById(R.id.tv_nature);
@@ -118,6 +121,14 @@ public class ViewGroupMemberEmpDetails_Activity extends AppCompatActivity {
         tv_email = findViewById(R.id.tv_email);
         tv_website = findViewById(R.id.tv_website);
         tv_address = findViewById(R.id.tv_address);
+        tv_tax_alias = findViewById(R.id.tv_tax_alias);
+        tv_pan = findViewById(R.id.tv_pan);
+        tv_gst = findViewById(R.id.tv_gst);
+        tv_accholder_name = findViewById(R.id.tv_accholder_name);
+        tv_bank_alias = findViewById(R.id.tv_bank_alias);
+        tv_bank_name = findViewById(R.id.tv_bank_name);
+        tv_acc_no = findViewById(R.id.tv_acc_no);
+        tv_ifsc = findViewById(R.id.tv_ifsc);
         imv_share = findViewById(R.id.imv_share);
 
         btn_enquire = findViewById(R.id.btn_enquire);
@@ -224,6 +235,56 @@ public class ViewGroupMemberEmpDetails_Activity extends AppCompatActivity {
             tv_address.setText(searchDetails.getAddress());
         } else {
             cv_address.setVisibility(View.GONE);
+        }
+
+        if (!searchDetails.getTax_id().trim().isEmpty()) {
+            if (!searchDetails.getTax_alias().trim().isEmpty()) {
+                tv_tax_alias.setText(searchDetails.getTax_alias());
+            } else {
+                tv_tax_alias.setVisibility(View.GONE);
+            }
+            if (!searchDetails.getPan_number().trim().isEmpty()) {
+                tv_pan.setText("PAN - " + searchDetails.getPan_number());
+            } else {
+                tv_pan.setVisibility(View.GONE);
+            }
+            if (!searchDetails.getGst_number().trim().isEmpty()) {
+                tv_gst.setText("GST - " + searchDetails.getGst_number());
+            } else {
+                tv_gst.setVisibility(View.GONE);
+            }
+        } else {
+            cv_tax.setVisibility(View.GONE);
+        }
+
+        if (!searchDetails.getBank_id().trim().isEmpty()) {
+            if (!searchDetails.getAccount_holder_name().trim().isEmpty()) {
+                tv_accholder_name.setText(searchDetails.getAccount_holder_name());
+            } else {
+                tv_accholder_name.setVisibility(View.GONE);
+            }
+            if (!searchDetails.getBank_alias().trim().isEmpty()) {
+                tv_bank_alias.setText(searchDetails.getBank_alias());
+            } else {
+                tv_bank_alias.setVisibility(View.GONE);
+            }
+            if (!searchDetails.getBank_name().trim().isEmpty()) {
+                tv_bank_name.setText("Bank Name - " + searchDetails.getBank_name());
+            } else {
+                tv_bank_name.setVisibility(View.GONE);
+            }
+            if (!searchDetails.getAccount_no().trim().isEmpty()) {
+                tv_acc_no.setText("Acc. No. - " + searchDetails.getAccount_no());
+            } else {
+                tv_acc_no.setVisibility(View.GONE);
+            }
+            if (!searchDetails.getIfsc_code().trim().isEmpty()) {
+                tv_ifsc.setText("IFSC Code - " + searchDetails.getIfsc_code());
+            } else {
+                tv_ifsc.setVisibility(View.GONE);
+            }
+        } else {
+            cv_bank.setVisibility(View.GONE);
         }
 
     }
