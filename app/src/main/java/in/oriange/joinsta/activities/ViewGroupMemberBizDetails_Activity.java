@@ -247,7 +247,7 @@ public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
 
         if (!searchDetails.getTax_id().trim().isEmpty()) {
             if (!searchDetails.getTax_alias().trim().isEmpty()) {
-                tv_tax_alias.setText(searchDetails.getTax_alias());
+                tv_tax_alias.setText("Alias - " + searchDetails.getTax_alias());
             } else {
                 tv_tax_alias.setVisibility(View.GONE);
             }
@@ -272,7 +272,7 @@ public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
                 tv_accholder_name.setVisibility(View.GONE);
             }
             if (!searchDetails.getBank_alias().trim().isEmpty()) {
-                tv_bank_alias.setText(searchDetails.getBank_alias());
+                tv_bank_alias.setText("Alias - " + searchDetails.getBank_alias());
             } else {
                 tv_bank_alias.setVisibility(View.GONE);
             }

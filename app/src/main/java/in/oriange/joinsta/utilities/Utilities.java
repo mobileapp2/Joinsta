@@ -103,7 +103,7 @@ public class Utilities {
     }
 
     public static boolean isIfscValid(String ifsc) {
-        String expression = "^[A-Za-z]{4}0[A-Z0-9a-z]{6}$";
+        String expression = "^[A-Za-z]{4}[A-Z0-9a-z]{7}$";
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher(ifsc);
         return matcher.matches();

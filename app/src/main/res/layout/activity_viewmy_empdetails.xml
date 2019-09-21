@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -96,9 +97,12 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -106,59 +110,135 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_nature"
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Nature of Employment"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Employment Details"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_subtype"
+                        <View
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Subtype"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_height="0.5dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_marginBottom="4dp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_name"
+                        <TextView
+                            android:id="@+id/tv_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:hint="Name of Origanazition"
+                            android:text="Name of Business"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
                             android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textColor="@color/black" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_designation"
+                        <TextView
+                            android:id="@+id/tv_nature"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:hint="Designation"
-                            android:inputType="textCapWords|textNoSuggestions"
+                            android:text="Nature of Business"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
                             android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/tv_designation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:text="Designation"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_contact_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="2dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Contact Details"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_marginBottom="4dp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_mobilenos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/tv_email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:text="Email"
+                            android:drawableRight="@drawable/icon_email"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:longClickable="false"
+                            android:gravity="center_vertical"
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/tv_website"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:text="Website"
+                            android:drawableRight="@drawable/icon_website"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:longClickable="false"
+                            android:gravity="center_vertical"
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
@@ -168,29 +248,49 @@
                     android:id="@+id/cv_tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Tags (Product/Services Offered)"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_marginBottom="4dp" />
 
                         <co.lujun.androidtagview.TagContainerLayout
-                            android:id="@+id/tag_container"
+                            android:id="@+id/container_tags"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
                             app:container_background_color="@color/white"
                             app:container_border_color="@color/white"
                             app:container_border_width="0dp"
-                            app:container_enable_drag="true"
+                            app:container_enable_drag="false"
                             app:horizontal_interval="10dp"
                             app:tag_background_color="@color/colorPrimary"
                             app:tag_border_color="@color/colorPrimary"
                             app:tag_border_width="1dp"
-                            app:tag_clickable="true"
+                            app:tag_clickable="false"
                             app:tag_enable_cross="false"
                             app:tag_text_color="@color/white"
                             app:tag_text_size="16sp"
@@ -202,11 +302,16 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="5dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -217,280 +322,47 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            android:text="Contact Details"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                        <LinearLayout
-                            android:id="@+id/ll_mobile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-
-                                <TextView
-                                    android:id="@+id/tv_countrycode_mobile"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="0.15"
-                                    android:gravity="center"
-                                    android:text="+91"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
-
-                                <View
-                                    android:layout_width="0.7dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginRight="5dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:background="@color/mediumGray" />
-
-                                <com.rengwuxian.materialedittext.MaterialEditText
-                                    android:id="@+id/edt_mobile"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.75"
-                                    android:clickable="false"
-                                    android:focusable="false"
-                                    android:hint="Mobile"
-                                    android:inputType="number"
-                                    android:longClickable="false"
-                                    android:maxLength="10"
-                                    android:textSize="16sp"
-                                    app:met_floatingLabel="highlight"
-                                    app:met_textColorHint="@color/darkGray"
-                                    app:met_underlineColor="@color/mediumGray" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_landline"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_countrycode_landline"
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="0.15"
-                                    android:gravity="center"
-                                    android:text="+91"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
-
-                                <View
-                                    android:layout_width="0.7dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginRight="5dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:background="@color/mediumGray" />
-
-                                <com.rengwuxian.materialedittext.MaterialEditText
-                                    android:id="@+id/edt_landline"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="0.75"
-                                    android:clickable="false"
-                                    android:focusable="false"
-                                    android:hint="Landline"
-                                    android:inputType="number"
-                                    android:longClickable="false"
-                                    android:maxLength="10"
-                                    android:textSize="16sp"
-                                    app:met_floatingLabel="highlight"
-                                    app:met_textColorHint="@color/darkGray"
-                                    app:met_underlineColor="@color/mediumGray" />
-
-                            </LinearLayout>
-
-
-                        </LinearLayout>
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Email"
-                            android:inputType="textEmailAddress|textNoSuggestions"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_website"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Website"
-                            android:inputType="textWebEditText|textNoSuggestions"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
-                    app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:text="Address Details"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_select_area"
+                        <View
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Landmark"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_height="0.5dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_marginBottom="4dp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_address"
+                        <TextView
+                            android:id="@+id/tv_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:hint="Address"
-                            android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
+                            android:text="Address"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
                             android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_pincode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Pincode"
-                            android:inputType="number"
-                            android:longClickable="false"
-                            android:maxLength="6"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_city"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="City"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_district"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="District"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_state"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="State"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_country"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Country"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_tax"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -501,66 +373,75 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:text="Tax Details"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_tax_alias"
+                        <View
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Alias"
-                            android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_height="0.5dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_marginBottom="4dp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_pan"
+                        <TextView
+                            android:id="@+id/tv_tax_alias"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="PAN Number"
-                            android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
                             android:clickable="false"
                             android:focusable="false"
+                            android:text="Tax Alias"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_gst"
+                        <TextView
+                            android:id="@+id/tv_pan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="GST Number"
-                            android:inputType="number"
-                            android:maxLength="6"
-                            android:textSize="16sp"
                             android:clickable="false"
                             android:focusable="false"
+                            android:text="PAN Number"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/tv_gst"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:text="GST Number"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_bank"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/white"
+                    app:cardBackgroundColor="@color/white"
                     app:cardElevation="2dp"
-                    app:cardUseCompatPadding="true">
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    app:cardUseCompatPadding="true"
+                    app:cardCornerRadius="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -571,84 +452,88 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:text="Bank Details"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_accholdername"
+                        <View
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="textNoSuggestions|textCapWords"
-                            android:hint="Account Holder Name"
-                            android:textSize="16sp"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_height="0.5dp"
+                            android:background="@color/colorPrimary"
+                            android:layout_marginBottom="4dp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_bank_alias"
+                        <TextView
+                            android:id="@+id/tv_accholder_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Alias"
-                            android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
                             android:clickable="false"
                             android:focusable="false"
+                            android:text="Account Holder Name"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_bank_name"
+                        <TextView
+                            android:id="@+id/tv_bank_alias"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Bank Name"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
                             android:clickable="false"
                             android:focusable="false"
+                            android:text="Bank Alias"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_ifsc"
+                        <TextView
+                            android:id="@+id/tv_bank_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="IFSC Code"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
                             android:clickable="false"
                             android:focusable="false"
+                            android:text="Bank Name"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_account_no"
+                        <TextView
+                            android:id="@+id/tv_acc_no"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Account Number"
-                            android:inputType="number"
-                            android:maxLength="6"
-                            android:textSize="16sp"
                             android:clickable="false"
                             android:focusable="false"
+                            android:text="Account Number"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/tv_ifsc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:text="IFSC Code"
+                            android:paddingRight="5dp"
+                            android:paddingLeft="5dp"
+                            android:paddingBottom="2dp"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            android:textColor="@color/black" />
 
                     </LinearLayout>
 

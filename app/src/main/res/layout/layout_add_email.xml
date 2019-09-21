@@ -9,13 +9,38 @@
         android:id="@+id/edt_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.9"
+        android:layout_weight="0.6"
         android:hint="Email"
         android:inputType="textEmailAddress|textNoSuggestions"
         android:textSize="16sp"
         app:met_floatingLabel="highlight"
         app:met_textColorHint="@color/darkGray"
         app:met_underlineColor="@color/mediumGray" />
+
+    <TextView
+        android:id="@+id/tv_verify"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.15"
+        android:text="Verify"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:onClick="verifyEmail"
+        android:padding="2dp"
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_verified"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.15"
+        android:text="Verified"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:padding="2dp"
+        android:textColor="@android:color/holo_green_dark"
+        android:visibility="gone" />
 
     <ImageButton
         android:id="@+id/ib_remove_email"

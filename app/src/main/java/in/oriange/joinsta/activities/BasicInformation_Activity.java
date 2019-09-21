@@ -41,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.location.LocationCallback;
@@ -99,19 +100,21 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private CircleImageView imv_user;
     private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
             edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton ib_add_mobile, ib_add_landline, ib_add_email, ib_location;
+    private TextView tv_verify, tv_verified;
+
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
     private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode, latitude, longitude;
-    private JsonArray mobileJSONArray, landlineJSONArray, emailJSONArray;
 
-    private JSONArray mobileJsonArray, landlinesonArray, emailJsonArray;
+    private JSONArray mobileJsonArray, landlineJsonArray, emailJsonArray;
 
     private ArrayList<PrimaryPublicMobileSelectionModel> mobileList;
     private ArrayList<PrimarySelectionModel> landlineList, emailList;
@@ -131,7 +134,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
@@ -142,6 +144,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         imv_user = findViewById(R.id.imv_user);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         edt_fname = findViewById(R.id.edt_fname);
         edt_mname = findViewById(R.id.edt_mname);
@@ -154,6 +157,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
         edt_email = findViewById(R.id.edt_email);
         edt_reg_mobile = findViewById(R.id.edt_reg_mobile);
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
+
+        tv_verify = findViewById(R.id.tv_verify);
+        tv_verified = findViewById(R.id.tv_verified);
 
         rb_male = findViewById(R.id.rb_male);
         rb_female = findViewById(R.id.rb_female);
@@ -173,10 +179,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
         landlineLayoutsList = new ArrayList<>();
         emailLayoutsList = new ArrayList<>();
 
-        mobileJSONArray = new JsonArray();
-        landlineJSONArray = new JsonArray();
-        emailJSONArray = new JsonArray();
-
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
         emailList = new ArrayList<>();
@@ -195,7 +197,22 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
 
+            userId = json.getString("userid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new RefreshSession().execute(userId);
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            getSessionDetails();
+        }
     }
 
     private void getSessionDetails() {
@@ -249,12 +266,25 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 rb_female.setChecked(true);
             }
 
-            mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
-            landlinesonArray = new JSONArray(json.getString("landline_numbers"));
-            emailJsonArray = new JSONArray(json.getString("email"));
+            try {
+                mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
+            } catch (Exception e) {
+                mobileJsonArray = new JSONArray();
+            }
 
+            try {
+                landlineJsonArray = new JSONArray(json.getString("landline_numbers"));
+            } catch (Exception e) {
+                landlineJsonArray = new JSONArray();
+            }
 
-            if (mobileJSONArray != null)
+            try {
+                emailJsonArray = new JSONArray(json.getString("email"));
+            } catch (Exception e) {
+                emailJsonArray = new JSONArray();
+            }
+
+            if (mobileJsonArray != null)
                 if (mobileJsonArray.length() > 0) {
                     for (int i = 0; i < mobileJsonArray.length(); i++) {
                         if (i == (mobileJsonArray.length() - 1)) {
@@ -269,19 +299,19 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     }
                 }
 
-            if (landlinesonArray != null)
-                if (landlinesonArray.length() > 0) {
-                    for (int i = 0; i < landlinesonArray.length(); i++) {
+            if (landlineJsonArray != null)
+                if (landlineJsonArray.length() > 0) {
+                    for (int i = 0; i < landlineJsonArray.length(); i++) {
 
-                        if (i == (landlinesonArray.length() - 1)) {
-                            edt_landline.setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                        if (i == (landlineJsonArray.length() - 1)) {
+                            edt_landline.setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
 //                        landlineLayoutsList.add(ll_landline);
                         } else {
                             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
                             landlineLayoutsList.add((LinearLayout) rowView);
                             ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-                            ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlinesonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                            ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
                         }
                     }
                 }
@@ -289,22 +319,28 @@ public class BasicInformation_Activity extends AppCompatActivity {
             if (emailJsonArray != null)
                 if (emailJsonArray.length() > 0) {
                     for (int i = 0; i < emailJsonArray.length(); i++) {
-
                         if (i == (emailJsonArray.length() - 1)) {
                             edt_email.setText(emailJsonArray.getJSONObject(i).getString("email"));
-//                        emailLayoutsList.add(ll_email);
+                            if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
+                                tv_verify.setVisibility(View.VISIBLE);
+                            } else {
+                                tv_verified.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             final View rowView = inflater.inflate(R.layout.layout_add_email, null);
                             emailLayoutsList.add((LinearLayout) rowView);
-                            ll_email.addView(rowView, ll_email.getChildCount() - 1);
+                            ll_email.addView(rowView, ll_email.getChildCount());
                             ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
-
+                            if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
+                                (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
+                            } else {
+                                (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
+                            }
                         }
 
                     }
                 }
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -329,6 +365,18 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
         });
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new RefreshSession().execute(userId);
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
+        });
 
         edt_bloodgroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -423,6 +471,22 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 }
             }
         });
+
+        tv_verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("type", "SendVerificationLink");
+                obj.addProperty("email_id", edt_email.getText().toString().trim());
+                obj.addProperty("user_id", userId);
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SendVerificationLink().execute(obj.toString());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
     }
 
     private void selectImage() {
@@ -453,6 +517,54 @@ public class BasicInformation_Activity extends AppCompatActivity {
         });
         AlertDialog alertD = builder.create();
         alertD.show();
+    }
+
+    private class RefreshSession extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getUserDetails");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+                                session.createUserLoginSession(jsonarr.toString());
+                            }
+                        }
+                        getSessionDetails();
+                    } else {
+                        Utilities.showMessage("User details failed to update", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -757,6 +869,22 @@ public class BasicInformation_Activity extends AppCompatActivity {
         emailLayoutsList.remove(view.getParent());
     }
 
+    public void verifyEmail(View view) {
+        LinearLayout ll_email = (LinearLayout) view.getParent();
+        MaterialEditText edt_email = ll_email.findViewById(R.id.edt_email);
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "SendVerificationLink");
+        obj.addProperty("email_id", edt_email.getText().toString().trim());
+        obj.addProperty("user_id", userId);
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new SendVerificationLink().execute(obj.toString());
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -788,40 +916,11 @@ public class BasicInformation_Activity extends AppCompatActivity {
             return;
         }
 
-//        if (edt_mname.getText().toString().trim().isEmpty()) {
-//            edt_mname.setError("Please enter middle name");
-//            edt_mname.requestFocus();
-//            return;
-//        }
-//
-//        if (edt_lname.getText().toString().trim().isEmpty()) {
-//            edt_lname.setError("Please enter last name");
-//            edt_lname.requestFocus();
-//            return;
-//        }
-
         if (rb_male.isChecked()) {
             genderId = "1";
         } else if (rb_female.isChecked()) {
             genderId = "2";
         }
-//        else {
-//            Utilities.showMessage("Please select gender", context, 2);
-//            return;
-//        }
-
-//        if (edt_education.getText().toString().trim().isEmpty()) {
-//            edt_education.setError("Please select education");
-//            edt_education.requestFocus();
-//            return;
-//        }
-
-//        if (edt_specify.getText().toString().trim().isEmpty()) {
-//            edt_specify.setError("Please enter specification");
-//            edt_specify.requestFocus();
-//            return;
-//        }
-
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
@@ -877,13 +976,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
         }
 
-//        if (edt_nativeplace.getText().toString().trim().isEmpty()) {
-//            edt_nativeplace.setError("Please enter native place");
-//            edt_nativeplace.requestFocus();
-//            return;
-//        }
-
-
         try {
             for (int i = 0; i < mobileLayoutsList.size(); i++) {
                 if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
@@ -891,31 +983,35 @@ public class BasicInformation_Activity extends AppCompatActivity {
                         mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(i).getString("user_moblie_id")));
                     } else {
                         mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", "0"));
-
                     }
                 }
             }
 
-            if (mobileJsonArray != null)
-                mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
-            else
-                mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", "0"));
-
+            if (mobileJsonArray.length() != 0) {
+                if (!edt_mobile.getText().toString().trim().isEmpty())
+                    mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
+            } else {
+                if (!edt_mobile.getText().toString().trim().isEmpty())
+                    mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", "0"));
+            }
 
             for (int i = 0; i < landlineLayoutsList.size(); i++) {
                 if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
-                    if (i < landlinesonArray.length() - 1) {
-                        landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", landlinesonArray.getJSONObject(i).getString("user_landline_id")));
+                    if (i < landlineJsonArray.length() - 1) {
+                        landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", landlineJsonArray.getJSONObject(i).getString("user_landline_id")));
                     } else {
                         landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", "0"));
                     }
                 }
             }
 
-            if (landlinesonArray != null)
-                landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlinesonArray.getJSONObject(landlinesonArray.length() - 1).getString("user_landline_id")));
-            else
-                landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", "0"));
+            if (landlineJsonArray.length() != 0) {
+                if (!edt_landline.getText().toString().trim().isEmpty())
+                    landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlineJsonArray.getJSONObject(landlineJsonArray.length() - 1).getString("user_landline_id")));
+            } else {
+                if (!edt_landline.getText().toString().trim().isEmpty())
+                    landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", "0"));
+            }
 
             for (int i = 0; i < emailLayoutsList.size(); i++) {
                 if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
@@ -927,19 +1023,23 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 }
             }
 
-            if (emailJsonArray != null)
-                emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
-            else
-                emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", "0"));
-
+            if (emailJsonArray.length() != 0) {
+                if (!edt_email.getText().toString().trim().isEmpty())
+                    emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
+            } else {
+                if (!edt_email.getText().toString().trim().isEmpty())
+                    emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", "0"));
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-//        showPrimaryMobileDialog();
-
-        submitData();
+        if (emailList.size() != 0) {
+            showPrimaryEmailDialog();
+        } else {
+            submitData();
+        }
 
 
     }
@@ -1249,7 +1349,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             holder.rb_selectone.setText(emailList.get(position).getDetails());
-
             holder.rb_selectone.setChecked(lastSelectedEmailPrimary == position);
         }
 
@@ -1281,9 +1380,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
-        mobileJSONArray = new JsonArray();
-        landlineJSONArray = new JsonArray();
-        emailJSONArray = new JsonArray();
+        JsonArray mobileJSONArray = new JsonArray();
+        JsonArray landlineJSONArray = new JsonArray();
+        JsonArray emailJSONArray = new JsonArray();
 
         JsonObject mainObj = new JsonObject();
 
@@ -1307,7 +1406,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         for (int i = 0; i < emailList.size(); i++) {
             JsonObject emailJSONObj = new JsonObject();
             emailJSONObj.addProperty("email_id", emailList.get(i).getDetails());
-            emailJSONObj.addProperty("is_primary", "1");
+            emailJSONObj.addProperty("is_primary", emailList.get(i).getIsPrimary());
             emailJSONObj.addProperty("id", emailList.get(i).getId());
             emailJSONArray.add(emailJSONObj);
         }
@@ -1411,6 +1510,47 @@ public class BasicInformation_Activity extends AppCompatActivity {
         }
     }
 
+    private class SendVerificationLink extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.EMAILVERIFYAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showAlertDialog(context, "Verification link is sent on your email, " +
+                                "when you have successfully verified your email through that link please kindly swipe down " +
+                                "to refresh your email verification status", true);
+                    } else {
+                        Utilities.showMessage("User details failed to update", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -1423,6 +1563,8 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
         });
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void askPermission() {
@@ -1504,19 +1646,19 @@ public class BasicInformation_Activity extends AppCompatActivity {
         }
     }
 
-    private static LocationRequest mLocationRequest;
-
-    private long UPDATE_INTERVAL = 10 * 10000000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 20000; /* 2 sec */
     private LatLng latLng;
 
     @SuppressLint("RestrictedApi")
     private void startLocationUpdates() {
 
         // Create the location request to start receiving updates
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        /* 10 secs */
+        long UPDATE_INTERVAL = 10 * 10000000;
         mLocationRequest.setInterval(UPDATE_INTERVAL);
+        /* 2 sec */
+        long FASTEST_INTERVAL = 20000;
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();

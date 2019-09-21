@@ -311,9 +311,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
                                     tv_countrycode_mobile.setText(code);
                             } else {
                                 edt_mobile.setText(mobilesList.get(i).getMobile_number());
-                                String code = "";
-                                if (!code.isEmpty())
-                                    tv_countrycode_mobile.setText(code);
+                                tv_countrycode_mobile.setText("+91");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -332,9 +330,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
                                     ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
                             } else {
                                 ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number());
-                                String code = "";
-                                if (!code.isEmpty())
-                                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                                ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText("+91");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -361,9 +357,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
                                     tv_countrycode_landline.setText(code);
                             } else {
                                 edt_landline.setText(landlineList.get(i).getLandline_number());
-                                String code = "";
-                                if (!code.isEmpty())
-                                    tv_countrycode_landline.setText(code);
+                                tv_countrycode_landline.setText("+91");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -383,9 +377,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
                                     ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
                             } else {
                                 ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number());
-                                String code = "";
-                                if (!code.isEmpty())
-                                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
+                                ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText("+91");
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
