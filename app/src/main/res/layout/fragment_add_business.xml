@@ -502,7 +502,10 @@
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    app:met_underlineColor="@color/mediumGray"
+                    app:met_helperText="e.g - AAAPL1234C"
+                    app:met_helperTextAlwaysShown="true"
+                    app:met_helperTextColor="@color/helper_color" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_gst"
@@ -516,7 +519,10 @@
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    app:met_underlineColor="@color/mediumGray"
+                    app:met_helperText="e.g - 22AAAAA0000A1Z5"
+                    app:met_helperTextAlwaysShown="true"
+                    app:met_helperTextColor="@color/helper_color" />
 
             </LinearLayout>
 
@@ -590,7 +596,10 @@
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    app:met_underlineColor="@color/mediumGray"
+                    app:met_helperText="e.g - IFSC1234567"
+                    app:met_helperTextAlwaysShown="true"
+                    app:met_helperTextColor="@color/helper_color" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_account_no"

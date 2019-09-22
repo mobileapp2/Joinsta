@@ -66,6 +66,7 @@ public class EnquiriesListModel {
         private String message;
         private String category_type_id;
         private String record_id;
+        private String communication_mode;
         private String created_by;
         private String created_at;
         private String is_attended;
@@ -137,6 +138,14 @@ public class EnquiriesListModel {
 
         public void setRecord_id(String record_id) {
             this.record_id = record_id;
+        }
+
+        public String getCommunication_mode() {
+            return communication_mode;
+        }
+
+        public void setCommunication_mode(String communication_mode) {
+            this.communication_mode = communication_mode;
         }
 
         public String getCreated_by() {

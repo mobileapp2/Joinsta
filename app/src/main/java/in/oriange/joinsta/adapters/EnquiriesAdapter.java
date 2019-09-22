@@ -90,7 +90,6 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
-//        holder.tv_createdby.setText("By: " + enquiryDetails.getName());
 
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
@@ -106,32 +105,46 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
             holder.sw_attend.setChecked(false);
         }
 
+        if (enquiryDetails.getCommunication_mode().equals("mobile")) {
+            holder.ib_call.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_call));
+        } else if (enquiryDetails.getCommunication_mode().equals("email")) {
+            holder.ib_call.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_email));
+        }
+
         holder.ib_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    provideCallPremission(context);
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setMessage("Are you sure you want to make a call?");
-                    builder.setTitle("Alert");
-                    builder.setIcon(R.drawable.icon_call);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            context.startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:" + enquiryDetails.getMobile())));
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
+                if (enquiryDetails.getCommunication_mode().equals("mobile")) {
+
+                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        provideCallPremission(context);
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        builder.setMessage("Are you sure you want to make a call?");
+                        builder.setTitle("Alert");
+                        builder.setIcon(R.drawable.icon_call);
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                context.startActivity(new Intent(Intent.ACTION_CALL,
+                                        Uri.parse("tel:" + enquiryDetails.getMobile())));
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertD = builder.create();
+                        alertD.show();
+                    }
+
+                } else if (enquiryDetails.getCommunication_mode().equals("email")) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", enquiryDetails.getEmail(), null));
+                    context.startActivity(Intent.createChooser(emailIntent, "Send email..."));                }
+
             }
         });
 

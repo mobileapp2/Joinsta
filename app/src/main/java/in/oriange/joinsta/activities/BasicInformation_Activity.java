@@ -323,8 +323,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
                             edt_email.setText(emailJsonArray.getJSONObject(i).getString("email"));
                             if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
                                 tv_verify.setVisibility(View.VISIBLE);
+                                tv_verified.setVisibility(View.GONE);
                             } else {
                                 tv_verified.setVisibility(View.VISIBLE);
+                                tv_verify.setVisibility(View.GONE);
                             }
                         } else {
                             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -334,8 +336,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
                             ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
                             if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
                                 (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
+                                (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.GONE);
                             } else {
                                 (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
+                                (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.GONE);
                             }
                         }
 
@@ -370,6 +374,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
                     new RefreshSession().execute(userId);
+                    swipeRefreshLayout.setRefreshing(false);
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);

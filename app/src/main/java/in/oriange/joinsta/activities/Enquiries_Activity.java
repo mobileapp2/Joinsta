@@ -81,7 +81,6 @@ public class Enquiries_Activity extends AppCompatActivity {
         }
     }
 
-
     private void setEventHandler() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

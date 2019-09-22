@@ -604,7 +604,7 @@ public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
                             }
                             edt_email.setText("");
                         } else if (rb_email.isChecked()) {
-                            if (!Utilities.isValidMobileno(edt_email.getText().toString().trim())) {
+                            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
                                 edt_email.setError("Please enter valid email");
                                 edt_email.requestFocus();
                                 return;
