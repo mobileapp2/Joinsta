@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
@@ -1438,7 +1439,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         Log.i("BASICINFOJSON", mainObj.toString());
         if (Utilities.isNetworkAvailable(context)) {
-            new UpdateUser().execute(mainObj.toString());
+            new UpdateUser().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }

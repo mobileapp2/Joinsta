@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.ContryCodeModel;
@@ -185,7 +186,7 @@ public class AddReportIssue_Activity extends AppCompatActivity {
         mainObj.addProperty("Rating", "0");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddRequirement().execute(mainObj.toString());
+            new AddRequirement().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }

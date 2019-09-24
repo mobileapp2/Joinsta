@@ -60,6 +60,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
@@ -941,7 +942,7 @@ public class AddEmployee_Fragment extends Fragment {
 
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddEmployee().execute(mainObj.toString());
+            new AddEmployee().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }

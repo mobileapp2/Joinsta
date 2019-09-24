@@ -62,6 +62,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
@@ -1168,7 +1169,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         Log.i("EDITPROFESSIONAL", mainObj.toString());
 
         if (Utilities.isNetworkAvailable(context)) {
-            new EditProfessional().execute(mainObj.toString());
+            new EditProfessional().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }

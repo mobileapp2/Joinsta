@@ -191,7 +191,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     builder.setTitle("Alert");
                     builder.setIcon(R.drawable.icon_alertred);
                     builder.setCancelable(false);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             new ExitGroup().execute(
                                     userId,

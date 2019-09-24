@@ -246,55 +246,55 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
             cv_address.setVisibility(View.GONE);
         }
 
-        if (!searchDetails.getTax_id().trim().isEmpty()) {
-            if (!searchDetails.getTax_alias().trim().isEmpty()) {
-                tv_tax_alias.setText("Alias - " + searchDetails.getTax_alias());
-            } else {
-                tv_tax_alias.setVisibility(View.GONE);
-            }
-            if (!searchDetails.getPan_number().trim().isEmpty()) {
-                tv_pan.setText("PAN - " + searchDetails.getPan_number());
-            } else {
-                tv_pan.setVisibility(View.GONE);
-            }
-            if (!searchDetails.getGst_number().trim().isEmpty()) {
-                tv_gst.setText("GST - " + searchDetails.getGst_number());
-            } else {
-                tv_gst.setVisibility(View.GONE);
-            }
-        } else {
-            cv_tax.setVisibility(View.GONE);
-        }
+//        if (!searchDetails.getTax_id().trim().isEmpty()) {
+//            if (!searchDetails.getTax_alias().trim().isEmpty()) {
+//                tv_tax_alias.setText("Alias - " + searchDetails.getTax_alias());
+//            } else {
+//                tv_tax_alias.setVisibility(View.GONE);
+//            }
+//            if (!searchDetails.getPan_number().trim().isEmpty()) {
+//                tv_pan.setText("PAN - " + searchDetails.getPan_number());
+//            } else {
+//                tv_pan.setVisibility(View.GONE);
+//            }
+//            if (!searchDetails.getGst_number().trim().isEmpty()) {
+//                tv_gst.setText("GST - " + searchDetails.getGst_number());
+//            } else {
+//                tv_gst.setVisibility(View.GONE);
+//            }
+//        } else {
+//            cv_tax.setVisibility(View.GONE);
+//        }
 
-        if (!searchDetails.getBank_id().trim().isEmpty()) {
-            if (!searchDetails.getAccount_holder_name().trim().isEmpty()) {
-                tv_accholder_name.setText(searchDetails.getAccount_holder_name());
-            } else {
-                tv_accholder_name.setVisibility(View.GONE);
-            }
-            if (!searchDetails.getBank_alias().trim().isEmpty()) {
-                tv_bank_alias.setText("Alias - " + searchDetails.getBank_alias());
-            } else {
-                tv_bank_alias.setVisibility(View.GONE);
-            }
-            if (!searchDetails.getBank_name().trim().isEmpty()) {
-                tv_bank_name.setText("Bank Name - " + searchDetails.getBank_name());
-            } else {
-                tv_bank_name.setVisibility(View.GONE);
-            }
-            if (!searchDetails.getAccount_no().trim().isEmpty()) {
-                tv_acc_no.setText("Acc. No. - " + searchDetails.getAccount_no());
-            } else {
-                tv_acc_no.setVisibility(View.GONE);
-            }
-            if (!searchDetails.getIfsc_code().trim().isEmpty()) {
-                tv_ifsc.setText("IFSC Code - " + searchDetails.getIfsc_code());
-            } else {
-                tv_ifsc.setVisibility(View.GONE);
-            }
-        } else {
-            cv_bank.setVisibility(View.GONE);
-        }
+//        if (!searchDetails.getBank_id().trim().isEmpty()) {
+//            if (!searchDetails.getAccount_holder_name().trim().isEmpty()) {
+//                tv_accholder_name.setText(searchDetails.getAccount_holder_name());
+//            } else {
+//                tv_accholder_name.setVisibility(View.GONE);
+//            }
+//            if (!searchDetails.getBank_alias().trim().isEmpty()) {
+//                tv_bank_alias.setText("Alias - " + searchDetails.getBank_alias());
+//            } else {
+//                tv_bank_alias.setVisibility(View.GONE);
+//            }
+//            if (!searchDetails.getBank_name().trim().isEmpty()) {
+//                tv_bank_name.setText("Bank Name - " + searchDetails.getBank_name());
+//            } else {
+//                tv_bank_name.setVisibility(View.GONE);
+//            }
+//            if (!searchDetails.getAccount_no().trim().isEmpty()) {
+//                tv_acc_no.setText("Acc. No. - " + searchDetails.getAccount_no());
+//            } else {
+//                tv_acc_no.setVisibility(View.GONE);
+//            }
+//            if (!searchDetails.getIfsc_code().trim().isEmpty()) {
+//                tv_ifsc.setText("IFSC Code - " + searchDetails.getIfsc_code());
+//            } else {
+//                tv_ifsc.setVisibility(View.GONE);
+//            }
+//        } else {
+//            cv_bank.setVisibility(View.GONE);
+//        }
 
     }
 

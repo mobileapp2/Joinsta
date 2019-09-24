@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
@@ -972,6 +973,7 @@ public class AddBusiness_Fragment extends Fragment {
         mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
         mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
+        mainObj.addProperty("updated_by", userId);
         mainObj.addProperty("is_active", "0");
         mainObj.addProperty("is_deleted", "0");
         mainObj.addProperty("organization_name", "");
@@ -986,7 +988,7 @@ public class AddBusiness_Fragment extends Fragment {
         mainObj.addProperty("bank_name", edt_bank_name.getText().toString().trim());
         mainObj.addProperty("ifsc_code", edt_ifsc.getText().toString().trim());
         mainObj.addProperty("account_no", edt_account_no.getText().toString().trim());
-        mainObj.addProperty("status","online");
+        mainObj.addProperty("status", "online");
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
@@ -994,7 +996,7 @@ public class AddBusiness_Fragment extends Fragment {
         Log.i("ADDBUSINESS", mainObj.toString());
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddBusiness().execute(mainObj.toString());
+            new AddBusiness().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }

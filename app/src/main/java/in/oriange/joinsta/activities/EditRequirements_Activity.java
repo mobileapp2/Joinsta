@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Request_Fragment;
@@ -168,7 +169,7 @@ public class EditRequirements_Activity extends AppCompatActivity {
         mainObj.addProperty("is_active", "1");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new EditRequirement().execute(mainObj.toString());
+            new EditRequirement().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
