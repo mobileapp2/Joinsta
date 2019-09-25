@@ -20,8 +20,12 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.Notification_Activity;
@@ -39,11 +43,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private Context context;
     private UserSessionManager session;
     private String userId;
+    private PrettyTime p;
 
     public NotificationAdapter(Context context, List<NotificationListModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
         session = new UserSessionManager(context);
+        p = new PrettyTime();
 
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
@@ -68,13 +74,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
-        final NotificationListModel.ResultBean searchDetails = resultArrayList.get(position);
+        final NotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
 
-        holder.tv_title.setText(searchDetails.getTitle());
-        holder.tv_message.setText(searchDetails.getDescription());
 
-        if (!searchDetails.getImage().equals("")) {
-            String url = IMAGE_LINK + "notifications/" + searchDetails.getImage();
+        holder.tv_title.setText(notificationDetails.getTitle());
+        holder.tv_message.setText(notificationDetails.getDescription());
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            holder.tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (!notificationDetails.getImage().equals("")) {
+            String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
             Picasso.with(context)
                     .load(url)
                     .into(holder.imv_notificationimg, new Callback() {
@@ -103,7 +117,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            new DeleteNotification().execute(searchDetails.getUsernotification_id());
+                            new DeleteNotification().execute(notificationDetails.getUsernotification_id());
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
@@ -132,7 +146,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         private CardView cv_mainlayout;
         private ImageView imv_notificationimg;
-        private TextView tv_title, tv_message;
+        private TextView tv_title, tv_message, tv_time;
 
         public MyViewHolder(View view) {
             super(view);
@@ -140,6 +154,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             imv_notificationimg = view.findViewById(R.id.imv_notificationimg);
             tv_title = view.findViewById(R.id.tv_title);
             tv_message = view.findViewById(R.id.tv_message);
+            tv_time = view.findViewById(R.id.tv_time);
         }
     }
 

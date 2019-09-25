@@ -40,6 +40,8 @@ public class GroupMemebersListModel {
         private String id;
         private String first_name;
         private String mobile;
+        private String image_url;
+        private String is_joinsta_member;
 
         public String getGroup_name() {
             return group_name;
@@ -87,6 +89,22 @@ public class GroupMemebersListModel {
 
         public void setMobile(String mobile) {
             this.mobile = mobile;
+        }
+
+        public String getImage_url() {
+            return image_url;
+        }
+
+        public void setImage_url(String image_url) {
+            this.image_url = image_url;
+        }
+
+        public String getIs_joinsta_member() {
+            return is_joinsta_member;
+        }
+
+        public void setIs_joinsta_member(String is_joinsta_member) {
+            this.is_joinsta_member = is_joinsta_member;
         }
     }
 }

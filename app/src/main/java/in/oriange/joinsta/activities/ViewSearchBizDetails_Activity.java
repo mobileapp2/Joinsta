@@ -709,15 +709,12 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
 
+                String details = sb.toString() + "\n\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
                 context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
-
-//                String url = "https://olawebcdn.com/assets/ola-universal-link.html?lat=12.935&lng=77.614&category=share&utm_source=xapp_token&landing_page=bk&drop_lat=12.979&drop_lng=77.590&affiliate_uid=12345";
-//                Intent i = new Intent(Intent.ACTION_VIEW);
-//                i.setData(Uri.parse(url));
-//                startActivity(i);
 
             }
         });

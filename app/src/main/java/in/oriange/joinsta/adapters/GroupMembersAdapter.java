@@ -5,13 +5,18 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.GroupMembersProfileDetails_Activity;
 import in.oriange.joinsta.models.GroupMemebersListModel;
@@ -38,21 +43,29 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         final int position = holder.getAdapterPosition();
         final GroupMemebersListModel.ResultBean groupDetails = resultArrayList.get(position);
 
-        if (!groupDetails.getFirst_name().trim().isEmpty()) {
-            holder.tv_initletter.setText(groupDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
-        }
         holder.tv_name.setText(groupDetails.getFirst_name().trim());
         holder.tv_mobile.setText(groupDetails.getMobile());
 
-        if (groupDetails.getRole().equalsIgnoreCase("group_admin")) {
-            holder.tv_role.setVisibility(View.VISIBLE);
-            holder.tv_role.setText("Admin");
-        } else if (groupDetails.getRole().equalsIgnoreCase("group_supervisor")) {
-            holder.tv_role.setVisibility(View.VISIBLE);
-            holder.tv_role.setText("Supervisor");
-        } else if (groupDetails.getRole().equalsIgnoreCase("group_member")) {
-            holder.tv_role.setVisibility(View.VISIBLE);
-            holder.tv_role.setText("Member");
+        if (!groupDetails.getImage_url().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(groupDetails.getImage_url().trim())
+                    .placeholder(R.drawable.icon_user)
+                    .into(holder.imv_user, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.imv_user.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            holder.progressBar.setVisibility(View.GONE);
+                            holder.imv_user.setVisibility(View.VISIBLE);
+                        }
+                    });
+        } else {
+            holder.progressBar.setVisibility(View.GONE);
+            holder.imv_user.setVisibility(View.VISIBLE);
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +73,8 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
                         .putExtra("userId", groupDetails.getId())
-                        .putExtra("name", groupDetails.getFirst_name().trim()));
+                        .putExtra("name", groupDetails.getFirst_name().trim())
+                        .putExtra("imageUrl", groupDetails.getImage_url().trim()));
             }
         });
 
@@ -74,14 +88,16 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_initletter, tv_name, tv_role, tv_mobile;
+        private CircleImageView imv_user;
+        private ProgressBar progressBar;
+        private TextView tv_name, tv_mobile;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
-            tv_initletter = view.findViewById(R.id.tv_initletter);
+            imv_user = view.findViewById(R.id.imv_user);
+            progressBar = view.findViewById(R.id.progressBar);
             tv_name = view.findViewById(R.id.tv_name);
-            tv_role = view.findViewById(R.id.tv_role);
             tv_mobile = view.findViewById(R.id.tv_mobile);
         }
     }

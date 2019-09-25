@@ -14,6 +14,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -26,13 +27,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.MyGroupsListModel;
@@ -69,7 +72,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         setEventHandler();
         setUpToolbar();
     }
-
 
     private void init() {
         context = MyGroupDetails_Activity.this;
@@ -297,9 +299,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             final int position = holder.getAdapterPosition();
             final MyGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails = leadsList.get(position);
 
-            if (!memberDetails.getFirst_name().trim().isEmpty()) {
-                holder.tv_initletter.setText(memberDetails.getFirst_name().trim().substring(0, 1).toUpperCase());
-            }
             holder.tv_name.setText(memberDetails.getFirst_name().trim());
             holder.tv_mobile.setText(memberDetails.getMobile());
 
@@ -314,12 +313,35 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 holder.tv_role.setText("Member");
             }
 
+            if (!memberDetails.getImage_url().trim().isEmpty()) {
+                Picasso.with(context)
+                        .load(memberDetails.getImage_url().trim())
+                        .placeholder(R.drawable.icon_user)
+                        .into(holder.imv_user, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                holder.progressBar.setVisibility(View.GONE);
+                                holder.imv_user.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onError() {
+                                holder.progressBar.setVisibility(View.GONE);
+                                holder.imv_user.setVisibility(View.VISIBLE);
+                            }
+                        });
+            } else {
+                holder.progressBar.setVisibility(View.GONE);
+                holder.imv_user.setVisibility(View.VISIBLE);
+            }
+
             holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
                             .putExtra("userId", memberDetails.getId())
-                            .putExtra("name", memberDetails.getFirst_name().trim()));
+                            .putExtra("name", memberDetails.getFirst_name().trim())
+                            .putExtra("imageUrl", memberDetails.getImage_url().trim()));
                 }
             });
 
@@ -334,12 +356,15 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private CardView cv_mainlayout;
-            private TextView tv_initletter, tv_name, tv_role, tv_mobile;
+            private CircleImageView imv_user;
+            private ProgressBar progressBar;
+            private TextView tv_name, tv_role, tv_mobile;
 
             public MyViewHolder(View view) {
                 super(view);
                 cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
-                tv_initletter = view.findViewById(R.id.tv_initletter);
+                imv_user = view.findViewById(R.id.imv_user);
+                progressBar = view.findViewById(R.id.progressBar);
                 tv_name = view.findViewById(R.id.tv_name);
                 tv_role = view.findViewById(R.id.tv_role);
                 tv_mobile = view.findViewById(R.id.tv_mobile);

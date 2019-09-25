@@ -705,9 +705,11 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
 
+                String details = sb.toString() + "\n\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
                 context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
 
             }

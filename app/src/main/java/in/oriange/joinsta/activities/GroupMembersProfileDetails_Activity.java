@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,12 +17,15 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupMemberBusinessAdapter;
 import in.oriange.joinsta.adapters.GroupMemberEmployeeAdapter;
@@ -41,10 +45,12 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
     private static RecyclerView rv_details;
     private static SpinKitView progressBar;
 
-    private TextView tv_name, tv_initletter;
+    private TextView tv_name;
+    private CircleImageView imv_user;
+    private ProgressBar progressBar1;
     private static LinearLayout ll_nopreview, ll_business, ll_employee, ll_professional;
     private View v_business, v_employee, v_professional;
-    private static String userId, name, currentUserId;
+    private static String userId, name, currentUserId, imageUrl;
 
     public static ArrayList<GetBusinessModel.ResultBean> businessList;
     public static ArrayList<GetEmployeeModel.ResultBean> employeeList;
@@ -74,7 +80,8 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         rv_details.setLayoutManager(new LinearLayoutManager(context));
 
         tv_name = findViewById(R.id.tv_name);
-        tv_initletter = findViewById(R.id.tv_initletter);
+        imv_user = findViewById(R.id.imv_user);
+        progressBar1 = findViewById(R.id.progressBar1);
         ll_nopreview = findViewById(R.id.ll_nopreview);
         ll_business = findViewById(R.id.ll_business);
         ll_employee = findViewById(R.id.ll_employee);
@@ -106,10 +113,30 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
     private void setDefault() {
         userId = getIntent().getStringExtra("userId");
         name = getIntent().getStringExtra("name");
+        imageUrl = getIntent().getStringExtra("imageUrl");
 
-        if (!name.trim().isEmpty()) {
-            tv_initletter.setText(name.trim().substring(0, 1).toUpperCase());
+        if (!imageUrl.isEmpty()) {
+            Picasso.with(context)
+                    .load(imageUrl.trim())
+                    .placeholder(R.drawable.icon_user)
+                    .into(imv_user, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            progressBar1.setVisibility(View.GONE);
+                            imv_user.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            progressBar1.setVisibility(View.GONE);
+                            imv_user.setVisibility(View.VISIBLE);
+                        }
+                    });
+        } else {
+            progressBar1.setVisibility(View.GONE);
+            imv_user.setVisibility(View.VISIBLE);
         }
+
         tv_name.setText(name.trim());
 
         if (Utilities.isNetworkAvailable(context))

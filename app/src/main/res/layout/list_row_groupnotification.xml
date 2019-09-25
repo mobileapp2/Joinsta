@@ -38,6 +38,19 @@
             android:text="Batman is a fictional in American comic books published by DC Comics. The character was created by artist Bob Kane "
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:clickable="false"
+            android:longClickable="false"
+            android:padding="5dp"
+            android:gravity="end"
+            android:text="2 months ago"
+            android:textColor="@color/darkGray"
+            android:textSize="16sp" />
     </LinearLayout>
 
 

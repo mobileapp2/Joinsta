@@ -52,6 +52,7 @@ public class GroupNotificationListModel {
         private String subject;
         private String message;
         private String send_by;
+        private String created_at;
         private String group_id;
 
         public String getId() {
@@ -84,6 +85,14 @@ public class GroupNotificationListModel {
 
         public void setSend_by(String send_by) {
             this.send_by = send_by;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
         }
 
         public String getGroup_id() {

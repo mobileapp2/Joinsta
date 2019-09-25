@@ -28,12 +28,16 @@ public class ApplicationConstants {
 //    private static final String API_LINK = "http://joinsta.in/Api_v3/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
+    //LIVE API LINK V4
+//    private static final String API_LINK = "http://joinsta.in/Api_v4/";
+//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+
     // BETA API LINK V2
     private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
     public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
-    //LIVE API LINK V4
-//    private static final String API_LINK = "http://joinsta.in/Api_v4/";
+    //LIVE API LINK V5
+//    private static final String API_LINK = "http://joinsta.in/Api_v5/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";

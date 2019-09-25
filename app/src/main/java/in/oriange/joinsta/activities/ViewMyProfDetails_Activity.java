@@ -342,9 +342,43 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
 
+                if (!searchDetails.getTax_alias().trim().isEmpty()) {
+                    sb.append("Tax Alias - " + searchDetails.getTax_alias() + "\n");
+                }
+
+                if (!searchDetails.getPan_number().trim().isEmpty()) {
+                    sb.append("PAN - " + searchDetails.getPan_number() + "\n");
+                }
+
+                if (!searchDetails.getGst_number().trim().isEmpty()) {
+                    sb.append("GST - " + searchDetails.getGst_number() + "\n");
+                }
+
+                if (!searchDetails.getAccount_holder_name().trim().isEmpty()) {
+                    sb.append("A/C Holder Name - " + searchDetails.getAccount_holder_name() + "\n");
+                }
+
+                if (!searchDetails.getBank_alias().trim().isEmpty()) {
+                    sb.append("Bank Alias - " + searchDetails.getBank_alias() + "\n");
+                }
+
+                if (!searchDetails.getBank_name().trim().isEmpty()) {
+                    sb.append("Bank Name - " + searchDetails.getBank_name() + "\n");
+                }
+
+                if (!searchDetails.getAccount_no().trim().isEmpty()) {
+                    sb.append("A/C No. - " + searchDetails.getAccount_no() + "\n");
+                }
+
+                if (!searchDetails.getIfsc_code().trim().isEmpty()) {
+                    sb.append("IFSC Code - " + searchDetails.getIfsc_code() + "\n");
+                }
+
+                String details = sb.toString() + "\n\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, sb.toString());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
                 context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
 
             }

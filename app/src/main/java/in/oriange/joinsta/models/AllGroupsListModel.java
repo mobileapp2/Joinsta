@@ -116,7 +116,8 @@ public class AllGroupsListModel implements Serializable {
             private String first_name;
             private String mobile;
             private String role;
-
+            private String image_url;
+            private String is_joinsta_member;
 
             public String getId() {
                 return id;
@@ -148,6 +149,22 @@ public class AllGroupsListModel implements Serializable {
 
             public void setRole(String role) {
                 this.role = role;
+            }
+
+            public String getImage_url() {
+                return image_url;
+            }
+
+            public void setImage_url(String image_url) {
+                this.image_url = image_url;
+            }
+
+            public String getIs_joinsta_member() {
+                return is_joinsta_member;
+            }
+
+            public void setIs_joinsta_member(String is_joinsta_member) {
+                this.is_joinsta_member = is_joinsta_member;
             }
         }
     }

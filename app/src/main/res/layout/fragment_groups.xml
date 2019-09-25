@@ -35,6 +35,8 @@
                     android:text="My Groups"
                     android:textColor="@color/white"
                     android:textStyle="bold"
+                    android:focusable="false"
+                    android:clickable="false"
                     app:backgroundTint="@color/white" />
 
             </androidx.appcompat.widget.Toolbar>

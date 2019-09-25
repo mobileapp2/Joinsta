@@ -9,7 +9,12 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.GroupNotificationListModel;
@@ -18,10 +23,12 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
 
     private List<GroupNotificationListModel.ResultBean> resultArrayList;
     private Context context;
+    private PrettyTime p;
 
     public GroupNotificationAdapter(Context context, List<GroupNotificationListModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
+        p = new PrettyTime();
     }
 
     @Override
@@ -34,10 +41,17 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
-        final GroupNotificationListModel.ResultBean searchDetails = resultArrayList.get(position);
+        final GroupNotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
 
-        holder.tv_title.setText(searchDetails.getSubject());
-        holder.tv_message.setText(searchDetails.getMessage());
+        holder.tv_title.setText(notificationDetails.getSubject());
+        holder.tv_message.setText(notificationDetails.getMessage());
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            holder.tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -48,13 +62,14 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_title, tv_message;
+        private TextView tv_title, tv_message,tv_time ;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             tv_title = view.findViewById(R.id.tv_title);
             tv_message = view.findViewById(R.id.tv_message);
+            tv_time = view.findViewById(R.id.tv_time);
         }
     }
 

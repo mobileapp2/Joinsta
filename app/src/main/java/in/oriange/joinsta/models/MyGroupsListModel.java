@@ -40,7 +40,7 @@ public class MyGroupsListModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
          * id : 1
          * group_name : Test group 1
@@ -127,7 +127,7 @@ public class MyGroupsListModel implements Serializable {
 
         public static class GroupMemberDetailsBean implements Serializable {
             /**
-             * first_name : Radhika        
+             * first_name : Radhika
              * mobile : 9237294738
              * role : group_admin
              */
@@ -136,6 +136,8 @@ public class MyGroupsListModel implements Serializable {
             private String first_name;
             private String mobile;
             private String role;
+            private String image_url;
+            private String is_joinsta_member;
 
             public String getId() {
                 return id;
@@ -167,6 +169,22 @@ public class MyGroupsListModel implements Serializable {
 
             public void setRole(String role) {
                 this.role = role;
+            }
+
+            public String getImage_url() {
+                return image_url;
+            }
+
+            public void setImage_url(String image_url) {
+                this.image_url = image_url;
+            }
+
+            public String getIs_joinsta_member() {
+                return is_joinsta_member;
+            }
+
+            public void setIs_joinsta_member(String is_joinsta_member) {
+                this.is_joinsta_member = is_joinsta_member;
             }
         }
     }
