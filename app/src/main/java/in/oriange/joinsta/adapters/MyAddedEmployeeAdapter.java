@@ -39,7 +39,7 @@ public class MyAddedEmployeeAdapter extends RecyclerView.Adapter<MyAddedEmployee
         final int position = holder.getAdapterPosition();
         final GetEmployeeModel.ResultBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getEmployee_code()+" - "+searchDetails.getOrganization_name());
+        holder.tv_heading.setText(searchDetails.getEmployee_code() + " - " + searchDetails.getOrganization_name());
 
         if (!searchDetails.getSubtype_description().isEmpty())
             holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());

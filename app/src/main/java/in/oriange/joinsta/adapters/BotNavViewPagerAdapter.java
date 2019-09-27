@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-import in.oriange.joinsta.fragments.Favourite_Fragment;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.fragments.Home_Fragment;
 import in.oriange.joinsta.fragments.More_Fragment;

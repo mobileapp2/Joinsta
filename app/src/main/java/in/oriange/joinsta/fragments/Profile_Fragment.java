@@ -35,7 +35,6 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.BasicInformation_Activity;
 import in.oriange.joinsta.activities.BizProfEmpDetails_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
-import in.oriange.joinsta.activities.Settings_Activity;
 import in.oriange.joinsta.adapters.MyAddedBusinessAdapter;
 import in.oriange.joinsta.adapters.MyAddedEmployeeAdapter;
 import in.oriange.joinsta.adapters.MyAddedProfessionalAdapter;

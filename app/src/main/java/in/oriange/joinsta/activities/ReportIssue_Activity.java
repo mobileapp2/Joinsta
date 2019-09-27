@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.ReportIssueAdapter;
-import in.oriange.joinsta.adapters.UserFeedbackAdapter;
 import in.oriange.joinsta.models.UserFeedbackListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;

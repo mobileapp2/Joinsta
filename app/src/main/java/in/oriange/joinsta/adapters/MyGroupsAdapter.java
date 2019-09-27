@@ -26,7 +26,6 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.GroupDetails_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.MyGroupDetails_Activity;
 import in.oriange.joinsta.fragments.Groups_Fragment;

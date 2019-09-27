@@ -945,7 +945,7 @@ public class AddProfessional_Fragment extends Fragment {
         mainObj.addProperty("bank_name", edt_bank_name.getText().toString().trim());
         mainObj.addProperty("ifsc_code", edt_ifsc.getText().toString().trim());
         mainObj.addProperty("account_no", edt_account_no.getText().toString().trim());
-        mainObj.addProperty("status","online");
+        mainObj.addProperty("status", "online");
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);

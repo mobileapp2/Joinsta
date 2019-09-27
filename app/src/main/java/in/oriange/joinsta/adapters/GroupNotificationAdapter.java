@@ -62,7 +62,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_title, tv_message,tv_time ;
+        private TextView tv_title, tv_message, tv_time;
 
         public MyViewHolder(View view) {
             super(view);

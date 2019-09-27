@@ -11,9 +11,6 @@ import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.squareup.picasso.Picasso;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.utilities.ApplicationConstants;
-
-import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class SliderAdapter extends SliderViewAdapter<SliderAdapter.SliderAdapterVH> {
 

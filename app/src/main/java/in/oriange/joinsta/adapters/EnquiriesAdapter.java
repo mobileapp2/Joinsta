@@ -143,7 +143,8 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
                 } else if (enquiryDetails.getCommunication_mode().equals("email")) {
                     Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                             "mailto", enquiryDetails.getEmail(), null));
-                    context.startActivity(Intent.createChooser(emailIntent, "Send email..."));                }
+                    context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                }
 
             }
         });

@@ -3,7 +3,7 @@ package in.oriange.joinsta.models;
 import java.util.ArrayList;
 
 public class EnquiriesListModel {
-    
+
     /**
      * type : success
      * message : get enquiry successfully!
@@ -53,9 +53,9 @@ public class EnquiriesListModel {
          * is_attended : 1
          * attended_by : rahika mam
          * is_delete : 0
-         * organization_name : 
+         * organization_name :
          * business_name : Electronic Shop111111
-         * profession_name : 
+         * profession_name :
          */
 
         private String id;

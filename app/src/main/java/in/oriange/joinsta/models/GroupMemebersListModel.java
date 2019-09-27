@@ -3,7 +3,7 @@ package in.oriange.joinsta.models;
 import java.util.ArrayList;
 
 public class GroupMemebersListModel {
-    
+
     private String type;
     private String message;
     private ArrayList<ResultBean> result;

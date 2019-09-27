@@ -133,5 +133,4 @@ public class More_Fragment extends Fragment {
     }
 
 
-
 }
