@@ -159,12 +159,9 @@ public class ReportIssueAdapter extends RecyclerView.Adapter<ReportIssueAdapter.
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         new ReportIssue_Activity.GetUserFeedback().execute(userId);
                         Utilities.showMessage("Reported issue deleted successfully", context, 1);
-                    } else {
-
                     }
                 }
             } catch (Exception e) {

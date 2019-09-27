@@ -263,7 +263,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_grpmembers, parent, false);
+            View view = inflater.inflate(R.layout.list_row_grpleads, parent, false);
             return new MyViewHolder(view);
         }
 

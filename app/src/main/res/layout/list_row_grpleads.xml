@@ -58,16 +58,19 @@
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
-                <Button
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:id="@+id/btn_invite"
+                <TextView
+                    android:id="@+id/tv_role"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:textSize="12sp"
-                    android:layout_gravity="center"
-                    android:text="Invite"
+                    android:layout_height="wrap_content"
                     android:layout_weight="0.3"
-                    android:visibility="gone" />
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_outline"
+                    android:textSize="12sp"
+                    android:visibility="gone"
+                    android:textColor="@color/colorPrimary"
+                    android:textAllCaps="false"
+                    android:text="Admin" />
 
             </LinearLayout>
 

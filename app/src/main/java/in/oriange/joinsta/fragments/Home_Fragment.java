@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,8 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -32,11 +31,15 @@ import com.skydoves.powermenu.MenuEffect;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.CategoryAdapter;
+import in.oriange.joinsta.adapters.SliderAdapter;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
@@ -51,8 +54,8 @@ public class Home_Fragment extends Fragment {
     private Context context;
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private AnimatedRecyclerView rv_category;
+    private SliderView imageSlider;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
     private String categoryTypeId;
@@ -75,12 +78,11 @@ public class Home_Fragment extends Fragment {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_location = rootView.findViewById(R.id.edt_location);
+        imageSlider = rootView.findViewById(R.id.imageSlider);
 
         progressBar = rootView.findViewById(R.id.progressBar);
-        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         rv_category = rootView.findViewById(R.id.rv_category);
         rv_category.setLayoutManager(new LinearLayoutManager(context));
-
         mainCategoryList = new ArrayList<>();
         powerMenuItems = new ArrayList<>();
     }
@@ -93,6 +95,15 @@ public class Home_Fragment extends Fragment {
         if (Utilities.isNetworkAvailable(context)) {
             new GetCategotyList().execute("0", "0", categoryTypeId);
         }
+
+        SliderAdapter adapter = new SliderAdapter(context);
+
+        imageSlider.setSliderAdapter(adapter);
+
+        imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        imageSlider.setIndicatorSelectedColor(Color.WHITE);
+        imageSlider.setIndicatorUnselectedColor(Color.GRAY);
 
     }
 
@@ -107,17 +118,6 @@ public class Home_Fragment extends Fragment {
     }
 
     private void setEventHandler() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetCategotyList().execute("0", "0", categoryTypeId);
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-        });
 
         edt_type.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,8 +137,6 @@ public class Home_Fragment extends Fragment {
         edt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(context, SelectLocation_Activity.class)
-//                        .putExtra("startOrigin", 0));
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
@@ -175,7 +173,6 @@ public class Home_Fragment extends Fragment {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             rv_category.setVisibility(View.GONE);
-            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -201,18 +198,15 @@ public class Home_Fragment extends Fragment {
                     ArrayList<CategotyListModel> categotyList = new ArrayList<>();
                     CategotyListPojo pojoDetails = new Gson().fromJson(result, CategotyListPojo.class);
                     type = pojoDetails.getType();
-                    message = pojoDetails.getMessage();
 
                     if (type.equalsIgnoreCase("success")) {
                         categotyList = pojoDetails.getResult();
                         if (categotyList.size() > 0) {
                             rv_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
-
                         }
                     } else {
                         rv_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
                         Utilities.showAlertDialog(context, "Categories not available", false);
-
                     }
                 }
             } catch (Exception e) {

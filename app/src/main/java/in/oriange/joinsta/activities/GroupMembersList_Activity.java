@@ -3,7 +3,10 @@ package in.oriange.joinsta.activities;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,10 +32,12 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
     private Context context;
     private RecyclerView rv_group_members;
+    private EditText edt_search;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private String groupId;
+    ArrayList<GroupMemebersListModel.ResultBean> groupMembersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +55,12 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        edt_search = findViewById(R.id.edt_search);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = findViewById(R.id.ll_nopreview);
+
+        groupMembersList = new ArrayList<>();
 
     }
 
@@ -77,6 +85,50 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                 }
             }
         });
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_group_members.setAdapter(new GroupMembersAdapter(context, groupMembersList));
+                    return;
+                }
+
+
+                if (groupMembersList.size() == 0) {
+                    rv_group_members.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<GroupMemebersListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (GroupMemebersListModel.ResultBean groupsDetails : groupMembersList) {
+
+                        String groupsToBeSearched = groupsDetails.getFirst_name().toLowerCase();
+
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
+                            groupsSearchedList.add(groupsDetails);
+                        }
+                    }
+                    rv_group_members.setAdapter(new GroupMembersAdapter(context, groupsSearchedList));
+                } else {
+                    rv_group_members.setAdapter(new GroupMembersAdapter(context, groupMembersList));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private class GetGroupMembers extends AsyncTask<String, Void, String> {
@@ -108,7 +160,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    ArrayList<GroupMemebersListModel.ResultBean> groupMembersList = new ArrayList<>();
+                    groupMembersList = new ArrayList<>();
                     GroupMemebersListModel pojoDetails = new Gson().fromJson(result, GroupMemebersListModel.class);
                     type = pojoDetails.getType();
 

@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -107,22 +108,27 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         groupDetails = (MyGroupsListModel.ResultBean) getIntent().getSerializableExtra("groupDetails");
         leadsList = groupDetails.getGroup_Member_Details();
 
-        if (groupDetails.getStatus().equals("")) {
-            btn_connect.setVisibility(View.VISIBLE);
-            btn_status.setVisibility(View.GONE);
-        } else if (groupDetails.getStatus().equals("left")) {
-            btn_connect.setVisibility(View.GONE);
-            btn_status.setVisibility(View.VISIBLE);
-            btn_status.setText("Left");
-        } else if (groupDetails.getStatus().equals("requested")) {
-            btn_connect.setVisibility(View.GONE);
-            btn_status.setVisibility(View.VISIBLE);
-            btn_status.setText("Requested");
-        } else if (groupDetails.getStatus().equals("accepted")) {
-            btn_connect.setVisibility(View.VISIBLE);
-            btn_status.setVisibility(View.GONE);
-            btn_members.setVisibility(View.VISIBLE);
-            btn_connect.setText("EXIT");
+        switch (groupDetails.getStatus()) {
+            case "":
+                btn_connect.setVisibility(View.VISIBLE);
+                btn_status.setVisibility(View.GONE);
+                break;
+            case "left":
+                btn_connect.setVisibility(View.GONE);
+                btn_status.setVisibility(View.VISIBLE);
+                btn_status.setText("Left");
+                break;
+            case "requested":
+                btn_connect.setVisibility(View.GONE);
+                btn_status.setVisibility(View.VISIBLE);
+                btn_status.setText("Requested");
+                break;
+            case "accepted":
+                btn_connect.setVisibility(View.VISIBLE);
+                btn_status.setVisibility(View.GONE);
+                btn_members.setVisibility(View.VISIBLE);
+                btn_connect.setText("EXIT");
+                break;
         }
 
         if (leadsList != null) {
@@ -283,14 +289,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
     public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
 
-        public GroupMembersAdapter() {
-
-        }
-
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_grpmembers, parent, false);
+            View view = inflater.inflate(R.layout.list_row_grpleads, parent, false);
             return new MyViewHolder(view);
         }
 
@@ -479,18 +482,15 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type = "", message = "";
+            String type = "";
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         new Groups_Fragment.GetMyGroupsList().execute();
                         Utilities.showMessage("Group left successfully", context, 1);
-                    } else {
-
                     }
                 }
             } catch (Exception e) {
@@ -502,7 +502,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
