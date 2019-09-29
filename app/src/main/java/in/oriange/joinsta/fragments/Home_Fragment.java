@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -36,10 +37,12 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.CategoryAdapter;
-import in.oriange.joinsta.adapters.SliderAdapter;
+import in.oriange.joinsta.adapters.BannerSliderAdapter;
+import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
@@ -55,6 +58,7 @@ public class Home_Fragment extends Fragment {
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
     private AnimatedRecyclerView rv_category;
+    private CardView cv_banner;
     private SliderView imageSlider;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
@@ -78,6 +82,7 @@ public class Home_Fragment extends Fragment {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_location = rootView.findViewById(R.id.edt_location);
+        cv_banner = rootView.findViewById(R.id.cv_banner);
         imageSlider = rootView.findViewById(R.id.imageSlider);
 
         progressBar = rootView.findViewById(R.id.progressBar);
@@ -93,17 +98,10 @@ public class Home_Fragment extends Fragment {
         edt_type.setText("Business");
 
         if (Utilities.isNetworkAvailable(context)) {
+            new GetBanners().execute(categoryTypeId, new UserSessionManager(context).getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
             new GetCategotyList().execute("0", "0", categoryTypeId);
         }
 
-        SliderAdapter adapter = new SliderAdapter(context);
-
-        imageSlider.setSliderAdapter(adapter);
-
-        imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-        imageSlider.setIndicatorSelectedColor(Color.WHITE);
-        imageSlider.setIndicatorUnselectedColor(Color.GRAY);
 
     }
 
@@ -160,11 +158,65 @@ public class Home_Fragment extends Fragment {
             iconMenu.dismiss();
 
             if (Utilities.isNetworkAvailable(context)) {
+                cv_banner.setVisibility(View.GONE);
+                new GetBanners().execute(categoryTypeId, new UserSessionManager(context).getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
                 new GetCategotyList().execute("0", "0", categoryTypeId);
             }
 
         }
     };
+
+    private class GetBanners extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getCategoryTypeBanners");
+            obj.addProperty("category_type_id", params[0]);
+            obj.addProperty("location", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.BANNERSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                if (!result.equals("")) {
+                    List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
+                    BannerListModel pojoDetails = new Gson().fromJson(result, BannerListModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        bannerList = pojoDetails.getResult();
+                        if (bannerList.size() > 0) {
+                            cv_banner.setVisibility(View.VISIBLE);
+
+                            BannerSliderAdapter adapter = new BannerSliderAdapter(context, bannerList);
+                            imageSlider.setSliderAdapter(adapter);
+                            imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                            imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+                            imageSlider.setIndicatorSelectedColor(Color.WHITE);
+                            imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                        }
+                    } else {
+                        cv_banner.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                cv_banner.setVisibility(View.GONE);
+
+            }
+        }
+    }
 
     private class GetCategotyList extends AsyncTask<String, Void, String> {
 
@@ -213,67 +265,6 @@ public class Home_Fragment extends Fragment {
                 e.printStackTrace();
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
-        }
-    }
-
-    @SuppressLint("ValidFragment")
-    public class BottomSheetMenu_Fragment extends BottomSheetDialogFragment {
-
-        private LinearLayout ll_business, ll_profession, ll_employee;
-        private BottomSheetDialog bottomDialog;
-
-        @Override
-        public int getTheme() {
-            return R.style.BottomSheetDialogTheme;
-        }
-
-        @Override
-        public void setupDialog(Dialog dialog, int style) {
-            bottomDialog = new BottomSheetDialog(context);
-            bottomDialog = (BottomSheetDialog) dialog;
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_bottom_sheet_dialog, null);
-            dialog.setContentView(view);
-
-            init(view);
-            setDefaults();
-            setEventListner();
-        }
-
-        private void init(View view) {
-            context = getActivity();
-            ll_business = view.findViewById(R.id.ll_business);
-            ll_profession = view.findViewById(R.id.ll_profession);
-            ll_employee = view.findViewById(R.id.ll_employee);
-
-        }
-
-        private void setDefaults() {
-
-        }
-
-        private void setEventListner() {
-            ll_business.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    edt_type.setText("Business");
-                    bottomDialog.dismiss();
-                }
-            });
-            ll_profession.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    edt_type.setText("Profession");
-                    bottomDialog.dismiss();
-                }
-            });
-            ll_employee.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    edt_type.setText("Employment");
-                    bottomDialog.dismiss();
-                }
-            });
-
         }
     }
 
@@ -341,4 +332,66 @@ public class Home_Fragment extends Fragment {
                 .build();
         iconMenu.showAsDropDown(edt_type);
     }
+
+    @SuppressLint("ValidFragment")
+    public class BottomSheetMenu_Fragment extends BottomSheetDialogFragment {
+
+        private LinearLayout ll_business, ll_profession, ll_employee;
+        private BottomSheetDialog bottomDialog;
+
+        @Override
+        public int getTheme() {
+            return R.style.BottomSheetDialogTheme;
+        }
+
+        @Override
+        public void setupDialog(Dialog dialog, int style) {
+            bottomDialog = new BottomSheetDialog(context);
+            bottomDialog = (BottomSheetDialog) dialog;
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_bottom_sheet_dialog, null);
+            dialog.setContentView(view);
+
+            init(view);
+            setDefaults();
+            setEventListner();
+        }
+
+        private void init(View view) {
+            context = getActivity();
+            ll_business = view.findViewById(R.id.ll_business);
+            ll_profession = view.findViewById(R.id.ll_profession);
+            ll_employee = view.findViewById(R.id.ll_employee);
+
+        }
+
+        private void setDefaults() {
+
+        }
+
+        private void setEventListner() {
+            ll_business.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    edt_type.setText("Business");
+                    bottomDialog.dismiss();
+                }
+            });
+            ll_profession.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    edt_type.setText("Profession");
+                    bottomDialog.dismiss();
+                }
+            });
+            ll_employee.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    edt_type.setText("Employment");
+                    bottomDialog.dismiss();
+                }
+            });
+
+        }
+    }
+
 }

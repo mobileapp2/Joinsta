@@ -77,8 +77,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final NotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
 
 
-        holder.tv_title.setText(notificationDetails.getTitle());
-        holder.tv_message.setText(notificationDetails.getDescription());
+        holder.tv_title.setText(notificationDetails.getTitle().trim());
+        holder.tv_message.setText(notificationDetails.getDescription().trim());
 
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
@@ -114,7 +114,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Utilities.isNetworkAvailable(context)) {
                             new DeleteNotification().execute(notificationDetails.getUsernotification_id());
@@ -124,7 +124,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
-    <tab
-        drawable="@drawable/icon_nav_home"
-        text="@string/home" />
+<!--    <tab-->
+<!--        drawable="@drawable/icon_nav_home"-->
+<!--        text="@string/home" />-->
 
-    <tab
-        drawable="@drawable/icon_nav_search"
-        text="@string/search" />
+<!--    <tab-->
+<!--        drawable="@drawable/icon_nav_search"-->
+<!--        text="@string/search" />-->
 
-    <tab
-        drawable="@drawable/icon_nav_favourite"
-        text="@string/favorite" />
+<!--    <tab-->
+<!--        drawable="@drawable/icon_nav_favourite"-->
+<!--        text="@string/favorite" />-->
 
-    <tab
-        drawable="@drawable/icon_nav_request"
-        text="@string/require" />
+<!--    <tab-->
+<!--        drawable="@drawable/icon_nav_request"-->
+<!--        text="@string/require" />-->
 
-    <tab
-        drawable="@drawable/icon_nav_profile"
-        text="@string/profile" />
+<!--    <tab-->
+<!--        drawable="@drawable/icon_nav_profile"-->
+<!--        text="@string/profile" />-->
 </tabs>

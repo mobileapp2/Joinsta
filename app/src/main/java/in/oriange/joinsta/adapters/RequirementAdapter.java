@@ -184,7 +184,7 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
                             builder.setTitle("Alert");
                             builder.setIcon(R.drawable.icon_alertred);
                             builder.setCancelable(false);
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     if (Utilities.isNetworkAvailable(context)) {
                                         new DeleteRequirement().execute(String.valueOf(positionToDelete));
@@ -193,7 +193,7 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
                                     }
                                 }
                             });
-                            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();

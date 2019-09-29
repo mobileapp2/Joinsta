@@ -43,8 +43,8 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         final int position = holder.getAdapterPosition();
         final GroupNotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
 
-        holder.tv_title.setText(notificationDetails.getSubject());
-        holder.tv_message.setText(notificationDetails.getMessage());
+        holder.tv_title.setText(notificationDetails.getSubject().trim());
+        holder.tv_message.setText(notificationDetails.getMessage().trim());
 
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);

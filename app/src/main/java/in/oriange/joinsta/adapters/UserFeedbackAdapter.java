@@ -67,6 +67,7 @@ public class UserFeedbackAdapter extends RecyclerView.Adapter<UserFeedbackAdapte
         final UserFeedbackListModel.ResultBean searchDetails = resultArrayList.get(position);
 
         holder.tv_feedback.setText(searchDetails.getFeedback_text());
+        holder.rb_feedbackstars.setRating(Float.parseFloat(searchDetails.getRating()));
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +77,7 @@ public class UserFeedbackAdapter extends RecyclerView.Adapter<UserFeedbackAdapte
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                         if (Utilities.isNetworkAvailable(context)) {
@@ -86,7 +87,7 @@ public class UserFeedbackAdapter extends RecyclerView.Adapter<UserFeedbackAdapte
                         }
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

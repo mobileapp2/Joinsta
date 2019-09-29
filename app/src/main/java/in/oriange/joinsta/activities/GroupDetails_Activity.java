@@ -2,7 +2,9 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -26,6 +29,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +42,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.GroupSliderAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.AllGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -49,6 +56,8 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
+    private CardView cv_banner;
+    private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants;
     private MaterialButton btn_members;
     private RecyclerView rv_group_members;
@@ -77,6 +86,8 @@ public class GroupDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        cv_banner = findViewById(R.id.cv_banner);
+        imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
         tv_praticipants = findViewById(R.id.tv_praticipants);
@@ -106,22 +117,27 @@ public class GroupDetails_Activity extends AppCompatActivity {
         groupDetails = (AllGroupsListModel.ResultBean) getIntent().getSerializableExtra("groupDetails");
         leadsList = groupDetails.getGroup_Member_Details();
 
-        if (groupDetails.getStatus().equals("")) {
-            btn_connect.setVisibility(View.VISIBLE);
-            btn_status.setVisibility(View.GONE);
-        } else if (groupDetails.getStatus().equals("left")) {
-            btn_connect.setVisibility(View.GONE);
-            btn_status.setVisibility(View.VISIBLE);
-            btn_status.setText("Left");
-        } else if (groupDetails.getStatus().equals("requested")) {
-            btn_connect.setVisibility(View.GONE);
-            btn_status.setVisibility(View.VISIBLE);
-            btn_status.setText("Requested");
-        } else if (groupDetails.getStatus().equals("accepted")) {
-            btn_connect.setVisibility(View.GONE);
-            btn_status.setVisibility(View.VISIBLE);
-            btn_members.setVisibility(View.VISIBLE);
-            btn_status.setText("Accepted");
+        switch (groupDetails.getStatus()) {
+            case "":
+                btn_connect.setVisibility(View.VISIBLE);
+                btn_status.setVisibility(View.GONE);
+                break;
+            case "left":
+                btn_connect.setVisibility(View.GONE);
+                btn_status.setVisibility(View.VISIBLE);
+                btn_status.setText("Left");
+                break;
+            case "requested":
+                btn_connect.setVisibility(View.GONE);
+                btn_status.setVisibility(View.VISIBLE);
+                btn_status.setText("Requested");
+                break;
+            case "accepted":
+                btn_connect.setVisibility(View.GONE);
+                btn_status.setVisibility(View.VISIBLE);
+                btn_members.setVisibility(View.VISIBLE);
+                btn_status.setText("Accepted");
+                break;
         }
 
         if (leadsList != null) {
@@ -145,6 +161,13 @@ public class GroupDetails_Activity extends AppCompatActivity {
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+
+        GroupSliderAdapter adapter = new GroupSliderAdapter(context);
+        imageSlider.setSliderAdapter(adapter);
+        imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+        imageSlider.setIndicatorSelectedColor(Color.WHITE);
+        imageSlider.setIndicatorUnselectedColor(Color.GRAY);
     }
 
     private void setEventHandler() {
@@ -256,12 +279,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
     public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
 
-        public GroupMembersAdapter() {
-
-        }
-
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.list_row_grpleads, parent, false);
             return new MyViewHolder(view);
@@ -274,6 +294,10 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
             holder.tv_name.setText(memberDetails.getFirst_name().trim());
             holder.tv_mobile.setText(memberDetails.getMobile());
+
+            if (memberDetails.getIs_joinsta_member().equals("0")) {
+                holder.btn_invite.setVisibility(View.VISIBLE);
+            }
 
             if (memberDetails.getRole().equalsIgnoreCase("group_admin")) {
                 holder.tv_role.setVisibility(View.VISIBLE);
@@ -318,6 +342,35 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 }
             });
 
+            holder.btn_invite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to send an invitation?");
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.icon_alertred);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new SendInviteSMS().execute(groupDetails.getId(), userId, groupDetails.getId());
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                        }
+                    });
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            });
+
+
         }
 
         @Override
@@ -330,6 +383,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
             private CardView cv_mainlayout;
             private CircleImageView imv_user;
             private ProgressBar progressBar;
+            private Button btn_invite;
             private TextView tv_name, tv_role, tv_mobile;
 
             public MyViewHolder(View view) {
@@ -340,6 +394,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 tv_name = view.findViewById(R.id.tv_name);
                 tv_role = view.findViewById(R.id.tv_role);
                 tv_mobile = view.findViewById(R.id.tv_mobile);
+                btn_invite = view.findViewById(R.id.btn_invite);
             }
         }
 
@@ -416,6 +471,50 @@ public class GroupDetails_Activity extends AppCompatActivity {
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class SendInviteSMS extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "sendInviteSMS");
+            obj.addProperty("group_id", params[0]);
+            obj.addProperty("sender_id", params[1]);
+            obj.addProperty("receiver_id", params[2]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Invitation sent successfully", context, 1);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

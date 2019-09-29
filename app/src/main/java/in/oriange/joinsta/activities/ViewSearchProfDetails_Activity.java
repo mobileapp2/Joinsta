@@ -708,7 +708,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
 
-                String details = sb.toString() + "\n\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+                String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
@@ -840,13 +840,13 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
                     builder.setTitle("Alert");
                     builder.setIcon(R.drawable.icon_call);
                     builder.setCancelable(false);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startActivity(new Intent(Intent.ACTION_CALL,
                                     Uri.parse("tel:" + searchDetails.getMobile_number())));
                         }
                     });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

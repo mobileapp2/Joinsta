@@ -60,4 +60,5 @@ public class ApplicationConstants {
     public static final String GROUPSAPI = API_LINK + "group.php";
     public static final String ENQUIRYAPI = API_LINK + "enquiries.php";
     public static final String EMAILVERIFYAPI = API_LINK + "email_verification.php";
+    public static final String BANNERSAPI = API_LINK + "banners.php";
 }

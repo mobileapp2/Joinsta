@@ -63,12 +63,12 @@ public class ContactUs_Activity extends AppCompatActivity {
                             Uri.fromParts("package", context.getPackageName(), null)));
                     Utilities.showMessage("Please provide permission for making call.", context, 2);
                 } else {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    alertDialogBuilder.setTitle("Make a Call");
-                    alertDialogBuilder.setIcon(R.drawable.icon_call);
-                    alertDialogBuilder.setMessage("Are you sure you want to call ?");
-                    alertDialogBuilder.setCancelable(true);
-                    alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setTitle("Make a Call");
+                    builder.setIcon(R.drawable.icon_call);
+                    builder.setMessage("Are you sure you want to call ?");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("NO", new DialogInterface.OnClickListener() {
                         @SuppressLint("MissingPermission")
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
@@ -76,13 +76,13 @@ public class ContactUs_Activity extends AppCompatActivity {
                                     Uri.parse("tel:9021158214")));
                         }
                     });
-                    alertDialogBuilder.setNegativeButton(
+                    builder.setNegativeButton(
                             "No", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                 }
                             });
-                    AlertDialog alert11 = alertDialogBuilder.create();
+                    AlertDialog alert11 = builder.create();
                     alert11.show();
                 }
             }

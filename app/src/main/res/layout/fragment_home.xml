@@ -67,7 +67,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:fillViewport="true">
 
         <LinearLayout
@@ -76,44 +76,58 @@
             android:descendantFocusability="blocksDescendants"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                app:cardCornerRadius="6dp">
-
-                <com.smarteist.autoimageslider.SliderView
-                    android:id="@+id/imageSlider"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    app:sliderAnimationDuration="600"
-                    app:sliderAutoCycleEnabled="false"
-                    app:sliderIndicatorAnimationDuration="600"
-                    app:sliderIndicatorGravity="center_horizontal|bottom"
-                    app:sliderIndicatorMargin="10dp"
-                    app:sliderIndicatorOrientation="horizontal"
-                    app:sliderIndicatorPadding="2dp"
-                    app:sliderIndicatorRadius="1dp"
-                    app:sliderIndicatorSelectedColor="#5A5A5A"
-                    app:sliderIndicatorUnselectedColor="#FFF"
-                    app:sliderStartAutoCycle="false" />
-
-            </androidx.cardview.widget.CardView>
-
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
-                <com.mlsdev.animatedrv.AnimatedRecyclerView
-                    android:id="@+id/rv_category"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:animationDuration="600"
-                    app:layoutAnimation="@anim/layout_animation_from_bottom"
-                    app:layoutManagerOrientation="vertical"
-                    app:layoutManagerReverse="false"
-                    app:layoutManagerType="linear"
-                    android:visibility="gone"  />
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cv_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardElevation="2dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        app:cardUseCompatPadding="true"
+                        app:cardCornerRadius="5dp"
+                        android:visibility="gone">
+
+                        <com.smarteist.autoimageslider.SliderView
+                            android:id="@+id/imageSlider"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            app:sliderAnimationDuration="600"
+                            app:sliderAutoCycleEnabled="false"
+                            app:sliderIndicatorAnimationDuration="600"
+                            app:sliderIndicatorGravity="center_horizontal|bottom"
+                            app:sliderIndicatorMargin="10dp"
+                            app:sliderIndicatorOrientation="horizontal"
+                            app:sliderIndicatorPadding="2dp"
+                            app:sliderIndicatorRadius="1dp"
+                            app:sliderIndicatorSelectedColor="#5A5A5A"
+                            app:sliderIndicatorUnselectedColor="#FFF"
+                            app:sliderStartAutoCycle="false" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <com.mlsdev.animatedrv.AnimatedRecyclerView
+                        android:id="@+id/rv_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:animationDuration="600"
+                        app:layoutAnimation="@anim/layout_animation_from_bottom"
+                        app:layoutManagerOrientation="vertical"
+                        app:layoutManagerReverse="false"
+                        app:layoutManagerType="linear"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
                 <com.github.ybq.android.spinkit.SpinKitView
                     android:id="@+id/progressBar"

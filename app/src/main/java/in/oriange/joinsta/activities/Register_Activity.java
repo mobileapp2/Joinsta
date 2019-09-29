@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,11 +46,11 @@ import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 public class Register_Activity extends AppCompatActivity {
 
     private Context context;
-    ProgressDialog pd;
+    private ProgressDialog pd;
+    private TextView tv_already_registered;
     private MaterialEditText edt_name, edt_mobile, edt_password;
     private Button btn_register;
     private UserSessionManager session;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class Register_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        tv_already_registered = findViewById(R.id.tv_already_registered);
         edt_name = findViewById(R.id.edt_name);
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_password = findViewById(R.id.edt_password);
@@ -102,16 +104,19 @@ public class Register_Activity extends AppCompatActivity {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 }
-
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
+        tv_already_registered.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override

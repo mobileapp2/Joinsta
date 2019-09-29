@@ -26,6 +26,7 @@
                 android:id="@+id/imv_user"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:padding="5dp"
                 android:gravity="center_horizontal"
                 android:src="@drawable/icon_user"
                 android:visibility="gone" />
@@ -55,6 +56,8 @@
                     android:layout_weight="0.7"
                     android:layout_gravity="center"
                     android:text="Priyesh Pawar"
+                    android:ellipsize="end"
+                    android:singleLine="true"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -62,7 +65,7 @@
                     android:id="@+id/tv_role"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.4"
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:background="@drawable/bg_outline"
@@ -71,6 +74,20 @@
                     android:textColor="@color/colorPrimary"
                     android:textAllCaps="false"
                     android:text="Admin" />
+
+                <Button
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:id="@+id/btn_invite"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:textSize="12sp"
+                    android:ellipsize="end"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center"
+                    android:text="Invite"
+                    android:visibility="gone"
+                    android:layout_weight="0.4" />
+
 
             </LinearLayout>
 

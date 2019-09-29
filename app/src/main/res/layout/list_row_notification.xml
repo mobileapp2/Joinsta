@@ -25,24 +25,20 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:clickable="false"
             android:longClickable="false"
-            android:padding="5dp"
-            android:text="Batman Fictional superhero"
             android:textColor="@color/darkGray"
             android:textSize="16sp"
+            android:padding="2dp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:clickable="false"
+            android:padding="2dp"
             android:longClickable="false"
-            android:padding="5dp"
-            android:text="Batman is a fictional in American comic books published by DC Comics. The character was created by artist Bob Kane "
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
 
@@ -50,14 +46,12 @@
             android:id="@+id/tv_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:clickable="false"
             android:longClickable="false"
-            android:padding="5dp"
+            android:padding="2dp"
             android:gravity="end"
-            android:text="2 months ago"
             android:textColor="@color/darkGray"
-            android:textSize="16sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

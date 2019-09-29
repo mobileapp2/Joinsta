@@ -93,7 +93,7 @@
             android:name=".activities.AddRequirement_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.ViewRequirements_Activity"
             android:screenOrientation="portrait"

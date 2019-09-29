@@ -1,6 +1,7 @@
 package in.oriange.joinsta.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -8,19 +9,26 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.BannerSliderAdapter;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
 import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
 import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
+import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -31,6 +39,8 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
+    private CardView cv_banner;
+    private SliderView imageSlider;
     private RecyclerView rv_searchlist;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
@@ -40,7 +50,6 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
     public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
     private String userId, mainCategoryTypeId, categoryTypeId, subCategoryTypeId;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +57,6 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
 
         init();
         setDefault();
-        setEventHandler();
-        getSessionDetails();
         setUpToolbar();
     }
 
@@ -57,6 +64,8 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
         context = BizProfEmpDetailsList_Activity.this;
         session = new UserSessionManager(context);
 
+        cv_banner = findViewById(R.id.cv_banner);
+        imageSlider = findViewById(R.id.imageSlider);
         ll_nopreview = findViewById(R.id.ll_nopreview);
         progressBar = findViewById(R.id.progressBar);
         rv_searchlist = findViewById(R.id.rv_searchlist);
@@ -75,17 +84,14 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            if (subCategoryTypeId.equals("NA")) {
+                new GetBannersForCategory().execute(categoryTypeId, session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            } else {
+                new GetBannersForSubCategory().execute(subCategoryTypeId, session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            }
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
-
-    }
-
-    private void setEventHandler() {
-
-    }
-
-    private void getSessionDetails() {
 
     }
 
@@ -137,6 +143,110 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
+    }
+
+    private class GetBannersForCategory extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getCategoryBanners");
+            obj.addProperty("category_id", params[0]);
+            obj.addProperty("location", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.BANNERSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                if (!result.equals("")) {
+                    List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
+                    BannerListModel pojoDetails = new Gson().fromJson(result, BannerListModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        bannerList = pojoDetails.getResult();
+                        if (bannerList.size() > 0) {
+                            cv_banner.setVisibility(View.VISIBLE);
+
+                            BannerSliderAdapter adapter = new BannerSliderAdapter(context, bannerList);
+                            imageSlider.setSliderAdapter(adapter);
+                            imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                            imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+                            imageSlider.setIndicatorSelectedColor(Color.WHITE);
+                            imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                        }
+                    } else {
+                        cv_banner.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                cv_banner.setVisibility(View.GONE);
+
+            }
+        }
+    }
+
+    private class GetBannersForSubCategory extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getSubCategoryBanners");
+            obj.addProperty("sub_category_id", params[0]);
+            obj.addProperty("location", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.BANNERSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                if (!result.equals("")) {
+                    List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
+                    BannerListModel pojoDetails = new Gson().fromJson(result, BannerListModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        bannerList = pojoDetails.getResult();
+                        if (bannerList.size() > 0) {
+                            cv_banner.setVisibility(View.VISIBLE);
+
+                            BannerSliderAdapter adapter = new BannerSliderAdapter(context, bannerList);
+                            imageSlider.setSliderAdapter(adapter);
+                            imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                            imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+                            imageSlider.setIndicatorSelectedColor(Color.WHITE);
+                            imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                        }
+                    } else {
+                        cv_banner.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                cv_banner.setVisibility(View.GONE);
+
             }
         }
     }

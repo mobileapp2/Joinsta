@@ -113,6 +113,16 @@
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/tv_already_registered"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Already Registered?"
+                    android:gravity="center"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

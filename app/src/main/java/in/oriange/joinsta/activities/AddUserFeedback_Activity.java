@@ -125,6 +125,15 @@ public class AddUserFeedback_Activity extends AppCompatActivity {
             }
         });
 
+        rb_feedbackstars.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (rating < 1) {
+                    rb_feedbackstars.setRating(1);
+                }
+            }
+        });
+
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
