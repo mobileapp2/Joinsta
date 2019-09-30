@@ -65,84 +65,69 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:descendantFocusability="blocksDescendants"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <FrameLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_banner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="2dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="5dp"
+                android:visibility="gone">
 
-                <LinearLayout
+                <com.smarteist.autoimageslider.SliderView
+                    android:id="@+id/imageSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="220dp"
+                    app:sliderAnimationDuration="600"
+                    app:sliderAutoCycleEnabled="false"
+                    app:sliderIndicatorAnimationDuration="600"
+                    app:sliderIndicatorGravity="center_horizontal|bottom"
+                    app:sliderIndicatorMargin="10dp"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="2dp"
+                    app:sliderIndicatorRadius="1dp"
+                    app:sliderIndicatorSelectedColor="#5A5A5A"
+                    app:sliderIndicatorUnselectedColor="#FFF"
+                    app:sliderStartAutoCycle="false" />
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cv_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardBackgroundColor="@color/white"
-                        app:cardElevation="2dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="5dp"
-                        app:cardUseCompatPadding="true"
-                        app:cardCornerRadius="5dp"
-                        android:visibility="gone">
+            </androidx.cardview.widget.CardView>
 
-                        <com.smarteist.autoimageslider.SliderView
-                            android:id="@+id/imageSlider"
-                            android:layout_width="match_parent"
-                            android:layout_height="220dp"
-                            app:sliderAnimationDuration="600"
-                            app:sliderAutoCycleEnabled="false"
-                            app:sliderIndicatorAnimationDuration="600"
-                            app:sliderIndicatorGravity="center_horizontal|bottom"
-                            app:sliderIndicatorMargin="10dp"
-                            app:sliderIndicatorOrientation="horizontal"
-                            app:sliderIndicatorPadding="2dp"
-                            app:sliderIndicatorRadius="1dp"
-                            app:sliderIndicatorSelectedColor="#5A5A5A"
-                            app:sliderIndicatorUnselectedColor="#FFF"
-                            app:sliderStartAutoCycle="false" />
-
-                    </androidx.cardview.widget.CardView>
-
-                    <com.mlsdev.animatedrv.AnimatedRecyclerView
-                        android:id="@+id/rv_category"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:animationDuration="600"
-                        app:layoutAnimation="@anim/layout_animation_from_bottom"
-                        app:layoutManagerOrientation="vertical"
-                        app:layoutManagerReverse="false"
-                        app:layoutManagerType="linear"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <com.github.ybq.android.spinkit.SpinKitView
-                    android:id="@+id/progressBar"
-                    style="@style/SpinKitView.Circle"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    app:SpinKit_Color="@color/colorAccent"
-                    android:visibility="gone" />
-
-            </FrameLayout>
+            <com.mlsdev.animatedrv.AnimatedRecyclerView
+                android:id="@+id/rv_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:animationDuration="600"
+                app:layoutAnimation="@anim/layout_animation_from_bottom"
+                app:layoutManagerOrientation="vertical"
+                app:layoutManagerReverse="false"
+                app:layoutManagerType="linear"
+                android:visibility="gone" />
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/progressBar"
+            style="@style/SpinKitView.Circle"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            app:SpinKit_Color="@color/colorAccent"
+            android:visibility="gone" />
+
+    </FrameLayout>
 
 </LinearLayout>

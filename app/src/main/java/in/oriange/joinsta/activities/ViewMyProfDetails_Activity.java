@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -49,6 +50,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private ImageView imv_image;
+    private ImageButton imb_share_tax, imb_share_bank;
     private ProgressBar progressBar;
     private LinearLayout ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
@@ -86,6 +88,9 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         cv_address = findViewById(R.id.cv_address);
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
+
+        imb_share_tax = findViewById(R.id.imb_share_tax);
+        imb_share_bank = findViewById(R.id.imb_share_bank);
 
         tv_name = findViewById(R.id.tv_name);
         tv_nature = findViewById(R.id.tv_nature);
@@ -342,6 +347,21 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                     sb.append("Website - " + searchDetails.getWebsite() + "\n");
                 }
 
+                String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
+                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+            }
+        });
+
+        imb_share_tax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder sb = new StringBuilder();
+
                 if (!searchDetails.getTax_alias().trim().isEmpty()) {
                     sb.append("Tax Alias - " + searchDetails.getTax_alias() + "\n");
                 }
@@ -353,6 +373,21 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                 if (!searchDetails.getGst_number().trim().isEmpty()) {
                     sb.append("GST - " + searchDetails.getGst_number() + "\n");
                 }
+
+                String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
+                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+            }
+        });
+
+        imb_share_bank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder sb = new StringBuilder();
 
                 if (!searchDetails.getAccount_holder_name().trim().isEmpty()) {
                     sb.append("A/C Holder Name - " + searchDetails.getAccount_holder_name() + "\n");
@@ -383,7 +418,6 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {

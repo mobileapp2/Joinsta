@@ -386,15 +386,31 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
-                            android:text="Tax Details"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:paddingRight="5dp"
+                                android:paddingLeft="5dp"
+                                android:paddingBottom="2dp"
+                                android:layout_weight="0.9"
+                                android:text="Tax Details"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <ImageButton
+                                android:id="@+id/imb_share_tax"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:src="@drawable/icon_share" />
+
+                        </LinearLayout>
 
                         <View
                             android:layout_width="match_parent"
@@ -465,15 +481,31 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
-                            android:text="Bank Details"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:paddingRight="5dp"
+                                android:paddingLeft="5dp"
+                                android:paddingBottom="2dp"
+                                android:layout_weight="0.9"
+                                android:text="Bank Details"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                            <ImageButton
+                                android:id="@+id/imb_share_bank"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:src="@drawable/icon_share" />
+
+                        </LinearLayout>
 
                         <View
                             android:layout_width="match_parent"
