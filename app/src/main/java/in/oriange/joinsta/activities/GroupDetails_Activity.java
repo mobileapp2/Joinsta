@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
@@ -39,12 +40,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.GroupSliderAdapter;
+import in.oriange.joinsta.adapters.GroupBannerSliderAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.AllGroupsListModel;
+import in.oriange.joinsta.models.GroupBannerListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -158,16 +161,10 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetSingleGroupDetails().execute();
+            new GetBannersGroup().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
-
-        GroupSliderAdapter adapter = new GroupSliderAdapter(context);
-        imageSlider.setSliderAdapter(adapter);
-        imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-        imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
-        imageSlider.setIndicatorSelectedColor(Color.WHITE);
-        imageSlider.setIndicatorUnselectedColor(Color.GRAY);
     }
 
     private void setEventHandler() {
@@ -518,6 +515,57 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private class GetBannersGroup extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getGroupBanners");
+            obj.addProperty("group_id", groupDetails.getId());
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPBANNERSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                if (!result.equals("")) {
+                    List<GroupBannerListModel.ResultBean> bannerList = new ArrayList<>();
+                    GroupBannerListModel pojoDetails = new Gson().fromJson(result, GroupBannerListModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        bannerList = pojoDetails.getResult();
+                        if (bannerList.size() > 0) {
+                            cv_banner.setVisibility(View.VISIBLE);
+
+                            GroupBannerSliderAdapter adapter = new GroupBannerSliderAdapter(context, bannerList);
+                            imageSlider.setSliderAdapter(adapter);
+                            imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                            imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+                            imageSlider.setIndicatorSelectedColor(Color.WHITE);
+                            imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                        }
+                    } else {
+                        cv_banner.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                cv_banner.setVisibility(View.GONE);
+
             }
         }
     }
