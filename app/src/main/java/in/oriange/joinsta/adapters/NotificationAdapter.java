@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -79,6 +81,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         holder.tv_title.setText(notificationDetails.getTitle().trim());
         holder.tv_message.setText(notificationDetails.getDescription().trim());
+        holder.view_foreground.bringToFront();
 
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
@@ -106,34 +109,34 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.imv_notificationimg.setVisibility(View.GONE);
         }
 
-        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this notification?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_alertred);
-                builder.setCancelable(false);
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new DeleteNotification().execute(notificationDetails.getUsernotification_id());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
-            }
-        });
+//        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+//                builder.setMessage("Are you sure you want to delete this notification?");
+//                builder.setTitle("Alert");
+//                builder.setIcon(R.drawable.icon_alertred);
+//                builder.setCancelable(false);
+//                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        if (Utilities.isNetworkAvailable(context)) {
+//                            new DeleteNotification().execute(notificationDetails.getUsernotification_id());
+//                        } else {
+//                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//                        }
+//
+//                    }
+//                });
+//                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                AlertDialog alertD = builder.create();
+//                alertD.show();
+//            }
+//        });
 
     }
 
@@ -142,11 +145,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return resultArrayList.size();
     }
 
+    public void removeItem(int position) {
+        resultArrayList.remove(position);
+        // notify the item removed by position
+        // to perform recycler view delete animations
+        // NOTE: don't call notifyDataSetChanged()
+        notifyItemRemoved(position);
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
         private ImageView imv_notificationimg;
         private TextView tv_title, tv_message, tv_time;
+        public LinearLayout view_foreground;
+        private RelativeLayout view_background;
 
         public MyViewHolder(View view) {
             super(view);
@@ -155,6 +168,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tv_title = view.findViewById(R.id.tv_title);
             tv_message = view.findViewById(R.id.tv_message);
             tv_time = view.findViewById(R.id.tv_time);
+            view_foreground = view.findViewById(R.id.view_foreground);
+            view_background = view.findViewById(R.id.view_background);
         }
     }
 
@@ -163,51 +178,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return position;
     }
 
-    public class DeleteNotification extends AsyncTask<String, Void, String> {
-
-        ProgressDialog pd;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "deleteusernotification");
-            obj.addProperty("usernotification_id", params[0]);
-            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
-            return res;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String type = "", message = "";
-            try {
-                pd.dismiss();
-                if (!result.equals("")) {
-                    JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-                        new Notification_Activity.GetNotification().execute();
-                        Utilities.showMessage("Notification deleted successfully", context, 1);
-                    } else {
-
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 
 }

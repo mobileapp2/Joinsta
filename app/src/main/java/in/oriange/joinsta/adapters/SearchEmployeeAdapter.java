@@ -338,23 +338,17 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 
                         if (Utilities.isNetworkAvailable(context)) {
                             alertD.dismiss();
+                            new SendEnquiryDetails().execute(
+                                    userId,
+                                    edt_name.getText().toString().trim(),
+                                    edt_mobile.getText().toString().trim(),
+                                    edt_email.getText().toString().trim(),
+                                    edt_subject.getText().toString().trim(),
+                                    edt_details.getText().toString().trim(),
+                                    "1",
+                                    searchDetails.getId()
 
-                            if (Utilities.isNetworkAvailable(context)) {
-                                new SendEnquiryDetails().execute(
-                                        userId,
-                                        edt_name.getText().toString().trim(),
-                                        edt_mobile.getText().toString().trim(),
-                                        edt_email.getText().toString().trim(),
-                                        edt_subject.getText().toString().trim(),
-                                        edt_details.getText().toString().trim(),
-                                        "1",
-                                        searchDetails.getId()
-
-                                );
-                            } else {
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            }
-
+                            );
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }

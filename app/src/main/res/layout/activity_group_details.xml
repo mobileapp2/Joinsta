@@ -57,7 +57,8 @@
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="5dp">
+        app:cardCornerRadius="5dp"
+        android:visibility="gone">
 
         <com.smarteist.autoimageslider.SliderView
             android:id="@+id/imageSlider"
