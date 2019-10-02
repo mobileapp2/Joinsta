@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.GroupNotificationListModel;
@@ -46,12 +43,13 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         holder.tv_title.setText(notificationDetails.getSubject().trim());
         holder.tv_message.setText(notificationDetails.getMessage().trim());
 
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-            holder.tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//            holder.tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
+        holder.tv_time.setText(notificationDetails.getCreated_at());
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

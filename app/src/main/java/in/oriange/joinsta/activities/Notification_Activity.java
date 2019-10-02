@@ -219,7 +219,6 @@ public class Notification_Activity extends AppCompatActivity implements Recycler
         }
     }
 
-
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
