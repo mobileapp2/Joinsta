@@ -160,8 +160,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         rv_group_members.setAdapter(new GroupMembersAdapter());
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetSingleGroupDetails().execute();
             new GetBannersGroup().execute();
+            new GetSingleGroupDetails().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -628,6 +628,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                             imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
                             imageSlider.setIndicatorSelectedColor(Color.WHITE);
                             imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                            imageSlider.setAutoCycle(true);
+                            imageSlider.setScrollTimeInSec(10);
                         }
                     } else {
                         cv_banner.setVisibility(View.GONE);

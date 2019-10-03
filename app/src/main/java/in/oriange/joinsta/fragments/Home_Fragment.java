@@ -205,6 +205,8 @@ public class Home_Fragment extends Fragment {
                             imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
                             imageSlider.setIndicatorSelectedColor(Color.WHITE);
                             imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                            imageSlider.setAutoCycle(true);
+                            imageSlider.setScrollTimeInSec(10);
                         }
                     } else {
                         cv_banner.setVisibility(View.GONE);

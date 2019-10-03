@@ -71,10 +71,11 @@
             app:sliderIndicatorMargin="10dp"
             app:sliderIndicatorOrientation="horizontal"
             app:sliderIndicatorPadding="2dp"
-            app:sliderIndicatorRadius="1dp"
+            app:sliderIndicatorRadius="1.5dp"
             app:sliderIndicatorSelectedColor="#5A5A5A"
             app:sliderIndicatorUnselectedColor="#FFF"
-            app:sliderStartAutoCycle="false" />
+            app:sliderStartAutoCycle="true"
+            app:sliderScrollTimeInSec="10"/>
 
     </androidx.cardview.widget.CardView>
 

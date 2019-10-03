@@ -186,6 +186,8 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                             imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
                             imageSlider.setIndicatorSelectedColor(Color.WHITE);
                             imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                            imageSlider.setAutoCycle(true);
+                            imageSlider.setScrollTimeInSec(10);
                         }
                     } else {
                         cv_banner.setVisibility(View.GONE);
@@ -238,6 +240,8 @@ public class BizProfEmpDetailsList_Activity extends AppCompatActivity {
                             imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
                             imageSlider.setIndicatorSelectedColor(Color.WHITE);
                             imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                            imageSlider.setAutoCycle(true);
+                            imageSlider.setScrollTimeInSec(10);
                         }
                     } else {
                         cv_banner.setVisibility(View.GONE);
