@@ -35,7 +35,6 @@ public class HowToUse_Activity extends AppCompatActivity {
         context = HowToUse_Activity.this;
 
         webview = findViewById(R.id.webview);
-        webview.getSettings().setBuiltInZoomControls(true);
         spi = findViewById(R.id.progressBar);
         tv = findViewById(R.id.textView1);
     }

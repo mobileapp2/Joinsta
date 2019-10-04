@@ -20,6 +20,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.ContactUs_Activity;
 import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
+import in.oriange.joinsta.activities.HowToUse_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.Policy_Activity;
 import in.oriange.joinsta.activities.ProfileDetails_Activity;
@@ -28,7 +29,7 @@ import in.oriange.joinsta.activities.Settings_Activity;
 public class More_Fragment extends Fragment {
 
     private Context context;
-    private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_settings, cv_enquires, cv_policies, cv_contactus;
+    private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_settings, cv_enquires, cv_policies, cv_contactus, cv_howto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class More_Fragment extends Fragment {
         cv_enquires = rootView.findViewById(R.id.cv_enquires);
         cv_policies = rootView.findViewById(R.id.cv_policies);
         cv_contactus = rootView.findViewById(R.id.cv_contactus);
+        cv_howto = rootView.findViewById(R.id.cv_howto);
     }
 
     private void setDefault() {
@@ -111,6 +113,13 @@ public class More_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, ContactUs_Activity.class));
+            }
+        });
+
+        cv_howto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, HowToUse_Activity.class));
             }
         });
     }
