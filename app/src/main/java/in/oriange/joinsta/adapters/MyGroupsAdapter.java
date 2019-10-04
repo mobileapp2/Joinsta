@@ -182,7 +182,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
-                builder.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("EXIT GROUP", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         new ExitGroup().execute(
                                 userId,

@@ -46,8 +46,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupBannerSliderAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
-import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.models.GroupBannerListModel;
+import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -207,13 +207,25 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 } else if (groupDetails.getStatus().equals("accepted")) {
+                    LayoutInflater layoutInflater = LayoutInflater.from(context);
+                    View promptView = layoutInflater.inflate(R.layout.dialog_exit_group, null);
                     AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setMessage("Are you sure you want to exit this group?");
                     builder.setTitle("Alert");
                     builder.setIcon(R.drawable.icon_alertred);
+                    builder.setView(promptView);
                     builder.setCancelable(false);
-                    builder.setPositiveButton("EXIT", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
+
+                    final TextView tv_message = promptView.findViewById(R.id.tv_message);
+                    final Button btn_exit = promptView.findViewById(R.id.btn_exit);
+                    final Button btn_cancel = promptView.findViewById(R.id.btn_cancel);
+
+                    tv_message.setText("Once you exit, you will not be able to receive any communication from this group - " + "\"" + groupDetails.getGroup_name() + "\"");
+
+                    final AlertDialog alertD = builder.create();
+
+                    btn_exit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             new ExitGroup().execute(
                                     userId,
                                     groupDetails.getId(),
@@ -221,13 +233,15 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                             );
                         }
                     });
-                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+
+                    btn_cancel.setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
+                        public void onClick(View v) {
+                            alertD.dismiss();
                         }
                     });
-                    AlertDialog alertD = builder.create();
+
+
                     alertD.show();
                 }
             }
@@ -646,7 +660,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
