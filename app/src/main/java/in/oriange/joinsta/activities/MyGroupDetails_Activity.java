@@ -139,7 +139,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_connect.setVisibility(View.VISIBLE);
                 btn_status.setVisibility(View.GONE);
                 btn_members.setVisibility(View.VISIBLE);
-                btn_connect.setText("EXIT");
+                btn_connect.setText("EXIT GORUP");
                 break;
         }
 
