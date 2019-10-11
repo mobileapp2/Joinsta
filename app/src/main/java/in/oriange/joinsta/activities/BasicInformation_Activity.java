@@ -764,6 +764,14 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     }
                 });
 
+        builderSingle.setNeutralButton("Non of Above", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_bloodgroup.setText("");
+                bloodGroupId = "0";
+            }
+        });
+
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
 
             @Override
@@ -846,6 +854,14 @@ public class BasicInformation_Activity extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
+
+        builderSingle.setNeutralButton("Non of Above", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_education.setText("");
+                educationId = "0";
+            }
+        });
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
 

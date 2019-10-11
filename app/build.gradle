@@ -16,8 +16,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            minifyEnabled true
+//        debug {
+//            minifyEnabled true
 //            pseudoLocalesEnabled false
 //            zipAlignEnabled true
 //            debuggable false
@@ -25,7 +25,7 @@ android {
 //            renderscriptDebuggable false
 //            shrinkResources true
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
+//        }
     }
 }
 

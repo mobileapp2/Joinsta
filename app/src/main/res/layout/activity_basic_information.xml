@@ -204,7 +204,6 @@
                             android:focusable="false"
                             android:hint="Education"
                             android:longClickable="false"
-                            android:text="Graduate"
                             android:textSize="16sp"
                             app:met_floatingLabel="highlight"
                             app:met_textColorHint="@color/darkGray"

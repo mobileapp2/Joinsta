@@ -81,11 +81,11 @@ public class GroupBannerListModel {
         }
 
         public String getBanner_description() {
-            return banner_description;
+            return banner_name;
         }
 
         public void setBanner_description(String banner_description) {
-            this.banner_description = banner_description;
+            this.banner_name = banner_name;
         }
 
         public String getBanners_image() {

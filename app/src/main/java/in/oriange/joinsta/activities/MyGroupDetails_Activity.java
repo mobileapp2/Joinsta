@@ -231,6 +231,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                                     groupDetails.getId(),
                                     "left"
                             );
+                            alertD.dismiss();
                         }
                     });
 
@@ -595,7 +596,30 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         new Groups_Fragment.GetMyGroupsList().execute();
-                        Utilities.showMessage("Group left successfully", context, 1);
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Group left successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
                     }
                 }
             } catch (Exception e) {
