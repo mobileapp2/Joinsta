@@ -24,10 +24,12 @@
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/toolbar_title"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:text="Profile Details"
                     android:textColor="@color/white"
                     android:textStyle="bold"
@@ -49,8 +51,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="5dp">
 
                 <RelativeLayout
                     android:layout_width="50dp"
@@ -86,8 +88,8 @@
                             android:id="@+id/tv_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.8"
                             android:layout_gravity="center"
+                            android:layout_weight="0.8"
                             android:text="Priyesh Pawar"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
@@ -96,15 +98,15 @@
                             android:id="@+id/tv_role"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.2"
-                            android:gravity="center"
                             android:layout_gravity="center"
+                            android:layout_weight="0.2"
                             android:background="@drawable/bg_outline"
-                            android:textSize="10sp"
-                            android:visibility="gone"
-                            android:textColor="@color/colorPrimary"
+                            android:gravity="center"
+                            android:text="Group Admin"
                             android:textAllCaps="false"
-                            android:text="Group Admin" />
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="10sp"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -113,9 +115,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="8149115089"
-                        android:visibility="gone"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

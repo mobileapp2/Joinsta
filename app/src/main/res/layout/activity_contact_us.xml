@@ -21,10 +21,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="Contact Us"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -46,17 +48,17 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
                 android:id="@+id/ll_mainlayout"
-                app:cardElevation="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 app:cardBackgroundColor="@color/white"
-                android:layout_margin="5dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
-                    android:orientation="vertical"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_width="match_parent">
+                    android:orientation="vertical">
 
                     <ImageView
                         android:layout_width="120dp"
@@ -65,31 +67,31 @@
                         android:src="@drawable/icon_launcher" />
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:textSize="14sp"
-                        android:text="Thanks for using Joinsta app! We are happy to help you. If you have any questions and looking for support please feel free to contact us." />
+                        android:text="Thanks for using Joinsta app! We are happy to help you. If you have any questions and looking for support please feel free to contact us."
+                        android:textSize="14sp" />
 
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="match_parent"
-                        android:padding="10dp"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textSize="14sp"
-                        android:text="Contact No. : +919021158214" />
+                        android:padding="10dp"
+                        android:text="Contact No. : +919021158214"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                app:cardElevation="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 app:cardBackgroundColor="@color/white"
-                android:layout_margin="5dp">
+                app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"

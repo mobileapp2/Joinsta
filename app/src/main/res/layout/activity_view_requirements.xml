@@ -21,10 +21,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="Requirement"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -47,12 +49,12 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="2dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
-                app:cardUseCompatPadding="true"
-                app:cardCornerRadius="5dp">
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -129,12 +131,12 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="2dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
-                app:cardUseCompatPadding="true"
-                app:cardCornerRadius="5dp">
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -152,8 +154,8 @@
                             android:id="@+id/tv_categoryname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
                             android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:paddingBottom="2dp"
                             android:text="Category"
                             android:textColor="@color/black"
@@ -162,9 +164,9 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
+                            android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
-                            android:layout_marginTop="4dp" />
+                            android:background="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_reqmtitle"
@@ -172,13 +174,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Title"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Title"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_reqmdesc"
@@ -186,13 +188,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Description"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Description"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_city"
@@ -200,13 +202,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Time | City"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Time | City"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 

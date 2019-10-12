@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -23,10 +22,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="Basic Information"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -105,11 +106,11 @@
                             android:id="@+id/edt_reg_mobile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
                             android:hint="Registered Mobile No."
                             android:inputType="number"
-                            android:clickable="false"
                             android:longClickable="false"
-                            android:focusable="false"
                             android:textColorHint="@color/colorAccent"
                             android:textSize="16sp"
                             app:met_floatingLabel="highlight"
@@ -390,11 +391,11 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.15"
-                                android:text="Verify"
-                                android:textSize="14sp"
                                 android:gravity="center"
                                 android:padding="2dp"
+                                android:text="Verify"
                                 android:textColor="@color/colorPrimary"
+                                android:textSize="14sp"
                                 android:visibility="gone" />
 
                             <TextView
@@ -402,11 +403,11 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="0.15"
-                                android:text="Verified"
-                                android:textSize="14sp"
                                 android:gravity="center"
                                 android:padding="2dp"
+                                android:text="Verified"
                                 android:textColor="@android:color/holo_green_dark"
+                                android:textSize="14sp"
                                 android:visibility="gone" />
 
                             <ImageButton

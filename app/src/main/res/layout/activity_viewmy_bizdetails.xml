@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,10 +20,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="Business Details"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -113,12 +114,12 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="2dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="5dp">
+                    android:layout_marginRight="5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -129,8 +130,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
                             android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:paddingBottom="2dp"
                             android:text="Business Details"
                             android:textColor="@color/black"
@@ -139,8 +140,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_name"
@@ -148,13 +149,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Name of Business"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Name of Business"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_nature"
@@ -162,13 +163,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Nature of Business"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Nature of Business"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_designation"
@@ -176,13 +177,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Designation"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Designation"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 
@@ -192,12 +193,12 @@
                     android:id="@+id/cv_contact_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="2dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="5dp">
+                    android:layout_marginRight="5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -208,8 +209,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
                             android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:paddingBottom="2dp"
                             android:text="Contact Details"
                             android:textColor="@color/black"
@@ -218,8 +219,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_mobilenos"
@@ -230,31 +231,31 @@
                             android:id="@+id/tv_email"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:text="Email"
                             android:drawableRight="@drawable/icon_email"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
-                            android:longClickable="false"
+                            android:focusable="false"
                             android:gravity="center_vertical"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:longClickable="false"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Email"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_website"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:text="Website"
                             android:drawableRight="@drawable/icon_website"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
-                            android:longClickable="false"
+                            android:focusable="false"
                             android:gravity="center_vertical"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:longClickable="false"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Website"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 
@@ -264,12 +265,12 @@
                     android:id="@+id/cv_tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="2dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="5dp">
+                    android:layout_marginRight="5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -280,8 +281,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
                             android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:paddingBottom="2dp"
                             android:text="Tags (Product/Services Offered)"
                             android:textColor="@color/black"
@@ -290,8 +291,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
 
                         <co.lujun.androidtagview.TagContainerLayout
                             android:id="@+id/container_tags"
@@ -321,13 +322,13 @@
                     android:id="@+id/cv_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="2dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_marginBottom="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="5dp">
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -338,8 +339,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingRight="5dp"
                             android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
                             android:paddingBottom="2dp"
                             android:text="Address Details"
                             android:textColor="@color/black"
@@ -348,8 +349,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_address"
@@ -357,13 +358,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Address"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Address"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 
@@ -373,12 +374,12 @@
                     android:id="@+id/cv_tax"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="2dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="5dp">
+                    android:layout_marginRight="5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -394,10 +395,10 @@
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:paddingRight="5dp"
-                                android:paddingLeft="5dp"
-                                android:paddingBottom="2dp"
                                 android:layout_weight="0.9"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:paddingBottom="2dp"
                                 android:text="Tax Details"
                                 android:textColor="@color/black"
                                 android:textSize="18sp" />
@@ -415,8 +416,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_tax_alias"
@@ -424,13 +425,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Tax Alias"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Tax Alias"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_pan"
@@ -438,13 +439,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="PAN Number"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="PAN Number"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_gst"
@@ -452,13 +453,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="GST Number"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="GST Number"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 
@@ -468,12 +469,12 @@
                     android:id="@+id/cv_bank"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardElevation="2dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginLeft="5dp"
-                    app:cardUseCompatPadding="true"
-                    app:cardCornerRadius="5dp">
+                    android:layout_marginRight="5dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -489,10 +490,10 @@
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:paddingRight="5dp"
-                                android:paddingLeft="5dp"
-                                android:paddingBottom="2dp"
                                 android:layout_weight="0.9"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:paddingBottom="2dp"
                                 android:text="Bank Details"
                                 android:textColor="@color/black"
                                 android:textSize="18sp" />
@@ -510,8 +511,8 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_accholder_name"
@@ -519,13 +520,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Account Holder Name"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Account Holder Name"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_bank_alias"
@@ -533,13 +534,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Bank Alias"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Bank Alias"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_bank_name"
@@ -547,13 +548,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Bank Name"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Bank Name"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_acc_no"
@@ -561,13 +562,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="Account Number"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Account Number"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_ifsc"
@@ -575,13 +576,13 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:text="IFSC Code"
-                            android:paddingRight="5dp"
-                            android:paddingLeft="5dp"
-                            android:paddingBottom="2dp"
                             android:longClickable="false"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="IFSC Code"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 

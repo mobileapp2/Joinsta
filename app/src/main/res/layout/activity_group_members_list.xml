@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/lightGray">
+    android:background="@color/lightGray"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -21,18 +21,21 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="Group Members"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                app:backgroundTint="@color/white"  />
+                app:backgroundTint="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,18 +53,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:padding="10dp"
                 android:background="@android:color/transparent"
-                android:hint="Search" />
+                android:gravity="center_vertical"
+                android:hint="Search"
+                android:padding="10dp"
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
-                android:layout_weight="0.1"
-                android:layout_margin="5dp"
                 android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:layout_weight="0.1"
                 android:src="@drawable/icon_search"
                 android:tint="@color/mediumGray" />
 
@@ -82,7 +85,7 @@
                 android:id="@+id/rv_group_members"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

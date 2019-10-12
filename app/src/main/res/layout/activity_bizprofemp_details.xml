@@ -14,14 +14,16 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/toolbar_title"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="false"
+            android:focusable="false"
             android:text="Add  Biz/Prof/Emp  Details"
             android:textColor="@color/white"
             android:textStyle="bold"
-            app:backgroundTint="@color/white"  />
+            app:backgroundTint="@color/white" />
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -31,10 +33,10 @@
         android:layout_height="40dp"
         android:background="@color/colorPrimary"
         android:paddingBottom="2dp"
+        app:stl_clickable="false"
         app:stl_defaultTabTextColor="@color/white"
         app:stl_defaultTabTextMinWidth="120dp"
         app:stl_dividerColor="@color/white"
-        app:stl_clickable="false"
         app:stl_dividerThickness="0.5dp"
         app:stl_indicatorAlwaysInCenter="true"
         app:stl_indicatorColor="@color/white"

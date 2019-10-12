@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/lightGray">
+    android:background="@color/lightGray"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -20,10 +20,12 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="Policies"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -46,26 +48,26 @@
                 android:id="@+id/cv_tandc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
                     android:orientation="horizontal"
+                    android:padding="10dp"
                     android:weightSum="1">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.9"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="0.9"
                         android:text="Terms and Conditions"
-                        android:textSize="18sp"
-                        android:textColor="@color/darkGray" />
+                        android:textColor="@color/darkGray"
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="0dp"
@@ -83,9 +85,9 @@
                 android:id="@+id/cv_pp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
@@ -119,9 +121,9 @@
                 android:id="@+id/cv_smp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
@@ -155,9 +157,9 @@
                 android:id="@+id/cv_ipp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
@@ -191,9 +193,9 @@
                 android:id="@+id/cv_g"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
@@ -227,9 +229,9 @@
                 android:id="@+id/cv_mad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
@@ -263,9 +265,9 @@
                 android:id="@+id/cv_ua"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@android:color/white"
-                android:layout_marginBottom="5dp"
                 app:cardElevation="0dp">
 
                 <LinearLayout
