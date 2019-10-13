@@ -18,6 +18,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -77,13 +78,15 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         if (groupDetails.getStatus().equals("accepted")) {
             holder.ll_buttons.setVisibility(View.VISIBLE);
             holder.tv_status.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equals("left")) {
             holder.ll_buttons.setVisibility(View.GONE);
-            holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Left");
+            holder.tv_status.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
         } else if (groupDetails.getStatus().equals("requested")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
+            holder.btn_rejoin.setVisibility(View.GONE);
             holder.tv_status.setText("Requested");
         }
 
@@ -201,6 +204,17 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                 alertD.show();
             }
         });
+
+        holder.btn_rejoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new JoinGroup().execute(groupDetails.getId());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
     }
 
     @Override
@@ -214,6 +228,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         private TextView tv_heading;
         private LinearLayout ll_buttons;
         private TextView tv_status;
+        private Button btn_rejoin;
         private ImageButton ib_settings, ib_notifications, ib_exit;
 
         public MyViewHolder(View view) {
@@ -225,6 +240,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             ib_exit = view.findViewById(R.id.ib_exit);
             ll_buttons = view.findViewById(R.id.ll_buttons);
             tv_status = view.findViewById(R.id.tv_status);
+            btn_rejoin = view.findViewById(R.id.btn_rejoin);
         }
     }
 
@@ -323,6 +339,78 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                     } else {
 
                     }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class JoinGroup extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "joingroup");
+            obj.addProperty("status", "requested");
+            obj.addProperty("group_id", params[0]);
+            obj.addProperty("user_id", userId);
+            obj.addProperty("role", "group_member");
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Your request to join this group is submitted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("Failed to submit the details", context, 3);
+                    }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

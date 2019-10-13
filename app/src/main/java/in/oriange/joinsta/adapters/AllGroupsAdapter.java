@@ -74,9 +74,9 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             holder.btn_connect.setVisibility(View.VISIBLE);
             holder.tv_status.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equals("left")) {
-            holder.btn_connect.setVisibility(View.GONE);
-            holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Left");
+            holder.btn_connect.setVisibility(View.VISIBLE);
+            holder.tv_status.setVisibility(View.GONE);
+            holder.btn_connect.setText("Rejoin");
         } else if (groupDetails.getStatus().equals("requested")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);

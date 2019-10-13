@@ -59,7 +59,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_banner;
+    private CardView cv_banner, cv_rejoin;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants;
     private MaterialButton btn_members;
@@ -90,6 +90,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         cv_banner = findViewById(R.id.cv_banner);
+        cv_rejoin = findViewById(R.id.cv_rejoin);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
@@ -126,9 +127,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_status.setVisibility(View.GONE);
                 break;
             case "left":
-                btn_connect.setVisibility(View.GONE);
-                btn_status.setVisibility(View.VISIBLE);
-                btn_status.setText("Left");
+                btn_connect.setVisibility(View.VISIBLE);
+                btn_status.setVisibility(View.GONE);
+                cv_rejoin.setVisibility(View.VISIBLE);
+                btn_connect.setText("REJOIN");
                 break;
             case "requested":
                 btn_connect.setVisibility(View.GONE);
@@ -200,7 +202,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (groupDetails.getStatus().equals("")) {
+                if (groupDetails.getStatus().equals("") || groupDetails.getStatus().equals("left")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new JoinGroup().execute(groupDetails.getId());
                     } else {
