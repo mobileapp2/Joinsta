@@ -1,9 +1,13 @@
 package in.oriange.joinsta.adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -13,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -23,11 +28,15 @@ import org.ocpsoft.prettytime.PrettyTime;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.models.NotificationListModel;
+import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
+import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
 
@@ -68,18 +77,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final int position = holder.getAdapterPosition();
         final NotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
 
-
+        holder.view_foreground.bringToFront();
         holder.tv_title.setText(notificationDetails.getTitle().trim());
         holder.tv_message.setText(notificationDetails.getDescription().trim());
-        holder.view_foreground.bringToFront();
-
-//        try {
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-//            holder.tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
-        holder.tv_time.setText(notificationDetails.getCreated_at());
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
 
         if (!notificationDetails.getImage().equals("")) {
             String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
@@ -107,8 +108,34 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
 
-    }
+        holder.ib_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to delete this notification?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_alertred);
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (Utilities.isNetworkAvailable(context))
+                            new DeleteNotification().execute(notificationDetails.getUsernotification_id());
+                        else
+                            Utilities.showMessage("Please check your internet connection", context, 2);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        });
 
+    }
 
     @Override
     public int getItemCount() {
@@ -125,6 +152,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         private CardView cv_mainlayout;
         private ImageView imv_notificationimg;
         private TextView tv_title, tv_message, tv_time;
+        private ImageButton ib_delete;
         public LinearLayout view_foreground;
         private RelativeLayout view_background;
 
@@ -135,6 +163,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tv_title = view.findViewById(R.id.tv_title);
             tv_message = view.findViewById(R.id.tv_message);
             tv_time = view.findViewById(R.id.tv_time);
+            ib_delete = view.findViewById(R.id.ib_delete);
             view_foreground = view.findViewById(R.id.view_foreground);
             view_background = view.findViewById(R.id.view_background);
         }
@@ -144,7 +173,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public int getItemViewType(int position) {
         return position;
     }
-
 
     private void showNotification(NotificationListModel.ResultBean notificationDetails) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -178,10 +206,59 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         tv_title.setText(notificationDetails.getTitle().trim());
         tv_message.setText(notificationDetails.getDescription().trim());
-        tv_time.setText(notificationDetails.getCreated_at());
+
+        if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
+            tv_time.setText("");
+        } else {
+            tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+        }
 
         final AlertDialog alertD = alertDialogBuilder.create();
         alertD.show();
+    }
+
+    public class DeleteNotification extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "deleteNotification");
+            obj.addProperty("notification_id", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Notification_Activity.GetNotification().execute();
+                        Utilities.showMessage("Notification deleted successfully", context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

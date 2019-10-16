@@ -31,14 +31,13 @@ import in.oriange.joinsta.utilities.Utilities;
 
 public class GroupNotifications_Activity extends AppCompatActivity {
 
-    private Context context;
+    private static Context context;
     private UserSessionManager session;
-    private RecyclerView rv_notification;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private SpinKitView progressBar;
-    private LinearLayout ll_nopreview;
-    private String userId, groupId;
-
+    private static RecyclerView rv_notification;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static SpinKitView progressBar;
+    private static LinearLayout ll_nopreview;
+    private static String userId, groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +100,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
     }
 
-    private class GetGroupNotification extends AsyncTask<String, Void, String> {
+    public static class GetGroupNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -116,10 +115,10 @@ public class GroupNotifications_Activity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getnotifications");
+            obj.addProperty("type", "getGroupNotificationDetails");
             obj.addProperty("group_id", groupId);
             obj.addProperty("user_id", userId);
-            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
             return res.trim();
         }
 

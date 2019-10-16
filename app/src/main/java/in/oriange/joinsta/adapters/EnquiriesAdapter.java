@@ -40,6 +40,7 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
 public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyViewHolder> {
@@ -91,8 +92,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
         holder.tv_createdby.setText(enquiryDetails.getName());
-        holder.tv_time.setText(enquiryDetails.getCreated_at());
-
+        holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", enquiryDetails.getCreated_at()));
 
 //        try {
 //            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);

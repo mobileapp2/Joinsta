@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -357,5 +358,25 @@ public class Utilities {
         alertDialog.show();
 
     }
+
+    public static String changeDateFormat(String currentFormat, String requiredFormat, String dateString) {
+        String result = "";
+        if (dateString.equals("")) {
+            return "";
+        }
+        SimpleDateFormat formatterOld = new SimpleDateFormat(currentFormat, Locale.getDefault());
+        SimpleDateFormat formatterNew = new SimpleDateFormat(requiredFormat, Locale.getDefault());
+        Date date = null;
+        try {
+            date = formatterOld.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date != null) {
+            result = formatterNew.format(date);
+        }
+        return result;
+    }
+
 
 }

@@ -1,8 +1,6 @@
 package in.oriange.joinsta.activities;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -10,9 +8,6 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,21 +26,20 @@ import in.oriange.joinsta.adapters.NotificationAdapter;
 import in.oriange.joinsta.models.NotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.RecyclerItemTouchHelper;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class Notification_Activity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
+public class Notification_Activity extends AppCompatActivity/* implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener*/ {
 
-    private Context context;
+    private static Context context;
     private UserSessionManager session;
-    private RecyclerView rv_notification;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private SpinKitView progressBar;
-    private LinearLayout ll_nopreview;
-    private String userId;
-    private NotificationAdapter notificationAdapter;
-    private ArrayList<NotificationListModel.ResultBean> notificationList;
+    private static RecyclerView rv_notification;
+    private static SwipeRefreshLayout swipeRefreshLayout;
+    private static SpinKitView progressBar;
+    private static LinearLayout ll_nopreview;
+    private static String userId;
+    private static NotificationAdapter notificationAdapter;
+    private static ArrayList<NotificationListModel.ResultBean> notificationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,27 +64,27 @@ public class Notification_Activity extends AppCompatActivity implements Recycler
         rv_notification = findViewById(R.id.rv_notification);
         rv_notification.setLayoutManager(new LinearLayoutManager(context));
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rv_notification);
+//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rv_notification);
+//
+//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//
+//            }
+//
+//            @Override
+//            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+//                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+//            }
+//        };
 
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-            }
-
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-        };
-
-        new ItemTouchHelper(itemTouchHelperCallback1).attachToRecyclerView(rv_notification);
+//        new ItemTouchHelper(itemTouchHelperCallback1).attachToRecyclerView(rv_notification);
 
     }
 
@@ -128,20 +122,20 @@ public class Notification_Activity extends AppCompatActivity implements Recycler
         });
     }
 
-    @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof NotificationAdapter.MyViewHolder) {
-            final NotificationListModel.ResultBean deletedItem = notificationList.get(viewHolder.getAdapterPosition());
-            notificationAdapter.removeItem(viewHolder.getAdapterPosition());
-            if (Utilities.isNetworkAvailable(context)) {
-                new DeleteNotification().execute(deletedItem.getUsernotification_id());
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
-        }
-    }
+//    @Override
+//    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+//        if (viewHolder instanceof NotificationAdapter.MyViewHolder) {
+//            final NotificationListModel.ResultBean deletedItem = notificationList.get(viewHolder.getAdapterPosition());
+//            notificationAdapter.removeItem(viewHolder.getAdapterPosition());
+//            if (Utilities.isNetworkAvailable(context)) {
+//                new DeleteNotification().execute(deletedItem.getUsernotification_id());
+//            } else {
+//                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//            }
+//        }
+//    }
 
-    private class GetNotification extends AsyncTask<String, Void, String> {
+    public static class GetNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -156,8 +150,8 @@ public class Notification_Activity extends AppCompatActivity implements Recycler
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getusernotification");
-            obj.addProperty("userid", userId);
+            obj.addProperty("type", "getNotificationDetails");
+            obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
             return res.trim();
         }
@@ -201,23 +195,23 @@ public class Notification_Activity extends AppCompatActivity implements Recycler
         }
     }
 
-    private class DeleteNotification extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "deleteusernotification");
-            obj.addProperty("usernotification_id", params[0]);
-            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
-            return res;
-        }
-    }
+//    private class DeleteNotification extends AsyncTask<String, Void, String> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String res = "[]";
+//            JsonObject obj = new JsonObject();
+//            obj.addProperty("type", "deleteusernotification");
+//            obj.addProperty("usernotification_id", params[0]);
+//            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+//            return res;
+//        }
+//    }
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

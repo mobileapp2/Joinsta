@@ -54,6 +54,7 @@ public class GroupNotificationListModel {
         private String send_by;
         private String created_at;
         private String group_id;
+        private String msg_details_id;
 
         public String getId() {
             return id;
@@ -101,6 +102,14 @@ public class GroupNotificationListModel {
 
         public void setGroup_id(String group_id) {
             this.group_id = group_id;
+        }
+
+        public String getMsg_details_id() {
+            return msg_details_id;
+        }
+
+        public void setMsg_details_id(String msg_details_id) {
+            this.msg_details_id = msg_details_id;
         }
     }
 }

@@ -163,7 +163,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/colorPrimaryLight"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
                 app:cardUseCompatPadding="true"
