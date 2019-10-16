@@ -182,7 +182,7 @@
             android:name=".activities.AllGroups_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.ContactUs_Activity"
             android:screenOrientation="portrait"

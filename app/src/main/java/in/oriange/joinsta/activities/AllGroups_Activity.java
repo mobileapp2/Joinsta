@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -45,6 +46,7 @@ public class AllGroups_Activity extends AppCompatActivity {
     private static LinearLayout ll_nopreview;
     private static String userId;
     private static ArrayList<AllGroupsListModel.ResultBean> groupsList;
+    private static InputMethodManager inputMethodManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,8 @@ public class AllGroups_Activity extends AppCompatActivity {
         ll_nopreview = findViewById(R.id.ll_nopreview);
 
         groupsList = new ArrayList<>();
+        inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
     }
 
     private void getSessionDetails() {
@@ -204,6 +208,10 @@ public class AllGroups_Activity extends AppCompatActivity {
                             rv_groups.setAdapter(new AllGroupsAdapter(context, groupsSearchedList));
                         }
                         rv_groups.setVisibility(View.VISIBLE);
+                        inputMethodManager.toggleSoftInputFromWindow(edt_search.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+
+                        edt_search.setFocusable(true);
+                        edt_search.setFocusableInTouchMode(true);
                         edt_search.requestFocus();
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
