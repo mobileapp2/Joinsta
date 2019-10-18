@@ -18,7 +18,6 @@ public class ApplicationConstants {
 //    private static final String API_LINK = "http://joinsta.in/Api/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
-
     //LIVE API LINK V2
 //    private static final String API_LINK = "http://joinsta.in/Api_v2/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:textSize="16sp"
+        android:padding="5dp"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:textSize="16sp"
+        android:padding="5dp"
+        android:textColor="@color/black" />
+
+    <Switch
+        android:id="@+id/sw_active"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Is Active"
+        android:textSize="16sp"
+        android:padding="5dp"
+        android:textColor="@color/black" />
+
+</LinearLayout>

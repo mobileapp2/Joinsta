@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -59,7 +60,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_banner, cv_rejoin;
+    private CardView cv_banner, cv_rejoin, cv_add_member, cv_requests, cv_send_message;
+    private LinearLayout ll_group_admin;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants;
     private MaterialButton btn_members;
@@ -91,6 +93,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
         cv_banner = findViewById(R.id.cv_banner);
         cv_rejoin = findViewById(R.id.cv_rejoin);
+        cv_add_member = findViewById(R.id.cv_add_member);
+        cv_requests = findViewById(R.id.cv_requests);
+        cv_send_message = findViewById(R.id.cv_send_message);
+        ll_group_admin = findViewById(R.id.ll_group_admin);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
@@ -201,7 +207,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (groupDetails.getStatus().equals("") || groupDetails.getStatus().equals("left")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new JoinGroup().execute(groupDetails.getId());
@@ -247,6 +252,27 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
                     alertD.show();
                 }
+            }
+        });
+
+        cv_add_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddMembersInGroup_Activity.class));
+            }
+        });
+
+        cv_requests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        cv_send_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
