@@ -35,12 +35,12 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     // BETA API LINK V2
-//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
     //LIVE API LINK V6
-    private static final String API_LINK = "http://joinsta.in/Api_v6/";
-    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+//    private static final String API_LINK = "http://joinsta.in/Api_v6/";
+//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";
@@ -64,4 +64,12 @@ public class ApplicationConstants {
     public static final String EMAILVERIFYAPI = API_LINK + "email_verification.php";
     public static final String BANNERSAPI = API_LINK + "banners.php";
     public static final String GROUPBANNERSAPI = API_LINK + "groupbanners.php";
+    public static final String STATESAPI = API_LINK + "state.php";
+    public static final String DISTRICTAPI = API_LINK + "district.php";
+    public static final String GRPADMINMEMBERSSUPERVISORSAPI = API_LINK + "grp_groups.php";
+    public static final String GRPADMINUSERREQUESTSAPI = API_LINK + "grp_request.php";
+    public static final String GRPADMINMSGCOUNTAPI = API_LINK + "msgcount.php";
+    public static final String GRPADMINSENDMESSAGEAPI = API_LINK + "grp_send_message.php";
+    public static final String GRPADMINGRPBANNERSAPI = API_LINK + "grp_group_banners.php";
+    public static final String GRPADMINMEMISACTIVEAPI = API_LINK + "group_members_active.php";
 }

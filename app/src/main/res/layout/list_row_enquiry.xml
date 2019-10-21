@@ -13,20 +13,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="5dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/tv_record_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:padding="5dp"
             android:maxLines="1"
-            android:textStyle="bold"
+            android:padding="5dp"
             android:text="Joinsta Development"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
@@ -38,10 +38,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingLeft="5dp"
             android:paddingTop="5dp"
             android:paddingRight="5dp"
-            android:paddingLeft="5dp"
-            android:maxLines="1"
             android:text="Joinsta Development"
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
@@ -50,9 +50,9 @@
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
             android:paddingTop="5dp"
             android:paddingRight="5dp"
-            android:paddingLeft="5dp"
             android:text="Joinsta Development Joinsta Development Joinsta Development Joinsta Development"
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
@@ -60,9 +60,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="5dp"
+            android:orientation="horizontal"
             android:paddingLeft="5dp"
-            android:orientation="horizontal">
+            android:paddingRight="5dp">
 
             <TextView
                 android:id="@+id/tv_createdby"
@@ -94,26 +94,26 @@
                 android:id="@+id/sw_attend"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:textSize="14sp"
-                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
                 android:background="@drawable/bg_outline"
+                android:gravity="center"
                 android:text="Attended"
                 android:textColor="@android:color/holo_green_dark"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1" />
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btn_delete"
                 android:layout_width="0dp"
                 android:layout_height="30dp"
-                android:textSize="14sp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/bg_outline"
-                android:textColor="@android:color/holo_red_dark"
                 android:layout_marginLeft="5dp"
-                android:textAllCaps="false"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_outline"
                 android:text="Delete"
-                android:layout_weight="1" />
+                android:textAllCaps="false"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -121,8 +121,8 @@
             android:id="@+id/tv_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
             android:gravity="end"
+            android:paddingTop="5dp"
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
 

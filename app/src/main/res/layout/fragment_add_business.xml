@@ -494,35 +494,35 @@
                     android:id="@+id/edt_pan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     android:hint="PAN Number"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="10"
                     android:textColorHint="@color/colorAccent"
                     android:textSize="16sp"
-                    android:maxLength="10"
-                    android:inputType="textCapCharacters"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray"
                     app:met_helperText="e.g - AAAPL1234C"
                     app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color" />
+                    app:met_helperTextColor="@color/helper_color"
+                    app:met_textColorHint="@color/darkGray"
+                    app:met_underlineColor="@color/mediumGray" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_gst"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     android:hint="GST Number"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="15"
                     android:textColorHint="@color/colorAccent"
                     android:textSize="16sp"
-                    android:maxLength="15"
-                    android:inputType="textCapCharacters"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray"
                     app:met_helperText="e.g - 22AAAAA0000A1Z5"
                     app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color" />
+                    app:met_helperTextColor="@color/helper_color"
+                    app:met_textColorHint="@color/darkGray"
+                    app:met_underlineColor="@color/mediumGray" />
 
             </LinearLayout>
 
@@ -553,8 +553,8 @@
                     android:id="@+id/edt_accholdername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textNoSuggestions|textCapWords"
                     android:hint="Account Holder Name"
+                    android:inputType="textNoSuggestions|textCapWords"
                     android:textSize="16sp"
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/darkGray"
@@ -588,18 +588,18 @@
                     android:id="@+id/edt_ifsc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     android:hint="IFSC Code"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="11"
                     android:textColorHint="@color/colorAccent"
                     android:textSize="16sp"
-                    android:maxLength="11"
-                    android:inputType="textCapCharacters"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                     app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray"
                     app:met_helperText="e.g - IFSC1234567"
                     app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color" />
+                    app:met_helperTextColor="@color/helper_color"
+                    app:met_textColorHint="@color/darkGray"
+                    app:met_underlineColor="@color/mediumGray" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_account_no"

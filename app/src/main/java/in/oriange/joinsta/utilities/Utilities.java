@@ -41,26 +41,6 @@ public class Utilities {
     public static final int GALLERY_REQUEST = 200;
     public static final int VIDEO_REQUEST = 300;
 
-    public static SimpleDateFormat dfDate = new SimpleDateFormat("yyyy-MM-dd");
-    public static SimpleDateFormat dfDate2 = new SimpleDateFormat("dd/MM/yyyy");
-    public static SimpleDateFormat dfDate3 = new SimpleDateFormat("MM/dd/yyyy");
-    public static SimpleDateFormat dfDate4 = new SimpleDateFormat("yyyy/MM/dd");
-
-    public static String ConvertDateFormat(DateFormat dateFormat, int day, int month, int year) {
-        String startDateString = String.valueOf(day) + "/"
-                + String.valueOf(month) + "/"
-                + String.valueOf(year);
-        Date startDate;
-        String newDateString = "";
-        try {
-            startDate = dfDate2.parse(startDateString);
-            newDateString = dateFormat.format(startDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return newDateString;
-    }
-
     public static boolean isValidMobileno(String mobileno) {
         String Mobile_PATTERN = "^[6-9]{1}[0-9]{9}$";                                               //^[+]?[0-9]{10,13}$
         Pattern pattern = Pattern.compile(Mobile_PATTERN);
@@ -376,6 +356,10 @@ public class Utilities {
             result = formatterNew.format(date);
         }
         return result;
+    }
+
+    public static String yyyyMMddDate(int day, int month, int year) {
+        return year + "-" + month + "-" + day;
     }
 
 

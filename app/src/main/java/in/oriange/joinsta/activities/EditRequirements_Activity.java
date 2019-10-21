@@ -318,8 +318,6 @@ public class EditRequirements_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
-                    } else {
-                        Utilities.showMessage("User details failed to update", context, 3);
                     }
 
                 }

@@ -60,7 +60,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_banner, cv_rejoin, cv_add_member, cv_requests, cv_send_message;
+    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_add_member, cv_requests, cv_send_message, cv_group_banners;
     private LinearLayout ll_group_admin;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants;
@@ -91,11 +91,13 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        cv_grp_details = findViewById(R.id.cv_grp_details);
         cv_banner = findViewById(R.id.cv_banner);
         cv_rejoin = findViewById(R.id.cv_rejoin);
         cv_add_member = findViewById(R.id.cv_add_member);
         cv_requests = findViewById(R.id.cv_requests);
         cv_send_message = findViewById(R.id.cv_send_message);
+        cv_group_banners = findViewById(R.id.cv_group_banners);
         ll_group_admin = findViewById(R.id.ll_group_admin);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
@@ -167,12 +169,19 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
         rv_group_members.setAdapter(new GroupMembersAdapter());
 
+        if (groupDetails.getIs_admin().equals("1")) {
+            ll_group_admin.setVisibility(View.VISIBLE);
+        }
+
         if (Utilities.isNetworkAvailable(context)) {
             new GetBannersGroup().execute();
             new GetSingleGroupDetails().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+
+        rv_group_members.setFocusable(false);
+        cv_grp_details.requestFocus();
     }
 
     private void setEventHandler() {
@@ -258,21 +267,31 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_add_member.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddMembersInGroup_Activity.class));
+                startActivity(new Intent(context, GroupMembersSupervisors_Activity.class)
+                        .putExtra("groupId", groupDetails.getId()));
             }
         });
 
         cv_requests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(context, GroupsMembersRequests_Activity.class)
+                        .putExtra("groupId", groupDetails.getId()));
             }
         });
 
         cv_send_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(context, GroupsSendMessage_Activity.class));
+            }
+        });
 
+        cv_group_banners.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, GroupBanners_Activity.class)
+                        .putExtra("groupId", groupDetails.getId()));
             }
         });
     }

@@ -68,12 +68,12 @@
 
     <android.widget.Button
         android:id="@+id/btn_post_requirement"
-        android:background="@drawable/button_background_filled"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:textColor="@color/white"
         android:layout_margin="5dp"
-        android:text="Post Your Requirement" />
+        android:background="@drawable/button_background_filled"
+        android:text="Post Your Requirement"
+        android:textColor="@color/white" />
 
 
     <FrameLayout

@@ -22,12 +22,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.15"
-        android:text="Verify"
-        android:textSize="14sp"
         android:gravity="center"
         android:onClick="verifyEmail"
         android:padding="2dp"
+        android:text="Verify"
         android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
         android:visibility="gone" />
 
     <TextView
@@ -35,11 +35,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.15"
-        android:text="Verified"
-        android:textSize="14sp"
         android:gravity="center"
         android:padding="2dp"
+        android:text="Verified"
         android:textColor="@android:color/holo_green_dark"
+        android:textSize="14sp"
         android:visibility="gone" />
 
     <ImageButton

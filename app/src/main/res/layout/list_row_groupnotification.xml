@@ -4,9 +4,9 @@
     android:id="@+id/cv_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@android:color/white"
-    android:layout_marginBottom="5dp"
     app:cardElevation="0dp">
 
     <LinearLayout
@@ -18,9 +18,9 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="2dp"
             android:clickable="false"
             android:longClickable="false"
+            android:padding="2dp"
             android:textColor="@color/darkGray"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -46,8 +46,8 @@
                 android:id="@+id/tv_time"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:clickable="false"
                 android:layout_weight="0.5"
+                android:clickable="false"
                 android:gravity="start|center_vertical"
                 android:longClickable="false"
                 android:padding="2dp"
@@ -58,9 +58,9 @@
                 android:id="@+id/ib_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
+                android:background="@android:color/transparent"
                 android:gravity="end"
                 android:src="@drawable/icon_delete"
-                android:background="@android:color/transparent"
                 android:tint="@android:color/holo_red_dark" />
 
         </LinearLayout>

@@ -55,6 +55,7 @@ public class AllGroupsListModel implements Serializable {
         private String group_code;
         private String group_description;
         private String status;
+        private String is_admin;
         private ArrayList<GroupMemberDetailsBean> Group_Member_Details;
 
         public String getId() {
@@ -95,6 +96,14 @@ public class AllGroupsListModel implements Serializable {
 
         public void setStatus(String status) {
             this.status = status;
+        }
+
+        public String getIs_admin() {
+            return is_admin;
+        }
+
+        public void setIs_admin(String is_admin) {
+            this.is_admin = is_admin;
         }
 
         public ArrayList<GroupMemberDetailsBean> getGroup_Member_Details() {

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    tools:targetApi="lollipop"
-    android:scrollbars="none">
+    android:scrollbars="none"
+    tools:targetApi="lollipop">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -117,10 +117,10 @@
                     android:id="@+id/tv_already_registered"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Already Registered?"
                     android:gravity="center"
-                    android:textSize="16dp"
+                    android:text="Already Registered?"
                     android:textColor="@color/colorPrimary"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
             </LinearLayout>

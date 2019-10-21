@@ -4,11 +4,11 @@
     android:id="@+id/cv_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+    android:layout_marginBottom="5dp"
     android:foreground="?android:attr/selectableItemBackground"
+    android:padding="10dp"
     app:cardBackgroundColor="@android:color/white"
-    app:cardElevation="0dp"
-    android:layout_marginBottom="5dp">
+    app:cardElevation="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,8 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:paddingLeft="5dp"
+            android:paddingTop="2.5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2.5dp"
             android:text="Priyesh Pawar"
-            android:padding="5dp"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
@@ -29,49 +32,62 @@
             android:id="@+id/tv_mobile_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingTop="2.5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2.5dp"
             android:text="8149115089 | priyeshpawar07@gmail.com"
-            android:padding="5dp"
             android:textColor="@color/black"
             android:textSize="16sp" />
 
         <View
+            android:id="@+id/view_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary"
+            android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/ll_buttons"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <Button
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:id="@+id/btn_edit"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.5"
                 android:drawableRight="@drawable/icon_edit"
                 android:drawableTint="@color/colorPrimary"
-                android:text="Edit" />
+                android:text="Edit"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <Button
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:id="@+id/btn_delete"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.5"
                 android:drawableRight="@drawable/icon_delete"
                 android:drawableTint="@color/colorPrimary"
-                android:text="Delete" />
+                android:text="Delete"
+                android:textStyle="bold" />
 
             <Switch
+                android:id="@+id/sw_active"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="0.5"
+                android:gravity="center"
                 android:paddingLeft="5dp"
+                android:text="Active"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
-                android:text="Is Active"
-                android:textColor="@color/colorPrimary" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 

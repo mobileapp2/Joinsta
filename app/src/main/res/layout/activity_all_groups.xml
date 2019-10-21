@@ -55,10 +55,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.9"
                 android:background="@android:color/transparent"
+                android:focusable="false"
                 android:gravity="center_vertical"
                 android:hint="Search"
                 android:padding="10dp"
-                android:focusable="false"
                 android:textSize="16sp" />
 
             <ImageView

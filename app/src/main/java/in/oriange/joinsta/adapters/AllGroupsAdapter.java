@@ -87,6 +87,10 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             holder.tv_status.setText("Joined");
         }
 
+        if (groupDetails.getIs_admin().equals("1")) {
+            holder.tv_status.setText("Admin");
+        }
+
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

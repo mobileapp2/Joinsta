@@ -22,7 +22,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.GroupMembersAdapter;
+import in.oriange.joinsta.adapters.GroupMembersListAdapter;
 import in.oriange.joinsta.models.GroupMemebersListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -96,7 +96,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_group_members.setAdapter(new GroupMembersAdapter(context, groupMembersList));
+                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersList));
                     return;
                 }
 
@@ -116,9 +116,9 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                             groupsSearchedList.add(groupsDetails);
                         }
                     }
-                    rv_group_members.setAdapter(new GroupMembersAdapter(context, groupsSearchedList));
+                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupsSearchedList));
                 } else {
-                    rv_group_members.setAdapter(new GroupMembersAdapter(context, groupMembersList));
+                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersList));
                 }
 
             }
@@ -180,7 +180,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                         if (groupMembersList.size() > 0) {
                             rv_group_members.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_group_members.setAdapter(new GroupMembersAdapter(context, groupMembersList));
+                            rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_group_members.setVisibility(View.GONE);

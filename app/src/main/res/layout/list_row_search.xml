@@ -15,10 +15,10 @@
         android:background="@color/white"
         android:clickable="false"
         android:orientation="vertical"
+        android:paddingLeft="10dp"
         android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:paddingRight="10dp"
-        android:paddingLeft="10dp">
+        android:paddingBottom="5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -122,28 +122,28 @@
             android:weightSum="1">
 
             <Button
-                style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_enquire"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:textSize="14sp"
-                android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="0.5"
                 android:drawableRight="@drawable/icon_enquiry"
                 android:text="Enquire"
-                android:layout_weight="0.5" />
+                android:textSize="14sp" />
 
             <Button
-                style="@style/Widget.MaterialComponents.Button"
                 android:id="@+id/btn_caldist"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:textSize="14sp"
-                android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="0.5"
                 android:drawableRight="@drawable/icon_distance"
                 android:text="Distance"
-                android:layout_weight="0.5" />
+                android:textSize="14sp" />
 
 
         </LinearLayout>

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="10dp"
-    android:layout_height="wrap_content">
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
         android:hint="Name"
         android:inputType="textCapWords|textNoSuggestions"
-        android:textColorHint="@color/colorAccent"
-        android:focusable="false"
         android:longClickable="false"
-        android:clickable="false"
+        android:textColorHint="@color/colorAccent"
         android:textSize="16sp"
         app:met_floatingLabel="highlight"
         app:met_textColorHint="@color/darkGray"
@@ -26,8 +26,8 @@
         android:id="@+id/rg_communicationmode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@drawable/bg_outline"
+        android:orientation="horizontal"
         android:weightSum="0.6">
 
         <RadioButton
@@ -53,32 +53,32 @@
         android:id="@+id/edt_mobile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
         android:hint="Mobile"
         android:inputType="number"
-        android:focusable="false"
         android:longClickable="false"
-        android:clickable="false"
         android:maxLength="10"
         android:textSize="16sp"
+        android:visibility="gone"
         app:met_floatingLabel="highlight"
         app:met_textColorHint="@color/darkGray"
-        app:met_underlineColor="@color/mediumGray"
-        android:visibility="gone" />
+        app:met_underlineColor="@color/mediumGray" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:focusable="false"
-        android:longClickable="false"
         android:clickable="false"
+        android:focusable="false"
+        android:hint="Email"
         android:inputType="textEmailAddress"
+        android:longClickable="false"
         android:textSize="16sp"
+        android:visibility="gone"
         app:met_floatingLabel="highlight"
         app:met_textColorHint="@color/darkGray"
-        app:met_underlineColor="@color/mediumGray"
-        android:visibility="gone" />
+        app:met_underlineColor="@color/mediumGray" />
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_subject"

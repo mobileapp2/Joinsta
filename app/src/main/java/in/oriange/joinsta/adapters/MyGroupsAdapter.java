@@ -79,15 +79,22 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             holder.ll_buttons.setVisibility(View.VISIBLE);
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.GONE);
+            holder.tv_role.setVisibility(View.INVISIBLE);
         } else if (groupDetails.getStatus().equals("left")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
+            holder.tv_role.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equals("requested")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setVisibility(View.GONE);
+            holder.tv_role.setVisibility(View.GONE);
             holder.tv_status.setText("Requested");
+        }
+
+        if (groupDetails.getIs_admin().equals("1")) {
+            holder.tv_role.setVisibility(View.VISIBLE);
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +105,6 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         .putExtra("type", "2"));
             }
         });
-
 
         holder.ib_settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +231,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_heading;
+        private TextView tv_heading, tv_role;
         private LinearLayout ll_buttons;
         private TextView tv_status;
         private Button btn_rejoin;
@@ -235,6 +241,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             tv_heading = view.findViewById(R.id.tv_heading);
+            tv_role = view.findViewById(R.id.tv_role);
             ib_settings = view.findViewById(R.id.ib_settings);
             ib_notifications = view.findViewById(R.id.ib_notifications);
             ib_exit = view.findViewById(R.id.ib_exit);

@@ -16,11 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.AddGroupMembers_Fragment;
-import in.oriange.joinsta.fragments.AddGroupSupervisors_Fragment;
+import in.oriange.joinsta.fragments.GroupMembers_Fragment;
+import in.oriange.joinsta.fragments.GroupSupervisors_Fragment;
+import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.NonSwipeableViewPager;
 
-public class AddMembersInGroup_Activity extends AppCompatActivity {
+public class GroupMembersSupervisors_Activity extends AppCompatActivity {
 
     private Context context;
     private SmartTabLayout tabs;
@@ -29,7 +30,7 @@ public class AddMembersInGroup_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addmembers_ingroup);
+        setContentView(R.layout.activity_group_memberssupervisors);
 
         init();
         setDefault();
@@ -38,16 +39,26 @@ public class AddMembersInGroup_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = AddMembersInGroup_Activity.this;
+        context = GroupMembersSupervisors_Activity.this;
         tabs = findViewById(R.id.tabs);
         viewpager = findViewById(R.id.viewpager);
 
     }
 
     private void setDefault() {
+
+        Bundle bundle = new Bundle();
+        bundle.putString("groupId", getIntent().getStringExtra("groupId"));
+
+        GroupSupervisors_Fragment groupSupervisors_fragment = new GroupSupervisors_Fragment();
+        groupSupervisors_fragment.setArguments(bundle);
+
+        GroupMembers_Fragment groupMembers_fragment = new GroupMembers_Fragment();
+        groupMembers_fragment.setArguments(bundle);
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new AddGroupSupervisors_Fragment(), "Supervisors");
-        adapter.addFrag(new AddGroupMembers_Fragment(), "Members");
+        adapter.addFrag(groupSupervisors_fragment, "Supervisors");
+        adapter.addFrag(groupMembers_fragment, "Members");
         viewpager.setAdapter(adapter);
         tabs.setViewPager(viewpager);
     }
