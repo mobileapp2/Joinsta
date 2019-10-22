@@ -60,10 +60,10 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_add_member, cv_requests, cv_send_message, cv_group_banners;
+    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message, cv_group_banners;
     private LinearLayout ll_group_admin;
     private SliderView imageSlider;
-    private TextView tv_codename, tv_description, tv_praticipants;
+    private TextView tv_codename, tv_description, tv_praticipants, tv_members;
     private MaterialButton btn_members;
     private RecyclerView rv_group_members;
     private Button btn_connect, btn_status;
@@ -94,6 +94,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
         cv_grp_details = findViewById(R.id.cv_grp_details);
         cv_banner = findViewById(R.id.cv_banner);
         cv_rejoin = findViewById(R.id.cv_rejoin);
+        cv_members = findViewById(R.id.cv_members);
         cv_add_member = findViewById(R.id.cv_add_member);
         cv_requests = findViewById(R.id.cv_requests);
         cv_send_message = findViewById(R.id.cv_send_message);
@@ -103,6 +104,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
         tv_praticipants = findViewById(R.id.tv_praticipants);
+        tv_members = findViewById(R.id.tv_members);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         btn_members = findViewById(R.id.btn_members);
@@ -148,10 +150,13 @@ public class GroupDetails_Activity extends AppCompatActivity {
             case "accepted":
                 btn_connect.setVisibility(View.GONE);
                 btn_status.setVisibility(View.VISIBLE);
-                btn_members.setVisibility(View.VISIBLE);
+//                btn_members.setVisibility(View.VISIBLE);
+                cv_members.setVisibility(View.VISIBLE);
                 btn_status.setText("Accepted");
                 break;
         }
+
+        int members = 0;
 
         if (leadsList != null) {
             if (leadsList.size() != 0) {
@@ -159,6 +164,8 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean groupDetails : leadsList) {
                     if (groupDetails.getRole().equals("group_admin") || groupDetails.getRole().equals("group_supervisor")) {
                         foundMembers.add(groupDetails);
+                    } else if (groupDetails.getRole().equals("group_member")) {
+                        members = members + 1;
                     }
                 }
 
@@ -167,8 +174,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
             }
         }
 
-        rv_group_members.setAdapter(new GroupMembersAdapter());
+        tv_members.setText(members + " Members");
 
+        rv_group_members.setAdapter(new GroupMembersAdapter());
 
         if (groupDetails.getIs_admin().equals("1")) {
             ll_group_admin.setVisibility(View.VISIBLE);
@@ -190,6 +198,14 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
     private void setEventHandler() {
         btn_members.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, GroupMembersList_Activity.class)
+                        .putExtra("groupId", groupDetails.getId()));
+            }
+        });
+
+        cv_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, GroupMembersList_Activity.class)

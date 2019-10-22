@@ -22,6 +22,7 @@
 
     <color name="primary_500">#3F51B5</color>
     <color name="black_trans80">#33000000</color>
+    <color name="black_trans">#90000000</color>
 
     <color name="helper_color">#1C3BE6</color>
 

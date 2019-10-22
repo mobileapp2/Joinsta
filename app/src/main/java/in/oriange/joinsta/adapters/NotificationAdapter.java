@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fmsirvent.ParallaxEverywhere.PEWImageView;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -82,6 +83,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.tv_message.setText(notificationDetails.getDescription().trim());
         holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
 
+        holder.tv_title_image.setText(notificationDetails.getTitle().trim());
+        holder.tv_message_image.setText(notificationDetails.getDescription().trim());
+        holder.tv_time_image.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+
         if (!notificationDetails.getImage().equals("")) {
             String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
             Picasso.with(context)
@@ -90,15 +95,21 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         @Override
                         public void onSuccess() {
                             holder.imv_notificationimg.setVisibility(View.VISIBLE);
+                            holder.ll_inimage.setVisibility(View.VISIBLE);
+                            holder.ll_outimage.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
                             holder.imv_notificationimg.setVisibility(View.GONE);
+                            holder.ll_inimage.setVisibility(View.GONE);
+                            holder.ll_outimage.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
             holder.imv_notificationimg.setVisibility(View.GONE);
+            holder.ll_inimage.setVisibility(View.GONE);
+            holder.ll_outimage.setVisibility(View.VISIBLE);
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -150,22 +161,29 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private ImageView imv_notificationimg;
-        private TextView tv_title, tv_message, tv_time;
-        private ImageButton ib_delete;
+        private PEWImageView imv_notificationimg;
+        private TextView tv_title, tv_title_image, tv_message, tv_message_image, tv_time, tv_time_image;
+        private ImageButton ib_delete, ib_delete_image;
         public LinearLayout view_foreground;
         private RelativeLayout view_background;
+        private LinearLayout ll_inimage, ll_outimage;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             imv_notificationimg = view.findViewById(R.id.imv_notificationimg);
             tv_title = view.findViewById(R.id.tv_title);
+            tv_title_image = view.findViewById(R.id.tv_title_image);
             tv_message = view.findViewById(R.id.tv_message);
+            tv_message_image = view.findViewById(R.id.tv_message_image);
             tv_time = view.findViewById(R.id.tv_time);
+            tv_time_image = view.findViewById(R.id.tv_time_image);
             ib_delete = view.findViewById(R.id.ib_delete);
+            ib_delete_image = view.findViewById(R.id.ib_delete_image);
             view_foreground = view.findViewById(R.id.view_foreground);
             view_background = view.findViewById(R.id.view_background);
+            ll_inimage = view.findViewById(R.id.ll_inimage);
+            ll_outimage = view.findViewById(R.id.ll_outimage);
         }
     }
 

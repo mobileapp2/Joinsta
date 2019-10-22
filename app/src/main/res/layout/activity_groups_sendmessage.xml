@@ -311,11 +311,11 @@
                                 android:textSize="16sp" />
 
                             <CheckBox
-                                android:id="@+id/cb_whatsapp"
+                                android:id="@+id/cb_email"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
-                                android:text="WhatsApp"
+                                android:text="Email"
                                 android:textSize="16sp" />
 
                         </LinearLayout>
@@ -326,20 +326,21 @@
                             android:orientation="horizontal">
 
                             <CheckBox
-                                android:id="@+id/cb_email"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
-                                android:text="Email"
-                                android:textSize="16sp" />
-
-                            <CheckBox
                                 android:id="@+id/cb_notification"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:text="Notification"
                                 android:textSize="16sp" />
+
+                            <CheckBox
+                                android:id="@+id/cb_whatsapp"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:text="WhatsApp"
+                                android:textSize="16sp"
+                                android:visibility="gone" />
 
                         </LinearLayout>
 
