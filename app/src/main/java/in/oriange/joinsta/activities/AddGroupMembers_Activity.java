@@ -109,7 +109,7 @@ public class AddGroupMembers_Activity extends AppCompatActivity {
         mainObj.addProperty("member_name", edt_name.getText().toString().trim());
         mainObj.addProperty("member_email", edt_email.getText().toString().trim());
         mainObj.addProperty("member_mobile", edt_mobile.getText().toString().trim());
-        mainObj.addProperty("member_role", "group_supervisor");
+        mainObj.addProperty("member_role", "group_member");
         mainObj.addProperty("member_state", "");
         mainObj.addProperty("member_district", "");
         mainObj.addProperty("user_id", userId);

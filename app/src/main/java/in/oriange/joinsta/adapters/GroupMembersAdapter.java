@@ -241,8 +241,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             String res;
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "setactive");
-            obj.addProperty("user_id", params[0]);
-            obj.addProperty("role", "group_member");
+            obj.addProperty("id", params[0]);
             obj.addProperty("is_active", params[1]);
             res = APICall.JSONAPICall(ApplicationConstants.GRPADMINMEMISACTIVEAPI, obj.toString());
             return res.trim();

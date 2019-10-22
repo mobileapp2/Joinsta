@@ -58,7 +58,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
             tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
     private ImageView imv_share;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -90,6 +90,7 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
         cv_address = findViewById(R.id.cv_address);
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
+        cv_texbank_notice = findViewById(R.id.cv_texbank_notice);
 
         imb_share_tax = findViewById(R.id.imb_share_tax);
         imb_share_bank = findViewById(R.id.imb_share_bank);
@@ -214,6 +215,9 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
         if (!searchDetails.getTax_alias().trim().isEmpty() ||
                 !searchDetails.getPan_number().trim().isEmpty() ||
                 !searchDetails.getGst_number().trim().isEmpty()) {
+
+            cv_texbank_notice.setVisibility(View.GONE);
+
             if (!searchDetails.getTax_alias().trim().isEmpty()) {
                 tv_tax_alias.setText("Alias - " + searchDetails.getTax_alias());
             } else {
@@ -241,6 +245,8 @@ public class ViewMyEmpDetails_Activity extends AppCompatActivity {
                 !searchDetails.getBank_name().trim().isEmpty() ||
                 !searchDetails.getAccount_no().trim().isEmpty() ||
                 !searchDetails.getIfsc_code().trim().isEmpty()) {
+
+            cv_texbank_notice.setVisibility(View.GONE);
 
             if (!searchDetails.getAccount_holder_name().trim().isEmpty()) {
                 tv_accholder_name.setText(searchDetails.getAccount_holder_name());

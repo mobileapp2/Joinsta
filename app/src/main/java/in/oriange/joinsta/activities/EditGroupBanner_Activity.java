@@ -442,7 +442,7 @@ public class EditGroupBanner_Activity extends AppCompatActivity {
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
-                multipart.addFormField("request_type", "uploadFile");
+                multipart.addFormField("request_type", "uploadBannerFile");
                 multipart.addFormField("user_id", userId);
                 multipart.addFilePart("document", params[0]);
 

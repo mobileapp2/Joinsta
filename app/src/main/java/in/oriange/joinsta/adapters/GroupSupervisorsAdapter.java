@@ -242,8 +242,7 @@ public class GroupSupervisorsAdapter extends RecyclerView.Adapter<GroupSuperviso
             String res;
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "setactive");
-            obj.addProperty("user_id", params[0]);
-            obj.addProperty("role", "group_supervisor");
+            obj.addProperty("id", params[0]);
             obj.addProperty("is_active", params[1]);
             res = APICall.JSONAPICall(ApplicationConstants.GRPADMINMEMISACTIVEAPI, obj.toString());
             return res.trim();

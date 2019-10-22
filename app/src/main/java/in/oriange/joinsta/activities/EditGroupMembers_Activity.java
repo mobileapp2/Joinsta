@@ -121,7 +121,7 @@ public class EditGroupMembers_Activity extends AppCompatActivity {
         mainObj.addProperty("edit_member_name", edt_name.getText().toString().trim());
         mainObj.addProperty("edit_member_email", edt_email.getText().toString().trim());
         mainObj.addProperty("edit_member_mobile", edt_mobile.getText().toString().trim());
-        mainObj.addProperty("edit_member_role", "group_supervisor");
+        mainObj.addProperty("edit_member_role", "group_member");
         mainObj.addProperty("edit_member_state", "");
         mainObj.addProperty("edit_member_district", "");
         mainObj.addProperty("user_id", userId);

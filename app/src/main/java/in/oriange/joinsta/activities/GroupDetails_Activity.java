@@ -172,6 +172,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
         if (groupDetails.getIs_admin().equals("1")) {
             ll_group_admin.setVisibility(View.VISIBLE);
+
+            btn_connect.setVisibility(View.GONE);
+            btn_status.setVisibility(View.GONE);
         }
 
         if (Utilities.isNetworkAvailable(context)) {
