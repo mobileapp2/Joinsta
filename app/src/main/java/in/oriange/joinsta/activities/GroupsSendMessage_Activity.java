@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -51,17 +51,18 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private TextView tv_sms_count, tv_whatsapp_count, tv_email_count, tv_notifications_count;
+    private TextView tv_sms_count, tv_email_count, tv_notifications_count;
     private MaterialEditText edt_groups, edt_subject;
     private EditText edt_message;
     private RadioButton rb_supervisor, rb_all;
-    private CheckBox cb_sms, cb_whatsapp, cb_email, cb_notification;
-    private Button btn_save;
+    private Button btn_save, btn_sms, btn_email, btn_notification;
 
     private List<GroupAdminsGroupsListModel.ResultBean> groupsList;
 
     private JsonArray selectedGroups;
     private String userId;
+
+    boolean isSmsPressed, isEmailPressed, isNotificationPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +82,16 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         tv_sms_count = findViewById(R.id.tv_sms_count);
-        tv_whatsapp_count = findViewById(R.id.tv_whatsapp_count);
         tv_email_count = findViewById(R.id.tv_email_count);
         tv_notifications_count = findViewById(R.id.tv_notifications_count);
         edt_groups = findViewById(R.id.edt_groups);
         edt_subject = findViewById(R.id.edt_subject);
         edt_message = findViewById(R.id.edt_message);
+        btn_sms = findViewById(R.id.btn_sms);
+        btn_email = findViewById(R.id.btn_email);
+        btn_notification = findViewById(R.id.btn_notification);
         rb_supervisor = findViewById(R.id.rb_supervisor);
         rb_all = findViewById(R.id.rb_all);
-        cb_sms = findViewById(R.id.cb_sms);
-        cb_whatsapp = findViewById(R.id.cb_whatsapp);
-        cb_email = findViewById(R.id.cb_email);
-        cb_notification = findViewById(R.id.cb_notification);
         btn_save = findViewById(R.id.btn_save);
 
         groupsList = new ArrayList<>();
@@ -119,6 +118,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
         edt_groups.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,6 +139,30 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 submitData();
+            }
+        });
+
+        btn_sms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSmsPressed = !isSmsPressed;
+                btn_sms.setBackgroundResource(isSmsPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
+            }
+        });
+
+        btn_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isEmailPressed = !isEmailPressed;
+                btn_email.setBackgroundResource(isEmailPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
+            }
+        });
+
+        btn_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isNotificationPressed = !isNotificationPressed;
+                btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
             }
         });
     }
@@ -173,10 +197,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                     GroupMessagesCountsModel pojoDetails = new Gson().fromJson(result, GroupMessagesCountsModel.class);
                     type = pojoDetails.getType();
                     if (type.equalsIgnoreCase("success")) {
-                        tv_sms_count.setText(pojoDetails.getResult().getSmscount());
-                        tv_whatsapp_count.setText(pojoDetails.getResult().getWhatsappcount());
-                        tv_email_count.setText(pojoDetails.getResult().getEmailcount());
-                        tv_notifications_count.setText(pojoDetails.getResult().getNotificationcount());
+                        tv_sms_count.setText("SMS (" + pojoDetails.getResult().getSmscount() + ")");
+                        tv_email_count.setText("Email (" + pojoDetails.getResult().getEmailcount() + ")");
+                        tv_notifications_count.setText("Notifications (" + pojoDetails.getResult().getNotificationcount() + ")");
                     }
                 }
             } catch (Exception e) {
@@ -324,7 +347,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         JsonArray messageTypes = new JsonArray();
 
         if (edt_groups.getText().toString().trim().isEmpty()) {
-            edt_groups.setError("Please select atlease one group");
+            edt_groups.setError("Please select atleast one group");
             edt_groups.requestFocus();
             return;
         }
@@ -350,23 +373,20 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             return;
         }
 
-        if (!cb_sms.isChecked() && !cb_whatsapp.isChecked() && !cb_email.isChecked() && !cb_notification.isChecked()) {
+        if (!isSmsPressed && !isEmailPressed && !isNotificationPressed) {
             Utilities.showMessage("Please select message mode", context, 2);
             return;
         }
 
-        if (cb_sms.isChecked()) {
+        if (isSmsPressed) {
             messageTypes.add("sms");
         }
-        if (cb_whatsapp.isChecked()) {
-            messageTypes.add("whatsapp");
-        }
-        if (cb_email.isChecked()) {
+
+        if (isEmailPressed) {
             messageTypes.add("email");
         }
-        if (cb_notification.isChecked()) {
-            messageTypes.add("notification");
-        }
+
+        if (isNotificationPressed) { messageTypes.add("notification"); }
 
         JsonObject mainObject = new JsonObject();
         mainObject.addProperty("type", "sendMessage");

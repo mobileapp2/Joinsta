@@ -60,8 +60,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message, cv_group_banners;
-    private LinearLayout ll_group_admin;
+    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message, cv_group_banners, cv_group_admin;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
     private MaterialButton btn_members;
@@ -99,7 +98,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
         cv_requests = findViewById(R.id.cv_requests);
         cv_send_message = findViewById(R.id.cv_send_message);
         cv_group_banners = findViewById(R.id.cv_group_banners);
-        ll_group_admin = findViewById(R.id.ll_group_admin);
+        cv_group_admin = findViewById(R.id.cv_group_admin);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
@@ -174,12 +173,12 @@ public class GroupDetails_Activity extends AppCompatActivity {
             }
         }
 
-        tv_members.setText(members + " Members");
+        tv_members.setText("Members (" + members + ")");
 
         rv_group_members.setAdapter(new GroupMembersAdapter());
 
         if (groupDetails.getIs_admin().equals("1")) {
-            ll_group_admin.setVisibility(View.VISIBLE);
+            cv_group_admin.setVisibility(View.VISIBLE);
 
             btn_connect.setVisibility(View.GONE);
             btn_status.setVisibility(View.GONE);

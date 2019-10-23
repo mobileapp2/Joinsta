@@ -63,13 +63,12 @@
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/tv_codename"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Message Count Details"
+                        android:text="Your Usage"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -79,13 +78,20 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_notifications_count"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.6"
+                            android:layout_weight="0.4"
+                            android:gravity="center"
                             android:padding="5dp"
-                            android:text="SMS"
+                            android:text="Notifications"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
+
+                        <View
+                            android:layout_width="0.5dp"
+                            android:layout_height="match_parent"
+                            android:background="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_sms_count"
@@ -94,57 +100,14 @@
                             android:layout_weight="0.4"
                             android:gravity="center"
                             android:padding="5dp"
-                            android:text="0"
+                            android:text="SMS"
                             android:textColor="@color/black"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textSize="14sp" />
 
                         <View
                             android:layout_width="0.5dp"
                             android:layout_height="match_parent"
                             android:background="@color/colorPrimary" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.6"
-                            android:padding="5dp"
-                            android:text="WhatsApp"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/tv_whatsapp_count"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:gravity="center"
-                            android:padding="5dp"
-                            android:text="0"
-                            android:textColor="@color/black"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.6"
-                            android:padding="5dp"
-                            android:text="Email"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tv_email_count"
@@ -153,40 +116,13 @@
                             android:layout_weight="0.4"
                             android:gravity="center"
                             android:padding="5dp"
-                            android:text="0"
-                            android:textColor="@color/black"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-
-                        <View
-                            android:layout_width="0.5dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/colorPrimary" />
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.6"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:padding="5dp"
-                            android:text="Notification"
+                            android:text="Email"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
-                        <TextView
-                            android:id="@+id/tv_notifications_count"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:gravity="center"
-                            android:padding="5dp"
-                            android:text="0"
-                            android:textColor="@color/black"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
 
                     </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -225,7 +161,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_outline"
                         android:orientation="horizontal"
                         android:padding="5dp">
 
@@ -294,7 +229,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/bg_outline"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -302,45 +236,45 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <CheckBox
-                                android:id="@+id/cb_sms"
+                            <Button
+                                android:id="@+id/btn_notification"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:layout_weight="0.5"
-                                android:text="SMS"
-                                android:textSize="16sp" />
-
-                            <CheckBox
-                                android:id="@+id/cb_email"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
-                                android:text="Email"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/cb_notification"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
+                                android:background="@drawable/bg_button_selectable"
                                 android:text="Notification"
-                                android:textSize="16sp" />
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
 
-                            <CheckBox
-                                android:id="@+id/cb_whatsapp"
+                            <Button
+                                android:id="@+id/btn_sms"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
                                 android:layout_weight="0.5"
-                                android:text="WhatsApp"
-                                android:textSize="16sp"
-                                android:visibility="gone" />
+                                android:background="@drawable/bg_button_selectable"
+                                android:text="SMS"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+
+                            <Button
+                                android:id="@+id/btn_email"
+                                android:layout_width="0dp"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0.5"
+                                android:background="@drawable/bg_button_selectable"
+                                android:text="Email"
+                                android:textAllCaps="false"
+                                android:textColor="@color/white"
+                                android:textSize="14sp" />
+
 
                         </LinearLayout>
 
@@ -351,7 +285,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
-                        android:layout_margin="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="0.5"
                         android:background="@drawable/button_background_filled"
                         android:text="Send"
@@ -359,9 +295,7 @@
 
                 </LinearLayout>
 
-
             </androidx.cardview.widget.CardView>
-
 
         </LinearLayout>
 

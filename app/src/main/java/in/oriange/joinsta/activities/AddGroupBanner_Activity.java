@@ -274,7 +274,7 @@ public class AddGroupBanner_Activity extends AppCompatActivity {
 
     private void submitData() {
         if (edt_name.getText().toString().trim().isEmpty()) {
-            edt_name.setError("Please enter banner name");
+            edt_name.setError("Please enter banner title");
             edt_name.requestFocus();
             return;
         }
