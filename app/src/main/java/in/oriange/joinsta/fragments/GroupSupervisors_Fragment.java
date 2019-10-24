@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.AddGroupMemberSupervisor_Activity;
 import in.oriange.joinsta.activities.AddGroupSupervisor_Activity;
 import in.oriange.joinsta.adapters.GroupSupervisorsAdapter;
 import in.oriange.joinsta.models.GroupSupervisorsListModel;
@@ -104,8 +105,9 @@ public class GroupSupervisors_Fragment extends Fragment {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddGroupSupervisor_Activity.class)
-                        .putExtra("groupId", groupId));
+                startActivity(new Intent(context, AddGroupMemberSupervisor_Activity.class)
+                        .putExtra("groupId", groupId)
+                        .putExtra("role", "group_supervisor"));
             }
         });
     }

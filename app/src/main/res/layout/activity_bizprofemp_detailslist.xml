@@ -52,7 +52,7 @@
         <com.smarteist.autoimageslider.SliderView
             android:id="@+id/imageSlider"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="190dp"
             app:sliderAnimationDuration="600"
             app:sliderAutoCycleEnabled="false"
             app:sliderIndicatorAnimationDuration="600"
@@ -76,6 +76,7 @@
             android:id="@+id/rv_searchlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
             android:visibility="gone" />
 
         <com.github.ybq.android.spinkit.SpinKitView

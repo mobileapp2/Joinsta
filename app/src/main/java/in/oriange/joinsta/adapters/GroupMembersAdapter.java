@@ -28,8 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditGroupMemberSupervisor_Activity;
 import in.oriange.joinsta.activities.EditGroupMembers_Activity;
-import in.oriange.joinsta.models.GroupMembersListModel;
+import in.oriange.joinsta.models.GroupSupervisorsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.ParamsPojo;
@@ -38,10 +39,10 @@ import in.oriange.joinsta.utilities.Utilities;
 public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
 
     private Context context;
-    private List<GroupMembersListModel.ResultBean> groupmembers;
+    private List<GroupSupervisorsListModel.ResultBean> groupmembers;
     private String groupId;
 
-    public GroupMembersAdapter(Context context, List<GroupMembersListModel.ResultBean> groupmembers, String groupId) {
+    public GroupMembersAdapter(Context context, List<GroupSupervisorsListModel.ResultBean> groupmembers, String groupId) {
         this.context = context;
         this.groupmembers = groupmembers;
         this.groupId = groupId;
@@ -58,7 +59,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int pos) {
         int position = holder.getAdapterPosition();
-        final GroupMembersListModel.ResultBean memberDetails = groupmembers.get(position);
+        final GroupSupervisorsListModel.ResultBean memberDetails = groupmembers.get(position);
 
         holder.tv_name.setText(memberDetails.getFirst_name());
 
@@ -95,9 +96,10 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         holder.btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditGroupMembers_Activity.class)
+                context.startActivity(new Intent(context, EditGroupMemberSupervisor_Activity.class)
                         .putExtra("memberDetails", memberDetails)
-                        .putExtra("groupId", groupId));
+                        .putExtra("groupId", groupId)
+                        .putExtra("role", "group_member"));
             }
         });
 

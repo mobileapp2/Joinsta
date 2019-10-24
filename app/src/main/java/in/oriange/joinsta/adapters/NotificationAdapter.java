@@ -161,7 +161,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private PEWImageView imv_notificationimg;
+        private ImageView imv_notificationimg;
         private TextView tv_title, tv_title_image, tv_message, tv_message_image, tv_time, tv_time_image;
         private ImageButton ib_delete, ib_delete_image;
         public LinearLayout view_foreground;

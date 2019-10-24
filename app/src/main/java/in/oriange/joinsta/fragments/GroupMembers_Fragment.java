@@ -27,9 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.AddGroupMemberSupervisor_Activity;
 import in.oriange.joinsta.activities.AddGroupMembers_Activity;
 import in.oriange.joinsta.adapters.GroupMembersAdapter;
-import in.oriange.joinsta.models.GroupMembersListModel;
+import in.oriange.joinsta.models.GroupSupervisorsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.ParamsPojo;
@@ -44,7 +45,7 @@ public class GroupMembers_Fragment extends Fragment {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
 
-    private List<GroupMembersListModel.ResultBean> groupmembers;
+    private List<GroupSupervisorsListModel.ResultBean> groupmembers;
     private String groupId;
 
     private LocalBroadcastManager localBroadcastManager;
@@ -105,8 +106,9 @@ public class GroupMembers_Fragment extends Fragment {
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddGroupMembers_Activity.class)
-                        .putExtra("groupId", groupId));
+                startActivity(new Intent(context, AddGroupMemberSupervisor_Activity.class)
+                        .putExtra("groupId", groupId)
+                        .putExtra("role", "group_member"));
             }
         });
     }
@@ -141,7 +143,7 @@ public class GroupMembers_Fragment extends Fragment {
             try {
                 if (!result.equals("")) {
                     groupmembers = new ArrayList<>();
-                    GroupMembersListModel pojoDetails = new Gson().fromJson(result, GroupMembersListModel.class);
+                    GroupSupervisorsListModel pojoDetails = new Gson().fromJson(result, GroupSupervisorsListModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {

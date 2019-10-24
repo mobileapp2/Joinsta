@@ -6,6 +6,14 @@ public class MasterModel {
 
     private String id;
 
+    public MasterModel() {
+    }
+
+    public MasterModel(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

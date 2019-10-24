@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditGroupMemberSupervisor_Activity;
 import in.oriange.joinsta.activities.EditGroupSupervisor_Activity;
 import in.oriange.joinsta.models.GroupSupervisorsListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -95,9 +96,10 @@ public class GroupSupervisorsAdapter extends RecyclerView.Adapter<GroupSuperviso
         holder.btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditGroupSupervisor_Activity.class)
+                context.startActivity(new Intent(context, EditGroupMemberSupervisor_Activity.class)
                         .putExtra("memberDetails", memberDetails)
-                        .putExtra("groupId", groupId));
+                        .putExtra("groupId", groupId)
+                        .putExtra("role", "group_supervisor"));
             }
         });
 

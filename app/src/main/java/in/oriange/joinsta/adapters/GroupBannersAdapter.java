@@ -144,7 +144,7 @@ public class GroupBannersAdapter extends RecyclerView.Adapter<GroupBannersAdapte
         private CardView cv_mainlayout;
         private LinearLayout ll_buttons;
         private View view_divider;
-        private PEWImageView imv_banner_image;
+        private ImageView imv_banner_image;
         private TextView tv_title, tv_description, tv_time;
         private Button btn_edit, btn_delete;
 
