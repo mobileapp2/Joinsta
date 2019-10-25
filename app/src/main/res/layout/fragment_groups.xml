@@ -26,19 +26,38 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:text="My Groups"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/white" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize">
 
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/edt_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="false"
+                        android:drawableRight="@drawable/icon_dropdown"
+                        android:focusable="false"
+                        android:longClickable="false"
+                        android:text="My Groups"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/ib_notifications"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/icon_notification"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -92,7 +111,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_groups"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

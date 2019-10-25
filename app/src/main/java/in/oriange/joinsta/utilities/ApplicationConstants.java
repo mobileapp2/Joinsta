@@ -35,12 +35,12 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     // BETA API LINK V2
-    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
+//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
     //LIVE API LINK V6
-//    private static final String API_LINK = "http://joinsta.in/Api_v6/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+    private static final String API_LINK = "http://joinsta.in/Api_v6/";
+    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";
@@ -72,4 +72,6 @@ public class ApplicationConstants {
     public static final String GRPADMINSENDMESSAGEAPI = API_LINK + "grp_send_message.php";
     public static final String GRPADMINGRPBANNERSAPI = API_LINK + "grp_group_banners.php";
     public static final String GRPADMINMEMISACTIVEAPI = API_LINK + "group_members_active.php";
+    public static final String GRPADMINSETMEMBERVISIBILITYAPI = API_LINK + "groupmembersvisiblity.php";
+    public static final String GRPADMINSETGROUPVISIBILITYAPI = API_LINK + "set_group_visiblity.php";
 }

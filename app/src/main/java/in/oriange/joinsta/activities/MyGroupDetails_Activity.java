@@ -14,9 +14,11 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,9 +62,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message, cv_group_banners,cv_group_admin;
+    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message,
+            cv_group_banners, cv_group_admin, cv_grp_settings;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
+    private Switch sw_hide_members, sw_hide_group;
     private MaterialButton btn_members;
     private RecyclerView rv_group_members;
     private Button btn_connect, btn_status;
@@ -99,11 +103,14 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_send_message = findViewById(R.id.cv_send_message);
         cv_group_banners = findViewById(R.id.cv_group_banners);
         cv_group_admin = findViewById(R.id.cv_group_admin);
+        cv_grp_settings = findViewById(R.id.cv_grp_settings);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
         tv_praticipants = findViewById(R.id.tv_praticipants);
         tv_members = findViewById(R.id.tv_members);
+        sw_hide_members = findViewById(R.id.sw_hide_members);
+        sw_hide_group = findViewById(R.id.sw_hide_group);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         btn_members = findViewById(R.id.btn_members);
@@ -156,7 +163,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         }
 
         int members = 0;
-
         if (leadsList != null) {
             if (leadsList.size() != 0) {
                 ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> foundMembers = new ArrayList<>();
@@ -172,15 +178,22 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 leadsList.addAll(foundMembers);
             }
         }
-
-        tv_members.setText("Members ("+members+")");
+        tv_members.setText("Members (" + members + ")");
 
         rv_group_members.setAdapter(new GroupMembersAdapter());
 
         if (groupDetails.getIs_admin().equals("1")) {
             cv_group_admin.setVisibility(View.VISIBLE);
+            cv_grp_settings.setVisibility(View.VISIBLE);
             btn_connect.setVisibility(View.GONE);
             btn_status.setVisibility(View.GONE);
+
+            if (groupDetails.getIs_visible().equals("0")) {
+                sw_hide_members.setChecked(true);
+            }
+            if (groupDetails.getIs_public_group().equals("0")) {
+                sw_hide_group.setChecked(true);
+            }
         }
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -195,26 +208,63 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        btn_members.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, GroupMembersList_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
-            }
-        });
+//        btn_members.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(context, GroupMembersList_Activity.class)
+//                        .putExtra("groupId", groupDetails.getId()));
+//            }
+//        });
 
         cv_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, GroupMembersList_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
+                if (groupDetails.getIs_visible().equalsIgnoreCase("1")) {
+                    startActivity(new Intent(context, GroupMembersList_Activity.class)
+                            .putExtra("groupId", groupDetails.getId()));
+                }
+            }
+        });
+
+        sw_hide_members.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String is_visible = "";
+                if (isChecked) {
+                    is_visible = "0";
+                } else {
+                    is_visible = "1";
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GroupMembersVisiblity().execute(groupDetails.getId(), is_visible);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        sw_hide_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String is_public = "";
+                if (isChecked) {
+                    is_public = "0";
+                } else {
+                    is_public = "1";
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GroupVisiblity().execute(groupDetails.getId(), is_public);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
         ib_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (leadsList != null) {
                     if (leadsList.size() != 0) {
                         if (!isExpanded) {
@@ -742,6 +792,94 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 e.printStackTrace();
                 cv_banner.setVisibility(View.GONE);
 
+            }
+        }
+    }
+
+    private class GroupMembersVisiblity extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "updateGroupMembersVisiblity");
+            obj.addProperty("group_id", params[0]);
+            obj.addProperty("is_visible", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.GRPADMINSETMEMBERVISIBILITYAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        Utilities.showMessage("Group members visibility status changed successfully", context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class GroupVisiblity extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "setGroupVisiblity");
+            obj.addProperty("group_id", params[0]);
+            obj.addProperty("is_public", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.GRPADMINSETGROUPVISIBILITYAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        Utilities.showMessage("Group visibility status changed successfully", context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

@@ -56,6 +56,8 @@ public class AllGroupsListModel implements Serializable {
         private String group_description;
         private String status;
         private String is_admin;
+        private String is_visible;
+        private String is_public_group;
         private ArrayList<GroupMemberDetailsBean> Group_Member_Details;
 
         public String getId() {
@@ -104,6 +106,22 @@ public class AllGroupsListModel implements Serializable {
 
         public void setIs_admin(String is_admin) {
             this.is_admin = is_admin;
+        }
+
+        public String getIs_visible() {
+            return is_visible;
+        }
+
+        public void setIs_visible(String is_visible) {
+            this.is_visible = is_visible;
+        }
+
+        public String getIs_public_group() {
+            return is_public_group;
+        }
+
+        public void setIs_public_group(String is_public_group) {
+            this.is_public_group = is_public_group;
         }
 
         public ArrayList<GroupMemberDetailsBean> getGroup_Member_Details() {

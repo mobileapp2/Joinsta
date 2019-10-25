@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-
+        <activity android:name=".activities.AllGroupNotifications_Activity"></activity>
         <activity
             android:name=".activities.SplashScreen_Activity"
             android:screenOrientation="portrait"

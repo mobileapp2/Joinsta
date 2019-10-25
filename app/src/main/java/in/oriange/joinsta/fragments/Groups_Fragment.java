@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.AllGroupNotifications_Activity;
 import in.oriange.joinsta.activities.AllGroups_Activity;
 import in.oriange.joinsta.adapters.MyGroupsAdapter;
 import in.oriange.joinsta.models.MyGroupsListModel;
@@ -43,6 +45,7 @@ public class Groups_Fragment extends Fragment {
     private static RecyclerView rv_groups;
     private static LinearLayout ll_nopreview;
     private static SpinKitView progressBar;
+    private ImageButton ib_notifications;
 
     private static String userId;
     private static ArrayList<MyGroupsListModel.ResultBean> myGroupsList;
@@ -67,6 +70,7 @@ public class Groups_Fragment extends Fragment {
         rv_groups.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         progressBar = rootView.findViewById(R.id.progressBar);
+        ib_notifications = rootView.findViewById(R.id.ib_notifications);
 
         myGroupsList = new ArrayList<>();
     }
@@ -106,6 +110,13 @@ public class Groups_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, AllGroups_Activity.class));
+            }
+        });
+
+        ib_notifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AllGroupNotifications_Activity.class));
             }
         });
     }
