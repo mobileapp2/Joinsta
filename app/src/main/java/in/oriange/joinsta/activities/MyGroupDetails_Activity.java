@@ -188,12 +188,13 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             btn_connect.setVisibility(View.GONE);
             btn_status.setVisibility(View.GONE);
 
-            if (groupDetails.getIs_visible().equals("0")) {
-                sw_hide_members.setChecked(true);
-            }
             if (groupDetails.getIs_public_group().equals("0")) {
                 sw_hide_group.setChecked(true);
             }
+        }
+
+        if (groupDetails.getIs_visible().equals("1")) {
+            sw_hide_members.setChecked(true);
         }
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -219,7 +220,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (groupDetails.getIs_visible().equalsIgnoreCase("1")) {
+                if (!sw_hide_members.isChecked()) {
                     startActivity(new Intent(context, GroupMembersList_Activity.class)
                             .putExtra("groupId", groupDetails.getId()));
                 }
@@ -231,9 +232,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String is_visible = "";
                 if (isChecked) {
-                    is_visible = "0";
-                } else {
                     is_visible = "1";
+                } else {
+                    is_visible = "0";
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
