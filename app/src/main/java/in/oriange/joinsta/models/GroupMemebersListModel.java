@@ -42,6 +42,7 @@ public class GroupMemebersListModel {
         private String mobile;
         private String image_url;
         private String is_joinsta_member;
+        private String is_hidden;
 
         public String getGroup_name() {
             return group_name;
@@ -105,6 +106,14 @@ public class GroupMemebersListModel {
 
         public void setIs_joinsta_member(String is_joinsta_member) {
             this.is_joinsta_member = is_joinsta_member;
+        }
+
+        public String getIs_hidden() {
+            return is_hidden;
+        }
+
+        public void setIs_hidden(String is_hidden) {
+            this.is_hidden = is_hidden;
         }
     }
 }

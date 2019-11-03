@@ -19,8 +19,9 @@
         android:paddingBottom="2.5dp">
 
         <RelativeLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp">
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_weight="0.15">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imv_user"
@@ -39,9 +40,9 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
+            android:layout_weight="0.85"
             android:orientation="vertical">
 
             <LinearLayout
@@ -49,31 +50,38 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tv_name"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.7"
-                    android:ellipsize="end"
-                    android:singleLine="true"
-                    android:text="Priyesh Pawar"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.67"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_role"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.4"
-                    android:background="@drawable/bg_outline"
-                    android:gravity="center"
-                    android:text="Admin"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:paddingBottom="5dp"
+                        android:singleLine="true"
+                        android:text="Priyesh Pawar"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_role"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_outline"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="Admin"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_invite"
@@ -81,13 +89,24 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_weight="0.4"
+                    android:layout_weight="0.3"
                     android:ellipsize="end"
                     android:text="Invite"
                     android:textAllCaps="false"
                     android:textSize="12sp"
                     android:visibility="gone" />
 
+                <ImageButton
+                    android:id="@+id/ib_ishidden"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.03"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="10dp"
+                    android:src="@drawable/icon_hide"
+                    android:tint="@color/darkGray"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

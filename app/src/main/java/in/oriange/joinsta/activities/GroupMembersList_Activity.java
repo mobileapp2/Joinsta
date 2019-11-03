@@ -36,7 +36,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
-    private String groupId;
+    private String groupId, isAdmin;
     ArrayList<GroupMemebersListModel.ResultBean> groupMembersList;
 
     @Override
@@ -66,6 +66,8 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
+        isAdmin = getIntent().getStringExtra("isAdmin");
+
         if (Utilities.isNetworkAvailable(context)) {
             new GetGroupMembers().execute();
         } else {
@@ -171,6 +173,14 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                         for (GroupMemebersListModel.ResultBean groupDetails : groupMembersList) {
                             if (groupDetails.getRole().equals("group_member")) {
                                 foundMembers.add(groupDetails);
+                            }
+                        }
+
+                        for (GroupMemebersListModel.ResultBean memberDetails : foundMembers) {
+                            if (!isAdmin.equals("1")) {
+                                if (memberDetails.getIs_hidden().equals("1")) {
+                                    foundMembers.remove(memberDetails);
+                                }
                             }
                         }
 

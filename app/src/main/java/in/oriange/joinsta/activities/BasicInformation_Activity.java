@@ -113,7 +113,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
-    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode, latitude, longitude;
+    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode, latitude, longitude, countryCode;
 
     private JSONArray mobileJsonArray, landlineJsonArray, emailJsonArray;
 
@@ -234,7 +234,6 @@ public class BasicInformation_Activity extends AppCompatActivity {
             edt_fname.setText(json.getString("first_name"));
             edt_mname.setText(json.getString("middle_name"));
             edt_lname.setText(json.getString("last_name"));
-            edt_reg_mobile.setText(json.getString("mobile"));
             genderId = json.getString("gender_id");
             imageUrl = json.getString("image_url");
             isActive = json.getString("is_active");
@@ -247,6 +246,15 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 latitude = "0.0";
                 longitude = "0.0";
             }
+
+            try {
+                countryCode = json.getString("country_code");
+            } catch (Exception e) {
+                countryCode = "91";
+            }
+
+
+            edt_reg_mobile.setText("+"+countryCode + " " + json.getString("mobile"));
 
             if (edt_bloodgroup.getText().toString().trim().equals("null"))
                 edt_bloodgroup.setText("");

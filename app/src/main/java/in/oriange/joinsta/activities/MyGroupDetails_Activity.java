@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -119,6 +120,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         ib_more = findViewById(R.id.ib_more);
 
         leadsList = new ArrayList<>();
+
+
     }
 
     private void getSessionDetails() {
@@ -153,6 +156,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_status.setVisibility(View.VISIBLE);
                 btn_status.setText("Requested");
                 break;
+            case "rejected":
+                btn_connect.setVisibility(View.GONE);
+                btn_status.setVisibility(View.VISIBLE);
+                btn_status.setText("Rejected");
+                break;
             case "accepted":
                 btn_connect.setVisibility(View.VISIBLE);
                 btn_status.setVisibility(View.GONE);
@@ -166,11 +174,21 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         if (leadsList != null) {
             if (leadsList.size() != 0) {
                 ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> foundMembers = new ArrayList<>();
-                for (MyGroupsListModel.ResultBean.GroupMemberDetailsBean groupDetails : leadsList) {
-                    if (groupDetails.getRole().equals("group_admin") || groupDetails.getRole().equals("group_supervisor")) {
-                        foundMembers.add(groupDetails);
-                    } else if (groupDetails.getRole().equals("group_member")) {
+                for (MyGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails : leadsList) {
+                    if (memberDetails.getRole().equals("group_admin") || memberDetails.getRole().equals("group_supervisor")) {
+                        foundMembers.add(memberDetails);
+                    } else if (memberDetails.getRole().equals("group_member")) {
                         members = members + 1;
+                    }
+                }
+
+                ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> tempFoundMembers = new ArrayList<>(foundMembers);
+
+                for (MyGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails : tempFoundMembers) {
+                    if (!groupDetails.getIs_admin().equals("1")) {
+                        if (memberDetails.getIs_hidden().equals("1")) {
+                            foundMembers.remove(memberDetails);
+                        }
                     }
                 }
 
@@ -178,6 +196,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 leadsList.addAll(foundMembers);
             }
         }
+
         tv_members.setText("Members (" + members + ")");
 
         rv_group_members.setAdapter(new GroupMembersAdapter());
@@ -206,6 +225,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
         rv_group_members.setFocusable(false);
         cv_grp_details.requestFocus();
+
+        tv_codename.setText(groupDetails.getGroup_code() + " - " + groupDetails.getGroup_name());
+        tv_description.setText(groupDetails.getGroup_description());
+
     }
 
     private void setEventHandler() {
@@ -220,9 +243,16 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!sw_hide_members.isChecked()) {
+                if (groupDetails.getIs_admin().equals("1")) {
                     startActivity(new Intent(context, GroupMembersList_Activity.class)
-                            .putExtra("groupId", groupDetails.getId()));
+                            .putExtra("groupId", groupDetails.getId())
+                            .putExtra("isAdmin", groupDetails.getIs_admin()));
+                } else {
+                    if (!sw_hide_members.isChecked()) {
+                        startActivity(new Intent(context, GroupMembersList_Activity.class)
+                                .putExtra("groupId", groupDetails.getId())
+                                .putExtra("isAdmin", groupDetails.getIs_admin()));
+                    }
                 }
             }
         });
@@ -402,9 +432,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
                         JSONArray jsonArray = jsonObject.getJSONArray("result");
                         JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-
-                        tv_codename.setText(jsonObject1.getString("group_code") + " - " + jsonObject1.getString("group_name"));
-                        tv_description.setText(jsonObject1.getString("group_description"));
                         tv_praticipants.setText(jsonObject1.getString("no_of_member") + " Participants");
 
                     }
@@ -464,6 +491,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 holder.tv_role.setText("Member");
             }
 
+            if (memberDetails.getIs_hidden().equals("1")) {
+                holder.ib_ishidden.setVisibility(View.VISIBLE);
+            }
+
             if (!memberDetails.getImage_url().trim().isEmpty()) {
                 Picasso.with(context)
                         .load(memberDetails.getImage_url().trim())
@@ -486,6 +517,13 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 holder.imv_user.setVisibility(View.VISIBLE);
             }
 
+            holder.ib_ishidden.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utilities.showMessage("User has marked himself/herself as hidden member", context, 2);
+                }
+            });
+
             holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -507,7 +545,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             if (Utilities.isNetworkAvailable(context)) {
-                                new SendInviteSMS().execute(groupDetails.getId(), userId, groupDetails.getId());
+                                new SendInviteSMS().execute(groupDetails.getId(), userId, memberDetails.getId());
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
@@ -538,6 +576,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             private CircleImageView imv_user;
             private ProgressBar progressBar;
             private Button btn_invite;
+            private ImageButton ib_ishidden;
             private TextView tv_name, tv_role, tv_mobile;
 
             public MyViewHolder(View view) {
@@ -549,6 +588,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 tv_role = view.findViewById(R.id.tv_role);
                 tv_mobile = view.findViewById(R.id.tv_mobile);
                 btn_invite = view.findViewById(R.id.btn_invite);
+                ib_ishidden = view.findViewById(R.id.ib_ishidden);
             }
         }
 

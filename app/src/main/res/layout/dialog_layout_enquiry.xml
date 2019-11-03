@@ -58,7 +58,6 @@
         android:hint="Mobile"
         android:inputType="number"
         android:longClickable="false"
-        android:maxLength="10"
         android:textSize="16sp"
         android:visibility="gone"
         app:met_floatingLabel="highlight"

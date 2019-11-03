@@ -51,6 +51,7 @@ import in.oriange.joinsta.adapters.GroupBannerSliderAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.AllGroupsListModel;
 import in.oriange.joinsta.models.GroupBannerListModel;
+import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -175,6 +176,14 @@ public class GroupDetails_Activity extends AppCompatActivity {
                     }
                 }
 
+                for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails : foundMembers) {
+                    if (!groupDetails.getIs_admin().equals("1")) {
+                        if (memberDetails.getIs_hidden().equals("1")) {
+                            foundMembers.remove(memberDetails);
+                        }
+                    }
+                }
+
                 leadsList.clear();
                 leadsList.addAll(foundMembers);
             }
@@ -207,23 +216,34 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
         rv_group_members.setFocusable(false);
         cv_grp_details.requestFocus();
+
+        tv_codename.setText(groupDetails.getGroup_code() + " - " + groupDetails.getGroup_name());
+        tv_description.setText(groupDetails.getGroup_description());
+
     }
 
     private void setEventHandler() {
-        btn_members.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, GroupMembersList_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
-            }
-        });
+//        btn_members.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(context, GroupMembersList_Activity.class)
+//                        .putExtra("groupId", groupDetails.getId()));
+//            }
+//        });
 
         cv_members.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!sw_hide_members.isChecked()) {
+                if (groupDetails.getIs_admin().equals("1")) {
                     startActivity(new Intent(context, GroupMembersList_Activity.class)
-                            .putExtra("groupId", groupDetails.getId()));
+                            .putExtra("groupId", groupDetails.getId())
+                            .putExtra("isAdmin", groupDetails.getIs_admin()));
+                } else {
+                    if (!sw_hide_members.isChecked()) {
+                        startActivity(new Intent(context, GroupMembersList_Activity.class)
+                                .putExtra("groupId", groupDetails.getId())
+                                .putExtra("isAdmin", groupDetails.getIs_admin()));
+                    }
                 }
             }
         });
@@ -364,9 +384,6 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
                         JSONArray jsonArray = jsonObject.getJSONArray("result");
                         JSONObject jsonObject1 = jsonArray.getJSONObject(0);
-
-                        tv_codename.setText(jsonObject1.getString("group_code") + " - " + jsonObject1.getString("group_name"));
-                        tv_description.setText(jsonObject1.getString("group_description"));
                         tv_praticipants.setText(jsonObject1.getString("no_of_member") + " Participants");
 
                     }
@@ -448,6 +465,17 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 holder.imv_user.setVisibility(View.VISIBLE);
             }
 
+            if (memberDetails.getIs_hidden().equals("1")) {
+                holder.ib_ishidden.setVisibility(View.VISIBLE);
+            }
+
+            holder.ib_ishidden.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utilities.showMessage("User has marked himself/herself as hidden member", context, 2);
+                }
+            });
+
             holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -469,7 +497,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             if (Utilities.isNetworkAvailable(context)) {
-                                new SendInviteSMS().execute(groupDetails.getId(), userId, groupDetails.getId());
+                                new SendInviteSMS().execute(groupDetails.getId(), userId, memberDetails.getId());
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
@@ -499,6 +527,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
             private CardView cv_mainlayout;
             private CircleImageView imv_user;
             private ProgressBar progressBar;
+            private ImageButton ib_ishidden;
             private Button btn_invite;
             private TextView tv_name, tv_role, tv_mobile;
 
@@ -511,6 +540,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 tv_role = view.findViewById(R.id.tv_role);
                 tv_mobile = view.findViewById(R.id.tv_mobile);
                 btn_invite = view.findViewById(R.id.btn_invite);
+                ib_ishidden = view.findViewById(R.id.ib_ishidden);
             }
         }
 

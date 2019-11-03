@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.15"
         android:gravity="center"
-        android:onClick="selectContryCode"
+        android:onClick="selectContryCodeProf"
         android:text="+91"
         android:textColor="@color/black"
         android:textSize="16sp" />

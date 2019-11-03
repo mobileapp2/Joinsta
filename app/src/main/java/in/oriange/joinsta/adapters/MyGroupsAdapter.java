@@ -75,22 +75,28 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
         holder.tv_heading.setText(groupDetails.getGroup_code() + "-" + groupDetails.getGroup_name());
 
-        if (groupDetails.getStatus().equals("accepted")) {
+        if (groupDetails.getStatus().equalsIgnoreCase("accepted")) {
             holder.ll_buttons.setVisibility(View.VISIBLE);
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.INVISIBLE);
-        } else if (groupDetails.getStatus().equals("left")) {
+        } else if (groupDetails.getStatus().equalsIgnoreCase("left")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
-        } else if (groupDetails.getStatus().equals("requested")) {
+        } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.GONE);
             holder.tv_status.setText("Requested");
+        } else if (groupDetails.getStatus().equalsIgnoreCase("rejected")) {
+            holder.ll_buttons.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.btn_rejoin.setVisibility(View.GONE);
+            holder.tv_role.setVisibility(View.GONE);
+            holder.tv_status.setText("Rejected");
         }
 
         if (groupDetails.getIs_admin().equals("1")) {

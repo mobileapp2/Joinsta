@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +31,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -81,6 +86,7 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
@@ -96,7 +102,7 @@ public class AddProfessional_Fragment extends Fragment {
             edt_tax_alias, edt_pan, edt_gst, edt_accholdername, edt_bank_alias, edt_bank_name, edt_ifsc, edt_account_no;
     private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
-    private TextView tv_countrycode_mobile, tv_countrycode_landline;
+    private static TextView tv_countrycode_mobile, tv_countrycode_landline;
     private ImageButton ib_add_mobile, ib_add_landline;
     private TagContainerLayout tag_container;
     private Button btn_save, btn_add_tag;
@@ -117,6 +123,9 @@ public class AddProfessional_Fragment extends Fragment {
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private static TextView tv_selected_forconcode = null;
+
+    private static AlertDialog countryCodeDialog;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -302,14 +311,14 @@ public class AddProfessional_Fragment extends Fragment {
         tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContryCodeDialog(countryCodeList, "1");
+                showContryCodeDialog("1");
             }
         });
 
         tv_countrycode_landline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContryCodeDialog(countryCodeList, "2");
+                showContryCodeDialog("2");
             }
         });
 
@@ -365,17 +374,42 @@ public class AddProfessional_Fragment extends Fragment {
                     return;
                 }
 
-                for (GetTagsListModel.ResultBean tagObj : tagsListFromAPI) {
+                boolean isTagSelected = false;
+
+                for (TagsListModel tagObj : tagsListTobeSubmitted) {
+
                     if (tagObj.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
-                        tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
+                        isTagSelected = true;
                         break;
-                    } else {
-                        tagsListTobeSubmitted.add(new TagsListModel("0", edt_tag.getText().toString().trim(), "0"));
-                        break;
+
                     }
+
                 }
 
-                tag_container.addTag(edt_tag.getText().toString().trim());
+                if (!isTagSelected) {
+
+                    boolean isTagPresent = false;
+
+                    for (GetTagsListModel.ResultBean tagObj : tagsListFromAPI) {
+                        if (tagObj.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+
+                            tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
+
+                            isTagPresent = true;
+
+                            break;
+                        }
+                    }
+
+                    if (!isTagPresent) {
+                        tagsListTobeSubmitted.add(new TagsListModel("0", edt_tag.getText().toString().trim(), "0"));
+                    }
+
+                    tag_container.addTag(edt_tag.getText().toString().trim());
+                } else {
+                    Utilities.showMessage("Tag aleady added", context, 2);
+                }
+
                 edt_tag.setText("");
 
             }
@@ -401,6 +435,7 @@ public class AddProfessional_Fragment extends Fragment {
             public void onTagCrossClick(int position) {
                 if (position < tag_container.getChildCount()) {
                     tag_container.removeTag(position);
+                    tagsListTobeSubmitted.remove(position);
                 }
             }
         });
@@ -411,9 +446,25 @@ public class AddProfessional_Fragment extends Fragment {
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
                 GetTagsListModel.ResultBean tagObj = (GetTagsListModel.ResultBean) arg0.getAdapter().getItem(arg2);
-                tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
 
-                tag_container.addTag(edt_tag.getText().toString().trim());
+
+                boolean isTagSelected = false;
+
+                for (TagsListModel tagObj1 : tagsListTobeSubmitted) {
+                    if (tagObj1.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+                        isTagSelected = true;
+                        break;
+
+                    }
+                }
+
+                if (!isTagSelected) {
+                    tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
+                    tag_container.addTag(edt_tag.getText().toString().trim());
+                } else {
+                    Utilities.showMessage("Tag aleady added", context, 2);
+                }
+
                 edt_tag.setText("");
             }
         });
@@ -468,7 +519,7 @@ public class AddProfessional_Fragment extends Fragment {
 
     public static void selectContryCode(View v) {
         tv_selected_forconcode = (TextView) v;
-        showContryCodeForSelectedDialog(countryCodeList);
+        showContryCodeDialog("3");
     }
 
     private class GetTagsList extends AsyncTask<String, Void, String> {
@@ -686,69 +737,131 @@ public class AddProfessional_Fragment extends Fragment {
         builderSingle.show();
     }
 
-    private void showContryCodeDialog(final ArrayList<ContryCodeModel> contryCodeList, final String type) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Country Code");
-        builderSingle.setCancelable(false);
+    private static void showContryCodeDialog(final String type) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
 
-        for (int i = 0; i < contryCodeList.size(); i++) {
-            arrayAdapter.add(String.valueOf(contryCodeList.get(i).getName()));
-        }
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+        edt_search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ContryCodeModel countryCode = contryCodeList.get(which);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                if (type.equals("1")) {
-                    tv_countrycode_mobile.setText(countryCode.getDial_code());
-                } else if (type.equals("2")) {
-                    tv_countrycode_landline.setText(countryCode.getDial_code());
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+                    return;
                 }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList, type));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
-        builderSingle.show();
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
     }
 
-    private static void showContryCodeForSelectedDialog(final ArrayList<ContryCodeModel> contryCodeList) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Country Code");
-        builderSingle.setCancelable(false);
+    private static class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        private ArrayList<ContryCodeModel> countryCodeList;
+        private String type;
 
-        for (int i = 0; i < contryCodeList.size(); i++) {
-            arrayAdapter.add(String.valueOf(contryCodeList.get(i).getName()));
+        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList, String type) {
+            this.countryCodeList = countryCodeList;
+            this.type = type;
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_1, parent, false);
+            return new MyViewHolder(view);
+        }
 
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ContryCodeModel countryCode = contryCodeList.get(which);
-                tv_selected_forconcode.setText(countryCode.getDial_code());
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.tv_name.setText(countryCodeList.get(position).getName());
+
+            holder.tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (type.equals("1")) {
+                        tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
+                    } else if (type.equals("2")) {
+                        tv_countrycode_landline.setText(countryCodeList.get(position).getDial_code());
+                    } else if (type.equals("3")) {
+                        tv_selected_forconcode.setText(countryCodeList.get(position).getDial_code());
+                    }
+                    countryCodeDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return countryCodeList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_name;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                tv_name = view.findViewById(R.id.tv_name);
             }
-        });
-        builderSingle.show();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
     private void submitData() {

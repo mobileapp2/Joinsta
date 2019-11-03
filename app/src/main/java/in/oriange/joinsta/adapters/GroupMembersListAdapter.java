@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -80,6 +81,10 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
             holder.btn_invite.setVisibility(View.VISIBLE);
         }
 
+        if (groupDetails.getIs_hidden().equals("1")) {
+            holder.ib_ishidden.setVisibility(View.VISIBLE);
+        }
+
         if (!groupDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
                     .load(groupDetails.getImage_url().trim())
@@ -101,6 +106,13 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
             holder.progressBar.setVisibility(View.GONE);
             holder.imv_user.setVisibility(View.VISIBLE);
         }
+
+        holder.ib_ishidden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilities.showMessage("User has marked himself/herself as hidden member", context, 2);
+            }
+        });
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +167,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
         private ProgressBar progressBar;
         private Button btn_invite;
         private TextView tv_name, tv_mobile;
+        private ImageButton ib_ishidden;
 
         public MyViewHolder(View view) {
             super(view);
@@ -164,6 +177,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
             tv_name = view.findViewById(R.id.tv_name);
             tv_mobile = view.findViewById(R.id.tv_mobile);
             btn_invite = view.findViewById(R.id.btn_invite);
+            ib_ishidden = view.findViewById(R.id.ib_ishidden);
         }
     }
 

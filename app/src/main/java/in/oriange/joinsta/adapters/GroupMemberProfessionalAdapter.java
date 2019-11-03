@@ -49,7 +49,7 @@ import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMemberProfessionalAdapter.MyViewHolder> {
 
     private Context context;
-    private String userId, name, mobile;
+    private String userId, name, mobile, countryCode;
     private List<GetProfessionalModel.ResultBean> resultArrayList;
     private JSONArray emailJsonArray;
 
@@ -67,6 +67,11 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
             name = json.getString("first_name");
             mobile = json.getString("mobile");
             emailJsonArray = new JSONArray(json.getString("email"));
+            try {
+                countryCode = json.getString("country_code");
+            } catch (Exception e) {
+                countryCode = "91";
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,7 +209,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
 
                         edt_email.setText("");
 
-                        edt_mobile.setText(mobile);
+                        edt_mobile.setText("+" + countryCode + mobile);
                     }
                 });
 

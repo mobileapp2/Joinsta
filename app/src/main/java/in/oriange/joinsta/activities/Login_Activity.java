@@ -13,7 +13,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.goodiebag.pinview.Pinview;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.ParamsPojo;
@@ -48,6 +53,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
 public class Login_Activity extends AppCompatActivity {
 
@@ -58,8 +64,12 @@ public class Login_Activity extends AppCompatActivity {
     private View v_password, v_otp;
     private TextView tv_forgotpass;
     private MaterialEditText edt_username, edt_password, edt_mobile;
+    private TextView tv_countrycode_mobile, tv_countrycode;
     private Button btn_login, btn_register, btn_sendotp;
     private String MOBILE, USERID;
+
+    private ArrayList<ContryCodeModel> countryCodeList;
+    private AlertDialog countryCodeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +92,8 @@ public class Login_Activity extends AppCompatActivity {
         edt_username = findViewById(R.id.edt_username);
         edt_password = findViewById(R.id.edt_password);
         edt_mobile = findViewById(R.id.edt_mobile);
+        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
+        tv_countrycode = findViewById(R.id.tv_countrycode);
         tv_forgotpass = findViewById(R.id.tv_forgotpass);
         ll_password = findViewById(R.id.ll_password);
         ll_otp = findViewById(R.id.ll_otp);
@@ -92,6 +104,24 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+
+        try {
+            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
+            countryCodeList = new ArrayList<>();
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                countryCodeList.add(new ContryCodeModel(
+                        jo_inside.getString("name"),
+                        jo_inside.getString("dial_code"),
+                        jo_inside.getString("code")
+                ));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         checkPermissions();
     }
 
@@ -117,7 +147,6 @@ public class Login_Activity extends AppCompatActivity {
             }
         });
 
-
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +165,10 @@ public class Login_Activity extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new SendOTP().execute(edt_mobile.getText().toString().trim(), "1");
+                    new SendOTP().execute(
+                            edt_mobile.getText().toString().trim(),
+                            tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
+                            "1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -171,7 +203,9 @@ public class Login_Activity extends AppCompatActivity {
                     }
 
                     if (Utilities.isNetworkAvailable(context)) {
-                        new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                        new VerifyMobile().execute(
+                                edt_mobile.getText().toString().trim(),
+                                tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
@@ -192,6 +226,20 @@ public class Login_Activity extends AppCompatActivity {
                 createMobileForPassword();
             }
         });
+
+        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCountryCodesListDialog("1");
+            }
+        });
+
+        tv_countrycode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCountryCodesListDialog("2");
+            }
+        });
     }
 
     private void submitData() {
@@ -206,7 +254,10 @@ public class Login_Activity extends AppCompatActivity {
         }
 
         if (Utilities.isNetworkAvailable(context)) {
-            new LoginUser().execute(edt_username.getText().toString().trim(), edt_password.getText().toString().trim());
+            new LoginUser().execute(
+                    edt_username.getText().toString().trim(),
+                    edt_password.getText().toString().trim(),
+                    tv_countrycode.getText().toString().trim().replace("+", ""));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -229,13 +280,13 @@ public class Login_Activity extends AppCompatActivity {
             @Override
             public void onDataEntered(Pinview pinview, boolean fromUser) {
                 if (pinview.getValue().length() == otp.length()) {
-
-
                     if (pinview.getValue().equals(otp)) {
                         alertD.dismiss();
                         if (TYPE.equals("1")) {
                             if (Utilities.isNetworkAvailable(context)) {
-                                new LoginUserWithOtp().execute(edt_mobile.getText().toString().trim());
+                                new LoginUserWithOtp().execute(
+                                        edt_mobile.getText().toString().trim(),
+                                        tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
@@ -260,6 +311,238 @@ public class Login_Activity extends AppCompatActivity {
         alertD.show();
     }
 
+    private void createMobileForPassword() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_change_mobile, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Enter Mobile");
+        alertDialogBuilder.setView(promptView);
+
+        final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+        final Button btn_save = promptView.findViewById(R.id.btn_save);
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                    edt_mobile.setError("Please enter valid mobile number");
+                    edt_mobile.requestFocus();
+                    return;
+                }
+
+                MOBILE = edt_mobile.getText().toString().trim();
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    alertD.dismiss();
+                    new SendOTP().execute(
+                            edt_mobile.getText().toString().trim(),
+                            tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
+                            "2");
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        alertD.show();
+
+    }
+
+    private void changePasswordAlert() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_change_password, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Change Password");
+        alertDialogBuilder.setView(promptView);
+
+        final MaterialEditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
+        final MaterialEditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
+        final Button btn_save = promptView.findViewById(R.id.btn_save);
+
+        edt_oldpassword.setVisibility(View.GONE);
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (edt_newpassword.getText().toString().trim().isEmpty()) {
+                    edt_newpassword.setError("Please enter new password");
+                    edt_newpassword.requestFocus();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    alertD.dismiss();
+                    new ChangePassword().execute(
+                            "",
+                            edt_newpassword.getText().toString().trim()
+                    );
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        alertD.show();
+
+    }
+
+    private void saveRegistrationID() {
+        String user_id = "", regToken = "";
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+
+            for (int j = 0; j < user_info.length(); j++) {
+                JSONObject json = user_info.getJSONObject(j);
+                user_id = json.getString("userid");
+            }
+
+            regToken = session.getAndroidToken().get(ApplicationConstants.KEY_ANDROIDTOKETID);
+
+            if (regToken != null && !regToken.isEmpty() && !regToken.equals("null"))
+                new SendRegistrationToken().execute(user_id, regToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showCountryCodesListDialog(final String type) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
+
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+                    return;
+                }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList, type));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
+    }
+
+    private void checkPermissions() {
+        if (!PermissionUtil.askPermissions(this)) {
+            // permision not required or already given
+//            startService(new Intent(context, ChecklistSyncServiceHLL.class));
+        }
+    }
+
+    private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
+
+        private ArrayList<ContryCodeModel> countryCodeList;
+        private String type;
+
+        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList, String type) {
+            this.countryCodeList = countryCodeList;
+            this.type = type;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_1, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.tv_name.setText(countryCodeList.get(position).getName());
+
+            holder.tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (type.equals("1")) {
+                        tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
+                    } else if (type.equals("2")) {
+                        tv_countrycode.setText(countryCodeList.get(position).getDial_code());
+                    }
+                    countryCodeDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return countryCodeList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_name;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                tv_name = view.findViewById(R.id.tv_name);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
     private class VerifyMobile extends AsyncTask<String, Void, String> {
 
         @Override
@@ -275,6 +558,7 @@ public class Login_Activity extends AppCompatActivity {
             String res = "[]";
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("mobile", params[0]));
+            param.add(new ParamsPojo("country_code", params[1]));
             res = APICall.FORMDATAAPICall(ApplicationConstants.LOGINAPI, param);
             return res.trim();
         }
@@ -328,11 +612,12 @@ public class Login_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            TYPE = params[1];
+            TYPE = params[2];
             String res = "[]";
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("type", "send"));
             param.add(new ParamsPojo("mobile", params[0]));
+            param.add(new ParamsPojo("country_code", params[1]));
             res = APICall.FORMDATAAPICall(ApplicationConstants.OTPAPI, param);
             return res.trim();
         }
@@ -384,6 +669,7 @@ public class Login_Activity extends AppCompatActivity {
                     .add("logintype", "loginwithotp")
                     .add("mobile", params[0])
                     .add("is_registered", "1")
+                    .add("country_code", params[1])
                     .build();
             Request request = new Request.Builder()
                     .url(ApplicationConstants.LOGINAPI)
@@ -450,6 +736,7 @@ public class Login_Activity extends AppCompatActivity {
                     .add("mobile", params[0])
                     .add("password", params[1])
                     .add("is_registered", "1")
+                    .add("country_code", params[2])
                     .build();
             Request request = new Request.Builder()
                     .url(ApplicationConstants.LOGINAPI)
@@ -482,7 +769,7 @@ public class Login_Activity extends AppCompatActivity {
                             saveRegistrationID();
                         }
                     } else {
-                        Utilities.showMessage("Username or password is invalid", context, 3);
+                        Utilities.showMessage(message, context, 3);
                     }
 
                 }
@@ -490,83 +777,6 @@ public class Login_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void createMobileForPassword() {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_change_mobile, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Enter Mobile");
-        alertDialogBuilder.setView(promptView);
-
-        final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
-        final Button btn_save = promptView.findViewById(R.id.btn_save);
-
-        final AlertDialog alertD = alertDialogBuilder.create();
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                    edt_mobile.setError("Please enter valid mobile number");
-                    edt_mobile.requestFocus();
-                    return;
-                }
-
-                MOBILE = edt_mobile.getText().toString().trim();
-
-                if (Utilities.isNetworkAvailable(context)) {
-                    alertD.dismiss();
-                    new SendOTP().execute(edt_mobile.getText().toString().trim(), "2");
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        alertD.show();
-
-    }
-
-    private void changePasswordAlert() {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_change_password, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Change Password");
-        alertDialogBuilder.setView(promptView);
-
-        final MaterialEditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
-        final MaterialEditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
-        final Button btn_save = promptView.findViewById(R.id.btn_save);
-
-        edt_oldpassword.setVisibility(View.GONE);
-
-        final AlertDialog alertD = alertDialogBuilder.create();
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (edt_newpassword.getText().toString().trim().isEmpty()) {
-                    edt_newpassword.setError("Please enter new password");
-                    edt_newpassword.requestFocus();
-                    return;
-                }
-
-                if (Utilities.isNetworkAvailable(context)) {
-                    alertD.dismiss();
-                    new ChangePassword().execute(
-                            "",
-                            edt_newpassword.getText().toString().trim()
-                    );
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        alertD.show();
-
     }
 
     private class ChangePassword extends AsyncTask<String, Void, String> {
@@ -637,33 +847,6 @@ public class Login_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void saveRegistrationID() {
-        String user_id = "", regToken = "";
-        try {
-            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-                    ApplicationConstants.KEY_LOGIN_INFO));
-
-            for (int j = 0; j < user_info.length(); j++) {
-                JSONObject json = user_info.getJSONObject(j);
-                user_id = json.getString("userid");
-            }
-
-            regToken = session.getAndroidToken().get(ApplicationConstants.KEY_ANDROIDTOKETID);
-
-            if (regToken != null && !regToken.isEmpty() && !regToken.equals("null"))
-                new SendRegistrationToken().execute(user_id, regToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void checkPermissions() {
-        if (!PermissionUtil.askPermissions(this)) {
-            // permision not required or already given
-//            startService(new Intent(context, ChecklistSyncServiceHLL.class));
         }
     }
 

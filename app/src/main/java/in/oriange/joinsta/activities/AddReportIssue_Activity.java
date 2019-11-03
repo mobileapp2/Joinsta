@@ -5,16 +5,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.JsonObject;
@@ -48,7 +54,8 @@ public class AddReportIssue_Activity extends AppCompatActivity {
     private Button btn_save;
 
     private ArrayList<ContryCodeModel> countryCodeList;
-    private String userId, name, mobile;
+    private String userId, name, mobile, countryCode;
+    private AlertDialog countryCodeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +67,6 @@ public class AddReportIssue_Activity extends AppCompatActivity {
         setDefault();
         setEventHandler();
         setUpToolbar();
-
     }
 
     private void init() {
@@ -94,6 +100,7 @@ public class AddReportIssue_Activity extends AppCompatActivity {
         }
 
         if (mobile != null) {
+            tv_countrycode.setText("+" + countryCode);
             edt_mobile.setText(mobile);
         }
     }
@@ -107,7 +114,11 @@ public class AddReportIssue_Activity extends AppCompatActivity {
             userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
-
+            try {
+                countryCode = json.getString("country_code");
+            } catch (Exception e) {
+                countryCode = "91";
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,7 +128,7 @@ public class AddReportIssue_Activity extends AppCompatActivity {
         tv_countrycode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContryCodeDialog(countryCodeList);
+                showContryCodeDialog();
             }
         });
 
@@ -130,36 +141,123 @@ public class AddReportIssue_Activity extends AppCompatActivity {
 
     }
 
+    private void showContryCodeDialog() {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
 
-    private void showContryCodeDialog(final ArrayList<ContryCodeModel> contryCodeList) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Country Code");
-        builderSingle.setCancelable(false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList));
 
-        for (int i = 0; i < contryCodeList.size(); i++) {
-            arrayAdapter.add(String.valueOf(contryCodeList.get(i).getName()));
-        }
-
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+        edt_search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                ContryCodeModel countryCode = contryCodeList.get(which);
-                tv_countrycode.setText(countryCode.getDial_code());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList));
+                    return;
+                }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
 
             }
         });
-        builderSingle.show();
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
+    }
+
+
+    private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
+
+        private ArrayList<ContryCodeModel> countryCodeList;
+
+        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList) {
+            this.countryCodeList = countryCodeList;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_1, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.tv_name.setText(countryCodeList.get(position).getName());
+
+            holder.tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tv_countrycode.setText(countryCodeList.get(position).getDial_code());
+                    countryCodeDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return countryCodeList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_name;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                tv_name = view.findViewById(R.id.tv_name);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
     private void submitData() {

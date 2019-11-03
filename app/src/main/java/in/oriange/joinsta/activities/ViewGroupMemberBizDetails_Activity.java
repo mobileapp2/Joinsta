@@ -82,7 +82,7 @@ public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
     private RecyclerView rv_mobilenos;
 
     private GetBusinessModel.ResultBean searchDetails;
-    private String userId, isFav, name, mobile;
+    private String userId, isFav, name, mobile, countryCode;
 
     private JSONArray emailJsonArray;
 
@@ -309,7 +309,11 @@ public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
             name = json.getString("first_name");
             mobile = json.getString("mobile");
             emailJsonArray = new JSONArray(json.getString("email"));
-
+            try {
+                countryCode = json.getString("country_code");
+            } catch (Exception e) {
+                countryCode = "91";
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -526,7 +530,7 @@ public class ViewGroupMemberBizDetails_Activity extends AppCompatActivity {
 
                         edt_email.setText("");
 
-                        edt_mobile.setText(mobile);
+                        edt_mobile.setText("+" + countryCode + mobile);
                     }
                 });
 

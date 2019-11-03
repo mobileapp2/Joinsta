@@ -52,7 +52,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 
     private Context context;
     private String type;            //  1 = from search  // 2 = from favorite  // 3 = from home
-    private String userId, name, mobile;
+    private String userId, name, mobile, countryCode;
     private List<SearchDetailsModel.ResultBean.EmployeesBean> resultArrayList;
     private JSONArray emailJsonArray;
 
@@ -71,6 +71,11 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             name = json.getString("first_name");
             mobile = json.getString("mobile");
             emailJsonArray = new JSONArray(json.getString("email"));
+            try {
+                countryCode = json.getString("country_code");
+            } catch (Exception e) {
+                countryCode = "91";
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -240,7 +245,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 
                         edt_email.setText("");
 
-                        edt_mobile.setText(mobile);
+                        edt_mobile.setText("+" + countryCode + mobile);
                     }
                 });
 

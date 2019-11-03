@@ -243,6 +243,5 @@ public class AllGroups_Activity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         hideSoftKeyboard(AllGroups_Activity.this);
-
     }
 }

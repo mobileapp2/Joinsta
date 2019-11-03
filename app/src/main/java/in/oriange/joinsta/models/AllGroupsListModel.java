@@ -145,6 +145,7 @@ public class AllGroupsListModel implements Serializable {
             private String role;
             private String image_url;
             private String is_joinsta_member;
+            private String is_hidden;
 
             public String getId() {
                 return id;
@@ -192,6 +193,14 @@ public class AllGroupsListModel implements Serializable {
 
             public void setIs_joinsta_member(String is_joinsta_member) {
                 this.is_joinsta_member = is_joinsta_member;
+            }
+
+            public String getIs_hidden() {
+                return is_hidden;
+            }
+
+            public void setIs_hidden(String is_hidden) {
+                this.is_hidden = is_hidden;
             }
         }
     }

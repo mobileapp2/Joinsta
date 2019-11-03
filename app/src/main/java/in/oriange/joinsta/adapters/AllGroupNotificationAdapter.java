@@ -3,6 +3,7 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,64 +12,48 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.GroupNotifications_Activity;
-import in.oriange.joinsta.models.GroupNotificationListModel;
+import in.oriange.joinsta.models.AllGroupNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
-public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotificationAdapter.MyViewHolder> {
+public class AllGroupNotificationAdapter extends RecyclerView.Adapter<AllGroupNotificationAdapter.MyViewHolder> {
 
-    private List<GroupNotificationListModel.ResultBean> resultArrayList;
     private Context context;
-    private UserSessionManager session;
-    private String userId;
-    private PrettyTime p;
+    private List<AllGroupNotificationListModel.ResultBean> resultList;
 
-    public GroupNotificationAdapter(Context context, List<GroupNotificationListModel.ResultBean> resultArrayList) {
+    public AllGroupNotificationAdapter(Context context, List<AllGroupNotificationListModel.ResultBean> resultList) {
         this.context = context;
-        this.resultArrayList = resultArrayList;
-        p = new PrettyTime();
-        session = new UserSessionManager(context);
-        try {
-            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-                    ApplicationConstants.KEY_LOGIN_INFO));
-            JSONObject json = user_info.getJSONObject(0);
-
-            userId = json.getString("userid");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.resultList = resultList;
     }
 
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.list_row_groupnotification, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int pos) {
         final int position = holder.getAdapterPosition();
-        final GroupNotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
+        final AllGroupNotificationListModel.ResultBean notificationDetails = resultList.get(position);
 
         holder.tv_title.setText(notificationDetails.getSubject().trim());
         holder.tv_message.setText(notificationDetails.getMessage().trim());
@@ -120,13 +105,11 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                 alertD.show();
             }
         });
-
-
     }
 
     @Override
     public int getItemCount() {
-        return resultArrayList.size();
+        return resultList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -150,7 +133,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         return position;
     }
 
-    private void showNotification(GroupNotificationListModel.ResultBean notificationDetails) {
+    private void showNotification(AllGroupNotificationListModel.ResultBean notificationDetails) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_layout_notification, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -166,6 +149,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         imv_notificationimg.setVisibility(View.GONE);
         btn_download.setVisibility(View.GONE);
         btn_delete.setVisibility(View.GONE);
+
 
         tv_title.setText(notificationDetails.getSubject().trim());
         tv_message.setText(notificationDetails.getMessage().trim());
@@ -201,7 +185,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
 
         @Override
         protected String doInBackground(String... params) {
-            String res = "[]";
+            String res;
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "deleteGroupNotification");
             obj.addProperty("msg_details_id", params[0]);
@@ -212,15 +196,14 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type = "", message = "";
+            String type = "";
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new GroupNotifications_Activity.GetGroupNotification().execute();
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AllGroupNotifications_Activity"));
                         Utilities.showMessage("Notification deleted successfully", context, 1);
                     }
                 }
@@ -247,5 +230,4 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             return res;
         }
     }
-
 }

@@ -34,14 +34,24 @@ public class BannerListModel {
 
     public static class ResultBean {
 
+
         private String banner_name;
+        private String banner_description;
         private String banners_image;
 
         public String getBanner_description() {
-            return banner_name;
+            return banner_description;
         }
 
         public void setBanner_description(String banner_description) {
+            this.banner_description = banner_description;
+        }
+
+        public String getBanner_name() {
+            return banner_name;
+        }
+
+        public void setBanner_name(String banner_name) {
             this.banner_name = banner_name;
         }
 

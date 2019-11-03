@@ -137,8 +137,16 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
         AddEmployee_Fragment.removeLandlineLayout(v);
     }
 
-    public void selectContryCode(View v) {
+    public void selectContryCodeBiz(View v) {
         AddBusiness_Fragment.selectContryCode(v);
+    }
+
+    public void selectContryCodeProf(View v) {
+        AddProfessional_Fragment.selectContryCode(v);
+    }
+
+    public void selectContryCodeEmp(View v) {
+        AddEmployee_Fragment.selectContryCode(v);
     }
 
     @Override
