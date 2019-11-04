@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -367,7 +368,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             FileOutputStream fileOutputStream = null;
             long total = 0;
 
-
             try {
                 downloadurl = new URL(params[0]);
                 httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
@@ -421,7 +421,13 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             pd.dismiss();
             super.onPostExecute(aBoolean);
             if (aBoolean) {
-                Utilities.showMessage("Image successfully downloaded", context, 1);
+                MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            @Override
+                            public void onScanCompleted(String path, Uri uri) {
+                                Utilities.showMessage("Image successfully downloaded", context, 1);
+                            }
+                        });
             }
         }
     }
