@@ -144,7 +144,6 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             data.putString("type", type);
             notificationIntent.putExtras(data);
         } else {
-
             notificationIntent = new Intent(context, SplashScreen_Activity.class);
             Bundle data = new Bundle();
             data.putString("action", "notificationfromfcm");

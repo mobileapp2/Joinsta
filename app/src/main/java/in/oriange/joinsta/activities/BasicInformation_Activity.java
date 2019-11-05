@@ -18,6 +18,8 @@ import android.os.Environment;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,6 +79,7 @@ import java.util.regex.Matcher;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.models.PrimaryPublicMobileSelectionModel;
 import in.oriange.joinsta.models.PrimarySelectionModel;
@@ -93,6 +97,7 @@ import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
+import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
@@ -108,7 +113,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton ib_add_mobile, ib_add_landline, ib_add_email, ib_location;
-    private TextView tv_verify, tv_verified;
+    private TextView tv_verify, tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
 
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
@@ -127,6 +132,9 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private File file, photoFileToUpload, profilPicFolder;
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
+    private AlertDialog countryCodeDialog;
+    private TextView tv_selected_forconcode = null;
+    private ArrayList<ContryCodeModel> countryCodeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +169,8 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
         tv_verify = findViewById(R.id.tv_verify);
         tv_verified = findViewById(R.id.tv_verified);
+        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
+        tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
 
         rb_male = findViewById(R.id.rb_male);
         rb_female = findViewById(R.id.rb_female);
@@ -183,7 +193,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
         emailList = new ArrayList<>();
-
+        countryCodeList = new ArrayList<>();
 
         profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Basic Info");
         if (!profilPicFolder.exists()) {
@@ -198,6 +208,24 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+
+        try {
+            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
+            countryCodeList = new ArrayList<>();
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                countryCodeList.add(new ContryCodeModel(
+                        jo_inside.getString("name"),
+                        jo_inside.getString("dial_code"),
+                        jo_inside.getString("code")
+                ));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -254,7 +282,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
             }
 
 
-            edt_reg_mobile.setText("+"+countryCode + " " + json.getString("mobile"));
+            edt_reg_mobile.setText("+" + countryCode + " " + json.getString("mobile"));
 
             if (edt_bloodgroup.getText().toString().trim().equals("null"))
                 edt_bloodgroup.setText("");
@@ -297,13 +325,39 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 if (mobileJsonArray.length() > 0) {
                     for (int i = 0; i < mobileJsonArray.length(); i++) {
                         if (i == (mobileJsonArray.length() - 1)) {
-                            edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                            try {
+                                if (mobileJsonArray.getJSONObject(i).getString("mobile").length() > 10) {
+                                    edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile").substring(mobileJsonArray.getJSONObject(i).getString("mobile").length() - 10));
+                                    String code = mobileJsonArray.getJSONObject(i).getString("mobile").substring(0, mobileJsonArray.getJSONObject(i).getString("mobile").length() - 10);
+                                    if (!code.isEmpty())
+                                        tv_countrycode_mobile.setText(code);
+                                } else {
+                                    edt_mobile.setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                                    tv_countrycode_mobile.setText("+91");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
                         } else {
-                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
-                            mobileLayoutsList.add((LinearLayout) rowView);
-                            ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-                            ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                            try {
+                                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+                                LinearLayout ll = (LinearLayout) rowView;
+                                mobileLayoutsList.add(ll);
+                                ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+                                if (mobileJsonArray.getJSONObject(i).getString("mobile").length() > 10) {
+                                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile").substring(mobileJsonArray.getJSONObject(i).getString("mobile").length() - 10));
+                                    String code = mobileJsonArray.getJSONObject(i).getString("mobile").substring(0, mobileJsonArray.getJSONObject(i).getString("mobile").length() - 10);
+                                    if (!code.isEmpty())
+                                        ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
+                                } else {
+                                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
+                                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText("+91");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -313,14 +367,37 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     for (int i = 0; i < landlineJsonArray.length(); i++) {
 
                         if (i == (landlineJsonArray.length() - 1)) {
-                            edt_landline.setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
-//                        landlineLayoutsList.add(ll_landline);
+                            if (landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() > 10) {
+                                edt_landline.setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").substring(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() - 10));
+                                String code = landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").substring(0, landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() - 10);
+                                if (!code.isEmpty())
+                                    tv_countrycode_landline.setText(code);
+                            } else {
+                                edt_landline.setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                                tv_countrycode_landline.setText("+91");
+                            }
                         } else {
-                            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
-                            landlineLayoutsList.add((LinearLayout) rowView);
-                            ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-                            ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                            try {
+                                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                                final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+                                LinearLayout ll = (LinearLayout) rowView;
+                                landlineLayoutsList.add(ll);
+                                ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+
+                                if (landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() > 10) {
+                                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").substring(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() - 10));
+                                    String code = landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").substring(0, landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() - 10);
+                                    if (!code.isEmpty())
+                                        ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
+                                } else {
+                                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
+                                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText("+91");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
                         }
                     }
                 }
@@ -411,6 +488,20 @@ public class BasicInformation_Activity extends AppCompatActivity {
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
+            }
+        });
+
+        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContryCodeDialog("1");
+            }
+        });
+
+        tv_countrycode_landline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showContryCodeDialog("2");
             }
         });
 
@@ -1010,37 +1101,41 @@ public class BasicInformation_Activity extends AppCompatActivity {
             for (int i = 0; i < mobileLayoutsList.size(); i++) {
                 if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
                     if (i < mobileJsonArray.length() - 1) {
-                        mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(i).getString("user_moblie_id")));
+                        mobileList.add(new PrimaryPublicMobileSelectionModel((((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).getText().toString() + "" +
+                                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim()), "0", "0", mobileJsonArray.getJSONObject(i).getString("user_moblie_id")));
                     } else {
-                        mobileList.add(new PrimaryPublicMobileSelectionModel(((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", "0"));
+                        mobileList.add(new PrimaryPublicMobileSelectionModel((((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).getText().toString() + "" +
+                                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim()), "0", "0", "0"));
                     }
                 }
             }
 
             if (mobileJsonArray.length() != 0) {
                 if (!edt_mobile.getText().toString().trim().isEmpty())
-                    mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
+                    mobileList.add(new PrimaryPublicMobileSelectionModel(tv_countrycode_mobile.getText().toString() + "" + edt_mobile.getText().toString().trim(), "0", "0", mobileJsonArray.getJSONObject(mobileJsonArray.length() - 1).getString("user_moblie_id")));
             } else {
                 if (!edt_mobile.getText().toString().trim().isEmpty())
-                    mobileList.add(new PrimaryPublicMobileSelectionModel(edt_mobile.getText().toString().trim(), "0", "0", "0"));
+                    mobileList.add(new PrimaryPublicMobileSelectionModel(tv_countrycode_mobile.getText().toString() + "" + edt_mobile.getText().toString().trim(), "0", "0", "0"));
             }
 
             for (int i = 0; i < landlineLayoutsList.size(); i++) {
                 if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
                     if (i < landlineJsonArray.length() - 1) {
-                        landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", landlineJsonArray.getJSONObject(i).getString("user_landline_id")));
+                        landlineList.add(new PrimarySelectionModel(((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).getText().toString() + "" +
+                                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", landlineJsonArray.getJSONObject(i).getString("user_landline_id")));
                     } else {
-                        landlineList.add(new PrimarySelectionModel(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", "0"));
+                        landlineList.add(new PrimarySelectionModel(((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).getText().toString() + "" +
+                                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim(), "0", "0"));
                     }
                 }
             }
 
             if (landlineJsonArray.length() != 0) {
                 if (!edt_landline.getText().toString().trim().isEmpty())
-                    landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlineJsonArray.getJSONObject(landlineJsonArray.length() - 1).getString("user_landline_id")));
+                    landlineList.add(new PrimarySelectionModel(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim(), "0", landlineJsonArray.getJSONObject(landlineJsonArray.length() - 1).getString("user_landline_id")));
             } else {
                 if (!edt_landline.getText().toString().trim().isEmpty())
-                    landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", "0"));
+                    landlineList.add(new PrimarySelectionModel(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim(), "0", "0"));
             }
 
             for (int i = 0; i < emailLayoutsList.size(); i++) {
@@ -1072,6 +1167,138 @@ public class BasicInformation_Activity extends AppCompatActivity {
         }
 
 
+    }
+
+    public void selectContryCode(View v) {
+        tv_selected_forconcode = (TextView) v;
+        showContryCodeDialog("3");
+    }
+
+    public void showContryCodeDialog(final String type) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
+
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+                    return;
+                }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList, type));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
+    }
+
+    private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
+
+        private ArrayList<ContryCodeModel> countryCodeList;
+        private String type;
+
+        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList, String type) {
+            this.countryCodeList = countryCodeList;
+            this.type = type;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_1, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.tv_name.setText(countryCodeList.get(position).getName());
+
+            holder.tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (type.equals("1")) {
+                        tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
+                    } else if (type.equals("2")) {
+                        tv_countrycode_landline.setText(countryCodeList.get(position).getDial_code());
+                    } else if (type.equals("3")) {
+                        tv_selected_forconcode.setText(countryCodeList.get(position).getDial_code());
+                    }
+                    countryCodeDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return countryCodeList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_name;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                tv_name = view.findViewById(R.id.tv_name);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
     private void showPrimaryMobileDialog() {

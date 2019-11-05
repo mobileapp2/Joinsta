@@ -386,7 +386,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             messageTypes.add("email");
         }
 
-        if (isNotificationPressed) { messageTypes.add("notification"); }
+        if (isNotificationPressed) {
+            messageTypes.add("notification");
+        }
 
         JsonObject mainObject = new JsonObject();
         mainObject.addProperty("type", "sendMessage");

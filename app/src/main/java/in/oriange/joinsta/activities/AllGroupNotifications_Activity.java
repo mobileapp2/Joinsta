@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.AllGroupNotificationAdapter;
+import in.oriange.joinsta.adapters.AllGroupNotificationChildAdapter;
+import in.oriange.joinsta.adapters.AllGroupNotificationParentAdapter;
 import in.oriange.joinsta.models.AllGroupNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -147,7 +148,7 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
                         if (notificationList.size() > 0) {
                             rv_notification.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_notification.setAdapter(new AllGroupNotificationAdapter(context, notificationList));
+                            rv_notification.setAdapter(new AllGroupNotificationParentAdapter(context, notificationList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_notification.setVisibility(View.GONE);

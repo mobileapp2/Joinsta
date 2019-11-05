@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,12 +33,12 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
-public class AllGroupNotificationAdapter extends RecyclerView.Adapter<AllGroupNotificationAdapter.MyViewHolder> {
+public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGroupNotificationChildAdapter.MyViewHolder> {
 
     private Context context;
-    private List<AllGroupNotificationListModel.ResultBean> resultList;
+    private List<AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean> resultList;
 
-    public AllGroupNotificationAdapter(Context context, List<AllGroupNotificationListModel.ResultBean> resultList) {
+    public AllGroupNotificationChildAdapter(Context context, List<AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean> resultList) {
         this.context = context;
         this.resultList = resultList;
     }
@@ -53,7 +54,7 @@ public class AllGroupNotificationAdapter extends RecyclerView.Adapter<AllGroupNo
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, int pos) {
         final int position = holder.getAdapterPosition();
-        final AllGroupNotificationListModel.ResultBean notificationDetails = resultList.get(position);
+        final AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean notificationDetails = resultList.get(position);
 
         holder.tv_title.setText(notificationDetails.getSubject().trim());
         holder.tv_message.setText(notificationDetails.getMessage().trim());
@@ -133,7 +134,7 @@ public class AllGroupNotificationAdapter extends RecyclerView.Adapter<AllGroupNo
         return position;
     }
 
-    private void showNotification(AllGroupNotificationListModel.ResultBean notificationDetails) {
+    private void showNotification(AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean notificationDetails) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_layout_notification, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -143,12 +144,10 @@ public class AllGroupNotificationAdapter extends RecyclerView.Adapter<AllGroupNo
         final TextView tv_title = promptView.findViewById(R.id.tv_title);
         final TextView tv_message = promptView.findViewById(R.id.tv_message);
         final TextView tv_time = promptView.findViewById(R.id.tv_time);
-        final TextView btn_download = promptView.findViewById(R.id.btn_download);
-        final TextView btn_delete = promptView.findViewById(R.id.btn_delete);
+        final LinearLayout ll_buttons = promptView.findViewById(R.id.ll_buttons);
 
         imv_notificationimg.setVisibility(View.GONE);
-        btn_download.setVisibility(View.GONE);
-        btn_delete.setVisibility(View.GONE);
+        ll_buttons.setVisibility(View.GONE);
 
 
         tv_title.setText(notificationDetails.getSubject().trim());
