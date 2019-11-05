@@ -1,18 +1,30 @@
 package in.oriange.joinsta.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +32,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -28,10 +41,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -41,9 +63,14 @@ import in.oriange.joinsta.models.GroupAdminsGroupsListModel;
 import in.oriange.joinsta.models.GroupMessagesCountsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
+
+import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
+import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 
 public class GroupsSendMessage_Activity extends AppCompatActivity {
 
@@ -54,15 +81,23 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private TextView tv_sms_count, tv_email_count, tv_notifications_count;
     private MaterialEditText edt_groups, edt_subject;
     private EditText edt_message;
+    private ImageView imv_photo1, imv_photo2;
     private RadioButton rb_supervisor, rb_all;
     private Button btn_save, btn_sms, btn_email, btn_notification;
 
     private List<GroupAdminsGroupsListModel.ResultBean> groupsList;
 
     private JsonArray selectedGroups;
-    private String userId;
+    private String userId, imageUrl = "", imageName = "";
 
-    boolean isSmsPressed, isEmailPressed, isNotificationPressed;
+    private boolean isSmsPressed, isEmailPressed, isNotificationPressed;
+
+    private Uri photoURI;
+    private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
+    private File photoFileFolder;
+
+    private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +125,24 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         btn_sms = findViewById(R.id.btn_sms);
         btn_email = findViewById(R.id.btn_email);
         btn_notification = findViewById(R.id.btn_notification);
+        imv_photo1 = findViewById(R.id.imv_photo1);
+        imv_photo2 = findViewById(R.id.imv_photo2);
         rb_supervisor = findViewById(R.id.rb_supervisor);
         rb_all = findViewById(R.id.rb_all);
         btn_save = findViewById(R.id.btn_save);
 
         groupsList = new ArrayList<>();
         selectedGroups = new JsonArray();
+
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Message Images");
+        if (!photoFileFolder.exists())
+            photoFileFolder.mkdirs();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     private void getSessionDetails() {
@@ -165,6 +212,139 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
             }
         });
+
+        imv_photo1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (edt_groups.getText().toString().trim().isEmpty()) {
+                    edt_groups.setError("Please select atleast one group");
+                    edt_groups.requestFocus();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        imv_photo2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (edt_groups.getText().toString().trim().isEmpty()) {
+                    edt_groups.setError("Please select atleast one group");
+                    edt_groups.requestFocus();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setCancelable(false);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take a Photo")) {
+                    File file = new File(photoFileFolder, "doc_image.png");
+                    photoURI = Uri.fromFile(file);
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(intent, CAMERA_REQUEST);
+                } else if (options[item].equals("Choose from Gallery")) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, GALLERY_REQUEST);
+                }
+            }
+        });
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == GALLERY_REQUEST) {
+                Uri imageUri = data.getData();
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(GroupsSendMessage_Activity.this);
+            }
+
+            if (requestCode == CAMERA_REQUEST) {
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(GroupsSendMessage_Activity.this);
+            }
+
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                savefile(resultUri);
+            }
+        }
+    }
+
+    private void savefile(Uri sourceuri) {
+        Log.i("sourceuri1", "" + sourceuri);
+        String sourceFilename = sourceuri.getPath();
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+                + "Message Images/" + "uplimg.png";
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFile, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File photoFileToUpload = new File(destinationFile);
+        new UploadImage().execute(photoFileToUpload);
+
     }
 
     private class GetMessageCount extends AsyncTask<String, Void, String> {
@@ -396,6 +576,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         mainObject.addProperty("subject", edt_subject.getText().toString().trim());
         mainObject.addProperty("message", edt_message.getText().toString().trim());
         mainObject.add("groups", selectedGroups);
+        mainObject.addProperty("document", imageName);
         mainObject.addProperty("receiver_type", receiverType);
         mainObject.add("message_types", messageTypes);
 
@@ -478,5 +659,112 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private class UploadImage extends AsyncTask<File, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(File... params) {
+            StringBuilder res = new StringBuilder();
+            try {
+                MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
+
+                multipart.addFormField("request_type", "uploadGroupFile");
+                multipart.addFormField("group_id", selectedGroups.toString());
+                multipart.addFilePart("document", params[0]);
+
+                List<String> response = multipart.finish();
+                for (String line : response) {
+                    res.append(line);
+                }
+                return res.toString();
+            } catch (IOException ex) {
+                return ex.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject jsonObject = mainObj.getJSONObject("result");
+                        imageUrl = jsonObject.getString("document_url");
+                        imageName = jsonObject.getString("name");
+
+                        if (!imageUrl.equals("")) {
+                            Picasso.with(context)
+                                    .load(imageUrl)
+                                    .into(imv_photo1);
+                            imv_photo2.setVisibility(View.GONE);
+                            imv_photo1.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        Utilities.showMessage("Image upload failed", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void askPermission() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        } else {
+            selectImage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                selectImage();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("Alert");
+                builder.setMessage("Please provide permission for Camera and Gallery");
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", context.getPackageName(), null)));
+                    }
+                });
+                builder.create();
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(GroupsSendMessage_Activity.this);
     }
 }

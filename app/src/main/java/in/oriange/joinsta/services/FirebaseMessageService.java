@@ -29,9 +29,12 @@ import java.util.Date;
 import java.util.Random;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.MainDrawer_Activity;
 import in.oriange.joinsta.activities.SplashScreen_Activity;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
+
+    private final static String TAG = FirebaseMessageService.class.getSimpleName();
 
     public static final int NOTIFICATION_REQUEST_CODE = 100;
     private static PendingIntent pendingIntent;
@@ -41,66 +44,17 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     private static Bitmap iconBitmap;
     private static Random random;
 
-//    @Override
-//    public void onMessageReceived(RemoteMessage remoteMessage) {
-//        if (remoteMessage.getData().size() > 0) {
-//        }
-//        if (remoteMessage.getNotification() != null) {
-//            sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
-//        }
-//
-//
-////        String title = remoteMessage.getNotification().getTitle();
-////        String body = remoteMessage.getNotification().getBody();
-////        Log.i("MESSSSSSSSSAGE",""+title+" "+body);
-////        int notificationId = new Random().nextInt(60000);
-////        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-////        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.icon_notification)
-////                .setContentTitle(remoteMessage.getNotification().getTitle())
-////                .setContentText(remoteMessage.getNotification().getBody())
-////                .setAutoCancel(true)
-////                .setSound(defaultSoundUri);
-////        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-////        notificationManager.notify(notificationId , notificationBuilder.build());
-//    }
-//
-//    private void sendNotification(String messageBody, String messageTitle) {
-//        Intent intent = new Intent(this, SplashScreen_Activity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-//                PendingIntent.FLAG_ONE_SHOT);
-//
-//        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
-//            notificationBuilder.setSmallIcon(R.drawable.app_notification_icon);
-//        else
-//            notificationBuilder.setSmallIcon(R.drawable.app_notification_icon);
-//
-//        notificationBuilder.setContentTitle("Todojee Insurance");
-//        notificationBuilder.setContentText(messageBody);
-//        notificationBuilder.setContentTitle(messageTitle);
-//        notificationBuilder.setAutoCancel(true);
-//        notificationBuilder.setSound(defaultSoundUri);
-//        notificationBuilder.setVibrate(new long[]{100, 250});
-//        notificationBuilder.setContentIntent(pendingIntent);
-//
-//        NotificationManager notificationManager =
-//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        notificationManager.notify(0, notificationBuilder.build());
-//    }
-
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.i("remoteMessage", remoteMessage.getData().get("title") + " " +
+        Log.wtf(TAG, remoteMessage.getData().get("title") + " " +
                 remoteMessage.getData().get("message") + " " +
                 remoteMessage.getData().get("image") + " " +
                 remoteMessage.getData().get("icon") + " " +
                 remoteMessage.getData().get("type") + " " +
                 remoteMessage.getData().get("userId") + " " +
                 remoteMessage.getData().get("taskId"));
+
+
         Intent notificationIntent = new Intent(getApplicationContext(), SplashScreen_Activity.class);
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
@@ -128,17 +82,17 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     public static void showNewNotification(Context context, Intent intent,
                                            String title, String msg, String image, String icon, String type, String userId, String taskId) {
 
+        Log.wtf(TAG, "showNewNotification: ");
+
         notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         builder = new Notification.Builder(context);
         notificationManager = NotificationManagerCompat.from(context);
 
         int m1 = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         Intent notificationIntent;
-        Log.d("ingenaretesimple", "simple");
         if (intent != null) {
             notificationIntent = intent;
             Bundle data = new Bundle();
-            Log.d("typefromhelper", type);
             data.putString("action", "notificationfromfcm");
             data.putString("taskId", taskId);
             data.putString("type", type);
@@ -158,9 +112,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         notification = builder
                 .setContentTitle(title)
                 .setContentText(msg)
-//                        .setTicker(Application.getContext().getString(R.string.app_name))
                 .setSmallIcon(R.drawable.icon_notification_logo)
-                //    .setLargeIcon(iconBitmap)
                 .setSound(notificationSound)
                 .setLights(Color.YELLOW, 1000, 1000)
                 .setVibrate(new long[]{500, 500})
@@ -170,28 +122,14 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent)
                 .build();
         notificationManager.notify(m1, notification);
-//        notificationIntent = new Intent(context, SplashScreenActivity.class);
-//        Bundle data = new Bundle();
-//        data.putString("action", "");
-//        notificationIntent.putExtras(data);
-//        pendingIntent = PendingIntent.getActivity((context), 0, notificationIntent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//        new generatePictureStyleNotification(context,title, msg,
-//                image).execute();
-/*
-        new generatePictureStyleNotification(App.getContext(),title, msg,
-                ConstantValues.ECOMMERCE_URL + image).execute();
-*/
-
     }
 
     public static void generatepicture(Context context, Intent notificationIntent, String title, String message, String imageUrl) {
-        Log.d("ingeneratepicture", "picture");
         Intent intent;
         if (notificationIntent != null) {
             intent = notificationIntent;
         } else {
-            intent = new Intent(context, SplashScreen_Activity.class);
+            intent = new Intent(context, MainDrawer_Activity.class);
         }
         new generatePictureStyleNotification(context, intent, title, message,
                 imageUrl).execute();
@@ -207,7 +145,6 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             super();
             this.mContext = context;
             this.title = title;
-            Log.d("title", title + "hii");
             this.message = message;
             this.imageUrl = imageUrl;
 
@@ -225,8 +162,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 connection.setDoInput(true);
                 connection.connect();
                 in = connection.getInputStream();
-                Bitmap myBitmap = BitmapFactory.decodeStream(in);
-                return myBitmap;
+                return BitmapFactory.decodeStream(in);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -239,17 +175,15 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         @Override
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
+            Log.wtf(TAG, "generatePictureStyleNotification: ");
             builder = new Notification.Builder(mContext);
             notificationManager = NotificationManagerCompat.from(mContext);
             Notification notification;
-            Log.d("title", title);
             if (result == null || this.imageUrl == null || this.imageUrl.isEmpty()) {
                 notification = builder
                         .setContentTitle(title)
                         .setContentText(message)
-//                        .setTicker(Application.getContext().getString(R.string.app_name))
                         .setSmallIcon(R.drawable.icon_notification_logo)
-                        //    .setLargeIcon(iconBitmap)
                         .setSound(notificationSound)
                         .setLights(Color.YELLOW, 1000, 1000)
                         .setVibrate(new long[]{500, 500})
@@ -262,9 +196,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 notification = builder
                         .setContentTitle(title)
                         .setContentText(message)
-//                        .setTicker(getContext().getString(R.string.app_name))
                         .setSmallIcon(R.drawable.icon_notification_logo)
-                        //.setLargeIcon(result)
                         .setStyle(new Notification.BigPictureStyle().bigPicture(result))
                         .setSound(notificationSound)
                         .setLights(Color.YELLOW, 1000, 1000)

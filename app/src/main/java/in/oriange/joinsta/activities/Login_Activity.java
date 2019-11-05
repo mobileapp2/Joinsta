@@ -64,9 +64,9 @@ public class Login_Activity extends AppCompatActivity {
     private View v_password, v_otp;
     private TextView tv_forgotpass;
     private MaterialEditText edt_username, edt_password, edt_mobile;
-    private TextView tv_countrycode_mobile, tv_countrycode;
+    private TextView tv_countrycode_mobile, tv_countrycode, tv_countrycode_changepassword;
     private Button btn_login, btn_register, btn_sendotp;
-    private String MOBILE, USERID;
+    private String MOBILE, COUNTRYCODE, USERID;
 
     private ArrayList<ContryCodeModel> countryCodeList;
     private AlertDialog countryCodeDialog;
@@ -319,9 +319,17 @@ public class Login_Activity extends AppCompatActivity {
         alertDialogBuilder.setView(promptView);
 
         final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+        tv_countrycode_changepassword = promptView.findViewById(R.id.tv_countrycode_changepassword);
         final Button btn_save = promptView.findViewById(R.id.btn_save);
 
         final AlertDialog alertD = alertDialogBuilder.create();
+
+        tv_countrycode_changepassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCountryCodesListDialog("3");
+            }
+        });
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,13 +341,14 @@ public class Login_Activity extends AppCompatActivity {
                     return;
                 }
 
+                COUNTRYCODE = tv_countrycode_changepassword.getText().toString().trim().replace("+", "");
                 MOBILE = edt_mobile.getText().toString().trim();
 
                 if (Utilities.isNetworkAvailable(context)) {
                     alertD.dismiss();
                     new SendOTP().execute(
                             edt_mobile.getText().toString().trim(),
-                            tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
+                            tv_countrycode_changepassword.getText().toString().trim().replace("+", ""),
                             "2");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -516,6 +525,8 @@ public class Login_Activity extends AppCompatActivity {
                         tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
                     } else if (type.equals("2")) {
                         tv_countrycode.setText(countryCodeList.get(position).getDial_code());
+                    } else if (type.equals("3")) {
+                        tv_countrycode_changepassword.setText(countryCodeList.get(position).getDial_code());
                     }
                     countryCodeDialog.dismiss();
                 }
@@ -797,6 +808,7 @@ public class Login_Activity extends AppCompatActivity {
                 obj.put("type", "changepassword");
                 obj.put("userId", USERID);
                 obj.put("mobile", MOBILE);
+                obj.put("country_code", COUNTRYCODE);
                 obj.put("oldpassword", "");
                 obj.put("newpasssword", params[1]);
             } catch (JSONException e) {
