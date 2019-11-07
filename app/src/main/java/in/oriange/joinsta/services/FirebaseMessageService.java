@@ -1,7 +1,10 @@
 package in.oriange.joinsta.services;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -130,8 +133,14 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             notificationIntent.putExtras(data);
         }
 
-        pendingIntent = PendingIntent.getActivity((context), 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel("my_notification", "n_channel", NotificationManager.IMPORTANCE_MAX);
+            notificationChannel.setDescription("description");
+            notificationChannel.setName("Channel Name");
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        pendingIntent = PendingIntent.getActivity((context), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification;
         notification = builder
                 .setContentTitle(title)
@@ -209,6 +218,21 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             Log.wtf(TAG, "generatePictureStyleNotification: ");
             builder = new Notification.Builder(mContext);
             notificationManager = NotificationManagerCompat.from(mContext);
+
+            String channelId = "channel-01";
+            String channelName = "Channel Name";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                NotificationChannel mChannel = new NotificationChannel(
+                        channelId, channelName, importance);
+                notificationManager.createNotificationChannel(mChannel);
+                builder = new Notification.Builder(mContext, channelId);
+            } else {
+                builder = new Notification.Builder(mContext);
+            }
+
+
             Notification notification;
             if (result == null || this.imageUrl == null || this.imageUrl.isEmpty()) {
                 notification = builder
