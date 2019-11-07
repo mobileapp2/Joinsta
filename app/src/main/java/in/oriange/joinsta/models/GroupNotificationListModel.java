@@ -124,7 +124,11 @@ public class GroupNotificationListModel {
         }
 
         public String getAttachment() {
-            return attachment;
+            if (attachment != null) {
+                return attachment;
+            } else {
+                return "";
+            }
         }
 
         public void setAttachment(String attachment) {
