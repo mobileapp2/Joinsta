@@ -40,6 +40,7 @@
                     android:layout_gravity="bottom"
                     android:background="@color/black_trans"
                     android:orientation="vertical"
+                    android:padding="5dp"
                     android:visibility="gone">
 
                     <TextView
@@ -88,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:padding="5dp"
                 android:visibility="gone">
 
                 <TextView

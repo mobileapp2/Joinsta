@@ -56,6 +56,8 @@ public class GroupNotificationListModel {
         private String group_id;
         private String msg_details_id;
         private String is_read;
+        private String attachment;
+
 
         public String getId() {
             return id;
@@ -119,6 +121,14 @@ public class GroupNotificationListModel {
 
         public void setIs_read(String is_read) {
             this.is_read = is_read;
+        }
+
+        public String getAttachment() {
+            return attachment;
+        }
+
+        public void setAttachment(String attachment) {
+            this.attachment = attachment;
         }
     }
 }

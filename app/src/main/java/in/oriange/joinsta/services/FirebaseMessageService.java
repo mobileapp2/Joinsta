@@ -29,8 +29,8 @@ import java.util.Date;
 import java.util.Random;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.MainDrawer_Activity;
-import in.oriange.joinsta.activities.SplashScreen_Activity;
+import in.oriange.joinsta.activities.GroupNotifications_Activity;
+import in.oriange.joinsta.activities.Notification_Activity;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
 
@@ -54,8 +54,20 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 remoteMessage.getData().get("userId") + " " +
                 remoteMessage.getData().get("taskId"));
 
+        if (remoteMessage.getData() == null) {
+            return;
+        }
 
-        Intent notificationIntent = new Intent(getApplicationContext(), SplashScreen_Activity.class);
+        Intent notificationIntent = null;
+
+        if (remoteMessage.getData().get("notification_type").equals("2")) {
+            notificationIntent = new Intent(getApplicationContext(), GroupNotifications_Activity.class)
+                    .putExtra("groupId", remoteMessage.getData().get("group_id"))
+                    .putExtra("msg_id", remoteMessage.getData().get("msg_id"));
+        } else if (remoteMessage.getData().get("notification_type").equals("1")) {
+            notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
+        }
+
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
             showNewNotification(
@@ -67,20 +79,25 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("icon"),
                     remoteMessage.getData().get("type"),
                     remoteMessage.getData().get("userId"),
-                    remoteMessage.getData().get("taskId"));
+                    remoteMessage.getData().get("taskId"),
+                    remoteMessage.getData().get("notification_type"),
+                    remoteMessage.getData().get("group_id"),
+                    remoteMessage.getData().get("msg_id"));
         } else {
             generatepicture(
                     getApplicationContext(),
                     null,
                     remoteMessage.getData().get("title"),
                     remoteMessage.getData().get("message"),
-                    remoteMessage.getData().get("image"));
+                    remoteMessage.getData().get("image"),
+                    remoteMessage.getData().get("notification_type"),
+                    remoteMessage.getData().get("group_id"),
+                    remoteMessage.getData().get("msg_id"));
         }
     }
 
-
-    public static void showNewNotification(Context context, Intent intent,
-                                           String title, String msg, String image, String icon, String type, String userId, String taskId) {
+    public static void showNewNotification(Context context, Intent intent, String title, String msg, String image, String icon, String type, String userId,
+                                           String taskId, String notification_type, String group_id, String msg_id) {
 
         Log.wtf(TAG, "showNewNotification: ");
 
@@ -89,7 +106,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         notificationManager = NotificationManagerCompat.from(context);
 
         int m1 = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
-        Intent notificationIntent;
+        Intent notificationIntent = null;
         if (intent != null) {
             notificationIntent = intent;
             Bundle data = new Bundle();
@@ -98,7 +115,14 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             data.putString("type", type);
             notificationIntent.putExtras(data);
         } else {
-            notificationIntent = new Intent(context, SplashScreen_Activity.class);
+            if (notification_type.equals("2")) {
+                notificationIntent = new Intent(context, GroupNotifications_Activity.class)
+                        .putExtra("groupId", group_id)
+                        .putExtra("msg_id", msg_id);
+            } else if (notification_type.equals("1")) {
+                notificationIntent = new Intent(context, Notification_Activity.class);
+            }
+
             Bundle data = new Bundle();
             data.putString("action", "notificationfromfcm");
             data.putString("taskId", taskId);
@@ -124,12 +148,19 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         notificationManager.notify(m1, notification);
     }
 
-    public static void generatepicture(Context context, Intent notificationIntent, String title, String message, String imageUrl) {
-        Intent intent;
+    public static void generatepicture(Context context, Intent notificationIntent, String title, String message, String imageUrl,
+                                       String notification_type, String group_id, String msg_id) {
+        Intent intent = null;
         if (notificationIntent != null) {
             intent = notificationIntent;
         } else {
-            intent = new Intent(context, MainDrawer_Activity.class);
+            if (notification_type.equals("2")) {
+                intent = new Intent(context, GroupNotifications_Activity.class)
+                        .putExtra("groupId", group_id)
+                        .putExtra("msg_id", msg_id);
+            } else if (notification_type.equals("1")) {
+                intent = new Intent(context, Notification_Activity.class);
+            }
         }
         new generatePictureStyleNotification(context, intent, title, message,
                 imageUrl).execute();

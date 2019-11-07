@@ -678,7 +678,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
                 multipart.addFormField("request_type", "uploadGroupFile");
-                multipart.addFormField("group_id", selectedGroups.toString());
+                multipart.addFormField("user_id", userId);
                 multipart.addFilePart("document", params[0]);
 
                 List<String> response = multipart.finish();
@@ -722,7 +722,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             }
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void askPermission() {
