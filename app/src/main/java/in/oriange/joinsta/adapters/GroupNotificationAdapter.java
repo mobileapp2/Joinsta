@@ -507,13 +507,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             super.onPostExecute(aBoolean);
             if (aBoolean) {
                 Utilities.showMessage("Image successfully downloaded", context, 1);
-                MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null,
-                        new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(String path, Uri uri) {
-
-                            }
-                        });
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
             }
         }
     }

@@ -421,13 +421,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             pd.dismiss();
             super.onPostExecute(aBoolean);
             if (aBoolean) {
-                MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null,
-                        new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(String path, Uri uri) {
-                                Utilities.showMessage("Image successfully downloaded", context, 1);
-                            }
-                        });
+                Utilities.showMessage("Image successfully downloaded", context, 1);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
             }
         }
     }
