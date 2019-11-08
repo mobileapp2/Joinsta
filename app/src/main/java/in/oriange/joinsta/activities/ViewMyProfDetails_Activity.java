@@ -424,6 +424,31 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
 
             }
         });
+
+        tv_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!searchDetails.getEmail().trim().isEmpty()) {
+                    sendEmail();
+                } else {
+                    Utilities.showMessage("Email not added", context, 2);
+                }
+            }
+        });
+
+        tv_website.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = searchDetails.getWebsite();
+
+                if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                    url = "http://" + url;
+                }
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
     }
 
     public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
@@ -596,4 +621,11 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
             }
         }
     }
+
+    private void sendEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", searchDetails.getEmail(), null));
+        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
 }

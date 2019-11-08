@@ -280,7 +280,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
                         }
 
                         if (rb_mobile.isChecked()) {
-                            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                            if (edt_mobile.getText().toString().trim().isEmpty()) {
                                 edt_mobile.setError("Please enter valid mobile");
                                 edt_mobile.requestFocus();
                                 return;
@@ -319,7 +319,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
                                     edt_email.getText().toString().trim(),
                                     edt_subject.getText().toString().trim(),
                                     edt_details.getText().toString().trim(),
-                                    "1",
+                                    "3",
                                     searchDetails.getId()
 
                             );
