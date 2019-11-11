@@ -120,14 +120,11 @@
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
-
                     </LinearLayout>
-
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -245,6 +242,37 @@
                     </RelativeLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_attach_docs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_attach_doc"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.75"
+                            android:focusable="false"
+                            android:hint="Attach Document"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray"
+                            app:met_underlineColor="@color/mediumGray" />
+
+                        <ImageButton
+                            android:id="@+id/ib_add_doc"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_weight="0.1"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/icon_add"
+                            android:tint="@color/black" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -293,7 +321,6 @@
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
-
 
                         </LinearLayout>
 
