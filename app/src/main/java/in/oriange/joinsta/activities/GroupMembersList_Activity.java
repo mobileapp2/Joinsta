@@ -176,7 +176,9 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                             }
                         }
 
-                        for (GroupMemebersListModel.ResultBean memberDetails : foundMembers) {
+                        ArrayList<GroupMemebersListModel.ResultBean> tempFoundMembers = new ArrayList<>(foundMembers);
+
+                        for (GroupMemebersListModel.ResultBean memberDetails : tempFoundMembers) {
                             if (!isAdmin.equals("1")) {
                                 if (memberDetails.getIs_hidden().equals("1")) {
                                     foundMembers.remove(memberDetails);
