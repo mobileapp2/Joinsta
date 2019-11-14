@@ -109,7 +109,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private CircleImageView imv_user;
     private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
-            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile;
+            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton ib_add_mobile, ib_add_landline, ib_add_email, ib_location;
@@ -166,6 +166,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         edt_email = findViewById(R.id.edt_email);
         edt_reg_mobile = findViewById(R.id.edt_reg_mobile);
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
+        edt_about = findViewById(R.id.edt_about);
 
         tv_verify = findViewById(R.id.tv_verify);
         tv_verified = findViewById(R.id.tv_verified);
@@ -273,6 +274,12 @@ public class BasicInformation_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 latitude = "0.0";
                 longitude = "0.0";
+            }
+
+            try {
+                edt_about.setText(json.getString("about"));
+            } catch (Exception e) {
+                edt_about.setText("");
             }
 
             try {
@@ -1683,6 +1690,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
         mainObj.addProperty("native_place", edt_nativeplace.getText().toString().trim());
         mainObj.addProperty("latitude", latitude);
         mainObj.addProperty("longitude", longitude);
+        mainObj.addProperty("about", edt_about.getText().toString().trim());
         mainObj.add("mobile1", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("email", emailJSONArray);

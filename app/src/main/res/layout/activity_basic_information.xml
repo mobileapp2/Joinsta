@@ -249,6 +249,17 @@
 
                         </LinearLayout>
 
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_about"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="About Me"
+                            android:inputType="textNoSuggestions|textMultiLine"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray"
+                            app:met_underlineColor="@color/mediumGray" />
+
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -456,7 +467,6 @@
                                 android:tint="@color/black" />
 
                         </LinearLayout>
-
 
                     </LinearLayout>
 

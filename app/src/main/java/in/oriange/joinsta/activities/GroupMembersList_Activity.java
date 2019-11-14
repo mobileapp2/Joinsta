@@ -19,13 +19,18 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupMembersListAdapter;
 import in.oriange.joinsta.models.GroupMemebersListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class GroupMembersList_Activity extends AppCompatActivity {
@@ -36,8 +41,8 @@ public class GroupMembersList_Activity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
-    private String groupId, isAdmin;
-    ArrayList<GroupMemebersListModel.ResultBean> groupMembersList;
+    private String groupId, isAdmin, userId;
+    private List<GroupMemebersListModel.ResultBean> groupMembersFinalList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_group_members_list);
 
         init();
+        getSessionDetails();
         setDefault();
         setEventHandler();
         setUpToolbar();
@@ -60,8 +66,21 @@ public class GroupMembersList_Activity extends AppCompatActivity {
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = findViewById(R.id.ll_nopreview);
 
-        groupMembersList = new ArrayList<>();
+        groupMembersFinalList = new ArrayList<>();
 
+    }
+
+    private void getSessionDetails() {
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setDefault() {
@@ -98,21 +117,21 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersList));
+                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersFinalList));
                     return;
                 }
 
 
-                if (groupMembersList.size() == 0) {
+                if (groupMembersFinalList.size() == 0) {
                     rv_group_members.setVisibility(View.GONE);
                     return;
                 }
 
                 if (!query.toString().equals("")) {
                     ArrayList<GroupMemebersListModel.ResultBean> groupsSearchedList = new ArrayList<>();
-                    for (GroupMemebersListModel.ResultBean groupsDetails : groupMembersList) {
+                    for (GroupMemebersListModel.ResultBean groupsDetails : groupMembersFinalList) {
 
-                        String groupsToBeSearched = groupsDetails.getFirst_name().toLowerCase();
+                        String groupsToBeSearched = groupsDetails.getFirst_name().toLowerCase() + groupsDetails.getSearchQueryString().toLowerCase();
 
                         if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
                             groupsSearchedList.add(groupsDetails);
@@ -120,7 +139,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                     }
                     rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupsSearchedList));
                 } else {
-                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersList));
+                    rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersFinalList));
                 }
 
             }
@@ -150,6 +169,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getgroupmember");
             obj.addProperty("id", groupId);
+            obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
             return res.trim();
         }
@@ -162,7 +182,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    groupMembersList = new ArrayList<>();
+                    List<GroupMemebersListModel.ResultBean> groupMembersList = new ArrayList<>();
                     GroupMemebersListModel pojoDetails = new Gson().fromJson(result, GroupMemebersListModel.class);
                     type = pojoDetails.getType();
 
@@ -171,9 +191,9 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
                         ArrayList<GroupMemebersListModel.ResultBean> foundMembers = new ArrayList<GroupMemebersListModel.ResultBean>();
                         for (GroupMemebersListModel.ResultBean groupDetails : groupMembersList) {
-                            if (groupDetails.getRole().equals("group_member")) {
-                                foundMembers.add(groupDetails);
-                            }
+//                            if (groupDetails.getRole().equals("group_member")) {
+                            foundMembers.add(groupDetails);
+//                            }
                         }
 
                         ArrayList<GroupMemebersListModel.ResultBean> tempFoundMembers = new ArrayList<>(foundMembers);
@@ -189,10 +209,65 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                         groupMembersList.clear();
                         groupMembersList.addAll(foundMembers);
 
+                        groupMembersFinalList = new ArrayList<>();
+
+
+                        for (GroupMemebersListModel.ResultBean memberDetails : groupMembersList) {
+                            GroupMemebersListModel.ResultBean resultBean = new GroupMemebersListModel.ResultBean();
+                            resultBean.setUser_id(memberDetails.getUser_id());
+                            resultBean.setGroup_name(memberDetails.getGroup_name());
+                            resultBean.setGroup_id(memberDetails.getGroup_id());
+                            resultBean.setRole(memberDetails.getRole());
+                            resultBean.setIs_hidden(memberDetails.getIs_hidden());
+                            resultBean.setId(memberDetails.getId());
+                            resultBean.setFirst_name(memberDetails.getFirst_name());
+                            resultBean.setGroup_member_name(memberDetails.getGroup_member_name());
+                            resultBean.setMobile(memberDetails.getMobile());
+                            resultBean.setPassword(memberDetails.getPassword());
+                            resultBean.setImage_url(memberDetails.getImage_url());
+                            resultBean.setIs_joinsta_member(memberDetails.getIs_joinsta_member());
+
+                            StringBuffer searchQuery = new StringBuffer();
+
+                            for (GroupMemebersListModel.ResultBean.BussinessInfoBean bussinessInfoBean : memberDetails.getBussinessInfo()) {
+                                searchQuery.append(bussinessInfoBean.getBusiness_name());
+                                searchQuery.append(bussinessInfoBean.getType_description());
+                                searchQuery.append(bussinessInfoBean.getSubtype_description());
+
+                                for (GroupMemebersListModel.ResultBean.BussinessInfoBean.TagBean tagBean : memberDetails.getBussinessInfo().get(0).getTag()) {
+                                    searchQuery.append(tagBean.getTag_name());
+
+                                }
+                            }
+
+                            for (GroupMemebersListModel.ResultBean.EmployeeInfoBean employeeInfoBean : memberDetails.getEmployeeInfo()) {
+                                searchQuery.append(employeeInfoBean.getOrganization_name());
+                                searchQuery.append(employeeInfoBean.getType_description());
+                                searchQuery.append(employeeInfoBean.getSubtype_description());
+
+                                for (GroupMemebersListModel.ResultBean.EmployeeInfoBean.TagBeanX tagBean : memberDetails.getEmployeeInfo().get(0).getTag()) {
+                                    searchQuery.append(tagBean.getTag_name());
+
+                                }
+                            }
+
+                            for (GroupMemebersListModel.ResultBean.ProfessionalInfoBean professionalInfoBean : memberDetails.getProfessionalInfo()) {
+                                searchQuery.append(professionalInfoBean.getFirm_name());
+                                searchQuery.append(professionalInfoBean.getType_description());
+                                searchQuery.append(professionalInfoBean.getSubtype_description());
+
+                                for (GroupMemebersListModel.ResultBean.ProfessionalInfoBean.TagBeanXX tagBean : memberDetails.getProfessionalInfo().get(0).getTag()) {
+                                    searchQuery.append(tagBean.getTag_name());
+                                }
+                            }
+
+                            resultBean.setSearchQueryString(searchQuery.toString().replace(" ", ""));
+                            groupMembersFinalList.add(resultBean);
+                        }
                         if (groupMembersList.size() > 0) {
                             rv_group_members.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersList));
+                            rv_group_members.setAdapter(new GroupMembersListAdapter(context, groupMembersFinalList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_group_members.setVisibility(View.GONE);
