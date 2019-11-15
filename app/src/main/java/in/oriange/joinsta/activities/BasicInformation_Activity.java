@@ -870,7 +870,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     }
                 });
 
-        builderSingle.setNeutralButton("Non of Above", new DialogInterface.OnClickListener() {
+        builderSingle.setNeutralButton("None of Above", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 edt_bloodgroup.setText("");
@@ -961,7 +961,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
                     }
                 });
 
-        builderSingle.setNeutralButton("Non of Above", new DialogInterface.OnClickListener() {
+        builderSingle.setNeutralButton("None of Above", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 edt_education.setText("");

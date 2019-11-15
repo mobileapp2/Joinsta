@@ -276,7 +276,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 final View rowView = inflater.inflate(R.layout.layout_add_document, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 docsLayoutsList.add(ll);
-                ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount() - 1);
+                ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
             }
         });
 
@@ -362,14 +362,12 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 
             if (requestCode == 1024) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(new File(list.get(0).getPath()));
-                edt_attach_doc.setText(list.get(0).getName());
+                new UploadImage().execute(list.get(0).getPath(), "1");
             }
 
             if (requestCode == 1025) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(new File(list.get(0).getPath()));
-                edt_attach_multidoc.setText(list.get(0).getName());
+                new UploadImage().execute(list.get(0).getPath(), "2");
             }
 
         }
@@ -412,7 +410,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload);
+        new UploadImage().execute(photoFileToUpload.getPath(), "0");
 
     }
 
@@ -639,6 +637,22 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             messageTypes.add("notification");
         }
 
+        JsonArray messageDocArray = new JsonArray();
+
+        if (!edt_attach_doc.getText().toString().trim().isEmpty()){
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("document", edt_attach_doc.getText().toString().trim());
+            messageDocArray.add(jsonObject);
+        }
+
+        for (int i = 0; i < docsLayoutsList.size(); i++) {
+            if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                messageDocArray.add(jsonObject);
+            }
+        }
+
         JsonObject mainObject = new JsonObject();
         mainObject.addProperty("type", "sendMessage");
         mainObject.addProperty("user_id", userId);
@@ -648,6 +662,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         mainObject.addProperty("document", imageName);
         mainObject.addProperty("receiver_type", receiverType);
         mainObject.add("message_types", messageTypes);
+        mainObject.add("message_doc", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {
             new SendMessage().execute(mainObject.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
@@ -730,7 +745,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         });
     }
 
-    private class UploadImage extends AsyncTask<File, Integer, String> {
+    private class UploadImage extends AsyncTask<String, Integer, String> {
+
+        String TYPE;
 
         @Override
         protected void onPreExecute() {
@@ -741,14 +758,15 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(File... params) {
+        protected String doInBackground(String... params) {
+            TYPE = params[1];
             StringBuilder res = new StringBuilder();
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
                 multipart.addFormField("request_type", "uploadGroupFile");
                 multipart.addFormField("user_id", userId);
-                multipart.addFilePart("document", params[0]);
+                multipart.addFilePart("document", new File(params[0]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {
@@ -772,15 +790,22 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        imageUrl = jsonObject.getString("document_url");
-                        imageName = jsonObject.getString("name");
 
-                        if (!imageUrl.equals("")) {
-                            Picasso.with(context)
-                                    .load(imageUrl)
-                                    .into(imv_photo1);
-                            imv_photo2.setVisibility(View.GONE);
-                            imv_photo1.setVisibility(View.VISIBLE);
+                        if (TYPE.equals("0")) {
+                            imageUrl = jsonObject.getString("document_url");
+                            imageName = jsonObject.getString("name");
+
+                            if (!imageUrl.equals("")) {
+                                Picasso.with(context)
+                                        .load(imageUrl)
+                                        .into(imv_photo1);
+                                imv_photo2.setVisibility(View.GONE);
+                                imv_photo1.setVisibility(View.VISIBLE);
+                            }
+                        } else if (TYPE.equals("1")) {
+                            edt_attach_doc.setText(jsonObject.getString("name"));
+                        } else if (TYPE.equals("2")) {
+                            edt_attach_multidoc.setText(jsonObject.getString("name"));
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
