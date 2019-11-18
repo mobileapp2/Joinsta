@@ -67,7 +67,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             notificationIntent = new Intent(getApplicationContext(), GroupNotifications_Activity.class)
                     .putExtra("groupId", remoteMessage.getData().get("group_id"))
                     .putExtra("msg_id", remoteMessage.getData().get("msg_id"))
-                    .putExtra("groupName", "");
+                    .putExtra("groupName", remoteMessage.getData().get("group_name"));
         } else if (remoteMessage.getData().get("notification_type").equals("1")) {
             notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
         }
@@ -86,7 +86,8 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("taskId"),
                     remoteMessage.getData().get("notification_type"),
                     remoteMessage.getData().get("group_id"),
-                    remoteMessage.getData().get("msg_id"));
+                    remoteMessage.getData().get("msg_id"),
+                    remoteMessage.getData().get("group_name"));
         } else {
             generatepicture(
                     getApplicationContext(),
@@ -96,12 +97,13 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("image"),
                     remoteMessage.getData().get("notification_type"),
                     remoteMessage.getData().get("group_id"),
-                    remoteMessage.getData().get("msg_id"));
+                    remoteMessage.getData().get("msg_id"),
+                    remoteMessage.getData().get("group_name"));
         }
     }
 
     public static void showNewNotification(Context context, Intent intent, String title, String msg, String image, String icon, String type, String userId,
-                                           String taskId, String notification_type, String group_id, String msg_id) {
+                                           String taskId, String notification_type, String group_id, String msg_id, String group_name) {
 
         Log.wtf(TAG, "showNewNotification: ");
 
@@ -123,7 +125,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 notificationIntent = new Intent(context, GroupNotifications_Activity.class)
                         .putExtra("groupId", group_id)
                         .putExtra("msg_id", msg_id)
-                        .putExtra("groupName", "");
+                        .putExtra("groupName", group_name);
             } else if (notification_type.equals("1")) {
                 notificationIntent = new Intent(context, Notification_Activity.class);
             }
@@ -160,7 +162,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     }
 
     public static void generatepicture(Context context, Intent notificationIntent, String title, String message, String imageUrl,
-                                       String notification_type, String group_id, String msg_id) {
+                                       String notification_type, String group_id, String msg_id, String group_name) {
         Intent intent = null;
         if (notificationIntent != null) {
             intent = notificationIntent;
@@ -169,7 +171,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 intent = new Intent(context, GroupNotifications_Activity.class)
                         .putExtra("groupId", group_id)
                         .putExtra("msg_id", msg_id)
-                        .putExtra("groupName", "");
+                        .putExtra("groupName", group_name);
             } else if (notification_type.equals("1")) {
                 intent = new Intent(context, Notification_Activity.class);
             }

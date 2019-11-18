@@ -639,7 +639,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 
         JsonArray messageDocArray = new JsonArray();
 
-        if (!edt_attach_doc.getText().toString().trim().isEmpty()){
+        if (!edt_attach_doc.getText().toString().trim().isEmpty()) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("document", edt_attach_doc.getText().toString().trim());
             messageDocArray.add(jsonObject);

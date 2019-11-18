@@ -55,6 +55,7 @@ public class GroupSupervisorsDetailsModel {
         private String mobile;
         private String email;
         private String role;
+        private String country_code;
         private List<StatesBean> states;
         private List<DistrictsBean> districts;
 
@@ -96,6 +97,18 @@ public class GroupSupervisorsDetailsModel {
 
         public void setRole(String role) {
             this.role = role;
+        }
+
+        public String getCountry_code() {
+            if (country_code != null){
+                return country_code;
+            } else {
+                return "+91";
+            }
+        }
+
+        public void setCountry_code(String country_code) {
+            this.country_code = country_code;
         }
 
         public List<StatesBean> getStates() {

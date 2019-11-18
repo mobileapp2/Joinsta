@@ -15,6 +15,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -31,6 +34,7 @@ import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -40,6 +44,7 @@ import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.GetDistrictListModel;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.GetStateListModel;
 import in.oriange.joinsta.models.GroupSupervisorsDetailsModel;
 import in.oriange.joinsta.models.GroupSupervisorsListModel;
@@ -51,6 +56,7 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
 public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
 
@@ -58,6 +64,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private MaterialEditText edt_name, edt_mobile, edt_email, edt_role, edt_state, edt_district;
+    private TextView tv_countrycode_mobile;
     private Button btn_save;
     private String userId, groupId, role;
 
@@ -65,6 +72,8 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
     private JsonArray selectedStatesIds, selectedDistIds;
     private List<GetStateListModel.ResultBean> stateList;
     private List<GetDistrictListModel.ResultBean> districtList;
+    private ArrayList<ContryCodeModel> countryCodeList;
+    private AlertDialog countryCodeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +98,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
         edt_role = findViewById(R.id.edt_role);
         edt_state = findViewById(R.id.edt_state);
         edt_district = findViewById(R.id.edt_district);
+        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
 
         btn_save = findViewById(R.id.btn_save);
 
@@ -100,6 +110,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
     }
 
     private void getSessionDetails() {
+
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -107,6 +118,23 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             userId = json.getString("userid");
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
+            countryCodeList = new ArrayList<>();
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                countryCodeList.add(new ContryCodeModel(
+                        jo_inside.getString("name"),
+                        jo_inside.getString("dial_code"),
+                        jo_inside.getString("code")
+                ));
+            }
+
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -121,7 +149,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             edt_state.setVisibility(View.VISIBLE);
             edt_district.setVisibility(View.VISIBLE);
             if (Utilities.isNetworkAvailable(context)) {
-                new GetGroupAdminsGroups().execute();
+                new GetGroupSupervisorDetails().execute();
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
@@ -134,6 +162,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             edt_name.setText(memberDetails.getFirst_name());
             edt_mobile.setText(memberDetails.getMobile());
             edt_email.setText(memberDetails.getEmail());
+            tv_countrycode_mobile.setText("+" + memberDetails.getCountry_code());
 
         }
 
@@ -185,6 +214,13 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
                             .putExtra("districtList", (Serializable) districtList)
                             .putExtra("selectedDistIds", "[]"), 1);
                 }
+            }
+        });
+
+        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCountryCodesListDialog();
             }
         });
 
@@ -439,6 +475,125 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
         }
     }
 
+    private void showCountryCodesListDialog() {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
+
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList));
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList));
+                    return;
+                }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
+    }
+
+    private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
+
+        private ArrayList<ContryCodeModel> countryCodeList;
+
+        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList) {
+            this.countryCodeList = countryCodeList;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_1, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.tv_name.setText(countryCodeList.get(position).getName());
+
+            holder.tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
+                    countryCodeDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return countryCodeList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_name;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                tv_name = view.findViewById(R.id.tv_name);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -483,6 +638,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             mainObj.addProperty("edit_member_name", edt_name.getText().toString().trim());
             mainObj.addProperty("edit_member_email", edt_email.getText().toString().trim());
             mainObj.addProperty("edit_member_mobile", edt_mobile.getText().toString().trim());
+            mainObj.addProperty("edit_country_code", tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
             mainObj.addProperty("edit_member_role", role);
             mainObj.add("edit_member_state", selectedStatesIds);
             mainObj.add("edit_member_district", selectedDistIds);
@@ -494,6 +650,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             mainObj.addProperty("edit_member_name", edt_name.getText().toString().trim());
             mainObj.addProperty("edit_member_email", edt_email.getText().toString().trim());
             mainObj.addProperty("edit_member_mobile", edt_mobile.getText().toString().trim());
+            mainObj.addProperty("edit_country_code", tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
             mainObj.addProperty("edit_member_role", role);
             mainObj.addProperty("edit_member_state", "");
             mainObj.addProperty("edit_member_district", "");
@@ -574,7 +731,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
         }
     }
 
-    private class GetGroupAdminsGroups extends AsyncTask<String, Void, String> {
+    private class GetGroupSupervisorDetails extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -609,6 +766,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
                         GroupSupervisorsDetailsModel.ResultBean superVisorDetails = pojoDetails.getResult();
                         edt_name.setText(superVisorDetails.getFirst_name());
                         edt_mobile.setText(superVisorDetails.getMobile());
+                        tv_countrycode_mobile.setText("+" + superVisorDetails.getCountry_code());
                         edt_email.setText(superVisorDetails.getEmail());
 
                         StringBuilder stateSb = new StringBuilder();

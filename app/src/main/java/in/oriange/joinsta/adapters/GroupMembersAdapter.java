@@ -64,9 +64,9 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         holder.tv_name.setText(memberDetails.getFirst_name());
 
         if (!memberDetails.getMobile().isEmpty() && !memberDetails.getEmail().isEmpty()) {
-            holder.tv_mobile_email.setText(memberDetails.getMobile() + " | " + memberDetails.getEmail());
+            holder.tv_mobile_email.setText(memberDetails.getCountry_code() + " " + memberDetails.getMobile() + " | " + memberDetails.getEmail());
         } else if (!memberDetails.getMobile().isEmpty() && memberDetails.getEmail().isEmpty()) {
-            holder.tv_mobile_email.setText(memberDetails.getMobile());
+            holder.tv_mobile_email.setText(memberDetails.getCountry_code() + " " + memberDetails.getMobile());
         } else if (memberDetails.getMobile().isEmpty() && !memberDetails.getEmail().isEmpty()) {
             holder.tv_mobile_email.setText(memberDetails.getEmail());
         } else if (memberDetails.getMobile().isEmpty() && memberDetails.getEmail().isEmpty()) {

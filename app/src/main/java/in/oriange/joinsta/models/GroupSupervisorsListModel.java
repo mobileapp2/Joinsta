@@ -54,6 +54,7 @@ public class GroupSupervisorsListModel implements Serializable {
         private String email;
         private String is_active;
         private String id;
+        private String country_code;
 
         public String getFirst_name() {
             if (first_name != null){
@@ -113,6 +114,18 @@ public class GroupSupervisorsListModel implements Serializable {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getCountry_code() {
+            if (country_code != null){
+                return country_code;
+            } else {
+                return "+91";
+            }
+        }
+
+        public void setCountry_code(String country_code) {
+            this.country_code = country_code;
         }
     }
 }

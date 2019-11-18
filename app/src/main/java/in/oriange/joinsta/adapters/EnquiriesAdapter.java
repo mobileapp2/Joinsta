@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -222,14 +223,14 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
                     sb.append(enquiryDetails.getProfession_name() + "\n");
                 }
 
-                sb.append(enquiryDetails.getSubject() + " - " + enquiryDetails.getMessage());
+                sb.append(enquiryDetails.getSubject() + " - " + enquiryDetails.getMessage() + "\n");
 
-                sb.append("By - " + enquiryDetails.getName());
+                sb.append("By - " + enquiryDetails.getName() + "\n");
 
                 if (enquiryDetails.getCommunication_mode().equals("mobile")) {
-                    sb.append("Mobile - " + enquiryDetails.getMobile());
+                    sb.append("Mobile - " + enquiryDetails.getMobile() + "\n");
                 } else if (enquiryDetails.getCommunication_mode().equals("email")) {
-                    sb.append("Email - " + enquiryDetails.getEmail());
+                    sb.append("Email - " + enquiryDetails.getEmail() + "\n");
                 }
 
                 String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
@@ -254,7 +255,7 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
         private ImageButton ib_call;
         private LinearLayout ll_buttons;
         private TextView tv_record_name, tv_subject, tv_message, tv_createdby, tv_time;
-        private SwitchCompat sw_attend;
+        private Switch sw_attend;
         private Button btn_delete, btn_share;
 
         public MyViewHolder(View view) {

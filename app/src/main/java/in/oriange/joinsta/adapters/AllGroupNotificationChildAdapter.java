@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -225,8 +227,9 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         final TextView tv_title = promptView.findViewById(R.id.tv_title);
         final TextView tv_message = promptView.findViewById(R.id.tv_message);
         final TextView tv_time = promptView.findViewById(R.id.tv_time);
-        final TextView btn_download = promptView.findViewById(R.id.btn_download);
-        final TextView btn_delete = promptView.findViewById(R.id.btn_delete);
+        final Button btn_download = promptView.findViewById(R.id.btn_download);
+        final Button btn_delete = promptView.findViewById(R.id.btn_delete);
+        final TextView tv_viewdocs = promptView.findViewById(R.id.tv_viewdocs);
 
         if (!notificationDetails.getAttachment().equals("")) {
             String url = IMAGE_LINK + "groupnotifications/" + notificationDetails.getAttachment();
@@ -274,6 +277,16 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                 new ReadNotification().execute(notificationDetails.getMsg_details_id());
             else
                 Utilities.showMessage("Please check your internet connection", context, 2);
+        }
+
+        if (notificationDetails.getDocuments().size() != 0) {
+            tv_viewdocs.setVisibility(View.VISIBLE);
+            if (notificationDetails.getDocuments().size() == 1) {
+                tv_viewdocs.setText(notificationDetails.getDocuments().size() + " Document Attached");
+            } else {
+                tv_viewdocs.setText(notificationDetails.getDocuments().size() + " Documents Attached");
+            }
+            tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         }
 
         final AlertDialog alertD = alertDialogBuilder.create();
