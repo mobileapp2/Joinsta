@@ -15,6 +15,7 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -58,7 +59,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
     private Context context;
     private List<AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean> resultList;
 
-    private File downloadedDocsfolder, file;
+    private File downloadedImagefolder, downloadedDocumentfolder, file;
     private boolean isDownloaded = false;
 
     private File downloadedFile;
@@ -67,9 +68,13 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         this.context = context;
         this.resultList = resultList;
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
-        if (!downloadedDocsfolder.exists())
-            downloadedDocsfolder.mkdirs();
+        downloadedImagefolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
+        if (!downloadedImagefolder.exists())
+            downloadedImagefolder.mkdirs();
+
+        downloadedDocumentfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Documents");
+        if (!downloadedDocumentfolder.exists())
+            downloadedDocumentfolder.mkdirs();
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -235,7 +240,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             String url = IMAGE_LINK + "groupnotifications/" + notificationDetails.getAttachment();
             String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
 
-            downloadedFile = new File(downloadedDocsfolder.toString() + "/" + fileName);
+            downloadedFile = new File(downloadedImagefolder.toString() + "/" + fileName);
             if (downloadedFile.isFile()) {
                 isDownloaded = true;
                 btn_download.setText("VIEW");
@@ -264,8 +269,10 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         }
 
         tv_title.setText(notificationDetails.getSubject().trim());
+
         tv_message.setText(notificationDetails.getMessage().trim());
         Linkify.addLinks(tv_message, Linkify.ALL);
+
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
             tv_time.setText("");
         } else {
@@ -291,6 +298,13 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
+        tv_viewdocs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDocumentsList(notificationDetails.getDocuments());
+            }
+        });
+
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,7 +315,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 } else {
-                    new DownloadDocument().execute(IMAGE_LINK + "groupnotifications/" + notificationDetails.getAttachment());
+                    new DownloadImage().execute(IMAGE_LINK + "groupnotifications/" + notificationDetails.getAttachment());
                 }
             }
         });
@@ -335,6 +349,38 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         });
 
         alertD.show();
+    }
+
+    private void showDocumentsList(final List<AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean.DocumentsBean> documentList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Document List");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < documentList.size(); i++) {
+            arrayAdapter.add("View document " + (i + 1));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(IMAGE_LINK + "groupnotifications/" + documentList.get(which).getDocuments());
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+        builderSingle.show();
     }
 
     public class DeleteNotification extends AsyncTask<String, Void, String> {
@@ -398,7 +444,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         }
     }
 
-    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+    private class DownloadImage extends AsyncTask<String, Integer, Boolean> {
         int lenghtOfFile = -1;
         int count = 0;
         int content = -1;
@@ -413,7 +459,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             pd = new ProgressDialog(context);
             pd.setCancelable(true);
             pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pd.setMessage("Downloading Document");
+            pd.setMessage("Downloading Image");
             pd.setIndeterminate(false);
             pd.setCancelable(false);
             pd.show();
@@ -436,7 +482,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                 lenghtOfFile = httpURLConnection.getContentLength();
                 inputStream = httpURLConnection.getInputStream();
 
-                file = new File(downloadedDocsfolder, Uri.parse(params[0]).getLastPathSegment());
+                file = new File(downloadedImagefolder, Uri.parse(params[0]).getLastPathSegment());
                 fileOutputStream = new FileOutputStream(file);
                 while ((read = inputStream.read(buffer)) != -1) {
                     fileOutputStream.write(buffer, 0, read);
@@ -484,13 +530,137 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             super.onPostExecute(aBoolean);
             if (aBoolean) {
                 Utilities.showMessage("Image successfully downloaded", context, 1);
-                MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()}, null,
-                        new MediaScannerConnection.OnScanCompletedListener() {
-                            @Override
-                            public void onScanCompleted(String path, Uri uri) {
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            }
+        }
+    }
 
-                            }
-                        });
+    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocumentfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            if (aBoolean == true) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("file://" + file);
+                if (downloadurl.toString().contains(".doc") || downloadurl.toString().contains(".docx")) {
+                    // Word document
+                    intent.setDataAndType(uri, "application/msword");
+                } else if (downloadurl.toString().contains(".pdf")) {
+                    // PDF file
+                    intent.setDataAndType(uri, "application/pdf");
+                } else if (downloadurl.toString().contains(".ppt") || downloadurl.toString().contains(".pptx")) {
+                    // Powerpoint file
+                    intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                } else if (downloadurl.toString().contains(".xls") || downloadurl.toString().contains(".xlsx")) {
+                    // Excel file
+                    intent.setDataAndType(uri, "application/vnd.ms-excel");
+                } else if (downloadurl.toString().contains(".zip") || downloadurl.toString().contains(".rar")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "application/x-wav");
+                } else if (downloadurl.toString().contains(".rtf")) {
+                    // RTF file
+                    intent.setDataAndType(uri, "application/rtf");
+                } else if (downloadurl.toString().contains(".wav") || downloadurl.toString().contains(".mp3")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "audio/x-wav");
+                } else if (downloadurl.toString().contains(".gif")) {
+                    // GIF file
+                    intent.setDataAndType(uri, "image/gif");
+                } else if (downloadurl.toString().contains(".jpg") || downloadurl.toString().contains(".jpeg") || downloadurl.toString().contains(".png")) {
+                    // JPG file
+                    intent.setDataAndType(uri, "image/jpeg");
+                } else if (downloadurl.toString().contains(".txt")) {
+                    // Text file
+                    intent.setDataAndType(uri, "text/plain");
+                } else if (downloadurl.toString().contains(".3gp") || downloadurl.toString().contains(".mpg") || downloadurl.toString().contains(".mpeg") || downloadurl.toString().contains(".mpe") || downloadurl.toString().contains(".mp4") || downloadurl.toString().contains(".avi")) {
+                    // Video files
+                    intent.setDataAndType(uri, "video/*");
+                } else {
+                    intent.setDataAndType(uri, "*/*");
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+
             }
         }
     }

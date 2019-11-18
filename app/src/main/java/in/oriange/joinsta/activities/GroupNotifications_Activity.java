@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupNotificationAdapter;
@@ -132,7 +133,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    ArrayList<GroupNotificationListModel.ResultBean> notificationList = new ArrayList<>();
+                    List<GroupNotificationListModel.ResultBean> notificationList = new ArrayList<>();
                     GroupNotificationListModel pojoDetails = new Gson().fromJson(result, GroupNotificationListModel.class);
                     type = pojoDetails.getType();
 
