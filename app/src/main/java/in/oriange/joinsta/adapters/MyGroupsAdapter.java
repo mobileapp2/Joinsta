@@ -185,7 +185,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupNotifications_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name()));
             }
         });
 

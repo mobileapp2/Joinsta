@@ -37,7 +37,7 @@
             android:layout_weight="0.75"
             android:hint="Mobile"
             android:inputType="number"
-            android:maxLength="10"
+            android:maxLength="14"
             android:textSize="16sp"
             app:met_floatingLabel="highlight"
             app:met_textColorHint="@color/darkGray"

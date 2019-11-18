@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -235,9 +236,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         tv_title.setText(notificationDetails.getTitle().trim());
-
         tv_message.setText(notificationDetails.getDescription().trim());
-
+        Linkify.addLinks(tv_message, Linkify.ALL);
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
             tv_time.setText("");
         } else {

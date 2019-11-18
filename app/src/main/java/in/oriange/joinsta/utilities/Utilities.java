@@ -42,7 +42,7 @@ public class Utilities {
     public static final int VIDEO_REQUEST = 300;
 
     public static boolean isValidMobileno(String mobileno) {
-        String Mobile_PATTERN = "^[6-9]{1}[0-9]{9}$";                                               //^[+]?[0-9]{10,13}$
+        String Mobile_PATTERN = "^[0-9]{6,14}$";                                               //^[+]?[0-9]{10,13}$
         Pattern pattern = Pattern.compile(Mobile_PATTERN);
         Matcher matcher = pattern.matcher(mobileno);
         return matcher.matches();

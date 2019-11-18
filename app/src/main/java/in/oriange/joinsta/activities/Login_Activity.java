@@ -165,10 +165,13 @@ public class Login_Activity extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new SendOTP().execute(
-                            edt_mobile.getText().toString().trim(),
-                            tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
-                            "1");
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new VerifyMobile().execute(
+                                edt_mobile.getText().toString().trim(),
+                                tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -183,42 +186,42 @@ public class Login_Activity extends AppCompatActivity {
             }
         });
 
-        edt_mobile.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edt_mobile.getText().toString().trim().equals("")) {
-                    return;
-                }
-
-                if (edt_mobile.getText().toString().trim().length() == 10) {
-                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                        edt_mobile.setError("Please enter valid mobile number");
-                        edt_mobile.requestFocus();
-                        return;
-                    }
-
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new VerifyMobile().execute(
-                                edt_mobile.getText().toString().trim(),
-                                tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
-                    } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    }
-                }
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+//        edt_mobile.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (edt_mobile.getText().toString().trim().equals("")) {
+//                    return;
+//                }
+//
+//                if (edt_mobile.getText().toString().trim().length() == 10) {
+//                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+//                        edt_mobile.setError("Please enter valid mobile number");
+//                        edt_mobile.requestFocus();
+//                        return;
+//                    }
+//
+//                    if (Utilities.isNetworkAvailable(context)) {
+//                        new VerifyMobile().execute(
+//                                edt_mobile.getText().toString().trim(),
+//                                tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+//                    } else {
+//                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//                    }
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
 
         tv_forgotpass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -594,6 +597,11 @@ public class Login_Activity extends AppCompatActivity {
                             edt_mobile.setText("");
                         } else {
                             Utilities.showMessage("Mobile number is verified. You can proceed.", context, 1);
+
+                            new SendOTP().execute(
+                                    edt_mobile.getText().toString().trim(),
+                                    tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
+                                    "1");
                         }
 
                     } else if (type.equalsIgnoreCase("failure")) {

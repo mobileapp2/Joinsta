@@ -19,18 +19,38 @@
             android:minHeight="?attr/actionBarSize"
             app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="false"
-                android:focusable="false"
-                android:text="Group Notifications"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:backgroundTint="@color/white" />
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:text="Group Notifications"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/toolbar_groupname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:text="Group Name"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white" />
+
+            </LinearLayout>
+
 
         </androidx.appcompat.widget.Toolbar>
 

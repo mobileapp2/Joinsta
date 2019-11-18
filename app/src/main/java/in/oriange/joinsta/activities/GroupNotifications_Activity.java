@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,7 +38,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static SpinKitView progressBar;
     private static LinearLayout ll_nopreview;
-    private static String userId, groupId;
+    private static String userId, groupId, groupName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
+        groupName = getIntent().getStringExtra("groupName");
 
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -162,6 +164,8 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
+        AppCompatEditText toolbar_groupname = findViewById(R.id.toolbar_groupname);
+        toolbar_groupname.setText(groupName);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow);

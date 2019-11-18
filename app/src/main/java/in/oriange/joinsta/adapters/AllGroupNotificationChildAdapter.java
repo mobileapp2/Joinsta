@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import in.oriange.joinsta.models.AllGroupNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;
+import jp.shts.android.library.TriangleLabelView;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
@@ -117,6 +119,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             holder.tv_message_image.setTextColor(context.getResources().getColor(R.color.black));
             holder.tv_time_image.setTextColor(context.getResources().getColor(R.color.black));
 
+            holder.tv_new.setVisibility(View.VISIBLE);
         } else {
             holder.tv_title.setTextColor(context.getResources().getColor(R.color.mediumGray));
             holder.tv_message.setTextColor(context.getResources().getColor(R.color.mediumGray));
@@ -167,6 +170,8 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                     holder.tv_message_image.setTextColor(context.getResources().getColor(R.color.white));
                     holder.tv_time_image.setTextColor(context.getResources().getColor(R.color.white));
 
+                    holder.tv_new.setVisibility(View.GONE);
+
                     showNotification(notificationDetails);
                 } else {
                     Utilities.showMessage("Please check your internet connection", context, 2);
@@ -174,32 +179,6 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             }
         });
 
-//        holder.ib_delete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//                builder.setMessage("Are you sure you want to delete this notification?");
-//                builder.setTitle("Alert");
-//                builder.setIcon(R.drawable.icon_alertred);
-//                builder.setCancelable(false);
-//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        if (Utilities.isNetworkAvailable(context))
-//                            new DeleteNotification().execute(notificationDetails.getMsg_details_id());
-//                        else
-//                            Utilities.showMessage("Please check your internet connection", context, 2);
-//                    }
-//                });
-//                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                AlertDialog alertD = builder.create();
-//                alertD.show();
-//            }
-//        });
     }
 
     @Override
@@ -212,6 +191,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         private CardView cv_mainlayout;
         private ImageView imv_notificationimg;
         private TextView tv_title, tv_title_image, tv_message, tv_message_image, tv_time, tv_time_image;
+        private TriangleLabelView tv_new;
         private LinearLayout ll_inimage, ll_outimage;
 
         public MyViewHolder(View view) {
@@ -224,6 +204,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             tv_message_image = view.findViewById(R.id.tv_message_image);
             tv_time = view.findViewById(R.id.tv_time);
             tv_time_image = view.findViewById(R.id.tv_time_image);
+            tv_new = view.findViewById(R.id.tv_new);
             ll_inimage = view.findViewById(R.id.ll_inimage);
             ll_outimage = view.findViewById(R.id.ll_outimage);
         }
@@ -281,6 +262,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
 
         tv_title.setText(notificationDetails.getSubject().trim());
         tv_message.setText(notificationDetails.getMessage().trim());
+        Linkify.addLinks(tv_message, Linkify.ALL);
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
             tv_time.setText("");
         } else {

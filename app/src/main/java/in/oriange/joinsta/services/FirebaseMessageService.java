@@ -66,7 +66,8 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         if (remoteMessage.getData().get("notification_type").equals("2")) {
             notificationIntent = new Intent(getApplicationContext(), GroupNotifications_Activity.class)
                     .putExtra("groupId", remoteMessage.getData().get("group_id"))
-                    .putExtra("msg_id", remoteMessage.getData().get("msg_id"));
+                    .putExtra("msg_id", remoteMessage.getData().get("msg_id"))
+                    .putExtra("groupName", "");
         } else if (remoteMessage.getData().get("notification_type").equals("1")) {
             notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
         }
@@ -121,7 +122,8 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             if (notification_type.equals("2")) {
                 notificationIntent = new Intent(context, GroupNotifications_Activity.class)
                         .putExtra("groupId", group_id)
-                        .putExtra("msg_id", msg_id);
+                        .putExtra("msg_id", msg_id)
+                        .putExtra("groupName", "");
             } else if (notification_type.equals("1")) {
                 notificationIntent = new Intent(context, Notification_Activity.class);
             }
@@ -166,7 +168,8 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             if (notification_type.equals("2")) {
                 intent = new Intent(context, GroupNotifications_Activity.class)
                         .putExtra("groupId", group_id)
-                        .putExtra("msg_id", msg_id);
+                        .putExtra("msg_id", msg_id)
+                        .putExtra("groupName", "");
             } else if (notification_type.equals("1")) {
                 intent = new Intent(context, Notification_Activity.class);
             }

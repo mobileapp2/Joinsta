@@ -87,46 +87,71 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/sw_attend"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_outline"
-                android:gravity="center"
-                android:text="Attended"
-                android:textColor="@android:color/holo_green_dark"
-                android:textSize="14sp" />
+            <View
+                android:id="@+id/view_divider"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorPrimary" />
 
-            <Button
-                android:id="@+id/btn_delete"
-                android:layout_width="0dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_outline"
-                android:text="Delete"
-                android:textAllCaps="false"
-                android:textColor="@android:color/holo_red_dark"
-                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Switch
+                    android:id="@+id/sw_attend"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:paddingLeft="5dp"
+                    android:text="Attended"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_delete"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:drawableRight="@drawable/icon_delete"
+                    android:drawableTint="@color/colorPrimary"
+                    android:text="Delete"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_share"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.5"
+                    android:drawableRight="@drawable/icon_share"
+                    android:drawableTint="@color/colorPrimary"
+                    android:text="Share"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingTop="5dp"
+                android:textColor="@color/darkGray"
+                android:textSize="12sp" />
+
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:paddingTop="5dp"
-            android:textColor="@color/darkGray"
-            android:textSize="16sp" />
 
 
     </LinearLayout>

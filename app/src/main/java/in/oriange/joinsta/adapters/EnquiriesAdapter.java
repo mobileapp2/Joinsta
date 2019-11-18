@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -101,7 +102,6 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 //            e.printStackTrace();
 //        }
 
-
         if (enquiryDetails.getIs_attended().equals("1")) {
             holder.sw_attend.setChecked(true);
         } else {
@@ -152,6 +152,18 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
             }
         });
 
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.ll_buttons.getVisibility() == View.GONE) {
+                    holder.ll_buttons.setVisibility(View.VISIBLE);
+                } else if (holder.ll_buttons.getVisibility() == View.VISIBLE) {
+                    holder.ll_buttons.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
         holder.sw_attend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,6 +208,39 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
                 alertD.show();
             }
         });
+
+        holder.btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                StringBuilder sb = new StringBuilder();
+
+                if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("1")) {
+                    sb.append(enquiryDetails.getBusiness_name() + "\n");
+                } else if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("2")) {
+                    sb.append(enquiryDetails.getOrganization_name() + "\n");
+                } else if (enquiryDetails.getCategory_type_id().equalsIgnoreCase("3")) {
+                    sb.append(enquiryDetails.getProfession_name() + "\n");
+                }
+
+                sb.append(enquiryDetails.getSubject() + " - " + enquiryDetails.getMessage());
+
+                sb.append("By - " + enquiryDetails.getName());
+
+                if (enquiryDetails.getCommunication_mode().equals("mobile")) {
+                    sb.append("Mobile - " + enquiryDetails.getMobile());
+                } else if (enquiryDetails.getCommunication_mode().equals("email")) {
+                    sb.append("Email - " + enquiryDetails.getEmail());
+                }
+
+                String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
+                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+            }
+        });
     }
 
     @Override
@@ -207,9 +252,10 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 
         private CardView cv_mainlayout;
         private ImageButton ib_call;
+        private LinearLayout ll_buttons;
         private TextView tv_record_name, tv_subject, tv_message, tv_createdby, tv_time;
         private SwitchCompat sw_attend;
-        private Button btn_delete;
+        private Button btn_delete, btn_share;
 
         public MyViewHolder(View view) {
             super(view);
@@ -220,8 +266,10 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
             tv_message = view.findViewById(R.id.tv_message);
             tv_createdby = view.findViewById(R.id.tv_createdby);
             tv_time = view.findViewById(R.id.tv_time);
+            ll_buttons = view.findViewById(R.id.ll_buttons);
             sw_attend = view.findViewById(R.id.sw_attend);
             btn_delete = view.findViewById(R.id.btn_delete);
+            btn_share = view.findViewById(R.id.btn_share);
         }
     }
 

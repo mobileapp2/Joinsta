@@ -107,35 +107,56 @@ public class Register_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        edt_mobile.addTextChangedListener(new TextWatcher() {
+//        edt_mobile.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (edt_mobile.getText().toString().trim().equals("")) {
+//                    return;
+//                }
+//
+//                if (edt_mobile.getText().toString().trim().length() == 10) {
+//                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+//                        edt_mobile.setError("Please enter valid mobile number");
+//                        edt_mobile.requestFocus();
+//                        return;
+//                    }
+//
+//                    if (Utilities.isNetworkAvailable(context)) {
+//                        new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+//                    } else {
+//                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//            }
+//        });
+
+        edt_password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    if (!edt_mobile.getText().toString().trim().isEmpty()) {
+                        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                            edt_mobile.setError("Please enter valid mobile number");
+                            edt_mobile.requestFocus();
+                            return;
+                        }
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edt_mobile.getText().toString().trim().equals("")) {
-                    return;
-                }
-
-                if (edt_mobile.getText().toString().trim().length() == 10) {
-                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                        edt_mobile.setError("Please enter valid mobile number");
-                        edt_mobile.requestFocus();
-                        return;
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
                     }
-
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new VerifyMobile().execute(edt_mobile.getText().toString().trim());
-                    } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    }
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
             }
         });
 
@@ -173,7 +194,7 @@ public class Register_Activity extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim());
+                    new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -205,7 +226,7 @@ public class Register_Activity extends AppCompatActivity {
                             new RegisterUser().execute(
                                     edt_name.getText().toString().trim(),
                                     edt_mobile.getText().toString().trim(),
-                                    tv_countrycode_mobile.getText().toString().trim(),
+                                    tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
                                     edt_password.getText().toString().trim());
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
