@@ -191,9 +191,9 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
                         ArrayList<GroupMemebersListModel.ResultBean> foundMembers = new ArrayList<GroupMemebersListModel.ResultBean>();
                         for (GroupMemebersListModel.ResultBean groupDetails : groupMembersList) {
-//                            if (groupDetails.getRole().equals("group_member")) {
-                            foundMembers.add(groupDetails);
-//                            }
+                            if (groupDetails.getRole().equals("group_member")) {
+                                foundMembers.add(groupDetails);
+                            }
                         }
 
                         ArrayList<GroupMemebersListModel.ResultBean> tempFoundMembers = new ArrayList<>(foundMembers);
@@ -227,14 +227,14 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                             resultBean.setImage_url(memberDetails.getImage_url());
                             resultBean.setIs_joinsta_member(memberDetails.getIs_joinsta_member());
 
-                            StringBuffer searchQuery = new StringBuffer();
+                            StringBuilder searchQuery = new StringBuilder();
 
                             for (GroupMemebersListModel.ResultBean.BussinessInfoBean bussinessInfoBean : memberDetails.getBussinessInfo()) {
                                 searchQuery.append(bussinessInfoBean.getBusiness_name());
                                 searchQuery.append(bussinessInfoBean.getType_description());
                                 searchQuery.append(bussinessInfoBean.getSubtype_description());
 
-                                for (GroupMemebersListModel.ResultBean.BussinessInfoBean.TagBean tagBean : memberDetails.getBussinessInfo().get(0).getTag()) {
+                                for (GroupMemebersListModel.ResultBean.BussinessInfoBean.TagBean tagBean : bussinessInfoBean.getTag()) {
                                     searchQuery.append(tagBean.getTag_name());
 
                                 }
@@ -245,7 +245,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                                 searchQuery.append(employeeInfoBean.getType_description());
                                 searchQuery.append(employeeInfoBean.getSubtype_description());
 
-                                for (GroupMemebersListModel.ResultBean.EmployeeInfoBean.TagBeanX tagBean : memberDetails.getEmployeeInfo().get(0).getTag()) {
+                                for (GroupMemebersListModel.ResultBean.EmployeeInfoBean.TagBeanX tagBean : employeeInfoBean.getTag()) {
                                     searchQuery.append(tagBean.getTag_name());
 
                                 }
@@ -256,7 +256,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                                 searchQuery.append(professionalInfoBean.getType_description());
                                 searchQuery.append(professionalInfoBean.getSubtype_description());
 
-                                for (GroupMemebersListModel.ResultBean.ProfessionalInfoBean.TagBeanXX tagBean : memberDetails.getProfessionalInfo().get(0).getTag()) {
+                                for (GroupMemebersListModel.ResultBean.ProfessionalInfoBean.TagBeanXX tagBean : professionalInfoBean.getTag()) {
                                     searchQuery.append(tagBean.getTag_name());
                                 }
                             }

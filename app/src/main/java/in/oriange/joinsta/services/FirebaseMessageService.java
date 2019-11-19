@@ -32,8 +32,10 @@ import java.util.Date;
 import java.util.Random;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
+import in.oriange.joinsta.activities.SplashScreen_Activity;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
 
@@ -70,6 +72,10 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     .putExtra("groupName", remoteMessage.getData().get("group_name"));
         } else if (remoteMessage.getData().get("notification_type").equals("1")) {
             notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
+        } else if (remoteMessage.getData().get("notification_type").equals("3")) {
+            notificationIntent = new Intent(getApplicationContext(), Enquiries_Activity.class);
+        } else {
+            notificationIntent = new Intent(getApplicationContext(), SplashScreen_Activity.class);
         }
 
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -128,6 +134,10 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .putExtra("groupName", group_name);
             } else if (notification_type.equals("1")) {
                 notificationIntent = new Intent(context, Notification_Activity.class);
+            } else if (notification_type.equals("3")) {
+                notificationIntent = new Intent(context, Enquiries_Activity.class);
+            } else {
+                notificationIntent = new Intent(context, SplashScreen_Activity.class);
             }
 
             Bundle data = new Bundle();
@@ -174,6 +184,10 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .putExtra("groupName", group_name);
             } else if (notification_type.equals("1")) {
                 intent = new Intent(context, Notification_Activity.class);
+            } else if (notification_type.equals("3")) {
+                intent = new Intent(context, Enquiries_Activity.class);
+            } else {
+                intent = new Intent(context, SplashScreen_Activity.class);
             }
         }
         new generatePictureStyleNotification(context, intent, title, message,

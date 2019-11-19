@@ -941,6 +941,7 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
             obj.addProperty("message", params[5]);
             obj.addProperty("category_type_id", params[6]);
             obj.addProperty("record_id", params[7]);
+            obj.addProperty("msg_type", "notification");
             res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res;
         }
