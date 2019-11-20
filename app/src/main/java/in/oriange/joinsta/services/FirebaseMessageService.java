@@ -79,56 +79,46 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         }
 
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
-            String message = "";
-            if (remoteMessage.getData().get("notification_type").equals("2")) {
-                message = remoteMessage.getData().get("message");
-            } else if (remoteMessage.getData().get("notification_type").equals("1")) {
-                message = remoteMessage.getData().get("message");
-            } else if (remoteMessage.getData().get("notification_type").equals("3")) {
-                message = remoteMessage.getData().get("msg");
-            } else {
-                message = remoteMessage.getData().get("message");
-            }
 
-            showNewNotification(
+        if (remoteMessage.getData().get("notification_type").equals("2") ||
+                remoteMessage.getData().get("notification_type").equals("1")) {
+            if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
+                showNewNotification(
+                        getApplicationContext(),
+                        notificationIntent,
+                        remoteMessage.getData().get("title"),
+                        remoteMessage.getData().get("message"),
+                        remoteMessage.getData().get("image"),
+                        remoteMessage.getData().get("icon"),
+                        remoteMessage.getData().get("type"),
+                        remoteMessage.getData().get("userId"),
+                        remoteMessage.getData().get("taskId"),
+                        remoteMessage.getData().get("notification_type"),
+                        remoteMessage.getData().get("group_id"),
+                        remoteMessage.getData().get("msg_id"),
+                        remoteMessage.getData().get("group_name"));
+            } else {
+                generatepicture(
+                        getApplicationContext(),
+                        null,
+                        remoteMessage.getData().get("title"),
+                        remoteMessage.getData().get("message"),
+                        remoteMessage.getData().get("image"),
+                        remoteMessage.getData().get("notification_type"),
+                        remoteMessage.getData().get("group_id"),
+                        remoteMessage.getData().get("msg_id"),
+                        remoteMessage.getData().get("group_name"));
+            }
+        } else if (remoteMessage.getData().get("notification_type").equals("3")) {
+            showEnquiryNotification(
                     getApplicationContext(),
                     notificationIntent,
-                    remoteMessage.getData().get("title"),
-                    message,
-                    remoteMessage.getData().get("image"),
-                    remoteMessage.getData().get("icon"),
-                    remoteMessage.getData().get("type"),
-                    remoteMessage.getData().get("userId"),
-                    remoteMessage.getData().get("taskId"),
-                    remoteMessage.getData().get("notification_type"),
-                    remoteMessage.getData().get("group_id"),
-                    remoteMessage.getData().get("msg_id"),
-                    remoteMessage.getData().get("group_name"));
-        } else {
-            String message = "";
-            if (remoteMessage.getData().get("notification_type").equals("2")) {
-                message = remoteMessage.getData().get("message");
-            } else if (remoteMessage.getData().get("notification_type").equals("1")) {
-                message = remoteMessage.getData().get("message");
-            } else if (remoteMessage.getData().get("notification_type").equals("3")) {
-                message = remoteMessage.getData().get("msg");
-            } else {
-                message = remoteMessage.getData().get("message");
-            }
-
-            generatepicture(
-                    getApplicationContext(),
-                    null,
-                    remoteMessage.getData().get("title"),
-                    message,
-                    remoteMessage.getData().get("image"),
-                    remoteMessage.getData().get("notification_type"),
-                    remoteMessage.getData().get("group_id"),
-                    remoteMessage.getData().get("msg_id"),
-                    remoteMessage.getData().get("group_name"));
+                    remoteMessage.getData().get("enquiry_title"),
+                    remoteMessage.getData().get("msg")
+            );
         }
     }
+
 
     public static void showNewNotification(Context context, Intent intent, String title, String msg, String image, String icon, String type, String userId,
                                            String taskId, String notification_type, String group_id, String msg_id, String group_name) {
@@ -188,6 +178,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 .setWhen(System.currentTimeMillis())
                 .setDefaults(Notification.DEFAULT_SOUND)
                 .setAutoCancel(true)
+                .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setContentIntent(pendingIntent)
                 .build();
         notificationManager.notify(m1, notification);
@@ -286,6 +277,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .setWhen(System.currentTimeMillis())
                         .setDefaults(Notification.DEFAULT_SOUND)
                         .setAutoCancel(true)
+                        .setColor(mContext.getResources().getColor(R.color.colorPrimary))
                         .setContentIntent(pendingIntent)
                         .build();
             } else {
@@ -300,6 +292,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .setWhen(System.currentTimeMillis())
                         .setDefaults(Notification.DEFAULT_SOUND)
                         .setAutoCancel(true)
+                        .setColor(mContext.getResources().getColor(R.color.colorPrimary))
                         .setContentIntent(pendingIntent)
                         .build();
             }
@@ -310,5 +303,49 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         }
     }
 
+    private void showEnquiryNotification(Context mContext, Intent notificationIntent, String title, String message) {
+        builder = new Notification.Builder(mContext);
+        notificationManager = NotificationManagerCompat.from(mContext);
+        pendingIntent = PendingIntent.getActivity((mContext), 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        String channelId = "channel-01";
+        String channelName = "Channel Name";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+            builder = new Notification.Builder(mContext, channelId);
+        } else {
+            builder = new Notification.Builder(mContext);
+        }
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL,
+                Uri.parse("tel:" + "8149115089"));
+        PendingIntent callPendingIntent = PendingIntent.getActivity(this, 0, callIntent, 0);
+
+
+        Notification notification = builder
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(R.drawable.icon_notification_logo)
+                .setSound(notificationSound)
+                .setLights(Color.YELLOW, 1000, 1000)
+                .setVibrate(new long[]{500, 500})
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .addAction(R.drawable.icon_call, "CALL", callPendingIntent)
+                .build();
+
+        random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+
+        notificationManager.notify(m, notification);
+    }
 
 }
