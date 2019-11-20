@@ -33,6 +33,8 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+
 public class GroupMembersList_Activity extends AppCompatActivity {
 
     private Context context;
@@ -133,7 +135,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
                         String groupsToBeSearched = groupsDetails.getFirst_name().toLowerCase() + groupsDetails.getSearchQueryString().toLowerCase();
 
-                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase().replace(" ", ""))) {
                             groupsSearchedList.add(groupsDetails);
                         }
                     }
@@ -299,4 +301,11 @@ public class GroupMembersList_Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(GroupMembersList_Activity.this);
+    }
+
 }

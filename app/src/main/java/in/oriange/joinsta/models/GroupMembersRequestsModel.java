@@ -51,6 +51,7 @@ public class GroupMembersRequestsModel implements Serializable {
         private String group_id;
         private String id;
         private String group_name;
+        private String country_code;
 
         public String getFirst_name() {
             return first_name;
@@ -106,6 +107,14 @@ public class GroupMembersRequestsModel implements Serializable {
 
         public void setGroup_name(String group_name) {
             this.group_name = group_name;
+        }
+
+        public String getCountry_code() {
+            return country_code;
+        }
+
+        public void setCountry_code(String country_code) {
+            this.country_code = country_code;
         }
     }
 }

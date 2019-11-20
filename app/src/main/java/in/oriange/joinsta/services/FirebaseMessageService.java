@@ -80,11 +80,22 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
+            String message = "";
+            if (remoteMessage.getData().get("notification_type").equals("2")) {
+                message = remoteMessage.getData().get("message");
+            } else if (remoteMessage.getData().get("notification_type").equals("1")) {
+                message = remoteMessage.getData().get("message");
+            } else if (remoteMessage.getData().get("notification_type").equals("3")) {
+                message = remoteMessage.getData().get("msg");
+            } else {
+                message = remoteMessage.getData().get("message");
+            }
+
             showNewNotification(
                     getApplicationContext(),
                     notificationIntent,
                     remoteMessage.getData().get("title"),
-                    remoteMessage.getData().get("message"),
+                    message,
                     remoteMessage.getData().get("image"),
                     remoteMessage.getData().get("icon"),
                     remoteMessage.getData().get("type"),
@@ -95,11 +106,22 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("msg_id"),
                     remoteMessage.getData().get("group_name"));
         } else {
+            String message = "";
+            if (remoteMessage.getData().get("notification_type").equals("2")) {
+                message = remoteMessage.getData().get("message");
+            } else if (remoteMessage.getData().get("notification_type").equals("1")) {
+                message = remoteMessage.getData().get("message");
+            } else if (remoteMessage.getData().get("notification_type").equals("3")) {
+                message = remoteMessage.getData().get("msg");
+            } else {
+                message = remoteMessage.getData().get("message");
+            }
+
             generatepicture(
                     getApplicationContext(),
                     null,
                     remoteMessage.getData().get("title"),
-                    remoteMessage.getData().get("message"),
+                    message,
                     remoteMessage.getData().get("image"),
                     remoteMessage.getData().get("notification_type"),
                     remoteMessage.getData().get("group_id"),
