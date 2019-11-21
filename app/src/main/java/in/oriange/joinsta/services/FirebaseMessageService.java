@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -43,7 +44,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
     public static final int NOTIFICATION_REQUEST_CODE = 100;
     private static PendingIntent pendingIntent;
-    private static Notification.Builder builder;
+    private static NotificationCompat.Builder builder;
     private static NotificationManagerCompat notificationManager;
     private static Uri notificationSound;
     private static Bitmap iconBitmap;
@@ -70,7 +71,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     .putExtra("groupId", remoteMessage.getData().get("group_id"))
                     .putExtra("msg_id", remoteMessage.getData().get("msg_id"))
                     .putExtra("groupName", remoteMessage.getData().get("group_name"));
-        } else if (remoteMessage.getData().get("notification_type").equals("1")) {
+        } else if (remoteMessage.getData().get("notification_type").equals("1") || remoteMessage.getData().get("notification_type").equals("1")) {
             notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
         } else if (remoteMessage.getData().get("notification_type").equals("3")) {
             notificationIntent = new Intent(getApplicationContext(), Enquiries_Activity.class);
@@ -114,7 +115,10 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     getApplicationContext(),
                     notificationIntent,
                     remoteMessage.getData().get("enquiry_title"),
-                    remoteMessage.getData().get("msg")
+                    remoteMessage.getData().get("subject") + " - " + remoteMessage.getData().get("msg"),
+                    remoteMessage.getData().get("communication_mode"),
+                    remoteMessage.getData().get("mobile"),
+                    remoteMessage.getData().get("email")
             );
         }
     }
@@ -126,7 +130,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         Log.wtf(TAG, "showNewNotification: ");
 
         notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        builder = new Notification.Builder(context);
+        builder = new NotificationCompat.Builder(context);
         notificationManager = NotificationManagerCompat.from(context);
 
         int m1 = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
@@ -159,11 +163,18 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             notificationIntent.putExtras(data);
         }
 
+
+        String channelId = "channel-01";
+        String channelName = "Channel Name";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            @SuppressLint("WrongConstant") NotificationChannel notificationChannel = new NotificationChannel("my_notification", "n_channel", NotificationManager.IMPORTANCE_MAX);
-            notificationChannel.setDescription("description");
-            notificationChannel.setName("Channel Name");
-            notificationManager.createNotificationChannel(notificationChannel);
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+            builder = new NotificationCompat.Builder(context, channelId);
+        } else {
+            builder = new NotificationCompat.Builder(context);
         }
 
         pendingIntent = PendingIntent.getActivity((context), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -248,7 +259,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         protected void onPostExecute(Bitmap result) {
             super.onPostExecute(result);
             Log.wtf(TAG, "generatePictureStyleNotification: ");
-            builder = new Notification.Builder(mContext);
+            builder = new NotificationCompat.Builder(mContext);
             notificationManager = NotificationManagerCompat.from(mContext);
 
             String channelId = "channel-01";
@@ -259,9 +270,9 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 NotificationChannel mChannel = new NotificationChannel(
                         channelId, channelName, importance);
                 notificationManager.createNotificationChannel(mChannel);
-                builder = new Notification.Builder(mContext, channelId);
+                builder = new NotificationCompat.Builder(mContext, channelId);
             } else {
-                builder = new Notification.Builder(mContext);
+                builder = new NotificationCompat.Builder(mContext);
             }
 
 
@@ -285,7 +296,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         .setContentTitle(title)
                         .setContentText(message)
                         .setSmallIcon(R.drawable.icon_notification_logo)
-                        .setStyle(new Notification.BigPictureStyle().bigPicture(result))
+                        .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(result))
                         .setSound(notificationSound)
                         .setLights(Color.YELLOW, 1000, 1000)
                         .setVibrate(new long[]{500, 500})
@@ -303,12 +314,13 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         }
     }
 
-    private void showEnquiryNotification(Context mContext, Intent notificationIntent, String title, String message) {
-        builder = new Notification.Builder(mContext);
-        notificationManager = NotificationManagerCompat.from(mContext);
-        pendingIntent = PendingIntent.getActivity((mContext), 0, notificationIntent,
+    private void showEnquiryNotification(Context mContext, Intent notificationIntent, String title, String message,
+                                         String communication_mode, String mobile, String email) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+        PendingIntent pendingIntent = PendingIntent.getActivity((mContext), 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         String channelId = "channel-01";
         String channelName = "Channel Name";
@@ -318,31 +330,36 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             NotificationChannel mChannel = new NotificationChannel(
                     channelId, channelName, importance);
             notificationManager.createNotificationChannel(mChannel);
-            builder = new Notification.Builder(mContext, channelId);
+            builder = new NotificationCompat.Builder(mContext, channelId);
         } else {
-            builder = new Notification.Builder(mContext);
+            builder = new NotificationCompat.Builder(mContext);
         }
 
-        Intent callIntent = new Intent(Intent.ACTION_CALL,
-                Uri.parse("tel:" + "8149115089"));
-        PendingIntent callPendingIntent = PendingIntent.getActivity(this, 0, callIntent, 0);
+        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mobile));
+        PendingIntent callPendingIntent = PendingIntent.getActivity(mContext, 0, callIntent, 0);
 
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
+        PendingIntent emailPendingIntent = PendingIntent.getActivity(mContext, 0, emailIntent, 0);
 
-        Notification notification = builder
-                .setContentTitle(title)
-                .setContentText(message)
-                .setSmallIcon(R.drawable.icon_notification_logo)
-                .setSound(notificationSound)
-                .setLights(Color.YELLOW, 1000, 1000)
-                .setVibrate(new long[]{500, 500})
-                .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .addAction(R.drawable.icon_call, "CALL", callPendingIntent)
-                .build();
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+        builder.setContentTitle(title);
+        builder.setSmallIcon(R.drawable.icon_notification_logo);
+        builder.setSound(notificationSound);
+        builder.setLights(Color.YELLOW, 1000, 1000);
+        builder.setVibrate(new long[]{500, 500});
+        builder.setWhen(System.currentTimeMillis());
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+        builder.setAutoCancel(true);
+        builder.setContentIntent(pendingIntent);
+        builder.setColor(getResources().getColor(R.color.colorPrimary));
+        if (communication_mode.equals("mobile"))
+            builder.addAction(R.drawable.icon_call, "CALL", callPendingIntent);
+        else if (communication_mode.equals("email"))
+            builder.addAction(R.drawable.icon_email, "EMAIL", emailPendingIntent);
 
-        random = new Random();
+        Notification notification = builder.build();
+
+        Random random = new Random();
         int m = random.nextInt(9999 - 1000) + 1000;
 
         notificationManager.notify(m, notification);
