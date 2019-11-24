@@ -62,7 +62,11 @@ public class GroupMembersRequestsModel implements Serializable {
         }
 
         public String getMobile() {
-            return mobile;
+            if (mobile != null){
+                return mobile;
+            } else{
+                return "";
+            }
         }
 
         public void setMobile(String mobile) {
@@ -70,7 +74,11 @@ public class GroupMembersRequestsModel implements Serializable {
         }
 
         public String getEmail() {
-            return email;
+            if (email != null){
+                return email;
+            } else{
+                return "";
+            }
         }
 
         public void setEmail(String email) {

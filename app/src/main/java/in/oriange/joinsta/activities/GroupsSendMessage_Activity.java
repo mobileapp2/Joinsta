@@ -723,6 +723,8 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
                     }
 
                 }

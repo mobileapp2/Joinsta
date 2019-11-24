@@ -278,6 +278,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
 
             try {
                 edt_about.setText(json.getString("about"));
+
+                if (edt_about.getText().toString().trim().equals("null")){
+                    edt_about.setText("");
+                }
             } catch (Exception e) {
                 edt_about.setText("");
             }

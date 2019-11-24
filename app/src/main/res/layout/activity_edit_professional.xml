@@ -545,7 +545,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Tax Details"
+                        android:text="Tax Details (Optional)"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -616,7 +616,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Bank Details"
+                        android:text="Bank Details (Optional)"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 

@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="256dp"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -30,7 +30,7 @@
                 <LinearLayout
                     android:id="@+id/ll_nopreview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="250dp"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:visibility="gone">
@@ -55,9 +55,10 @@
                 <ImageView
                     android:id="@+id/imv_image"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:src="@drawable/icon_image_not_available"
                     android:visibility="gone" />
 
@@ -111,7 +112,6 @@
                 android:layout_margin="12dp"
                 android:src="@drawable/icon_backarrow"
                 android:tint="@color/colorPrimary" />
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
