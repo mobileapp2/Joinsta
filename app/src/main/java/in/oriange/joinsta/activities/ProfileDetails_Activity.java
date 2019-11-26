@@ -39,7 +39,7 @@ import in.oriange.joinsta.utilities.Utilities;
 public class ProfileDetails_Activity extends AppCompatActivity {
 
     private static Context context;
-    private CardView cv_basicinfo;
+    private CardView cv_basicinfo, cv_offers;
     private FloatingActionButton btn_add;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_details;
@@ -76,6 +76,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         btn_add = findViewById(R.id.btn_add);
         cv_basicinfo = findViewById(R.id.cv_basicinfo);
+        cv_offers = findViewById(R.id.cv_offers);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progressBar);
         rv_details = findViewById(R.id.rv_details);
@@ -154,6 +155,13 @@ public class ProfileDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, BasicInformation_Activity.class));
+            }
+        });
+
+        cv_offers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddOffers_Activity.class));
             }
         });
 

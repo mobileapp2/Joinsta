@@ -94,7 +94,6 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-
                     <EditText
                         android:id="@+id/edt_description"
                         android:layout_width="match_parent"

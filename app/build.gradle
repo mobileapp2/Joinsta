@@ -42,7 +42,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services:12.0.1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
     implementation 'com.github.f0ris.sweetalert:library:1.5.1'
-    implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.github.florent37:diagonallayout:1.0.9'
     implementation "com.github.skydoves:powermenu:2.0.8"
     implementation 'com.airbnb.android:lottie:2.8.0'
