@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.borjabravo.readmoretextview.ReadMoreTextView;
+import com.goodiebag.pinview.Pinview;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -54,6 +55,7 @@ import in.oriange.joinsta.models.GroupBannerListModel;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -70,7 +72,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private Switch sw_hide_members, sw_hide_group;
     private MaterialButton btn_members;
     private RecyclerView rv_group_members;
-    private Button btn_connect, btn_status;
+    private Button btn_connect, btn_status, btn_delete_group;
     private ImageButton ib_more;
 
     private MyGroupsListModel.ResultBean groupDetails;
@@ -117,6 +119,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         btn_members = findViewById(R.id.btn_members);
         btn_connect = findViewById(R.id.btn_connect);
         btn_status = findViewById(R.id.btn_status);
+        btn_delete_group = findViewById(R.id.btn_delete_group);
         ib_more = findViewById(R.id.ib_more);
 
         leadsList = new ArrayList<>();
@@ -152,9 +155,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_connect.setText("REJOIN");
                 break;
             case "requested":
-                btn_connect.setVisibility(View.GONE);
-                btn_status.setVisibility(View.VISIBLE);
-                btn_status.setText("Requested");
+                btn_connect.setVisibility(View.VISIBLE);
+                btn_status.setVisibility(View.GONE);
+                cv_rejoin.setVisibility(View.VISIBLE);
+                btn_connect.setText("Cancel Request");
                 break;
             case "rejected":
                 btn_connect.setVisibility(View.GONE);
@@ -164,7 +168,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             case "accepted":
                 btn_connect.setVisibility(View.VISIBLE);
                 btn_status.setVisibility(View.GONE);
-//                btn_members.setVisibility(View.VISIBLE);
                 cv_members.setVisibility(View.VISIBLE);
                 btn_connect.setText("EXIT GORUP");
                 break;
@@ -210,6 +213,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             if (groupDetails.getIs_public_group().equals("0")) {
                 sw_hide_group.setChecked(true);
             }
+
+            btn_delete_group.setVisibility(View.VISIBLE);
         }
 
         if (groupDetails.getIs_visible().equals("1")) {
@@ -293,6 +298,49 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             }
         });
 
+        btn_delete_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] mode = {"SMS", "Email"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("OTP verification is required to delete group, please select the mode of OTP verification from below options");
+                builder.setCancelable(false);
+                builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            if (item == 0) {
+                                new GetOtpToDelete().execute(
+                                        userId,
+                                        "otp"
+                                );
+                            } else if (item == 1) {
+                                new GetOtpToDelete().execute(
+                                        userId,
+                                        "email"
+                                );
+                            }
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+
+                        dialog.dismiss();
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+
+
         ib_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,12 +389,16 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     btn_exit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            new ExitGroup().execute(
-                                    userId,
-                                    groupDetails.getId(),
-                                    "left"
-                            );
-                            alertD.dismiss();
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new ExitGroup().execute(
+                                        userId,
+                                        groupDetails.getId(),
+                                        "left"
+                                );
+                                alertD.dismiss();
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
                         }
                     });
 
@@ -358,6 +410,35 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     });
 
 
+                    alertD.show();
+                } else if (groupDetails.getStatus().equals("requested")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to cancel your request to join this group");
+                    builder.setCancelable(false);
+
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new CancelRequest().execute(
+                                        userId,
+                                        groupDetails.getId()
+                                );
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+
+                    final AlertDialog alertD = builder.create();
                     alertD.show();
                 }
             }
@@ -764,6 +845,227 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
                         animation_view.playAnimation();
                         tv_title.setText("Group left successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class GetOtpToDelete extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "deleteGroupDetails");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("send_type", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.GRPADMINMEMBERSSUPERVISORSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject otpObj = mainObj.getJSONObject("result");
+                        String OTP = otpObj.getString("otp");
+                        createDialogForOTP(OTP);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void createDialogForOTP(final String otp) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_otp, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
+        TextView tv_message = promptView.findViewById(R.id.tv_message);
+        Button btn_cancel = promptView.findViewById(R.id.btn_cancel);
+        pinview_opt.setPinLength(otp.length());
+        tv_message.setText("Please enter the code");
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        pinview_opt.setPinViewEventListener(new Pinview.PinViewEventListener() {
+            @Override
+            public void onDataEntered(Pinview pinview, boolean fromUser) {
+
+                if (pinview.getValue().length() == otp.length()) {
+                    if (pinview.getValue().equals(otp)) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DeleteGroup().execute(groupDetails.getId());
+
+                            alertD.dismiss();
+
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    } else {
+                        Utilities.showMessage("OTP did not match", context, 3);
+                    }
+                }
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+            }
+        });
+
+        alertD.show();
+    }
+
+    private class DeleteGroup extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "confirmDeleteGroupDetails"));
+            param.add(new ParamsPojo("group_id", params[0]));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.GRPADMINMEMBERSSUPERVISORSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Group deleted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CancelRequest extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "cancelRequest");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("group_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Request canceled successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

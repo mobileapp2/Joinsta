@@ -85,6 +85,10 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Joined");
+        } else if (groupDetails.getStatus().equals("rejected")) {
+            holder.btn_connect.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Rejected");
         }
 
         if (groupDetails.getIs_admin().equals("1")) {
