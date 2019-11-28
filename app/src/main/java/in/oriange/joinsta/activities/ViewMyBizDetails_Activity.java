@@ -57,7 +57,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
             tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
     private ImageView imv_share;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice, cv_add_offer, cv_view_offer;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -90,6 +90,8 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
         cv_texbank_notice = findViewById(R.id.cv_texbank_notice);
+        cv_add_offer = findViewById(R.id.cv_add_offer);
+        cv_view_offer = findViewById(R.id.cv_view_offer);
 
         imb_share_tax = findViewById(R.id.imb_share_tax);
         imb_share_bank = findViewById(R.id.imb_share_bank);
@@ -448,6 +450,24 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
+            }
+        });
+
+        cv_add_offer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddOffers_Activity.class)
+                        .putExtra("detailId", searchDetails.getId())
+                        .putExtra("categoryTypeId", "1")
+                        .putExtra("categoryTypeName", "business")
+                        .putExtra("categoryId", searchDetails.getType_id()));
+            }
+        });
+
+        cv_view_offer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

@@ -161,7 +161,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
         cv_offers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddOffers_Activity.class));
+                startActivity(new Intent(context, MyAddedOffers_Actvity.class));
             }
         });
 
