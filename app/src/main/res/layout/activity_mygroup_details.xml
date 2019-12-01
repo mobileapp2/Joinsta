@@ -32,19 +32,16 @@
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_members"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+            <CheckBox
+                android:id="@+id/cb_like"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="end"
-                android:layout_marginRight="10dp"
-                android:text="Members"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                app:strokeColor="@color/white" />
+                android:layout_margin="10dp"
+                android:background="@drawable/like_icon_white"
+                android:button="@null"
+                android:checked="false"
+                android:stateListAnimator="@animator/scale" />
 
         </androidx.appcompat.widget.Toolbar>
 

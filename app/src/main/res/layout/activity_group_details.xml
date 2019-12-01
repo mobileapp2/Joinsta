@@ -32,20 +32,6 @@
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_members"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_gravity="end"
-                android:layout_marginRight="10dp"
-                android:text="Members"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                app:strokeColor="@color/white" />
-
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>

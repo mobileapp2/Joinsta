@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGray"
@@ -11,31 +11,70 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="false"
-                android:focusable="false"
-                android:text="My Added Offers"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                app:backgroundTint="@color/white" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edt_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:drawableRight="@drawable/icon_dropdown"
+                    android:focusable="false"
+                    android:longClickable="false"
+                    android:text="Pick Location"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white" />
+
+                <!--<TextView-->
+                <!--android:id="@+id/toolbar_title"-->
+                <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerInParent="true"-->
+                <!--android:text="Requirements"-->
+                <!--android:textColor="@color/white" />-->
+
+                <ImageButton
+                    android:id="@+id/ib_filter"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/icon_filter" />
+            </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <android.widget.Button
+        android:id="@+id/btn_post_requirement"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/button_background_filled"
+        android:text="Post Your Requirement"
+        android:textColor="@color/white" />
+
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -48,9 +87,9 @@
             android:layout_marginTop="5dp">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_myoffers"
+                android:id="@+id/rv_requirementlist"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -84,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="There are no offers added for you"
+                android:text="There are no requirements"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

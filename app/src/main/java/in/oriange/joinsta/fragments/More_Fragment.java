@@ -35,12 +35,14 @@ import in.oriange.joinsta.activities.HowToUse_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.Policy_Activity;
 import in.oriange.joinsta.activities.ProfileDetails_Activity;
+import in.oriange.joinsta.activities.Requirements_Activity;
 import in.oriange.joinsta.activities.Settings_Activity;
 
 public class More_Fragment extends Fragment {
 
     private Context context;
-    private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_settings, cv_enquires, cv_policies, cv_contactus, cv_howto;
+    private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_requirements,
+            cv_settings, cv_enquires, cv_policies, cv_contactus, cv_howto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class More_Fragment extends Fragment {
         cv_profiledetails = rootView.findViewById(R.id.cv_profiledetails);
         cv_favourite = rootView.findViewById(R.id.cv_favourite);
         cv_notifications = rootView.findViewById(R.id.cv_notifications);
+        cv_requirements = rootView.findViewById(R.id.cv_requirements);
         cv_settings = rootView.findViewById(R.id.cv_settings);
         cv_enquires = rootView.findViewById(R.id.cv_enquires);
         cv_policies = rootView.findViewById(R.id.cv_policies);
@@ -82,16 +85,6 @@ public class More_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, ProfileDetails_Activity.class));
-
-//                Intent notificationIntent = new Intent(context, Enquiries_Activity.class);
-//
-//                showEnquiryNotification(
-//                        context,
-//                        notificationIntent,
-//                        "There is an enquiry for you!",
-//                        "Test enquiry for call, mail,s sbejv advbj, asvlkazs v sxdvjb sdj bvskjdv s dmv a,dv  adjv as cvanlsvjs dev sdjnv sdvm,j sdv sjekv sdjv"
-//                );
-
             }
         });
 
@@ -106,6 +99,13 @@ public class More_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, Notification_Activity.class));
+            }
+        });
+
+        cv_requirements.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, Requirements_Activity.class));
             }
         });
 

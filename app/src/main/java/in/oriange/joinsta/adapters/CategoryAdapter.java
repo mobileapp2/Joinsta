@@ -234,7 +234,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         }
     }
 
-
     @Override
     public int getItemCount() {
         return resultArrayList.size();
@@ -331,5 +330,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }
 

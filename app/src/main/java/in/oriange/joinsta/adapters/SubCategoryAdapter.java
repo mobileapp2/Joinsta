@@ -73,4 +73,9 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
 //            view_divider = view.findViewById(R.id.view_divider);
         }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

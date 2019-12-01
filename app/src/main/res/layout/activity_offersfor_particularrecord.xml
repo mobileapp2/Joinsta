@@ -28,7 +28,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="My Added Offers"
+                android:text="Offers"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="There are no offers added for you"
+                android:text="There are no offers added for this profile"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

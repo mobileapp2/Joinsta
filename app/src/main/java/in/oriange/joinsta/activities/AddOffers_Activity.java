@@ -458,19 +458,19 @@ public class AddOffers_Activity extends AppCompatActivity {
 //        if (imageOneName.isEmpty() && imageTwoName.isEmpty() && imageThreeName.isEmpty()) {
 //            document = "";
 //        } else {
-            JsonArray docsArray = new JsonArray();
+        JsonArray docsArray = new JsonArray();
 
-            if (!imageOneName.isEmpty()) {
-                docsArray.add(imageOneName);
-            }
+        if (!imageOneName.isEmpty()) {
+            docsArray.add(imageOneName);
+        }
 
-            if (!imageTwoName.isEmpty()) {
-                docsArray.add(imageTwoName);
-            }
+        if (!imageTwoName.isEmpty()) {
+            docsArray.add(imageTwoName);
+        }
 
-            if (!imageThreeName.isEmpty()) {
-                docsArray.add(imageThreeName);
-            }
+        if (!imageThreeName.isEmpty()) {
+            docsArray.add(imageThreeName);
+        }
 
 //            document = docsArray.toString();
 //        }

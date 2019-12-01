@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Lifecycle;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
@@ -41,7 +42,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.EditRequirements_Activity;
 import in.oriange.joinsta.activities.ViewRequirements_Activity;
-import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.models.RequirementsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -275,7 +275,8 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Request_Fragment.GetRequirementList().execute();
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("Requirements_Activity"));
+
                         Utilities.showMessage("Requirement deleted successfully", context, 1);
                         removeItem(position);
                     } else {

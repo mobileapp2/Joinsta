@@ -34,6 +34,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.MainDrawer_Activity;
+import in.oriange.joinsta.activities.OffersForParticularRecord_Activity;
 import in.oriange.joinsta.activities.ViewSearchBizDetails_Activity;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -134,12 +135,27 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.tv_subsubheading.setText(searchDetails.getCity() + ", " + searchDetails.getPincode());
 
+        if (!searchDetails.getOffer_count().equals("0")) {
+            holder.tv_offers.setVisibility(View.VISIBLE);
+            holder.tv_offers.setText(searchDetails.getOffer_count() + " Offers available");
+        }
+
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewSearchBizDetails_Activity.class)
                         .putExtra("searchDetails", searchDetails)
                         .putExtra("type", type));
+            }
+        });
+
+        holder.tv_offers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, OffersForParticularRecord_Activity.class)
+                        .putExtra("recordId", searchDetails.getId())
+                        .putExtra("categoryType", "1"));
+
             }
         });
 
@@ -383,7 +399,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
         private Button btn_enquire, btn_caldist;
-        private TextView tv_heading, tv_subheading, tv_subsubheading;
+        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_offers;
 
         public MyViewHolder(View view) {
             super(view);
@@ -391,6 +407,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             tv_heading = view.findViewById(R.id.tv_heading);
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);
+            tv_offers = view.findViewById(R.id.tv_offers);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             progressBar = view.findViewById(R.id.progressBar);
             btn_enquire = view.findViewById(R.id.btn_enquire);

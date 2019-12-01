@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +34,7 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class MyAddedOffers_Actvity extends AppCompatActivity {
+public class OffersForParticularRecord_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -50,7 +49,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_myadded_offers);
+        setContentView(R.layout.activity_offersfor_particularrecord);
 
         init();
         getSessionDetails();
@@ -61,7 +60,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
 
     private void init() {
 
-        context = MyAddedOffers_Actvity.this;
+        context = OffersForParticularRecord_Activity.this;
         session = new UserSessionManager(context);
 
         progressBar = findViewById(R.id.progressBar);
@@ -87,13 +86,13 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
 
     private void setDefault() {
         if (Utilities.isNetworkAvailable(context)) {
-            new GetMyAddedOffers().execute();
+            new GetAddedOffers().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("MyAddedOffers_Actvity");
+        IntentFilter intentFilter = new IntentFilter("OffersForParticularRecord_Activity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -102,7 +101,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetMyAddedOffers().execute();
+                    new GetAddedOffers().execute();
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     swipeRefreshLayout.setRefreshing(false);
@@ -112,7 +111,8 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
 
     }
 
-    private class GetMyAddedOffers extends AsyncTask<String, Void, String> {
+
+    private class GetAddedOffers extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -127,8 +127,9 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res;
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
-            param.add(new ParamsPojo("type", "giveAllOfferDetails"));
-            param.add(new ParamsPojo("user_id", userId));
+            param.add(new ParamsPojo("type", "giveAllRecordOfferDetails"));
+            param.add(new ParamsPojo("record_id", getIntent().getStringExtra("recordId")));
+            param.add(new ParamsPojo("category_type_id", getIntent().getStringExtra("categoryType")));
             res = APICall.FORMDATAAPICall(ApplicationConstants.OFFERSAPI, param);
             return res.trim();
         }
@@ -151,7 +152,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
                         if (myOffersList.size() > 0) {
                             rv_myoffers.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_myoffers.setAdapter(new MyAddedOffersAdapter(context, myOffersList, "1"));
+                            rv_myoffers.setAdapter(new MyAddedOffersAdapter(context, myOffersList, "2"));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_myoffers.setVisibility(View.GONE);
@@ -188,7 +189,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utilities.isNetworkAvailable(context)) {
-                new GetMyAddedOffers().execute();
+                new GetAddedOffers().execute();
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }

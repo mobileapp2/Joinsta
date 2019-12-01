@@ -148,6 +148,7 @@ public class SearchDetailsModel implements Serializable {
             private String pan_number;
             private String gst_number;
             private String tax_status;
+            private String offer_count;
             private ArrayList<ArrayList<MobilesBean>> mobiles;
             private ArrayList<ArrayList<LandlineBean>> landline;
             private ArrayList<ArrayList<TagBean>> tag;
@@ -556,6 +557,18 @@ public class SearchDetailsModel implements Serializable {
                 this.tax_status = tax_status;
             }
 
+            public String getOffer_count() {
+                if (offer_count != null){
+                    return offer_count;
+                } else {
+                    return "0";
+                }
+            }
+
+            public void setOffer_count(String offer_count) {
+                this.offer_count = offer_count;
+            }
+
             public ArrayList<ArrayList<MobilesBean>> getMobiles() {
                 if (mobiles != null) {
                     return mobiles;
@@ -754,6 +767,7 @@ public class SearchDetailsModel implements Serializable {
             private String pan_number;
             private String gst_number;
             private String tax_status;
+            private String offer_count;
             private ArrayList<ArrayList<MobilesBeanX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanX>> landline;
             private ArrayList<ArrayList<TagBeanX>> tag;
@@ -1147,6 +1161,18 @@ public class SearchDetailsModel implements Serializable {
                 this.tax_status = tax_status;
             }
 
+            public String getOffer_count() {
+                if (offer_count != null){
+                    return offer_count;
+                } else {
+                    return "0";
+                }
+            }
+
+            public void setOffer_count(String offer_count) {
+                this.offer_count = offer_count;
+            }
+
             public ArrayList<ArrayList<MobilesBeanX>> getMobiles() {
                 if (mobiles != null) {
                     return mobiles;
@@ -1349,6 +1375,7 @@ public class SearchDetailsModel implements Serializable {
             private String pan_number;
             private String gst_number;
             private String tax_status;
+            private String offer_count;
             private ArrayList<ArrayList<MobilesBeanXX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanXX>> landline;
             private ArrayList<ArrayList<TagBeanXX>> tag;
@@ -1715,6 +1742,18 @@ public class SearchDetailsModel implements Serializable {
 
             public void setTax_status(String tax_status) {
                 this.tax_status = tax_status;
+            }
+
+            public String getOffer_count() {
+                if (offer_count != null){
+                    return offer_count;
+                } else {
+                    return "0";
+                }
+            }
+
+            public void setOffer_count(String offer_count) {
+                this.offer_count = offer_count;
             }
 
             public ArrayList<ArrayList<MobilesBeanXX>> getMobiles() {

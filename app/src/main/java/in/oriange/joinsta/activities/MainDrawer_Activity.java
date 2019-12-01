@@ -152,7 +152,8 @@ public class MainDrawer_Activity extends AppCompatActivity {
         AHBottomNavigationItem botSearch = new AHBottomNavigationItem("Search", R.drawable.icon_search, R.color.colorPrimaryDark);
         AHBottomNavigationItem botGroup = new AHBottomNavigationItem("Groups", R.drawable.icon_group, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botFavourite = new AHBottomNavigationItem("Favourite", R.drawable.icon_favourite_1, R.color.colorPrimaryDark);
-        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("Requirements", R.drawable.icon_request, R.color.colorPrimaryDark);
+//        AHBottomNavigationItem botRequest = new AHBottomNavigationItem("Requirements", R.drawable.icon_request, R.color.colorPrimaryDark);
+        AHBottomNavigationItem botOffers = new AHBottomNavigationItem("Offers", R.drawable.icon_offer_nav, R.color.colorPrimaryDark);
 //        AHBottomNavigationItem botProfile = new AHBottomNavigationItem("Profile", R.drawable.icon_profile_1, R.color.colorPrimaryDark);
         AHBottomNavigationItem botMore = new AHBottomNavigationItem("More", R.drawable.icon_more_1, R.color.colorPrimaryDark);
 
@@ -161,7 +162,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         bottomNavigation.addItem(botHome);
         bottomNavigation.addItem(botSearch);
         bottomNavigation.addItem(botGroup);
-        bottomNavigation.addItem(botRequest);
+        bottomNavigation.addItem(botOffers);
         bottomNavigation.addItem(botMore);
 
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#EEEEEE"));

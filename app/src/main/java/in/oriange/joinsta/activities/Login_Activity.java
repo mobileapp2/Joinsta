@@ -52,6 +52,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.NUMVERIFY_ACCESS_TOKEN;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
@@ -158,13 +159,18 @@ public class Login_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                    edt_mobile.setError("Please enter valid mobile number");
-                    edt_mobile.requestFocus();
-                    return;
-                }
+                if (tv_countrycode_mobile.getText().toString().trim().equals("+91")) {
+                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                        edt_mobile.setError("Please enter valid mobile number");
+                        edt_mobile.requestFocus();
+                        return;
+                    }
 
-                if (Utilities.isNetworkAvailable(context)) {
+                    if (edt_password.getText().toString().trim().isEmpty()) {
+                        edt_password.setError("Please enter password");
+                        return;
+                    }
+
                     if (Utilities.isNetworkAvailable(context)) {
                         new VerifyMobile().execute(
                                 edt_mobile.getText().toString().trim(),
@@ -172,8 +178,15 @@ public class Login_Activity extends AppCompatActivity {
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
+
                 } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    if (Utilities.isNetworkAvailable(context)) {
+                        String number = tv_countrycode_mobile.getText().toString().trim().replace("+", "") +
+                                edt_mobile.getText().toString().trim();
+                        new NumVerifyApi().execute(number);
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 }
 
             }
@@ -554,6 +567,71 @@ public class Login_Activity extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             return position;
+        }
+    }
+
+    private class NumVerifyApi extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("access_key", NUMVERIFY_ACCESS_TOKEN));
+            param.add(new ParamsPojo("number", params[0]));
+            param.add(new ParamsPojo("format", "1"));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.NUMVERIFYAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject jsonObject = new JSONObject(result);
+                    boolean isMobileNumValid = jsonObject.getBoolean("valid");
+
+                    if (isMobileNumValid) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new VerifyMobile().execute(
+                                    edt_mobile.getText().toString().trim(),
+                                    tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    } else {
+                        edt_mobile.setError("Please enter valid mobile number");
+                        edt_mobile.requestFocus();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                    edt_mobile.setError("Please enter valid mobile number");
+                    edt_mobile.requestFocus();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new VerifyMobile().execute(
+                            edt_mobile.getText().toString().trim(),
+                            tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
         }
     }
 

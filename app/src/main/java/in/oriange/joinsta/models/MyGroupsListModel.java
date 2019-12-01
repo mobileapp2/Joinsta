@@ -57,6 +57,7 @@ public class MyGroupsListModel implements Serializable {
         private String group_code;
         private String group_description;
         private String is_hidden;
+        private String is_favourite;
         private String is_visible;
         private String is_public_group;
         private String allow_notifiication;
@@ -102,6 +103,14 @@ public class MyGroupsListModel implements Serializable {
 
         public void setIs_hidden(String is_hidden) {
             this.is_hidden = is_hidden;
+        }
+
+        public String getIs_favourite() {
+            return is_favourite;
+        }
+
+        public void setIs_favourite(String is_favourite) {
+            this.is_favourite = is_favourite;
         }
 
         public String getIs_visible() {

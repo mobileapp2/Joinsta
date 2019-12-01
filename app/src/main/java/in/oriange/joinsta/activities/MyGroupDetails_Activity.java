@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -70,10 +71,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
     private Switch sw_hide_members, sw_hide_group;
-    private MaterialButton btn_members;
     private RecyclerView rv_group_members;
     private Button btn_connect, btn_status, btn_delete_group;
     private ImageButton ib_more;
+    private CheckBox cb_like;
 
     private MyGroupsListModel.ResultBean groupDetails;
     private ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> leadsList;
@@ -116,11 +117,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         sw_hide_group = findViewById(R.id.sw_hide_group);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
-        btn_members = findViewById(R.id.btn_members);
         btn_connect = findViewById(R.id.btn_connect);
         btn_status = findViewById(R.id.btn_status);
         btn_delete_group = findViewById(R.id.btn_delete_group);
         ib_more = findViewById(R.id.ib_more);
+        cb_like = findViewById(R.id.cb_like);
 
         leadsList = new ArrayList<>();
 
@@ -221,6 +222,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             sw_hide_members.setChecked(true);
         }
 
+        if (groupDetails.getIs_favourite().equals("1")) {
+            cb_like.setChecked(true);
+        }
+
         if (Utilities.isNetworkAvailable(context)) {
             new GetBannersGroup().execute();
             new GetSingleGroupDetails().execute();
@@ -237,13 +242,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-//        btn_members.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(context, GroupMembersList_Activity.class)
-//                        .putExtra("groupId", groupDetails.getId()));
-//            }
-//        });
 
         cv_members.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,9 +301,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 String[] mode = {"SMS", "Email"};
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("OTP verification is required to delete group, please select the mode of OTP verification from below options");
-                builder.setCancelable(false);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("OTP verification is required to delete group");
                 builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         if (Utilities.isNetworkAvailable(context)) {
@@ -474,6 +471,26 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         .putExtra("groupId", groupDetails.getId()));
             }
         });
+
+        cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String isFav = groupDetails.getIs_favourite();
+
+                if (cb_like.isChecked())
+                    isFav = "1";
+                else
+                    isFav = "0";
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new MarkFavouriteGroup().execute(groupDetails.getId(), userId, isFav);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
+        });
+
     }
 
     private class GetSingleGroupDetails extends AsyncTask<String, Void, String> {
@@ -918,9 +935,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
         Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
         TextView tv_message = promptView.findViewById(R.id.tv_message);
+        TextView tv_title = promptView.findViewById(R.id.tv_title);
         Button btn_cancel = promptView.findViewById(R.id.btn_cancel);
         pinview_opt.setPinLength(otp.length());
-        tv_message.setText("Please enter the code");
+        tv_title.setText("Please enter the code");
+        tv_message.setVisibility(View.GONE);
 
         alertDialogBuilder.setCancelable(false);
         final AlertDialog alertD = alertDialogBuilder.create();
@@ -1011,6 +1030,47 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class MarkFavouriteGroup extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "markFavouriteGroupDetails"));
+            param.add(new ParamsPojo("group_id", params[0]));
+            param.add(new ParamsPojo("user_id", params[1]));
+            param.add(new ParamsPojo("is_fav", params[2]));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.GRPADMINMEMBERSSUPERVISORSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
             } catch (Exception e) {
@@ -1239,5 +1299,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Utilities.hideSoftKeyboard(MyGroupDetails_Activity.this);
     }
 }

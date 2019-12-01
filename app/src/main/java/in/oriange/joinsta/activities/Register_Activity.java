@@ -48,6 +48,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.NUMVERIFY_ACCESS_TOKEN;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
@@ -138,28 +139,6 @@ public class Register_Activity extends AppCompatActivity {
 //            public void afterTextChanged(Editable s) {
 //            }
 //        });
-
-        edt_password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    if (!edt_mobile.getText().toString().trim().isEmpty()) {
-                        if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                            edt_mobile.setError("Please enter valid mobile number");
-                            edt_mobile.requestFocus();
-                            return;
-                        }
-
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new VerifyMobile().execute(edt_mobile.getText().toString().trim());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-                    }
-                }
-            }
-        });
-
         tv_already_registered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -182,22 +161,34 @@ public class Register_Activity extends AppCompatActivity {
                     return;
                 }
 
-                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                    edt_mobile.setError("Please enter valid mobile number");
-                    edt_mobile.requestFocus();
-                    return;
-                }
+                if (tv_countrycode_mobile.getText().toString().trim().equals("+91")) {
+                    if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                        edt_mobile.setError("Please enter valid mobile number");
+                        edt_mobile.requestFocus();
+                        return;
+                    }
 
-                if (edt_password.getText().toString().trim().isEmpty()) {
-                    edt_password.setError("Please enter password");
-                    return;
-                }
+                    if (edt_password.getText().toString().trim().isEmpty()) {
+                        edt_password.setError("Please enter password");
+                        return;
+                    }
 
-                if (Utilities.isNetworkAvailable(context)) {
-                    new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+
                 } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    if (Utilities.isNetworkAvailable(context)) {
+                        String number = tv_countrycode_mobile.getText().toString().trim().replace("+", "") +
+                                edt_mobile.getText().toString().trim();
+                        new NumVerifyApi().execute(number);
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 }
+
             }
         });
     }
@@ -387,6 +378,127 @@ public class Register_Activity extends AppCompatActivity {
         }
     }
 
+    private class NumVerifyApi extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("access_key", NUMVERIFY_ACCESS_TOKEN));
+            param.add(new ParamsPojo("number", params[0]));
+            param.add(new ParamsPojo("format", "1"));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.NUMVERIFYAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject jsonObject = new JSONObject(result);
+                    boolean isMobileNumValid = jsonObject.getBoolean("valid");
+
+                    if (isMobileNumValid) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    } else {
+                        edt_mobile.setError("Please enter valid mobile number");
+                        edt_mobile.requestFocus();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
+                    edt_mobile.setError("Please enter valid mobile number");
+                    edt_mobile.requestFocus();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
+        }
+    }
+
+    private class VerifyMobile extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("mobile", params[0]));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.LOGINAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject resultObj = mainObj.getJSONObject("result");
+
+                        String is_registered = resultObj.getString("is_registered");
+
+                        if (is_registered.equals("1")) {
+                            Utilities.showAlertDialog(context, "Mobile number is already registered", false);
+                            edt_mobile.setText("");
+                        } else {
+                            Utilities.showMessage("You can proceed.", context, 1);
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                        }
+
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showAlertDialog(context, "Failed to verify. Please try again", false);
+                        edt_mobile.setText("");
+                    }
+
+                }
+            } catch (Exception e) {
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+                edt_mobile.setText("");
+                e.printStackTrace();
+            }
+        }
+    }
+
     private class SendOTP extends AsyncTask<String, Void, String> {
 
         @Override
@@ -433,63 +545,7 @@ public class Register_Activity extends AppCompatActivity {
         }
     }
 
-    private class VerifyMobile extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
-            param.add(new ParamsPojo("mobile", params[0]));
-            res = APICall.FORMDATAAPICall(ApplicationConstants.LOGINAPI, param);
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String type = "", message = "";
-            try {
-                pd.dismiss();
-                if (!result.equals("")) {
-                    JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-                        JSONObject resultObj = mainObj.getJSONObject("result");
-
-                        String is_registered = resultObj.getString("is_registered");
-
-                        if (is_registered.equals("1")) {
-                            Utilities.showAlertDialog(context, "Mobile number is already registered", false);
-                            edt_mobile.setText("");
-                        } else {
-                            Utilities.showMessage("You can proceed.", context, 1);
-                        }
-
-                    } else if (type.equalsIgnoreCase("failure")) {
-                        Utilities.showAlertDialog(context, "Failed to verify. Please try again", false);
-                        edt_mobile.setText("");
-                    }
-
-                }
-            } catch (Exception e) {
-                Utilities.showAlertDialog(context, "Server Not Responding", false);
-                edt_mobile.setText("");
-                e.printStackTrace();
-            }
-        }
-    }
-
     private class RegisterUser extends AsyncTask<String, Void, String> {
-
 
         @Override
         protected void onPreExecute() {

@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
@@ -326,7 +327,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Notification_Activity.GetNotification().execute();
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("Notification_Activity"));
                         Utilities.showMessage("Notification deleted successfully", context, 1);
                     }
                 }

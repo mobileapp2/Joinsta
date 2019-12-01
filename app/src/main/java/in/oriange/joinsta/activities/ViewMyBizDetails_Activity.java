@@ -467,7 +467,9 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
         cv_view_offer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                context.startActivity(new Intent(context, OffersForParticularRecord_Activity.class)
+                        .putExtra("recordId", searchDetails.getId())
+                        .putExtra("categoryType", "1"));
             }
         });
     }

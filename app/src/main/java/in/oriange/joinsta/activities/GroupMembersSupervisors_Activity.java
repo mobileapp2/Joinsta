@@ -57,8 +57,8 @@ public class GroupMembersSupervisors_Activity extends AppCompatActivity {
         groupMembers_fragment.setArguments(bundle);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(groupSupervisors_fragment, "Supervisors");
         adapter.addFrag(groupMembers_fragment, "Members");
+        adapter.addFrag(groupSupervisors_fragment, "Supervisors");
         viewpager.setAdapter(adapter);
         tabs.setViewPager(viewpager);
     }

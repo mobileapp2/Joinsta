@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -32,7 +33,6 @@ import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.Request_Fragment;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.models.RequirementsListModel;
 import in.oriange.joinsta.pojos.MainCategoryListPojo;
@@ -286,7 +286,8 @@ public class ViewRequirements_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Request_Fragment.GetRequirementList().execute();
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("Requirements_Activity"));
+
                     } else {
                         cb_like.setChecked(false);
                     }

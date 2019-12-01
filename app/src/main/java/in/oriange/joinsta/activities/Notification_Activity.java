@@ -1,6 +1,9 @@
 package in.oriange.joinsta.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +11,7 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,15 +35,15 @@ import in.oriange.joinsta.utilities.Utilities;
 
 public class Notification_Activity extends AppCompatActivity/* implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener*/ {
 
-    private static Context context;
+    private Context context;
     private UserSessionManager session;
-    private static RecyclerView rv_notification;
-    private static SwipeRefreshLayout swipeRefreshLayout;
-    private static SpinKitView progressBar;
-    private static LinearLayout ll_nopreview;
-    private static String userId;
-    private static NotificationAdapter notificationAdapter;
-    private static ArrayList<NotificationListModel.ResultBean> notificationList;
+    private RecyclerView rv_notification;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private SpinKitView progressBar;
+    private LinearLayout ll_nopreview;
+    private String userId;
+
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +98,11 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("Notification_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
     }
 
     private void getSessionDetails() {
@@ -135,7 +144,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
 //        }
 //    }
 
-    public static class GetNotification extends AsyncTask<String, Void, String> {
+    private class GetNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -164,7 +173,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    notificationList = new ArrayList<>();
+                    ArrayList<NotificationListModel.ResultBean> notificationList = new ArrayList<>();
                     NotificationListModel pojoDetails = new Gson().fromJson(result, NotificationListModel.class);
                     type = pojoDetails.getType();
 
@@ -174,7 +183,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
                         if (notificationList.size() > 0) {
                             rv_notification.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            notificationAdapter = new NotificationAdapter(context, notificationList);
+                            NotificationAdapter notificationAdapter = new NotificationAdapter(context, notificationList);
                             rv_notification.setAdapter(notificationAdapter);
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
@@ -224,5 +233,22 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
                 finish();
             }
         });
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetNotification().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }

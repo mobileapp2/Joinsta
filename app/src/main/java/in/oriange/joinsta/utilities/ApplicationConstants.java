@@ -9,6 +9,7 @@ public class ApplicationConstants {
     public static final String IS_LOCATION_SET = "IS_LOCATION_SET";
     public static final String KEY_LOCATION_INFO = "KEY_LOCATION_INFO";
     public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
+    public static final String NUMVERIFY_ACCESS_TOKEN= "66471b999885e2c244a615e17aae423f";
 
     // BETA API LINK
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
@@ -55,6 +56,7 @@ public class ApplicationConstants {
 //    private static final String API_LINK = "http://joinsta.in/Api_v8/";
 //    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
+    public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";
     public static final String LOGINAPI = API_LINK + "login.php";
     public static final String OTPAPI = API_LINK + "sendotp.php";
     public static final String USERSAPI = API_LINK + "users.php";
