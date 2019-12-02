@@ -26,7 +26,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Offer Details"
+                android:text="Edit Offer"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
@@ -37,7 +37,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0px"
+        android:layout_weight="1"
         android:scrollbars="none">
 
         <LinearLayout
@@ -48,10 +49,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
+                app:cardBackgroundColor="@android:color/white"
                 app:cardElevation="2dp"
                 app:cardUseCompatPadding="true">
 
@@ -62,132 +60,110 @@
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/tv_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Offer Title"
+                        android:text="Offer Details"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:layout_marginBottom="4dp"
                         android:background="@color/colorPrimary" />
 
-                    <TextView
-                        android:id="@+id/tv_description"
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Name of Business"
-                        android:textColor="@color/black"
+                        android:hint="Title"
+                        android:inputType="textCapWords"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <EditText
+                        android:id="@+id/edt_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_outline"
+                        android:gravity="top"
+                        android:hint="Description"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:padding="5dp"
+                        android:textColorHint="@color/darkGray"
                         android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_start_date"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="0.5"
+                            android:drawableRight="@drawable/icon_date"
+                            android:focusable="false"
+                            android:hint="Start Date"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray"
+                            app:met_underlineColor="@color/mediumGray" />
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_end_date"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="0.5"
+                            android:drawableRight="@drawable/icon_date"
+                            android:focusable="false"
+                            android:hint="End Date"
+                            android:longClickable="false"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray"
+                            app:met_underlineColor="@color/mediumGray" />
+
+                    </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="URL"
+                        android:inputType="textWebEditText"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_promo_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Promo Code"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_validity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:id="@+id/tv_validity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:drawableLeft="@drawable/icon_date"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="@color/colorPrimary"
-                    android:longClickable="false"
-                    android:padding="2dp"
-                    android:text="Offer valid from 23-Nov-2019 to 25-Nov-2019"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_url"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:id="@+id/tv_url"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:drawableLeft="@drawable/icon_website"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="@color/colorPrimary"
-                    android:longClickable="false"
-                    android:padding="2dp"
-                    android:text="www.google.com"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_promo_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true"
-                app:contentPadding="5dp">
-
-                <TextView
-                    android:id="@+id/tv_promo_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:drawableLeft="@drawable/icon_promo_code"
-                    android:drawablePadding="5dp"
-                    android:drawableTint="@color/colorPrimary"
-                    android:longClickable="false"
-                    android:padding="2dp"
-                    android:text="Promo Code - "
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_images"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
+                app:cardBackgroundColor="@android:color/white"
                 app:cardElevation="2dp"
                 app:cardUseCompatPadding="true">
 
@@ -196,6 +172,21 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="2dp"
+                        android:text="Offer Images"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -214,13 +205,16 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_dotted">
 
                                 <ImageView
                                     android:id="@+id/imv_image_one"
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:scaleType="centerCrop" />
+                                    android:padding="40dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/icon_add_orange"/>
 
                             </LinearLayout>
 
@@ -238,13 +232,16 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_dotted">
 
                                 <ImageView
                                     android:id="@+id/imv_image_two"
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:scaleType="centerCrop" />
+                                    android:padding="40dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/icon_add_orange"/>
 
                             </LinearLayout>
 
@@ -262,13 +259,16 @@
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent">
+                                android:layout_height="match_parent"
+                                android:background="@drawable/bg_dotted">
 
                                 <ImageView
                                     android:id="@+id/imv_image_three"
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:scaleType="centerCrop" />
+                                    android:padding="40dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/icon_add_orange"/>
 
                             </LinearLayout>
 
@@ -280,6 +280,15 @@
 
             </androidx.cardview.widget.CardView>
 
+            <android.widget.Button
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
+                android:background="@drawable/button_background_filled"
+                android:text="Save"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

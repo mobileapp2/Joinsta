@@ -209,7 +209,7 @@
                                 android:background="@drawable/bg_dotted">
 
                                 <ImageView
-                                    android:id="@+id/imv_iamge_one"
+                                    android:id="@+id/imv_image_one"
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:padding="40dp"
@@ -236,7 +236,7 @@
                                 android:background="@drawable/bg_dotted">
 
                                 <ImageView
-                                    android:id="@+id/imv_iamge_two"
+                                    android:id="@+id/imv_image_two"
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:padding="40dp"
@@ -263,7 +263,7 @@
                                 android:background="@drawable/bg_dotted">
 
                                 <ImageView
-                                    android:id="@+id/imv_iamge_three"
+                                    android:id="@+id/imv_image_three"
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:padding="40dp"
