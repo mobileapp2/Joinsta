@@ -41,7 +41,7 @@ import in.oriange.joinsta.utilities.Utilities;
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
-public class OfferDetails_Activity extends AppCompatActivity {
+public class ViewOfferDetails_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -51,12 +51,12 @@ public class OfferDetails_Activity extends AppCompatActivity {
     private ImageView imv_image_one, imv_image_two, imv_image_three;
 
     private MyOffersListModel.ResultBean offerDetails;
-    private String userId, imageOne = "", imageTwo = "", imageThree = "", type;
+    private String userId, imageOne = "", imageTwo = "", imageThree = "", isFromMyOfferOrFromParticularOffer, isRecordAddedByCurrentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offer_details);
+        setContentView(R.layout.activity_view_offerdetails);
 
         init();
         setDefault();
@@ -66,7 +66,7 @@ public class OfferDetails_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = OfferDetails_Activity.this;
+        context = ViewOfferDetails_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -89,7 +89,8 @@ public class OfferDetails_Activity extends AppCompatActivity {
 
     private void setDefault() {
         offerDetails = (MyOffersListModel.ResultBean) getIntent().getSerializableExtra("offerDetails");
-        type = getIntent().getStringExtra("type");
+        isFromMyOfferOrFromParticularOffer = getIntent().getStringExtra("isFromMyOfferOrFromParticularOffer");
+        isRecordAddedByCurrentUserId = getIntent().getStringExtra("isRecordAddedByCurrentUserId");
 
         tv_title.setText(offerDetails.getTitle());
         tv_description.setText(offerDetails.getDescription());
@@ -235,7 +236,7 @@ public class OfferDetails_Activity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (type.equals("1")) {
+        if (isRecordAddedByCurrentUserId.equals("1")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menus_edit_delete, menu);
 
@@ -314,7 +315,12 @@ public class OfferDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
+                        if (isFromMyOfferOrFromParticularOffer.equals("1")) {
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
+                        } else if (isFromMyOfferOrFromParticularOffer.equals("2")) {
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
+                        }
+
                         Utilities.showMessage("Offer deleted successfully", context, 1);
                         finish();
                     }

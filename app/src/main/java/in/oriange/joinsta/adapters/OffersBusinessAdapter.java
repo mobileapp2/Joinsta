@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.OfferDetails_Activity;
+import in.oriange.joinsta.activities.ViewOfferDetails_Activity;
 import in.oriange.joinsta.models.MyOffersListModel;
 import in.oriange.joinsta.models.OfferDetailsModel;
 
@@ -85,9 +85,10 @@ public class OffersBusinessAdapter extends RecyclerView.Adapter<OffersBusinessAd
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, OfferDetails_Activity.class)
+                context.startActivity(new Intent(context, ViewOfferDetails_Activity.class)
                         .putExtra("offerDetails", resultBean)
-                        .putExtra("type", "2"));
+                        .putExtra("isFromMyOfferOrFromParticularOffer", "2")
+                        .putExtra("isRecordAddedByCurrentUserId", "0"));
             }
         });
 

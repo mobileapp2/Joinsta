@@ -109,7 +109,6 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private class GetMyAddedOffers extends AsyncTask<String, Void, String> {
