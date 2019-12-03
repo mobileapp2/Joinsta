@@ -73,7 +73,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         final int position = holder.getAdapterPosition();
         final MyGroupsListModel.ResultBean groupDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(groupDetails.getGroup_code() + "-" + groupDetails.getGroup_name());
+        holder.tv_heading.setText(groupDetails.getGroup_code() + " - " + groupDetails.getGroup_name());
 
         if (groupDetails.getStatus().equalsIgnoreCase("accepted")) {
             holder.ll_buttons.setVisibility(View.VISIBLE);
@@ -87,16 +87,17 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             holder.tv_role.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
             holder.ll_buttons.setVisibility(View.GONE);
-            holder.tv_status.setVisibility(View.VISIBLE);
-            holder.btn_rejoin.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
-            holder.tv_status.setText("Requested");
+            holder.tv_status.setVisibility(View.VISIBLE);
+            holder.tv_status.setText("Requested to join this group");
+            holder.btn_rejoin.setText("Cancel");
         } else if (groupDetails.getStatus().equalsIgnoreCase("rejected")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.GONE);
-            holder.tv_status.setText("Rejected");
+            holder.tv_status.setText("Request is rejected");
         }
 
         if (groupDetails.getIs_admin().equals("1")) {
@@ -177,13 +178,6 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         holder.ib_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-
-        holder.ib_notifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupNotifications_Activity.class)
                         .putExtra("groupId", groupDetails.getId())
                         .putExtra("groupName", groupDetails.getGroup_name()));
@@ -221,10 +215,18 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         holder.btn_rejoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new JoinGroup().execute(groupDetails.getId());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                if (groupDetails.getStatus().equalsIgnoreCase("left")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new JoinGroup().execute(groupDetails.getId());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new CancelRequest().execute(userId, groupDetails.getId());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 }
             }
         });
@@ -425,6 +427,72 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CancelRequest extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "cancelRequest");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("group_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new Groups_Fragment.GetMyGroupsList().execute();
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Request canceled successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                            }
+                        });
+
+                        alertD.show();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

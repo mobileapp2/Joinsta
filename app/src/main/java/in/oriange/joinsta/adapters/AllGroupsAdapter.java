@@ -78,9 +78,11 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_connect.setText("Rejoin");
         } else if (groupDetails.getStatus().equals("requested")) {
-            holder.btn_connect.setVisibility(View.GONE);
-            holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Requested");
+            holder.btn_connect.setVisibility(View.VISIBLE);
+            holder.tv_status.setVisibility(View.GONE);
+            holder.btn_connect.setText("Cancel");
+            holder.tv_requested_status.setVisibility(View.VISIBLE);
+            holder.tv_requested_status.setText("Requested to join this group");
         } else if (groupDetails.getStatus().equals("accepted")) {
             holder.btn_connect.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
@@ -107,10 +109,18 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         holder.btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new JoinGroup().execute(groupDetails.getId());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                if (groupDetails.getStatus().equals("")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new JoinGroup().execute(groupDetails.getId());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                } else if (groupDetails.getStatus().equals("requested")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new CancelRequest().execute(userId, groupDetails.getId());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 }
             }
         });
@@ -124,7 +134,7 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_heading;
+        private TextView tv_heading, tv_requested_status;
         private Button btn_connect;
         private TextView tv_status;
 
@@ -132,6 +142,7 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             tv_heading = view.findViewById(R.id.tv_heading);
+            tv_requested_status = view.findViewById(R.id.tv_requested_status);
             btn_connect = view.findViewById(R.id.btn_connect);
             tv_status = view.findViewById(R.id.tv_status);
         }
@@ -208,6 +219,74 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
 
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private class CancelRequest extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "cancelRequest");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("group_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Request canceled successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                            }
+                        });
+
+                        alertD.show();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

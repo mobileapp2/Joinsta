@@ -50,7 +50,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private BannerLayout rv_offer_images;
-    private TextView tv_title, tv_description, tv_validity, tv_url, tv_promo_code;
+    private TextView tv_business_name, tv_title, tv_description, tv_validity, tv_url, tv_promo_code;
     private CardView cv_validity, cv_url, cv_promo_code;
 
     private MyOffersListModel.ResultBean offerDetails;
@@ -73,6 +73,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        tv_business_name = findViewById(R.id.tv_business_name);
         tv_title = findViewById(R.id.tv_title);
         tv_description = findViewById(R.id.tv_description);
         tv_validity = findViewById(R.id.tv_validity);
@@ -90,6 +91,14 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         offerDetails = (MyOffersListModel.ResultBean) getIntent().getSerializableExtra("offerDetails");
         isFromMyOfferOrFromParticularOffer = getIntent().getStringExtra("isFromMyOfferOrFromParticularOffer");
         isRecordAddedByCurrentUserId = getIntent().getStringExtra("isRecordAddedByCurrentUserId");
+
+        if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
+            tv_business_name.setText(offerDetails.getRecord_name() + " (" + offerDetails.getSub_category() + ")");
+        } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
+            tv_business_name.setVisibility(View.GONE);
+        } else if (!offerDetails.getRecord_name().isEmpty()) {
+            tv_business_name.setText(offerDetails.getRecord_name());
+        }
 
         tv_title.setText(offerDetails.getTitle());
         tv_description.setText(offerDetails.getDescription());
@@ -238,7 +247,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         return true;
     }
 
-    public class DeleteOffer extends AsyncTask<String, Void, String> {
+    private class DeleteOffer extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {

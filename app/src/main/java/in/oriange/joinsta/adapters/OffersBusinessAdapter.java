@@ -138,7 +138,7 @@ public class OffersBusinessAdapter extends RecyclerView.Adapter<OffersBusinessAd
                 offerDetails.getTitle(), offerDetails.getDescription(), offerDetails.getStart_date(),
                 offerDetails.getEnd_date(), offerDetails.getUrl(), offerDetails.getPromo_code(),
                 offerDetails.getCreated_by(), offerDetails.getUpdated_by(), offerDetails.getCreated_at(),
-                offerDetails.getUpdated_at(), documentsList
+                offerDetails.getUpdated_at(), offerDetails.getCategory_name(), offerDetails.getBusiness_name(), documentsList
         );
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {

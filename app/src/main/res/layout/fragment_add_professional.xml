@@ -60,6 +60,11 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary" />
+
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_firm"
                     android:layout_width="match_parent"
@@ -71,7 +76,6 @@
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/darkGray"
                     app:met_underlineColor="@color/mediumGray" />
-
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_nature"
@@ -98,7 +102,6 @@
                     app:met_floatingLabel="highlight"
                     app:met_textColorHint="@color/darkGray"
                     app:met_underlineColor="@color/mediumGray" />
-
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_designation"
@@ -136,6 +139,11 @@
                     android:text="Add Tags (Keywords of Product/Service)"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -206,6 +214,11 @@
                     android:text="Contact Details"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary" />
 
                 <LinearLayout
                     android:id="@+id/ll_mobile"
@@ -357,6 +370,22 @@
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
 
+            <Switch
+                android:id="@+id/sw_isvisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="Is visible" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -370,6 +399,11 @@
                     android:text="Address Details"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_select_area"
@@ -507,6 +541,11 @@
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary" />
+
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_tax_alias"
                     android:layout_width="match_parent"
@@ -577,6 +616,11 @@
                     android:text="Bank Details (Optional)"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/colorPrimary" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_accholdername"

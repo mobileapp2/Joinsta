@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -110,6 +111,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
     private ImageButton ib_add_mobile, ib_add_landline;
     private TagContainerLayout tag_container;
     private Button btn_save, btn_add_tag;
+    private Switch sw_isvisible;
 
     private ArrayList<CategotyListModel> categotyList;
     private ArrayList<GetTagsListModel.ResultBean> tagsListFromAPI;
@@ -175,6 +177,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         edt_bank_name = findViewById(R.id.edt_bank_name);
         edt_ifsc = findViewById(R.id.edt_ifsc);
         edt_account_no = findViewById(R.id.edt_account_no);
+        sw_isvisible = findViewById(R.id.sw_isvisible);
 
         tag_container = findViewById(R.id.tag_container);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
@@ -293,6 +296,10 @@ public class EditBusiness_Activity extends AppCompatActivity {
         edt_bank_name.setText(searchDetails.getBank_name());
         edt_ifsc.setText(searchDetails.getIfsc_code());
         edt_account_no.setText(searchDetails.getAccount_no());
+
+        if (searchDetails.getIs_visible().equals("1")){
+            sw_isvisible.setChecked(true);
+        }
 
         ArrayList<GetBusinessModel.ResultBean.TagBean> tagsList = new ArrayList<>();
         tagsList = searchDetails.getTag().get(0);
@@ -1190,6 +1197,12 @@ public class EditBusiness_Activity extends AppCompatActivity {
             tagJSONArray.add(tagsJSONObj);
         }
 
+        String isVisible = "0";
+
+        if (sw_isvisible.isChecked()){
+            isVisible = "1";
+        }
+
         mainObj.addProperty("type", "updatebusiness");
         mainObj.addProperty("address", edt_address.getText().toString().trim());
         mainObj.addProperty("business_name", edt_name.getText().toString().trim());
@@ -1230,6 +1243,7 @@ public class EditBusiness_Activity extends AppCompatActivity {
         mainObj.addProperty("ifsc_code", edt_ifsc.getText().toString().trim());
         mainObj.addProperty("account_no", edt_account_no.getText().toString().trim());
         mainObj.addProperty("status", "online");
+        mainObj.addProperty("is_visible", isVisible);
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);

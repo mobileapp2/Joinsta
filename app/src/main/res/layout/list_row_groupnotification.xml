@@ -17,75 +17,19 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/imv_notificationimg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/imv_notificationimg"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/ll_inimage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:background="@color/black_trans"
-                android:orientation="vertical"
-                android:padding="5dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/tv_title_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:longClickable="false"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_message_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:ellipsize="end"
-                    android:longClickable="false"
-                    android:maxLines="2"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tv_time_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:gravity="end|center_vertical"
-                    android:longClickable="false"
-                    android:paddingLeft="2dp"
-                    android:paddingRight="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-        </FrameLayout>
+            android:layout_height="220dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_outimage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp"
-            android:visibility="gone">
+            android:padding="5dp">
 
             <TextView
                 android:id="@+id/tv_title"
@@ -133,12 +77,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
+        android:visibility="gone"
         app:backgroundColor="@android:color/holo_red_dark"
         app:corner="rightTop"
-        app:labelTopPadding="12dp"
+        app:labelTopPadding="15dp"
         app:secondaryText="New"
         app:secondaryTextColor="@color/white"
-        app:secondaryTextSize="12sp"
-        android:visibility="gone"/>
+        app:secondaryTextSize="14sp" />
 
 </androidx.cardview.widget.CardView>

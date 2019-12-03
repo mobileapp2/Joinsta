@@ -79,7 +79,11 @@ public class MyOffersListModel implements Serializable {
         public ResultBean() {
         }
 
-        public ResultBean(String id, String category_type_id, String record_id, String title, String description, String start_date, String end_date, String url, String promo_code, String created_by, String updated_by, String created_at, String updated_at, List<DocumentsBean> documents) {
+        public ResultBean(String id, String category_type_id, String record_id, String title,
+                          String description, String start_date, String end_date, String url,
+                          String promo_code, String created_by, String updated_by,
+                          String created_at, String updated_at, String sub_category, String record_name,
+                          List<DocumentsBean> documents) {
             this.id = id;
             this.category_type_id = category_type_id;
             this.record_id = record_id;
@@ -93,6 +97,8 @@ public class MyOffersListModel implements Serializable {
             this.updated_by = updated_by;
             this.created_at = created_at;
             this.updated_at = updated_at;
+            this.sub_category = sub_category;
+            this.record_name = record_name;
             this.documents = documents;
         }
 
@@ -213,7 +219,7 @@ public class MyOffersListModel implements Serializable {
         }
 
         public String getSub_category() {
-            if (category != null) {
+            if (sub_category != null) {
                 return sub_category;
             } else {
                 return "";

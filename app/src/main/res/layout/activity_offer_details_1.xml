@@ -63,15 +63,24 @@
             android:padding="5dp">
 
             <TextView
+                android:id="@+id/tv_business_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="2dp"
-                android:text="Offer Title"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_description"
@@ -83,7 +92,6 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="2dp"
-                android:text="Name of Business"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -129,7 +137,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@id/tv_copy"
-                    android:text="1234ASDFQWE"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -176,7 +183,6 @@
                 android:drawableTint="@color/colorPrimary"
                 android:longClickable="false"
                 android:padding="2dp"
-                android:text="www.google.com"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 

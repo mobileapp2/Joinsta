@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -106,6 +107,7 @@ public class AddEmployee_Fragment extends Fragment {
     private ImageButton ib_add_mobile, ib_add_landline;
     private TagContainerLayout tag_container;
     private Button btn_save, btn_add_tag;
+    private Switch sw_isvisible;
 
     private ArrayList<CategotyListModel> categotyList;
     private ArrayList<GetTagsListModel.ResultBean> tagsListFromAPI;
@@ -167,6 +169,7 @@ public class AddEmployee_Fragment extends Fragment {
         edt_bank_name = rootView.findViewById(R.id.edt_bank_name);
         edt_ifsc = rootView.findViewById(R.id.edt_ifsc);
         edt_account_no = rootView.findViewById(R.id.edt_account_no);
+        sw_isvisible = rootView.findViewById(R.id.sw_isvisible);
 
         tag_container = rootView.findViewById(R.id.tag_container);
         tv_countrycode_mobile = rootView.findViewById(R.id.tv_countrycode_mobile);
@@ -1011,6 +1014,12 @@ public class AddEmployee_Fragment extends Fragment {
             tagJSONArray.add(tagsJSONObj);
         }
 
+        String isVisible = "0";
+
+        if (sw_isvisible.isChecked()){
+            isVisible = "1";
+        }
+
         mainObj.addProperty("type", "createemployee");
         mainObj.addProperty("address", edt_address.getText().toString().trim());
         mainObj.addProperty("district", edt_district.getText().toString().trim());
@@ -1046,6 +1055,7 @@ public class AddEmployee_Fragment extends Fragment {
         mainObj.addProperty("ifsc_code", edt_ifsc.getText().toString().trim());
         mainObj.addProperty("account_no", edt_account_no.getText().toString().trim());
         mainObj.addProperty("status", "online");
+        mainObj.addProperty("is_visible", isVisible);
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_numbers", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);

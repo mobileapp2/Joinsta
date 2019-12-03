@@ -106,36 +106,16 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
         }
 
-        holder.tv_title_image.setText(notificationDetails.getSubject().trim());
-        holder.tv_message_image.setText(notificationDetails.getMessage().trim());
-
-        if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
-            holder.tv_time_image.setText("");
-        } else {
-            holder.tv_time_image.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
-        }
-
         if (notificationDetails.getIs_read().equals("0")) {
             holder.ll_outimage.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
             holder.tv_title.setTextColor(context.getResources().getColor(R.color.black));
             holder.tv_message.setTextColor(context.getResources().getColor(R.color.black));
             holder.tv_time.setTextColor(context.getResources().getColor(R.color.black));
-
-            holder.ll_inimage.setBackgroundColor(context.getResources().getColor(R.color.light_orange_trans));
-            holder.tv_title_image.setTextColor(context.getResources().getColor(R.color.black));
-            holder.tv_message_image.setTextColor(context.getResources().getColor(R.color.black));
-            holder.tv_time_image.setTextColor(context.getResources().getColor(R.color.black));
-
             holder.tv_new.setVisibility(View.VISIBLE);
         } else {
             holder.tv_title.setTextColor(context.getResources().getColor(R.color.mediumGray));
             holder.tv_message.setTextColor(context.getResources().getColor(R.color.mediumGray));
             holder.tv_time.setTextColor(context.getResources().getColor(R.color.mediumGray));
-
-            holder.ll_inimage.setBackgroundColor(context.getResources().getColor(R.color.black_trans));
-            holder.tv_title_image.setTextColor(context.getResources().getColor(R.color.white));
-            holder.tv_message_image.setTextColor(context.getResources().getColor(R.color.white));
-            holder.tv_time_image.setTextColor(context.getResources().getColor(R.color.white));
         }
 
         if (!notificationDetails.getAttachment().equals("")) {
@@ -146,21 +126,15 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                         @Override
                         public void onSuccess() {
                             holder.imv_notificationimg.setVisibility(View.VISIBLE);
-                            holder.ll_inimage.setVisibility(View.VISIBLE);
-                            holder.ll_outimage.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
                             holder.imv_notificationimg.setVisibility(View.GONE);
-                            holder.ll_inimage.setVisibility(View.GONE);
-                            holder.ll_outimage.setVisibility(View.VISIBLE);
                         }
                     });
         } else {
             holder.imv_notificationimg.setVisibility(View.GONE);
-            holder.ll_inimage.setVisibility(View.GONE);
-            holder.ll_outimage.setVisibility(View.VISIBLE);
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -171,12 +145,6 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                     holder.tv_title.setTextColor(context.getResources().getColor(R.color.mediumGray));
                     holder.tv_message.setTextColor(context.getResources().getColor(R.color.mediumGray));
                     holder.tv_time.setTextColor(context.getResources().getColor(R.color.mediumGray));
-
-                    holder.ll_inimage.setBackgroundColor(context.getResources().getColor(R.color.black_trans));
-                    holder.tv_title_image.setTextColor(context.getResources().getColor(R.color.white));
-                    holder.tv_message_image.setTextColor(context.getResources().getColor(R.color.white));
-                    holder.tv_time_image.setTextColor(context.getResources().getColor(R.color.white));
-
                     holder.tv_new.setVisibility(View.GONE);
 
                     showNotification(notificationDetails);
@@ -197,22 +165,18 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
 
         private CardView cv_mainlayout;
         private ImageView imv_notificationimg;
-        private TextView tv_title, tv_title_image, tv_message, tv_message_image, tv_time, tv_time_image;
+        private TextView tv_title, tv_message, tv_time;
         private TriangleLabelView tv_new;
-        private LinearLayout ll_inimage, ll_outimage;
+        private LinearLayout ll_outimage;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             imv_notificationimg = view.findViewById(R.id.imv_notificationimg);
             tv_title = view.findViewById(R.id.tv_title);
-            tv_title_image = view.findViewById(R.id.tv_title_image);
             tv_message = view.findViewById(R.id.tv_message);
-            tv_message_image = view.findViewById(R.id.tv_message_image);
             tv_time = view.findViewById(R.id.tv_time);
-            tv_time_image = view.findViewById(R.id.tv_time_image);
             tv_new = view.findViewById(R.id.tv_new);
-            ll_inimage = view.findViewById(R.id.ll_inimage);
             ll_outimage = view.findViewById(R.id.ll_outimage);
         }
     }
