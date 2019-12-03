@@ -18,29 +18,45 @@
         android:clickable="false"
         android:orientation="vertical">
 
-        <!--        <androidx.cardview.widget.CardView-->
-        <!--            android:id="@+id/cv_image"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="200dp"-->
-        <!--            app:cardBackgroundColor="@color/white"-->
-        <!--            app:cardCornerRadius="10dp"-->
-        <!--            app:cardElevation="0dp"-->
-        <!--            app:cardUseCompatPadding="true">-->
+        <TextView
+            android:id="@+id/tv_business_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Joinsta Development"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-        <ImageView
-            android:id="@+id/imv_offer"
-            android:layout_width="fill_parent"
+        <com.smarteist.autoimageslider.SliderView
+            android:id="@+id/imageSlider"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:scaleType="centerCrop" />
-
-        <!--        </androidx.cardview.widget.CardView>-->
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="10dp"
+            app:sliderAnimationDuration="600"
+            app:sliderAutoCycleEnabled="false"
+            app:sliderIndicatorAnimationDuration="600"
+            app:sliderIndicatorGravity="center_horizontal|bottom"
+            app:sliderIndicatorMargin="10dp"
+            app:sliderIndicatorOrientation="horizontal"
+            app:sliderIndicatorPadding="2dp"
+            app:sliderIndicatorRadius="1.5dp"
+            app:sliderIndicatorSelectedColor="#5A5A5A"
+            app:sliderIndicatorUnselectedColor="#FFF"
+            app:sliderScrollTimeInSec="10"
+            app:sliderStartAutoCycle="true"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,49 +72,77 @@
                     android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:maxLines="1"
-                    android:text="Joinsta Development"
+                    android:text="Joinsta Offer"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:duplicateParentState="true"
                     android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="This is the sub heading"
+                    android:maxLines="2"
+                    android:text="This is the sub headingThis is the sub headingThis is the sub headingThis is the sub heading"
                     android:textColor="@color/darkGray" />
 
-                <TextView
-                    android:id="@+id/tv_validity"
+                <LinearLayout
+                    android:id="@+id/ll_promo_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:duplicateParentState="true"
-                    android:text="This is the sub heading"
-                    android:textColor="@color/darkGray" />
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="30dp"
+                    android:background="@drawable/bg_dotted"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tv_promo_code"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="This is the sub sub heading"
-                    android:textColor="@color/darkGray" />
+                    <TextView
+                        android:id="@+id/tv_promo_code"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="0.8"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="1254QWER74"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:background="@color/colorPrimary"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="COPY"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_url"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="This is the sub sub heading"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/tv_validity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Expires on : 30 Dec 2019" />
 
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 </androidx.cardview.widget.CardView>

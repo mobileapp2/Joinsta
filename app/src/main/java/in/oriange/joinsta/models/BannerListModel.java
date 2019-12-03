@@ -39,6 +39,15 @@ public class BannerListModel {
         private String banner_description;
         private String banners_image;
 
+        public ResultBean() {
+        }
+
+        public ResultBean(String banner_name, String banner_description, String banners_image) {
+            this.banner_name = banner_name;
+            this.banner_description = banner_description;
+            this.banners_image = banners_image;
+        }
+
         public String getBanner_description() {
             return banner_description;
         }

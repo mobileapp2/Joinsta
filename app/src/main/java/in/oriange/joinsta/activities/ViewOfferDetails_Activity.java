@@ -21,7 +21,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.library.banner.BannerLayout;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
 import in.oriange.joinsta.models.MyOffersListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -46,17 +49,17 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private BannerLayout rv_offer_images;
     private TextView tv_title, tv_description, tv_validity, tv_url, tv_promo_code;
-    private CardView cv_validity, cv_url, cv_promo_code, cv_images;
-    private ImageView imv_image_one, imv_image_two, imv_image_three;
+    private CardView cv_validity, cv_url, cv_promo_code;
 
     private MyOffersListModel.ResultBean offerDetails;
-    private String userId, imageOne = "", imageTwo = "", imageThree = "", isFromMyOfferOrFromParticularOffer, isRecordAddedByCurrentUserId;
+    private String userId, isFromMyOfferOrFromParticularOffer, isRecordAddedByCurrentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_offerdetails);
+        setContentView(R.layout.activity_offer_details_1);
 
         init();
         setDefault();
@@ -75,15 +78,11 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         tv_validity = findViewById(R.id.tv_validity);
         tv_url = findViewById(R.id.tv_url);
         tv_promo_code = findViewById(R.id.tv_promo_code);
+        rv_offer_images = findViewById(R.id.rv_offer_images);
 
         cv_validity = findViewById(R.id.cv_validity);
         cv_url = findViewById(R.id.cv_url);
         cv_promo_code = findViewById(R.id.cv_promo_code);
-        cv_images = findViewById(R.id.cv_images);
-
-        imv_image_one = findViewById(R.id.imv_image_one);
-        imv_image_two = findViewById(R.id.imv_image_two);
-        imv_image_three = findViewById(R.id.imv_image_three);
 
     }
 
@@ -109,47 +108,27 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         }
 
         if (!offerDetails.getPromo_code().equals("")) {
-            tv_promo_code.setText("Promo Code - " + offerDetails.getPromo_code());
+            tv_promo_code.setText(offerDetails.getPromo_code());
         } else {
             cv_promo_code.setVisibility(View.GONE);
         }
 
         if (offerDetails.getDocuments().size() == 0) {
-            cv_images.setVisibility(View.GONE);
-        }
-
-        for (int i = 0; i < offerDetails.getDocuments().size(); i++) {
-
-            switch (i) {
-                case 0:
-                    imageOne = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(0).getDocument();
-                    Picasso.with(context)
-                            .load(imageOne)
-                            .resize(200, 200)
-                            .into(imv_image_one);
-
-                    break;
-                case 1:
-                    imageTwo = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(1).getDocument();
-                    Picasso.with(context)
-                            .load(imageTwo)
-                            .resize(200, 200)
-                            .into(imv_image_two);
-
-                    break;
-                case 2:
-                    imageThree = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(2).getDocument();
-                    Picasso.with(context)
-                            .load(imageThree)
-                            .resize(200, 200)
-                            .into(imv_image_three);
-
-                    break;
-
+            rv_offer_images.setVisibility(View.GONE);
+        } else {
+            final List<String> offerImages = new ArrayList<>();
+            for (int i = 0; i < offerDetails.getDocuments().size(); i++) {
+                offerImages.add(IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(i).getDocument());
             }
-
+            OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, offerImages);
+            webBannerAdapter.setOnBannerItemClickListener(new BannerLayout.OnBannerItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    showImageDialog(offerImages.get(position));
+                }
+            });
+            rv_offer_images.setAdapter(webBannerAdapter);
         }
-
     }
 
     private void getSessionDetails() {
@@ -165,34 +144,6 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        imv_image_one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!imageOne.isEmpty()) {
-                    showImageDialog(imageOne);
-                }
-            }
-        });
-
-        imv_image_two.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!imageTwo.isEmpty()) {
-                    showImageDialog(imageTwo);
-                }
-
-            }
-        });
-
-        imv_image_three.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!imageThree.isEmpty()) {
-                    showImageDialog(imageThree);
-                }
-
-            }
-        });
 
         tv_url.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,7 +159,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
             }
         });
 
-        tv_promo_code.setOnClickListener(new View.OnClickListener() {
+        cv_promo_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -274,9 +225,12 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
                 alertD.show();
                 break;
             case R.id.action_edit:
-//                startActivity(new Intent(context, EditBusiness_Activity.class)
-//                        .putExtra("searchDetails", searchDetails));
-//                finish();
+                startActivity(new Intent(context, EditOffers_Activity.class)
+                        .putExtra("offerDetails", offerDetails)
+                        .putExtra("categoryTypeId", "1")
+                        .putExtra("categoryTypeName", "business")
+                        .putExtra("isFromMyOfferOrFromParticularOffer", isFromMyOfferOrFromParticularOffer));
+                finish();
                 break;
             default:
                 break;

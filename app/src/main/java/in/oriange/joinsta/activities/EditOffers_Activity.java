@@ -3,6 +3,7 @@ package in.oriange.joinsta.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -72,7 +73,7 @@ public class EditOffers_Activity extends AppCompatActivity {
     private Button btn_save;
 
     private int mYear, mMonth, mDay, mYear1, mMonth1, mDay1;
-    private String userId, startDate, endDate, detailId, categoryTypeId, categoryId, categoryTypeName;
+    private String userId, startDate, endDate, categoryTypeId, categoryTypeName, isFromMyOfferOrFromParticularOffer;
 
     private File photoFileFolder;
     private Uri photoURI;
@@ -82,7 +83,6 @@ public class EditOffers_Activity extends AppCompatActivity {
     private MyOffersListModel.ResultBean offerDetails;
 
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +139,9 @@ public class EditOffers_Activity extends AppCompatActivity {
     private void setDefault() {
         offerDetails = (MyOffersListModel.ResultBean) getIntent().getSerializableExtra("offerDetails");
 
-        detailId = getIntent().getStringExtra("detailId");
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
-        categoryId = getIntent().getStringExtra("categoryId");
         categoryTypeName = getIntent().getStringExtra("categoryTypeName");
+        isFromMyOfferOrFromParticularOffer = getIntent().getStringExtra("isFromMyOfferOrFromParticularOffer");
 
         Calendar calendar = Calendar.getInstance();
 
@@ -153,7 +152,6 @@ public class EditOffers_Activity extends AppCompatActivity {
         mYear1 = calendar.get(Calendar.YEAR);
         mMonth1 = calendar.get(Calendar.MONTH);
         mDay1 = calendar.get(Calendar.DAY_OF_MONTH);
-
 
         edt_title.setText(offerDetails.getTitle());
 
@@ -173,6 +171,7 @@ public class EditOffers_Activity extends AppCompatActivity {
 
             switch (i) {
                 case 0:
+                    imageOneName = offerDetails.getDocuments().get(0).getDocument();
                     String imageOne = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(0).getDocument();
                     Picasso.with(context)
                             .load(imageOne)
@@ -182,6 +181,7 @@ public class EditOffers_Activity extends AppCompatActivity {
 
                     break;
                 case 1:
+                    imageTwoName = offerDetails.getDocuments().get(1).getDocument();
                     String imageTwo = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(1).getDocument();
                     Picasso.with(context)
                             .load(imageTwo)
@@ -191,6 +191,7 @@ public class EditOffers_Activity extends AppCompatActivity {
 
                     break;
                 case 2:
+                    imageThreeName = offerDetails.getDocuments().get(2).getDocument();
                     String imageThree = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(2).getDocument();
                     Picasso.with(context)
                             .load(imageThree)
@@ -203,8 +204,6 @@ public class EditOffers_Activity extends AppCompatActivity {
             }
 
         }
-
-
     }
 
     private void setEventHandler() {
@@ -304,7 +303,6 @@ public class EditOffers_Activity extends AppCompatActivity {
             }
         });
     }
-
 
     private void selectImage() {
         final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
@@ -512,11 +510,6 @@ public class EditOffers_Activity extends AppCompatActivity {
             }
         }
 
-//        String document = "";
-
-//        if (imageOneName.isEmpty() && imageTwoName.isEmpty() && imageThreeName.isEmpty()) {
-//            document = "";
-//        } else {
         JsonArray docsArray = new JsonArray();
 
         if (!imageOneName.isEmpty()) {
@@ -531,13 +524,10 @@ public class EditOffers_Activity extends AppCompatActivity {
             docsArray.add(imageThreeName);
         }
 
-//            document = docsArray.toString();
-//        }
-
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "updateOfferDetails");
         mainObj.addProperty("edit_category_type_id", categoryTypeId);
-        mainObj.addProperty("edit_record_id", detailId);
+        mainObj.addProperty("edit_record_id", offerDetails.getRecord_id());
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("edit_title", edt_title.getText().toString().trim());
         mainObj.addProperty("edit_description", edt_description.getText().toString().trim());
@@ -585,6 +575,12 @@ public class EditOffers_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
+                        if (isFromMyOfferOrFromParticularOffer.equals("1")) {
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
+                        } else if (isFromMyOfferOrFromParticularOffer.equals("2")) {
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
+                        }
+
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -595,7 +591,7 @@ public class EditOffers_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Offer added successfully");
+                        tv_title.setText("Offer updated successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

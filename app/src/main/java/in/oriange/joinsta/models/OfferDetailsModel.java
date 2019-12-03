@@ -990,6 +990,7 @@ public class OfferDetailsModel implements Serializable {
             private String url;
             private String promo_code;
             private String offer_id;
+            private String category_name;
             private List<OfferDocumentsBeanXX> offer_documents;
 
             public String getId() {
@@ -1278,6 +1279,18 @@ public class OfferDetailsModel implements Serializable {
 
             public void setOffer_id(String offer_id) {
                 this.offer_id = offer_id;
+            }
+
+            public String getCategory_name() {
+                if (category_name != null){
+                    return category_name;
+                } else {
+                    return "";
+                }
+            }
+
+            public void setCategory_name(String category_name) {
+                this.category_name = category_name;
             }
 
             public List<OfferDocumentsBeanXX> getOffer_documents() {

@@ -71,6 +71,9 @@ public class MyOffersListModel implements Serializable {
         private String updated_by;
         private String created_at;
         private String updated_at;
+        private String category;
+        private String sub_category;
+        private String record_name;
         private List<DocumentsBean> documents;
 
         public ResultBean() {
@@ -197,6 +200,42 @@ public class MyOffersListModel implements Serializable {
             this.updated_at = updated_at;
         }
 
+        public String getCategory() {
+            if (category != null) {
+                return category;
+            } else {
+                return "";
+            }
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public String getSub_category() {
+            if (category != null) {
+                return sub_category;
+            } else {
+                return "";
+            }
+        }
+
+        public void setSub_category(String sub_category) {
+            this.sub_category = sub_category;
+        }
+
+        public String getRecord_name() {
+            if (record_name != null) {
+                return record_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setRecord_name(String record_name) {
+            this.record_name = record_name;
+        }
+
         public List<DocumentsBean> getDocuments() {
             return documents;
         }
@@ -205,7 +244,7 @@ public class MyOffersListModel implements Serializable {
             this.documents = documents;
         }
 
-        public static class DocumentsBean implements Serializable{
+        public static class DocumentsBean implements Serializable {
 
             /**
              * document : uplimg-20191128125430.png

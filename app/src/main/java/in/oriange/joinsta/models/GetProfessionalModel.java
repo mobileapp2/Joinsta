@@ -78,6 +78,8 @@ public class GetProfessionalModel implements Serializable {
         private String pan_number;
         private String gst_number;
         private String tax_status;
+        private String is_visible;
+        private String offer_count;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -476,6 +478,30 @@ public class GetProfessionalModel implements Serializable {
 
         public void setTax_status(String tax_status) {
             this.tax_status = tax_status;
+        }
+
+        public String getIs_visible() {
+            if (is_visible != null) {
+                return is_visible;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setIs_visible(String is_visible) {
+            this.is_visible = is_visible;
+        }
+
+        public String getOffer_count() {
+            if (offer_count != null) {
+                return offer_count;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setOffer_count(String offer_count) {
+            this.offer_count = offer_count;
         }
 
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {
