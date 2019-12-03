@@ -48,17 +48,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.MyOffersListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
-public class AddOffers_Activity extends AppCompatActivity {
+public class EditOffers_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -77,13 +79,15 @@ public class AddOffers_Activity extends AppCompatActivity {
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
     private int IMAGE_TYPE = 0;
     private String imageOneName = "", imageTwoName = "", imageThreeName = "";
+    private MyOffersListModel.ResultBean offerDetails;
 
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_offers);
+        setContentView(R.layout.activity_edit_offers);
 
         init();
         getSessionDetails();
@@ -93,7 +97,7 @@ public class AddOffers_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = AddOffers_Activity.this;
+        context = EditOffers_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -133,6 +137,8 @@ public class AddOffers_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        offerDetails = (MyOffersListModel.ResultBean) getIntent().getSerializableExtra("offerDetails");
+
         detailId = getIntent().getStringExtra("detailId");
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
         categoryId = getIntent().getStringExtra("categoryId");
@@ -147,6 +153,58 @@ public class AddOffers_Activity extends AppCompatActivity {
         mYear1 = calendar.get(Calendar.YEAR);
         mMonth1 = calendar.get(Calendar.MONTH);
         mDay1 = calendar.get(Calendar.DAY_OF_MONTH);
+
+
+        edt_title.setText(offerDetails.getTitle());
+
+        edt_description.setText(offerDetails.getDescription());
+
+        startDate = offerDetails.getStart_date();
+        edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", offerDetails.getStart_date()));
+
+        endDate = offerDetails.getEnd_date();
+        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", offerDetails.getEnd_date()));
+
+        edt_url.setText(offerDetails.getUrl());
+
+        edt_promo_code.setText(offerDetails.getPromo_code());
+
+        for (int i = 0; i < offerDetails.getDocuments().size(); i++) {
+
+            switch (i) {
+                case 0:
+                    String imageOne = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(0).getDocument();
+                    Picasso.with(context)
+                            .load(imageOne)
+                            .resize(200, 200)
+                            .into(imv_image_one);
+                    imv_image_one.setPadding(0, 0, 0, 0);
+
+                    break;
+                case 1:
+                    String imageTwo = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(1).getDocument();
+                    Picasso.with(context)
+                            .load(imageTwo)
+                            .resize(200, 200)
+                            .into(imv_image_two);
+                    imv_image_two.setPadding(0, 0, 0, 0);
+
+                    break;
+                case 2:
+                    String imageThree = IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(2).getDocument();
+                    Picasso.with(context)
+                            .load(imageThree)
+                            .resize(200, 200)
+                            .into(imv_image_three);
+                    imv_image_three.setPadding(0, 0, 0, 0);
+
+                    break;
+
+            }
+
+        }
+
+
     }
 
     private void setEventHandler() {
@@ -247,6 +305,7 @@ public class AddOffers_Activity extends AppCompatActivity {
         });
     }
 
+
     private void selectImage() {
         final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -284,11 +343,11 @@ public class AddOffers_Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(AddOffers_Activity.this);
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditOffers_Activity.this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(AddOffers_Activity.this);
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditOffers_Activity.this);
             }
         }
 
@@ -476,27 +535,28 @@ public class AddOffers_Activity extends AppCompatActivity {
 //        }
 
         JsonObject mainObj = new JsonObject();
-        mainObj.addProperty("type", "addOfferDetails");
-        mainObj.addProperty("category_type_id", categoryTypeId);
-        mainObj.addProperty("record_id", detailId);
+        mainObj.addProperty("type", "updateOfferDetails");
+        mainObj.addProperty("edit_category_type_id", categoryTypeId);
+        mainObj.addProperty("edit_record_id", detailId);
         mainObj.addProperty("user_id", userId);
-        mainObj.addProperty("title", edt_title.getText().toString().trim());
-        mainObj.addProperty("description", edt_description.getText().toString().trim());
-        mainObj.addProperty("start_date", startDate);
-        mainObj.addProperty("end_date", endDate);
-        mainObj.addProperty("url", edt_url.getText().toString().trim());
-        mainObj.addProperty("promo_code", edt_promo_code.getText().toString().trim());
-        mainObj.add("document", docsArray);
+        mainObj.addProperty("edit_title", edt_title.getText().toString().trim());
+        mainObj.addProperty("edit_description", edt_description.getText().toString().trim());
+        mainObj.addProperty("edit_start_date", startDate);
+        mainObj.addProperty("edit_end_date", endDate);
+        mainObj.addProperty("edit_url", edt_url.getText().toString().trim());
+        mainObj.addProperty("edit_promo_code", edt_promo_code.getText().toString().trim());
+        mainObj.add("edit_document", docsArray);
+        mainObj.addProperty("offer_id", offerDetails.getId());
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddOffer().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+            new EditOffer().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
 
     }
 
-    private class AddOffer extends AsyncTask<String, Void, String> {
+    private class EditOffer extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -575,6 +635,6 @@ public class AddOffers_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(AddOffers_Activity.this);
+        hideSoftKeyboard(EditOffers_Activity.this);
     }
 }
