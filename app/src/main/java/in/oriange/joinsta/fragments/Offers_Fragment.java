@@ -186,7 +186,7 @@ public class Offers_Fragment extends Fragment {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
-                    startActivityForResult(builder.build(getActivity()), 0);
+                    getActivity().startActivityForResult(builder.build(getActivity()), 3);
                 } catch (GooglePlayServicesRepairableException e) {
                     e.printStackTrace();
                 } catch (GooglePlayServicesNotAvailableException e) {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -104,6 +105,16 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        AppCompatEditText toolbar_title = findViewById(R.id.toolbar_title);
+
+        if (currentPosition == 0) {
+            toolbar_title.setText("Add Business Details");
+        } else if (currentPosition == 1) {
+            toolbar_title.setText("Add Employment Details");
+        } else if (currentPosition == 2) {
+            toolbar_title.setText("Add Professional Details");
+        }
+
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

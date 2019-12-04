@@ -61,7 +61,6 @@ public class MainDrawer_Activity extends AppCompatActivity {
     private BotNavViewPagerAdapter adapter;
     private AHBottomNavigationViewPager view_pager;
 
-    private int startOrigin;
     private UserSessionManager session;
 
     @Override
@@ -141,7 +140,6 @@ public class MainDrawer_Activity extends AppCompatActivity {
         }
 
         startLocationUpdates();
-        startOrigin = getIntent().getIntExtra("startOrigin", 0);
 
     }
 
@@ -191,6 +189,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
             }
         });
 
+        int startOrigin = getIntent().getIntExtra("startOrigin", 0);
         bottomNavigation.setCurrentItem(startOrigin);
 
 //        bottomNavigation.setOnItemSelectListener(new ReadableBottomBar.ItemSelectListener() {
@@ -212,19 +211,43 @@ public class MainDrawer_Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            try {
-                Place place = PlacePicker.getPlace(this, data);
-                Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+            if (requestCode == 0 || requestCode == 1 || requestCode == 3)
+                try {
+                    Place place = PlacePicker.getPlace(this, data);
+                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
 
-                if (addresses.size() != 0) {
-                    session.setLocation(addresses.get(0).getLocality());
-                    finishAffinity();
-                    startActivity(new Intent(context, MainDrawer_Activity.class)
-                            .putExtra("startOrigin", 0));
+                    if (addresses.size() != 0) {
+                        session.setLocation(addresses.get(0).getLocality());
+                        finishAffinity();
+                        startActivity(new Intent(context, MainDrawer_Activity.class)
+                                .putExtra("startOrigin", requestCode));
 
 
-                } else {
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        builder.setTitle("Alert");
+                        builder.setMessage("City not found, please try again");
+                        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                                try {
+                                    startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
+                                } catch (GooglePlayServicesRepairableException e) {
+                                    e.printStackTrace();
+                                } catch (GooglePlayServicesNotAvailableException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        builder.create();
+                        AlertDialog alertD = builder.create();
+                        alertD.show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                     AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                     builder.setTitle("Alert");
                     builder.setMessage("City not found, please try again");
@@ -246,29 +269,6 @@ public class MainDrawer_Activity extends AppCompatActivity {
                     AlertDialog alertD = builder.create();
                     alertD.show();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setTitle("Alert");
-                builder.setMessage("City not found, please try again");
-                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                        try {
-                            startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
-                        } catch (GooglePlayServicesRepairableException e) {
-                            e.printStackTrace();
-                        } catch (GooglePlayServicesNotAvailableException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                builder.create();
-                AlertDialog alertD = builder.create();
-                alertD.show();
-            }
         }
     }
 

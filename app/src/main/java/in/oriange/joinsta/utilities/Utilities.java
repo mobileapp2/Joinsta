@@ -362,5 +362,25 @@ public class Utilities {
         return year + "-" + month + "-" + day;
     }
 
+    public static long diffBetweenTwoDates(String startDate, String endDate) {
+        try {
+            Date date1;
+            Date date2;
+
+            SimpleDateFormat dates = new SimpleDateFormat("yyyy-MM-dd");
+
+            //Setting dates
+            date1 = dates.parse(startDate);
+            date2 = dates.parse(endDate);
+
+            //Comparing dates
+            long difference = Math.abs(date1.getTime() - date2.getTime());
+            return difference / (24 * 60 * 60 * 1000);
+
+        } catch (Exception exception) {
+            return 3;
+        }
+    }
+
 
 }

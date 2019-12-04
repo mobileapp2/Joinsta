@@ -5,27 +5,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark">
+        android:theme="@style/AppTheme.NoActionBar">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="false"
-            android:focusable="false"
-            android:text="Add  Details"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@color/white" />
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    </androidx.appcompat.widget.Toolbar>
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.ogaclejapan.smarttablayout.SmartTabLayout
         android:id="@+id/tabs"
@@ -43,7 +50,8 @@
         app:stl_indicatorCornerRadius="1.5dp"
         app:stl_indicatorInterpolation="smart"
         app:stl_indicatorThickness="2dp"
-        app:stl_underlineColor="@android:color/transparent" />
+        app:stl_underlineColor="@android:color/transparent"
+        android:visibility="gone"/>
 
     <in.oriange.joinsta.utilities.NonSwipeableViewPager
         android:id="@+id/viewpager"

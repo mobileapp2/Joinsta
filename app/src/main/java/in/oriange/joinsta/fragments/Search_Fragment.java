@@ -188,7 +188,7 @@ public class Search_Fragment extends Fragment {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                 try {
-                    startActivityForResult(builder.build(getActivity()), 0);
+                    getActivity().startActivityForResult(builder.build(getActivity()), 1);
                 } catch (GooglePlayServicesRepairableException e) {
                     e.printStackTrace();
                 } catch (GooglePlayServicesNotAvailableException e) {

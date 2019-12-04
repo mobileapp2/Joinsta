@@ -154,7 +154,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
             case "requested":
                 btn_connect.setVisibility(View.VISIBLE);
                 btn_status.setVisibility(View.GONE);
-                cv_rejoin.setVisibility(View.VISIBLE);
+                cv_rejoin.setVisibility(View.GONE);
                 btn_connect.setText("Cancel Request");
                 break;
             case "rejected":

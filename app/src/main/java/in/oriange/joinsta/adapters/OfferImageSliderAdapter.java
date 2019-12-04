@@ -15,6 +15,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -80,7 +82,15 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
                 }
             }
         });
+
         holder.ib_share.bringToFront();
+
+        holder.imageViewBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageDialog(bannerDetails.getBanners_image());
+            }
+        });
     }
 
     @Override
@@ -193,4 +203,21 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
             context.startActivity(Intent.createChooser(shareIntent, "Share Deal"));
         }
     }
+
+    private void showImageDialog(String offerUrl) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+
+        Picasso.with(context)
+                .load(offerUrl)
+                .into(imv_offer);
+
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
 }

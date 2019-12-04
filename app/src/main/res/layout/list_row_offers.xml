@@ -28,8 +28,8 @@
             android:gravity="center_vertical"
             android:padding="5dp"
             android:text="Joinsta Development"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textColor="@color/primaryVeryDark"
+            android:textSize="18sp" />
 
         <com.smarteist.autoimageslider.SliderView
             android:id="@+id/imageSlider"
@@ -87,42 +87,101 @@
                     android:text="This is the sub headingThis is the sub headingThis is the sub headingThis is the sub heading"
                     android:textColor="@color/darkGray" />
 
-                <LinearLayout
-                    android:id="@+id/ll_promo_code"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_promo_code"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="30dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="30dp"
-                    android:background="@drawable/bg_dotted"
-                    android:orientation="horizontal">
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="0dp">
 
-                    <TextView
-                        android:id="@+id/tv_promo_code"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="0.8"
-                        android:ellipsize="end"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:text="1254QWER74"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.2"
-                        android:background="@color/colorPrimary"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="COPY"
-                        android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:background="@drawable/bg_dotted"
+                        android:orientation="horizontal">
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tv_promo_code"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:layout_weight="0.8"
+                            android:ellipsize="end"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="1254QWER74"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:textSize="18sp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.2"
+                            android:background="@drawable/bg_gradient"
+                            android:gravity="center"
+                            android:padding="5dp"
+                            android:text="COPY"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/ll_promo_code"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginLeft="30dp"-->
+<!--                    android:layout_marginTop="5dp"-->
+<!--                    android:layout_marginRight="30dp"-->
+<!--                    android:background="@drawable/bg_dotted"-->
+<!--                    android:orientation="horizontal">-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_promo_code"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_margin="5dp"-->
+<!--                        android:layout_weight="0.8"-->
+<!--                        android:ellipsize="end"-->
+<!--                        android:gravity="center"-->
+<!--                        android:maxLines="1"-->
+<!--                        android:text="1254QWER74"-->
+<!--                        android:textColor="@color/colorPrimary"-->
+<!--                        android:textSize="18sp" />-->
+
+<!--                    <androidx.cardview.widget.CardView-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        android:layout_weight="0.2"-->
+<!--                        android:foreground="?android:attr/selectableItemBackground"-->
+<!--                        app:cardBackgroundColor="@color/white"-->
+<!--                        app:cardCornerRadius="10dp"-->
+<!--                        app:cardElevation="0dp">-->
+
+<!--                        <TextView-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_weight="0.2"-->
+<!--                            android:background="@color/colorPrimary"-->
+<!--                            android:gravity="center"-->
+<!--                            android:padding="5dp"-->
+<!--                            android:text="COPY"-->
+<!--                            android:textColor="@color/white"-->
+<!--                            android:textSize="14sp" />-->
+
+<!--                    </androidx.cardview.widget.CardView>-->
+
+<!--                </LinearLayout>-->
 
                 <TextView
                     android:id="@+id/tv_url"
@@ -144,5 +203,18 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <jp.shts.android.library.TriangleLabelView
+        android:id="@+id/tv_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:visibility="gone"
+        app:backgroundColor="@android:color/holo_red_dark"
+        app:corner="rightTop"
+        app:labelTopPadding="15dp"
+        app:secondaryText="New"
+        app:secondaryTextColor="@color/white"
+        app:secondaryTextSize="14sp" />
 
 </androidx.cardview.widget.CardView>

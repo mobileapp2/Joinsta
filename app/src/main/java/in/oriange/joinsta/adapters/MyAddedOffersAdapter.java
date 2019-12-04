@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import in.oriange.joinsta.R;
@@ -35,9 +37,11 @@ import in.oriange.joinsta.models.MyOffersListModel;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
+import jp.shts.android.library.TriangleLabelView;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
+import static in.oriange.joinsta.utilities.Utilities.diffBetweenTwoDates;
 
 public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdapter.MyViewHolder> {
 
@@ -45,11 +49,20 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
     private List<MyOffersListModel.ResultBean> myOffersList;
     private String isFromMyOfferOrFromParticularOffer;            //1 = My Offers  2 = Particular record offer
     private String userId;
+    private int mYear, mMonth, mDay;
+    private String startDate;
 
     public MyAddedOffersAdapter(Context context, List<MyOffersListModel.ResultBean> myOffersList, String isFromMyOfferOrFromParticularOffer) {
         this.context = context;
         this.myOffersList = myOffersList;
         this.isFromMyOfferOrFromParticularOffer = isFromMyOfferOrFromParticularOffer;
+
+        Calendar calendar = Calendar.getInstance();
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH) + 1;
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        startDate = mYear + "-" + mMonth + "-" + mDay;
+
         try {
             UserSessionManager session = new UserSessionManager(context);
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
@@ -76,12 +89,17 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
         int position = holder.getAdapterPosition();
         final MyOffersListModel.ResultBean offerDetails = myOffersList.get(position);
 
+        if (diffBetweenTwoDates(startDate, offerDetails.getCreated_at()) <= 2) {
+            holder.tv_new.setVisibility(View.VISIBLE);
+        }
+
+
         if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
-            holder.tv_business_name.setText(offerDetails.getRecord_name() + " (" + offerDetails.getSub_category() + ")");
+            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#EF6C00\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>" + " (" + offerDetails.getSub_category() + ")"));
         } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
             holder.tv_business_name.setVisibility(View.GONE);
         } else if (!offerDetails.getRecord_name().isEmpty()) {
-            holder.tv_business_name.setText(offerDetails.getRecord_name());
+            holder.tv_business_name.setText("<font color=\"#EF6C00\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>");
         }
 
         holder.tv_title.setText(offerDetails.getTitle());
@@ -109,15 +127,15 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
             holder.tv_url.setVisibility(View.GONE);
         }
 
-        holder.tv_validity.setText("Valid upto " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", offerDetails.getEnd_date()));
+        holder.tv_validity.setText(Html.fromHtml("Valid upto " + "<font color=\"#EF6C00\"> <b>" + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", offerDetails.getEnd_date()) + "</b> </font>"));
 
         if (!offerDetails.getPromo_code().equals("")) {
             holder.tv_promo_code.setText(offerDetails.getPromo_code());
         } else {
-            holder.ll_promo_code.setVisibility(View.GONE);
+            holder.cv_promo_code.setVisibility(View.GONE);
         }
 
-        holder.ll_promo_code.setOnClickListener(new View.OnClickListener() {
+        holder.cv_promo_code.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -171,22 +189,23 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private CardView cv_mainlayout;
+        private CardView cv_mainlayout, cv_promo_code;
         private SliderView imageSlider;
-        private LinearLayout ll_promo_code;
+        private TriangleLabelView tv_new;
         private TextView tv_business_name, tv_title, tv_description, tv_url, tv_validity, tv_promo_code;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+            cv_promo_code = view.findViewById(R.id.cv_promo_code);
             imageSlider = view.findViewById(R.id.imageSlider);
-            ll_promo_code = view.findViewById(R.id.ll_promo_code);
             tv_business_name = view.findViewById(R.id.tv_business_name);
             tv_title = view.findViewById(R.id.tv_title);
             tv_description = view.findViewById(R.id.tv_description);
             tv_url = view.findViewById(R.id.tv_url);
             tv_validity = view.findViewById(R.id.tv_validity);
             tv_promo_code = view.findViewById(R.id.tv_promo_code);
+            tv_new = view.findViewById(R.id.tv_new);
         }
     }
 
