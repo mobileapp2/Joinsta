@@ -226,7 +226,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_group_admin"
+                android:id="@+id/cv_group_utils"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -244,188 +244,299 @@
                     android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/ll_group_admin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cv_add_member"
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="2.5dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/colorPrimary"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="2dp"
-                            app:cardUseCompatPadding="true">
+                            android:orientation="horizontal">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cv_add_member"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:padding="10dp"
-                                android:weightSum="1">
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="0.5"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardBackgroundColor="@color/colorPrimary"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="2dp"
+                                app:cardUseCompatPadding="true">
 
-                                <TextView
-                                    android:layout_width="0dp"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.9"
-                                    android:paddingLeft="10dp"
-                                    android:text="Participants"
-                                    android:textColor="@color/white"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:weightSum="1">
 
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="25dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@drawable/icon_arrowright"
-                                    android:tint="@color/white" />
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.9"
+                                        android:paddingLeft="10dp"
+                                        android:text="Participants"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
 
-                            </LinearLayout>
+                                    <ImageView
+                                        android:layout_width="0dp"
+                                        android:layout_height="25dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.1"
+                                        android:src="@drawable/icon_arrowright"
+                                        android:tint="@color/white" />
 
-                        </androidx.cardview.widget.CardView>
+                                </LinearLayout>
 
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cv_requests"
-                            android:layout_width="0dp"
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cv_requests"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0.5"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardBackgroundColor="@color/colorPrimary"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="2dp"
+                                app:cardUseCompatPadding="true">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:weightSum="1">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.9"
+                                        android:paddingLeft="10dp"
+                                        android:text="Requests"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="0dp"
+                                        android:layout_height="25dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.1"
+                                        android:src="@drawable/icon_arrowright"
+                                        android:tint="@color/white" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="2.5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/colorPrimary"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="2dp"
-                            app:cardUseCompatPadding="true">
+                            android:orientation="horizontal">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cv_send_message"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:padding="10dp"
-                                android:weightSum="1">
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="0.5"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardBackgroundColor="@color/colorPrimary"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="2dp"
+                                app:cardUseCompatPadding="true">
 
-                                <TextView
-                                    android:layout_width="0dp"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.9"
-                                    android:paddingLeft="10dp"
-                                    android:text="Requests"
-                                    android:textColor="@color/white"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:weightSum="1">
 
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="25dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@drawable/icon_arrowright"
-                                    android:tint="@color/white" />
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.9"
+                                        android:paddingLeft="10dp"
+                                        android:text="Send Message"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
 
-                            </LinearLayout>
+                                    <ImageView
+                                        android:layout_width="0dp"
+                                        android:layout_height="25dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.1"
+                                        android:src="@drawable/icon_arrowright"
+                                        android:tint="@color/white" />
 
-                        </androidx.cardview.widget.CardView>
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cv_group_banners"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0.5"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardBackgroundColor="@color/colorPrimary"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="2dp"
+                                app:cardUseCompatPadding="true">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:weightSum="1">
+
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.9"
+                                        android:paddingLeft="10dp"
+                                        android:text="Banners"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="0dp"
+                                        android:layout_height="25dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.1"
+                                        android:src="@drawable/icon_arrowright"
+                                        android:tint="@color/white" />
+
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_notification_feeds"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cv_send_message"
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="2.5dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/colorPrimary"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="2dp"
-                            app:cardUseCompatPadding="true">
+                            android:orientation="horizontal">
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cv_notifications"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:padding="10dp"
-                                android:weightSum="1">
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="0.5"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardBackgroundColor="@color/colorPrimary"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="2dp"
+                                app:cardUseCompatPadding="true">
 
-                                <TextView
-                                    android:layout_width="0dp"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.9"
-                                    android:paddingLeft="10dp"
-                                    android:text="Send Message"
-                                    android:textColor="@color/white"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:weightSum="1">
 
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="25dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@drawable/icon_arrowright"
-                                    android:tint="@color/white" />
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.9"
+                                        android:paddingLeft="10dp"
+                                        android:text="Notifications"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
 
-                            </LinearLayout>
+                                    <ImageView
+                                        android:layout_width="0dp"
+                                        android:layout_height="25dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.1"
+                                        android:src="@drawable/icon_arrowright"
+                                        android:tint="@color/white" />
 
-                        </androidx.cardview.widget.CardView>
+                                </LinearLayout>
 
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/cv_group_banners"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="2.5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/colorPrimary"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="2dp"
-                            app:cardUseCompatPadding="true">
+                            </androidx.cardview.widget.CardView>
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cv_feeds"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:padding="10dp"
-                                android:weightSum="1">
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_marginRight="5dp"
+                                android:layout_weight="0.5"
+                                android:foreground="?android:attr/selectableItemBackground"
+                                app:cardBackgroundColor="@color/colorPrimary"
+                                app:cardCornerRadius="5dp"
+                                app:cardElevation="2dp"
+                                app:cardUseCompatPadding="true">
 
-                                <TextView
-                                    android:layout_width="0dp"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.9"
-                                    android:paddingLeft="10dp"
-                                    android:text="Banners"
-                                    android:textColor="@color/white"
-                                    android:textSize="16sp"
-                                    android:textStyle="bold" />
+                                    android:orientation="horizontal"
+                                    android:padding="10dp"
+                                    android:weightSum="1">
 
-                                <ImageView
-                                    android:layout_width="0dp"
-                                    android:layout_height="25dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.1"
-                                    android:src="@drawable/icon_arrowright"
-                                    android:tint="@color/white" />
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.9"
+                                        android:paddingLeft="10dp"
+                                        android:text="Feeds"
+                                        android:textColor="@color/white"
+                                        android:textSize="16sp"
+                                        android:textStyle="bold" />
 
-                            </LinearLayout>
+                                    <ImageView
+                                        android:layout_width="0dp"
+                                        android:layout_height="25dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="0.1"
+                                        android:src="@drawable/icon_arrowright"
+                                        android:tint="@color/white" />
 
-                        </androidx.cardview.widget.CardView>
+                                </LinearLayout>
+
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
 
                     </LinearLayout>
 

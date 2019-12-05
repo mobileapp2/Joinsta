@@ -67,7 +67,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message,
-            cv_group_banners, cv_group_admin, cv_grp_settings;
+            cv_group_banners, cv_grp_settings, cv_group_utils, cv_notifications, cv_feeds;
+    private LinearLayout ll_group_admin, ll_notification_feeds;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
     private Switch sw_hide_members, sw_hide_group;
@@ -106,8 +107,12 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_requests = findViewById(R.id.cv_requests);
         cv_send_message = findViewById(R.id.cv_send_message);
         cv_group_banners = findViewById(R.id.cv_group_banners);
-        cv_group_admin = findViewById(R.id.cv_group_admin);
         cv_grp_settings = findViewById(R.id.cv_grp_settings);
+        cv_group_utils = findViewById(R.id.cv_group_utils);
+        cv_notifications = findViewById(R.id.cv_notifications);
+        cv_feeds = findViewById(R.id.cv_feeds);
+        ll_group_admin = findViewById(R.id.ll_group_admin);
+        ll_notification_feeds = findViewById(R.id.ll_notification_feeds);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
@@ -170,6 +175,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_connect.setVisibility(View.VISIBLE);
                 btn_status.setVisibility(View.GONE);
                 cv_members.setVisibility(View.VISIBLE);
+                cv_group_utils.setVisibility(View.VISIBLE);
+                ll_notification_feeds.setVisibility(View.VISIBLE);
                 btn_connect.setText("EXIT GORUP");
                 break;
         }
@@ -206,7 +213,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         rv_group_members.setAdapter(new GroupMembersAdapter());
 
         if (groupDetails.getIs_admin().equals("1")) {
-            cv_group_admin.setVisibility(View.VISIBLE);
+            cv_group_utils.setVisibility(View.VISIBLE);
+            ll_group_admin.setVisibility(View.VISIBLE);
+            ll_notification_feeds.setVisibility(View.VISIBLE);
             cv_grp_settings.setVisibility(View.VISIBLE);
             btn_connect.setVisibility(View.GONE);
             btn_status.setVisibility(View.GONE);
@@ -469,6 +478,15 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(context, GroupBanners_Activity.class)
                         .putExtra("groupId", groupDetails.getId()));
+            }
+        });
+
+        cv_notifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, GroupNotifications_Activity.class)
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name()));
             }
         });
 
