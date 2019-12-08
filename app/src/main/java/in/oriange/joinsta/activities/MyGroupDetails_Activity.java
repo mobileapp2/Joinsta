@@ -490,6 +490,16 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             }
         });
 
+        cv_feeds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, GroupFeeds_Activity.class)
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name())
+                        .putExtra("isAdmin", groupDetails.getIs_admin()));
+            }
+        });
+
         cb_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

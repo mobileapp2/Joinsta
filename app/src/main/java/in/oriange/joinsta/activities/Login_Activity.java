@@ -166,11 +166,6 @@ public class Login_Activity extends AppCompatActivity {
                         return;
                     }
 
-                    if (edt_password.getText().toString().trim().isEmpty()) {
-                        edt_password.setError("Please enter password");
-                        return;
-                    }
-
                     if (Utilities.isNetworkAvailable(context)) {
                         new VerifyMobile().execute(
                                 edt_mobile.getText().toString().trim(),

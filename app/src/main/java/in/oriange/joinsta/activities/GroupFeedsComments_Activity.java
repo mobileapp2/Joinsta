@@ -1,7 +1,9 @@
 package in.oriange.joinsta.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,13 +13,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -31,32 +37,37 @@ import java.util.regex.Matcher;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.GroupFeedsCommentsRepliesAdapter;
+import in.oriange.joinsta.adapters.GroupFeedsCommentsAdapter;
 import in.oriange.joinsta.models.GroupFeedsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
+public class GroupFeedsComments_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
 
     private CircleImageView imv_user, imv_current_user;
-    private TextView tv_name, tv_time, tv_comment;
-    private RecyclerView rv_feeds_comments_replies;
-    private EditText edt_reply;
-    private ImageButton imb_post_reply;
+    private TextView tv_name, tv_time, tv_feed_text;
+    private CardView cv_feed_image;
+    private ImageView imv_feed_image;
+    private Button btn_comment, btn_share;
+    private RecyclerView rv_feeds_comments;
+    private EditText edt_comment;
+    private ImageButton imb_post_comment;
 
-    private GroupFeedsModel.ResultBean.FeedCommentsBean commentsDetails;
+    private GroupFeedsModel.ResultBean feedDetails;
     private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_feeds_comments_replys);
+        setContentView(R.layout.activity_group_feeds_comments);
 
         init();
         getSessionDetails();
@@ -66,8 +77,7 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
     }
 
     private void init() {
-
-        context = GroupFeedsCommentsReplys_Activity.this;
+        context = GroupFeedsComments_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -75,11 +85,15 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
         imv_current_user = findViewById(R.id.imv_current_user);
         tv_name = findViewById(R.id.tv_name);
         tv_time = findViewById(R.id.tv_time);
-        tv_comment = findViewById(R.id.tv_comment);
-        rv_feeds_comments_replies = findViewById(R.id.rv_feeds_comments_replies);
-        rv_feeds_comments_replies.setLayoutManager(new LinearLayoutManager(context));
-        edt_reply = findViewById(R.id.edt_reply);
-        imb_post_reply = findViewById(R.id.imb_post_reply);
+        tv_feed_text = findViewById(R.id.tv_feed_text);
+        cv_feed_image = findViewById(R.id.cv_feed_image);
+        imv_feed_image = findViewById(R.id.imv_feed_image);
+        btn_comment = findViewById(R.id.btn_comment);
+        btn_share = findViewById(R.id.btn_share);
+        rv_feeds_comments = findViewById(R.id.rv_feeds_comments);
+        rv_feeds_comments.setLayoutManager(new LinearLayoutManager(context));
+        edt_comment = findViewById(R.id.edt_comment);
+        imb_post_comment = findViewById(R.id.imb_post_comment);
 
     }
 
@@ -103,11 +117,11 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        commentsDetails = (GroupFeedsModel.ResultBean.FeedCommentsBean) getIntent().getSerializableExtra("commentsDetails");
+        feedDetails = (GroupFeedsModel.ResultBean) getIntent().getSerializableExtra("feedDetails");
 
-        if (!commentsDetails.getImage_url().trim().isEmpty()) {
+        if (!feedDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
-                    .load(commentsDetails.getImage_url().trim())
+                    .load(feedDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
                     .resize(100, 100)
                     .into(imv_user);
@@ -115,36 +129,62 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
             imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));
         }
 
-        tv_name.setText(commentsDetails.getFirst_name());
+        tv_name.setText(feedDetails.getFirst_name());
 
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-            tv_time.setText(new PrettyTime().format(formatter.parse(commentsDetails.getCreated_at())));
+            tv_time.setText(new PrettyTime().format(formatter.parse(feedDetails.getCreated_at())));
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        tv_comment.setText(commentsDetails.getMessage());
+        tv_feed_text.setText(feedDetails.getFeed_text());
 
-        rv_feeds_comments_replies.setAdapter(new GroupFeedsCommentsRepliesAdapter(context, commentsDetails.getComment_reply()));
+        if (!feedDetails.getFeed_doc().equals("")) {
+            String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
+            Picasso.with(context)
+                    .load(url)
+                    .resize(450, 300)
+                    .into(imv_feed_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            cv_feed_image.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            cv_feed_image.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            cv_feed_image.setVisibility(View.GONE);
+        }
+
+        if (feedDetails.getFeed_comments().size() == 1) {
+            btn_comment.setText("1 Comment");
+        } else {
+            btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+        }
+
+        rv_feeds_comments.setAdapter(new GroupFeedsCommentsAdapter(context, feedDetails.getFeed_comments()));
 
     }
 
     private void setEventHandler() {
-        imb_post_reply.setOnClickListener(new View.OnClickListener() {
+        imb_post_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (!edt_reply.getText().toString().trim().isEmpty()) {
+//                if (!edt_comment.getText().toString().trim().isEmpty()) {
 //
 //                    JsonObject mainObj = new JsonObject();
-//                    mainObj.addProperty("type", "addFeedCommentReplyDetails");
+//                    mainObj.addProperty("type", "addFeedCommentDetails");
 //                    mainObj.addProperty("user_id", userId);
-//                    mainObj.addProperty("comment_id", commentsDetails.getId());
-//                    mainObj.addProperty("message", edt_reply.getText().toString().trim());
+//                    mainObj.addProperty("feed_id", feedDetails.getId());
+//                    mainObj.addProperty("message", edt_comment.getText().toString().trim());
 //                    mainObj.addProperty("is_private", "0");
 //
 //                    if (Utilities.isNetworkAvailable(context)) {
-//                        new AddFeedCommentReply().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+//                        new AddFeedComment().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
 //                    } else {
 //                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
 //                    }
@@ -153,8 +193,7 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
         });
     }
 
-
-    private class AddFeedCommentReply extends AsyncTask<String, Void, String> {
+    private class AddFeedComment extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -210,6 +249,6 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Utilities.hideSoftKeyboard(GroupFeedsCommentsReplys_Activity.this);
+        Utilities.hideSoftKeyboard(GroupFeedsComments_Activity.this);
     }
 }

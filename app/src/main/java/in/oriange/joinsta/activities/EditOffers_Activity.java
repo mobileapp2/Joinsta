@@ -1,8 +1,11 @@
 package in.oriange.joinsta.activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.Manifest;
@@ -11,6 +14,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +22,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +62,8 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
+import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
@@ -276,7 +283,15 @@ public class EditOffers_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 IMAGE_TYPE = 1;
-                selectImage();
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
@@ -284,7 +299,15 @@ public class EditOffers_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 IMAGE_TYPE = 2;
-                selectImage();
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
@@ -292,7 +315,15 @@ public class EditOffers_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 IMAGE_TYPE = 3;
-                selectImage();
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
@@ -626,6 +657,44 @@ public class EditOffers_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void askPermission() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        } else {
+            selectImage();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        if (requestCode == 1) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                selectImage();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("Alert");
+                builder.setMessage("Please provide permission for Camera and Gallery");
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", context.getPackageName(), null)));
+                    }
+                });
+                builder.create();
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        }
     }
 
     @Override
