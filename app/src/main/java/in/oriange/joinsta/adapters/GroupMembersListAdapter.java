@@ -72,22 +72,22 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
-        final GroupMemebersListModel.ResultBean groupDetails = resultArrayList.get(position);
+        final GroupMemebersListModel.ResultBean memberDetails = resultArrayList.get(position);
 
-        holder.tv_name.setText(groupDetails.getFirst_name().trim());
-        holder.tv_mobile.setText(groupDetails.getMobile());
+        holder.tv_name.setText(memberDetails.getFirst_name().trim());
+        holder.tv_mobile.setText(memberDetails.getMobile());
 
-        if (groupDetails.getIs_joinsta_member().equals("0")) {
+        if (memberDetails.getIs_joinsta_member().equals("0")) {
             holder.btn_invite.setVisibility(View.VISIBLE);
         }
 
-        if (groupDetails.getIs_hidden().equals("1")) {
+        if (memberDetails.getIs_hidden().equals("1")) {
             holder.ib_ishidden.setVisibility(View.VISIBLE);
         }
 
-        if (!groupDetails.getImage_url().trim().isEmpty()) {
+        if (!memberDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
-                    .load(groupDetails.getImage_url().trim())
+                    .load(memberDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
                     .into(holder.imv_user, new Callback() {
                         @Override
@@ -117,10 +117,13 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
-                        .putExtra("userId", groupDetails.getId())
-                        .putExtra("name", groupDetails.getFirst_name().trim())
-                        .putExtra("imageUrl", groupDetails.getImage_url().trim()));
+
+                if (memberDetails.getIs_joinsta_member().equals("1")) {
+                    context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
+                            .putExtra("userId", memberDetails.getId())
+                            .putExtra("name", memberDetails.getFirst_name().trim())
+                            .putExtra("imageUrl", memberDetails.getImage_url().trim()));
+                }
             }
         });
 
@@ -136,7 +139,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
                     public void onClick(DialogInterface dialog, int id) {
 
                         if (Utilities.isNetworkAvailable(context)) {
-                            new SendInviteSMS().execute(groupDetails.getGroup_id(), userId, groupDetails.getId());
+                            new SendInviteSMS().execute(memberDetails.getGroup_id(), userId, memberDetails.getId());
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }

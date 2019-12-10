@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.goodiebag.pinview.Pinview;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -57,7 +58,7 @@ public class Register_Activity extends AppCompatActivity {
     private Context context;
     private ProgressDialog pd;
     private TextView tv_already_registered;
-    private MaterialEditText edt_name, edt_mobile, edt_password;
+    private TextInputEditText edt_name, edt_mobile, edt_password;
     private TextView tv_countrycode_mobile;
     private Button btn_register;
     private UserSessionManager session;

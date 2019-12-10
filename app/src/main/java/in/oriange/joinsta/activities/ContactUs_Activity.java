@@ -68,16 +68,15 @@ public class ContactUs_Activity extends AppCompatActivity {
                     builder.setIcon(R.drawable.icon_call);
                     builder.setMessage("Are you sure you want to call ?");
                     builder.setCancelable(true);
-                    builder.setPositiveButton("NO", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         @SuppressLint("MissingPermission")
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                             context.startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:9021158214")));
+                                    Uri.parse("tel:9175326801")));
                         }
                     });
-                    builder.setNegativeButton(
-                            "No", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
                                 }
@@ -91,7 +90,7 @@ public class ContactUs_Activity extends AppCompatActivity {
         ll_whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phoneno = "919021158214";
+                String phoneno = "919175326801";
                 String URL = "https://wa.me/" + phoneno;
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL)));
             }

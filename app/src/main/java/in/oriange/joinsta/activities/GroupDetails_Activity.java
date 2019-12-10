@@ -598,10 +598,12 @@ public class GroupDetails_Activity extends AppCompatActivity {
             holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
-                            .putExtra("userId", memberDetails.getId())
-                            .putExtra("name", memberDetails.getFirst_name().trim())
-                            .putExtra("imageUrl", memberDetails.getImage_url().trim()));
+                    if (memberDetails.getIs_joinsta_member().equals("1")) {
+                        context.startActivity(new Intent(context, GroupMembersProfileDetails_Activity.class)
+                                .putExtra("userId", memberDetails.getId())
+                                .putExtra("name", memberDetails.getFirst_name().trim())
+                                .putExtra("imageUrl", memberDetails.getImage_url().trim()));
+                    }
                 }
             });
 

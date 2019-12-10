@@ -62,16 +62,20 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_name"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name"
-                    android:inputType="textNoSuggestions|textCapWords"
-                    android:textSize="18sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/mediumGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name"
+                        android:inputType="textNoSuggestions|textCapWords"
+                        android:textSize="18sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -96,31 +100,38 @@
                         android:layout_marginBottom="10dp"
                         android:background="@color/mediumGray" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_mobile"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.75"
-                        android:hint="Mobile"
-                        android:inputType="number"
-                        android:maxLength="14"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:layout_weight="0.75">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_mobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Mobile"
+                            android:inputType="number"
+                            android:maxLength="14"
+                            android:textSize="18sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_password"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:textSize="18sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/mediumGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:textSize="18sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <android.widget.Button
                     android:id="@+id/btn_register"

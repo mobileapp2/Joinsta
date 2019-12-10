@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.goodiebag.pinview.Pinview;
+import com.google.android.material.textfield.TextInputEditText;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
@@ -64,7 +65,7 @@ public class Login_Activity extends AppCompatActivity {
     private LinearLayout ll_password, ll_otp, ll_loginwithpwd, ll_loginwithotp;
     private View v_password, v_otp;
     private TextView tv_forgotpass;
-    private MaterialEditText edt_username, edt_password, edt_mobile;
+    private TextInputEditText edt_username, edt_password, edt_mobile;
     private TextView tv_countrycode_mobile, tv_countrycode, tv_countrycode_changepassword;
     private Button btn_login, btn_register, btn_sendotp;
     private String MOBILE, COUNTRYCODE, USERID;

@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -503,41 +504,73 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         }
     }
 
+//    private void showGroupsListDialog() {
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View view = inflater.inflate(R.layout.dialog_groups_list, null);
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+//        builder.setView(view);
+//        builder.setTitle("Select Groups");
+//        builder.setCancelable(false);
+//
+//        RecyclerView rv_groups = view.findViewById(R.id.rv_groups);
+//        rv_groups.setLayoutManager(new LinearLayoutManager(context));
+//        rv_groups.setAdapter(new GroupListAdapter());
+//
+//        builder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                edt_groups.setText("");
+//                selectedGroups = new JsonArray();
+//                StringBuilder selectedGroupsName = new StringBuilder();
+//
+//                for (GroupAdminsGroupsListModel.ResultBean grpDetails : groupsList) {
+//                    if (grpDetails.isChecked()) {
+//                        selectedGroups.add(grpDetails.getId());
+//                        selectedGroupsName.append(grpDetails.getGroup_name()).append(", ");
+//                    }
+//                }
+//
+//                if (selectedGroupsName.toString().length() != 0) {
+//                    String selectedGroupsNameStr = selectedGroupsName.substring(0, selectedGroupsName.toString().length() - 2);
+//                    edt_groups.setText(selectedGroupsNameStr);
+//                }
+//            }
+//        });
+//
+//        builder.create().show();
+//    }
+
     private void showGroupsListDialog() {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.dialog_groups_list, null);
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Groups");
+        builderSingle.setCancelable(false);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builder.setView(view);
-        builder.setTitle("Select Groups");
-        builder.setCancelable(false);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
-        RecyclerView rv_groups = view.findViewById(R.id.rv_groups);
-        rv_groups.setLayoutManager(new LinearLayoutManager(context));
-        rv_groups.setAdapter(new GroupListAdapter());
+        for (int i = 0; i < groupsList.size(); i++) {
+            arrayAdapter.add(String.valueOf(groupsList.get(i).getGroup_name()));
+        }
 
-        builder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
+        builderSingle.setNegativeButton(
+                "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                edt_groups.setText("");
+                GroupAdminsGroupsListModel.ResultBean grpDetails = groupsList.get(which);
+
                 selectedGroups = new JsonArray();
-                StringBuilder selectedGroupsName = new StringBuilder();
-
-                for (GroupAdminsGroupsListModel.ResultBean grpDetails : groupsList) {
-                    if (grpDetails.isChecked()) {
-                        selectedGroups.add(grpDetails.getId());
-                        selectedGroupsName.append(grpDetails.getGroup_name()).append(", ");
-                    }
-                }
-
-                if (selectedGroupsName.toString().length() != 0) {
-                    String selectedGroupsNameStr = selectedGroupsName.substring(0, selectedGroupsName.toString().length() - 2);
-                    edt_groups.setText(selectedGroupsNameStr);
-                }
+                selectedGroups.add(grpDetails.getId());
+                edt_groups.setText(grpDetails.getGroup_name());
             }
         });
-
-        builder.create().show();
+        builderSingle.show();
     }
 
     private class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyViewHolder> {
