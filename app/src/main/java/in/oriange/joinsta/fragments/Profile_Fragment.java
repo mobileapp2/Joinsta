@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.BasicInformation_Activity;
+import in.oriange.joinsta.activities.EditBasicInformation_Activity;
 import in.oriange.joinsta.activities.BizProfEmpDetails_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.adapters.MyAddedBusinessAdapter;
@@ -171,7 +171,7 @@ public class Profile_Fragment extends Fragment {
         cv_basicinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, BasicInformation_Activity.class));
+                startActivity(new Intent(context, EditBasicInformation_Activity.class));
             }
         });
 

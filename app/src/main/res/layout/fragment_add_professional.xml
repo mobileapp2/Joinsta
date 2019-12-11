@@ -536,64 +536,92 @@
                 android:orientation="vertical"
                 android:padding="5dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="Tax Details (Optional)"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:orientation="horizontal">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.85"
+                        android:padding="5dp"
+                        android:text="Tax Details (Optional)"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_tax_alias"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Alias"
-                    android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    <ImageButton
+                        android:id="@+id/imv_show_hide_tax"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="0.15"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/icon_dropdown"
+                        android:tint="@color/black" />
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_pan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="PAN Number"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="14"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_helperText="e.g - AAAPL1234C"
-                    app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                </LinearLayout>
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_gst"
+                <LinearLayout
+                    android:id="@+id/ll_tax_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="GST Number"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="15"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_helperText="e.g - 22AAAAA0000A1Z5"
-                    app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_tax_alias"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Alias"
+                        android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_pan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                        android:hint="PAN Number"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="14"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_helperText="e.g - AAAPL1234C"
+                        app:met_helperTextAlwaysShown="true"
+                        app:met_helperTextColor="@color/helper_color"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_gst"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                        android:hint="GST Number"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="15"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_helperText="e.g - 22AAAAA0000A1Z5"
+                        app:met_helperTextAlwaysShown="true"
+                        app:met_helperTextColor="@color/helper_color"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -612,81 +640,108 @@
                 android:orientation="vertical"
                 android:padding="5dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="Bank Details (Optional)"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:orientation="horizontal">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.85"
+                        android:padding="5dp"
+                        android:text="Bank Details (Optional)"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_accholdername"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Account Holder Name"
-                    android:inputType="textNoSuggestions|textCapWords"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    <ImageButton
+                        android:id="@+id/imv_show_hide_bank"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_weight="0.15"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/icon_dropdown"
+                        android:tint="@color/black" />
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_bank_alias"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Alias"
-                    android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                </LinearLayout>
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_bank_name"
+                <LinearLayout
+                    android:id="@+id/ll_bank_details"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Bank Name"
-                    android:inputType="textCapWords|textNoSuggestions"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_ifsc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="IFSC Code"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="11"
-                    android:textColorHint="@color/colorAccent"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_helperText="e.g - IFSC1234567"
-                    app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary" />
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_account_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Account Number"
-                    android:inputType="number"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_accholdername"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Account Holder Name"
+                        android:inputType="textNoSuggestions|textCapWords"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_bank_alias"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Alias"
+                        android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_bank_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Bank Name"
+                        android:inputType="textCapWords|textNoSuggestions"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_ifsc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                        android:hint="IFSC Code"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="11"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_helperText="e.g - IFSC1234567"
+                        app:met_helperTextAlwaysShown="true"
+                        app:met_helperTextColor="@color/helper_color"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_account_no"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Account Number"
+                        android:inputType="number"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                </LinearLayout>
 
                 <android.widget.Button
                     android:id="@+id/btn_save"

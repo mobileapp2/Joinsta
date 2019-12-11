@@ -101,7 +101,7 @@ import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
-public class BasicInformation_Activity extends AppCompatActivity {
+public class EditBasicInformation_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -139,7 +139,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic_information);
+        setContentView(R.layout.activity_edit_basic_information);
 
         init();
         setDefault();
@@ -148,7 +148,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = BasicInformation_Activity.this;
+        context = EditBasicInformation_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -690,10 +690,10 @@ public class BasicInformation_Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(BasicInformation_Activity.this);
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditBasicInformation_Activity.this);
             }
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(BasicInformation_Activity.this);
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditBasicInformation_Activity.this);
             }
 
         }
@@ -1956,7 +1956,7 @@ public class BasicInformation_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(BasicInformation_Activity.this);
+        hideSoftKeyboard(EditBasicInformation_Activity.this);
     }
 
 

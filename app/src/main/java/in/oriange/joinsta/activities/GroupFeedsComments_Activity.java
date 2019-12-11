@@ -174,21 +174,21 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         imb_post_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (!edt_comment.getText().toString().trim().isEmpty()) {
-//
-//                    JsonObject mainObj = new JsonObject();
-//                    mainObj.addProperty("type", "addFeedCommentDetails");
-//                    mainObj.addProperty("user_id", userId);
-//                    mainObj.addProperty("feed_id", feedDetails.getId());
-//                    mainObj.addProperty("message", edt_comment.getText().toString().trim());
-//                    mainObj.addProperty("is_private", "0");
-//
-//                    if (Utilities.isNetworkAvailable(context)) {
-//                        new AddFeedComment().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
-//                    } else {
-//                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-//                    }
-//                }
+                if (!edt_comment.getText().toString().trim().isEmpty()) {
+
+                    JsonObject mainObj = new JsonObject();
+                    mainObj.addProperty("type", "addFeedCommentDetails");
+                    mainObj.addProperty("user_id", userId);
+                    mainObj.addProperty("feed_id", feedDetails.getId());
+                    mainObj.addProperty("message", edt_comment.getText().toString().trim());
+                    mainObj.addProperty("is_private", "0");
+
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new AddFeedComment().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                }
             }
         });
     }

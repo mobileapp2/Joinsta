@@ -104,7 +104,8 @@ public class AddEmployee_Fragment extends Fragment {
     private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
     private static TextView tv_countrycode_mobile, tv_countrycode_landline;
-    private ImageButton ib_add_mobile, ib_add_landline;
+    private ImageButton ib_add_mobile, ib_add_landline, imv_show_hide_tax, imv_show_hide_bank;
+    private LinearLayout ll_tax_details, ll_bank_details;
     private TagContainerLayout tag_container;
     private Button btn_save, btn_add_tag;
     private Switch sw_isvisible;
@@ -127,7 +128,6 @@ public class AddEmployee_Fragment extends Fragment {
     private static TextView tv_selected_forconcode = null;
 
     private static AlertDialog countryCodeDialog;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -170,7 +170,10 @@ public class AddEmployee_Fragment extends Fragment {
         edt_ifsc = rootView.findViewById(R.id.edt_ifsc);
         edt_account_no = rootView.findViewById(R.id.edt_account_no);
         sw_isvisible = rootView.findViewById(R.id.sw_isvisible);
-
+        imv_show_hide_tax = rootView.findViewById(R.id.imv_show_hide_tax);
+        imv_show_hide_bank = rootView.findViewById(R.id.imv_show_hide_bank);
+        ll_tax_details = rootView.findViewById(R.id.ll_tax_details);
+        ll_bank_details = rootView.findViewById(R.id.ll_bank_details);
         tag_container = rootView.findViewById(R.id.tag_container);
         tv_countrycode_mobile = rootView.findViewById(R.id.tv_countrycode_mobile);
         tv_countrycode_landline = rootView.findViewById(R.id.tv_countrycode_landline);
@@ -453,6 +456,28 @@ public class AddEmployee_Fragment extends Fragment {
                 }
 
                 edt_tag.setText("");
+            }
+        });
+
+        imv_show_hide_tax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ll_tax_details.getVisibility() == View.VISIBLE) {
+                    ll_tax_details.setVisibility(View.GONE);
+                } else {
+                    ll_tax_details.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        imv_show_hide_bank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ll_bank_details.getVisibility() == View.VISIBLE) {
+                    ll_bank_details.setVisibility(View.GONE);
+                } else {
+                    ll_bank_details.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -861,12 +886,14 @@ public class AddEmployee_Fragment extends Fragment {
         if (edt_name.getText().toString().trim().isEmpty()) {
             edt_name.setError("Please enter organization name");
             edt_name.requestFocus();
+            edt_name.getParent().requestChildFocus(edt_name, edt_name);
             return;
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
             edt_nature.setError("Please select the nature of employment");
             edt_nature.requestFocus();
+            edt_nature.getParent().requestChildFocus(edt_nature, edt_nature);
             return;
         }
 
@@ -879,6 +906,7 @@ public class AddEmployee_Fragment extends Fragment {
         if (edt_designation.getText().toString().trim().isEmpty()) {
             edt_designation.setError("Please enter designation");
             edt_designation.requestFocus();
+            edt_designation.getParent().requestChildFocus(edt_designation, edt_designation);
             return;
         }
 
@@ -896,6 +924,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
                 edt_mobile.setError("Please enter valid mobile number");
                 edt_mobile.requestFocus();
+                edt_mobile.getParent().requestChildFocus(edt_mobile, edt_mobile);
                 return;
             }
         }
@@ -914,6 +943,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
                 edt_landline.setError("Please enter valid landline number");
                 edt_landline.requestFocus();
+                edt_landline.getParent().requestChildFocus(edt_landline, edt_landline);
                 return;
             }
         }
@@ -922,6 +952,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
                 edt_email.setError("Please enter valid email");
                 edt_email.requestFocus();
+                edt_email.getParent().requestChildFocus(edt_email, edt_email);
                 return;
             }
         }
@@ -936,6 +967,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (edt_pincode.getText().toString().trim().length() != 6) {
                 edt_pincode.setError("Please enter pincode");
                 edt_pincode.requestFocus();
+                edt_pincode.getParent().requestChildFocus(edt_pincode, edt_pincode);
                 return;
             }
         }
@@ -943,6 +975,7 @@ public class AddEmployee_Fragment extends Fragment {
         if (edt_city.getText().toString().trim().isEmpty()) {
             edt_city.setError("Please select area");
             edt_city.requestFocus();
+            edt_city.getParent().requestChildFocus(edt_city, edt_city);
             return;
         }
 
@@ -950,6 +983,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (!Utilities.isValidPanNum(edt_pan.getText().toString().trim())) {
                 edt_pan.setError("Please enter valid PAN ");
                 edt_pan.requestFocus();
+                edt_pan.getParent().requestChildFocus(edt_pan, edt_pan);
                 return;
             }
         }
@@ -958,6 +992,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (!Utilities.isGSTValid(edt_gst.getText().toString().trim())) {
                 edt_gst.setError("Please enter valid GST number");
                 edt_gst.requestFocus();
+                edt_gst.getParent().requestChildFocus(edt_gst, edt_gst);
                 return;
             }
         }
@@ -966,6 +1001,7 @@ public class AddEmployee_Fragment extends Fragment {
             if (!Utilities.isIfscValid(edt_ifsc.getText().toString().trim())) {
                 edt_ifsc.setError("Please enter valid IFSC code");
                 edt_ifsc.requestFocus();
+                edt_ifsc.getParent().requestChildFocus(edt_ifsc, edt_ifsc);
                 return;
             }
         }

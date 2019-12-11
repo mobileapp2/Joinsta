@@ -154,7 +154,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
         cv_basicinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, BasicInformation_Activity.class));
+                startActivity(new Intent(context, EditBasicInformation_Activity.class));
             }
         });
 

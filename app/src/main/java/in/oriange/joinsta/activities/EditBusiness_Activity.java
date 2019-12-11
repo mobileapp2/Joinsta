@@ -108,7 +108,8 @@ public class EditBusiness_Activity extends AppCompatActivity {
     private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
     private static TextView tv_countrycode_mobile, tv_countrycode_landline;
-    private ImageButton ib_add_mobile, ib_add_landline;
+    private ImageButton ib_add_mobile, ib_add_landline, imv_show_hide_tax, imv_show_hide_bank;
+    private LinearLayout ll_tax_details, ll_bank_details;
     private TagContainerLayout tag_container;
     private Button btn_save, btn_add_tag;
     private Switch sw_isvisible;
@@ -178,6 +179,10 @@ public class EditBusiness_Activity extends AppCompatActivity {
         edt_ifsc = findViewById(R.id.edt_ifsc);
         edt_account_no = findViewById(R.id.edt_account_no);
         sw_isvisible = findViewById(R.id.sw_isvisible);
+        imv_show_hide_tax = findViewById(R.id.imv_show_hide_tax);
+        imv_show_hide_bank = findViewById(R.id.imv_show_hide_bank);
+        ll_tax_details = findViewById(R.id.ll_tax_details);
+        ll_bank_details = findViewById(R.id.ll_bank_details);
 
         tag_container = findViewById(R.id.tag_container);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
@@ -216,7 +221,6 @@ public class EditBusiness_Activity extends AppCompatActivity {
     }
 
     private void getSessionDetails() {
-
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -584,7 +588,6 @@ public class EditBusiness_Activity extends AppCompatActivity {
                     Utilities.showMessage("Tag aleady added", context, 2);
                 }
 
-
                 edt_tag.setText("");
 
             }
@@ -641,6 +644,28 @@ public class EditBusiness_Activity extends AppCompatActivity {
                 }
 
                 edt_tag.setText("");
+            }
+        });
+
+        imv_show_hide_tax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ll_tax_details.getVisibility() == View.VISIBLE) {
+                    ll_tax_details.setVisibility(View.GONE);
+                } else {
+                    ll_tax_details.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        imv_show_hide_bank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ll_bank_details.getVisibility() == View.VISIBLE) {
+                    ll_bank_details.setVisibility(View.GONE);
+                } else {
+                    ll_bank_details.setVisibility(View.VISIBLE);
+                }
             }
         });
 
