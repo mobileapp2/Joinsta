@@ -135,7 +135,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/colorPrimary" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -210,7 +210,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/colorPrimary" />
 
                 <LinearLayout
                     android:id="@+id/ll_mobile"
@@ -362,22 +362,6 @@
             app:cardElevation="2dp"
             app:cardUseCompatPadding="true">
 
-            <Switch
-                android:id="@+id/sw_isvisible"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="Is visible" />
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@android:color/white"
-            app:cardElevation="2dp"
-            app:cardUseCompatPadding="true">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -395,7 +379,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/colorPrimary" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_select_area"
@@ -487,6 +471,24 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="true">
+
+            <Switch
+                android:id="@+id/sw_isvisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:padding="5dp"
+                android:text="Is visible"
+                android:textSize="16sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:id="@+id/cv_texbank_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -536,7 +538,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/colorPrimary" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_tax_alias"
@@ -612,7 +614,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="@color/colorPrimary"/>
+                    android:background="@color/colorPrimary" />
 
                 <com.rengwuxian.materialedittext.MaterialEditText
                     android:id="@+id/edt_accholdername"

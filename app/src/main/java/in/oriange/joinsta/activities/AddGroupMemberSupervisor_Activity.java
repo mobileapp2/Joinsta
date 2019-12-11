@@ -657,12 +657,13 @@ public class AddGroupMemberSupervisor_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type;
+            String type, message;
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
+                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupMembers_Fragment"));
@@ -692,7 +693,7 @@ public class AddGroupMemberSupervisor_Activity extends AppCompatActivity {
 
                         alertD.show();
                     } else {
-                        Utilities.showMessage("Failed to report your issue", context, 3);
+                        Utilities.showMessage(message, context, 3);
                     }
 
                 }

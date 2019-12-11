@@ -687,16 +687,18 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type;
+            String type, message;
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
+                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupMembers_Fragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupSupervisors_Fragment"));
+
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -721,7 +723,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
 
                         alertD.show();
                     } else {
-                        Utilities.showMessage("Failed to report your issue", context, 3);
+                        Utilities.showMessage(message, context, 3);
                     }
 
                 }

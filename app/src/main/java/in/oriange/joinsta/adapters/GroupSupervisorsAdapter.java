@@ -29,7 +29,6 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.EditGroupMemberSupervisor_Activity;
-import in.oriange.joinsta.activities.EditGroupSupervisor_Activity;
 import in.oriange.joinsta.models.GroupSupervisorsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
