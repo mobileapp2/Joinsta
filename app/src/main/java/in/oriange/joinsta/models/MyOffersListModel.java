@@ -74,6 +74,7 @@ public class MyOffersListModel implements Serializable {
         private String category;
         private String sub_category;
         private String record_name;
+        private String is_approved;
         private List<DocumentsBean> documents;
 
         public ResultBean() {
@@ -240,6 +241,14 @@ public class MyOffersListModel implements Serializable {
 
         public void setRecord_name(String record_name) {
             this.record_name = record_name;
+        }
+
+        public String getIs_approved() {
+            return is_approved;
+        }
+
+        public void setIs_approved(String is_approved) {
+            this.is_approved = is_approved;
         }
 
         public List<DocumentsBean> getDocuments() {

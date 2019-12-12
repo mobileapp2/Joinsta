@@ -203,10 +203,21 @@
                             app:cardCornerRadius="10dp"
                             app:cardElevation="0dp">
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@drawable/bg_dotted">
+
+                                <ImageView
+                                    android:id="@+id/imv_image_one_delete"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_margin="5dp"
+                                    android:background="@drawable/bg_circularview"
+                                    android:src="@drawable/icon_cross"
+                                    android:tint="@color/white"
+                                    android:visibility="gone" />
 
                                 <ImageView
                                     android:id="@+id/imv_image_one"
@@ -214,9 +225,9 @@
                                     android:layout_height="fill_parent"
                                     android:padding="40dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/icon_add_orange"/>
+                                    android:src="@drawable/icon_add_orange" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
                         </androidx.cardview.widget.CardView>
 
@@ -230,10 +241,21 @@
                             app:cardCornerRadius="10dp"
                             app:cardElevation="0dp">
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@drawable/bg_dotted">
+
+                                <ImageView
+                                    android:id="@+id/imv_image_two_delete"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_margin="5dp"
+                                    android:background="@drawable/bg_circularview"
+                                    android:src="@drawable/icon_cross"
+                                    android:tint="@color/white"
+                                    android:visibility="gone" />
 
                                 <ImageView
                                     android:id="@+id/imv_image_two"
@@ -241,9 +263,9 @@
                                     android:layout_height="fill_parent"
                                     android:padding="40dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/icon_add_orange"/>
+                                    android:src="@drawable/icon_add_orange" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
                         </androidx.cardview.widget.CardView>
 
@@ -257,10 +279,21 @@
                             app:cardCornerRadius="10dp"
                             app:cardElevation="0dp">
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@drawable/bg_dotted">
+
+                                <ImageView
+                                    android:id="@+id/imv_image_three_delete"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_margin="5dp"
+                                    android:background="@drawable/bg_circularview"
+                                    android:src="@drawable/icon_cross"
+                                    android:tint="@color/white"
+                                    android:visibility="gone" />
 
                                 <ImageView
                                     android:id="@+id/imv_image_three"
@@ -268,9 +301,9 @@
                                     android:layout_height="fill_parent"
                                     android:padding="40dp"
                                     android:scaleType="centerCrop"
-                                    android:src="@drawable/icon_add_orange"/>
+                                    android:src="@drawable/icon_add_orange" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
                         </androidx.cardview.widget.CardView>
 

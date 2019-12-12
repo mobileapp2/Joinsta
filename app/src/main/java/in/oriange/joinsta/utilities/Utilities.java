@@ -382,5 +382,11 @@ public class Utilities {
         }
     }
 
+    public static void setPaddingForView(Context context, View v, int paddingDp) {
+        float density = context.getResources().getDisplayMetrics().density;
+        int paddingPixel = (int) (paddingDp * density);
+        v.setPadding(paddingPixel, paddingPixel, paddingPixel, paddingPixel);
+    }
+
 
 }

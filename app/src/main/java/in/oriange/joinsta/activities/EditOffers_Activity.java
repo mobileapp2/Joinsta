@@ -66,6 +66,7 @@ import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
 public class EditOffers_Activity extends AppCompatActivity {
@@ -76,7 +77,7 @@ public class EditOffers_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_title, edt_start_date, edt_end_date, edt_url, edt_promo_code;
     private EditText edt_description;
-    private ImageView imv_image_one, imv_image_two, imv_image_three;
+    private ImageView imv_image_one, imv_image_one_delete, imv_image_two, imv_image_two_delete, imv_image_three, imv_image_three_delete;
     private Button btn_save;
 
     private int mYear, mMonth, mDay, mYear1, mMonth1, mDay1;
@@ -115,8 +116,11 @@ public class EditOffers_Activity extends AppCompatActivity {
         edt_promo_code = findViewById(R.id.edt_promo_code);
         edt_description = findViewById(R.id.edt_description);
         imv_image_one = findViewById(R.id.imv_image_one);
+        imv_image_one_delete = findViewById(R.id.imv_image_one_delete);
         imv_image_two = findViewById(R.id.imv_image_two);
+        imv_image_two_delete = findViewById(R.id.imv_image_two_delete);
         imv_image_three = findViewById(R.id.imv_image_three);
+        imv_image_three_delete = findViewById(R.id.imv_image_three_delete);
         btn_save = findViewById(R.id.btn_save);
 
 
@@ -184,8 +188,9 @@ public class EditOffers_Activity extends AppCompatActivity {
                             .load(imageOne)
                             .resize(200, 200)
                             .into(imv_image_one);
-                    imv_image_one.setPadding(0, 0, 0, 0);
-
+                    setPaddingForView(context, imv_image_one, 0);
+                    imv_image_one_delete.setVisibility(View.VISIBLE);
+                    imv_image_one_delete.bringToFront();
                     break;
                 case 1:
                     imageTwoName = offerDetails.getDocuments().get(1).getDocument();
@@ -194,7 +199,9 @@ public class EditOffers_Activity extends AppCompatActivity {
                             .load(imageTwo)
                             .resize(200, 200)
                             .into(imv_image_two);
-                    imv_image_two.setPadding(0, 0, 0, 0);
+                    setPaddingForView(context, imv_image_two, 0);
+                    imv_image_two_delete.setVisibility(View.VISIBLE);
+                    imv_image_two_delete.bringToFront();
 
                     break;
                 case 2:
@@ -204,7 +211,9 @@ public class EditOffers_Activity extends AppCompatActivity {
                             .load(imageThree)
                             .resize(200, 200)
                             .into(imv_image_three);
-                    imv_image_three.setPadding(0, 0, 0, 0);
+                    setPaddingForView(context, imv_image_three, 0);
+                    imv_image_three_delete.setVisibility(View.VISIBLE);
+                    imv_image_three_delete.bringToFront();
 
                     break;
 
@@ -324,6 +333,36 @@ public class EditOffers_Activity extends AppCompatActivity {
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
+            }
+        });
+
+        imv_image_one_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageOneName = "";
+                setPaddingForView(context, imv_image_one, 40);
+                imv_image_one.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+                imv_image_one_delete.setVisibility(View.GONE);
+            }
+        });
+
+        imv_image_two_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageTwoName = "";
+                setPaddingForView(context, imv_image_two, 40);
+                imv_image_two.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+                imv_image_two_delete.setVisibility(View.GONE);
+            }
+        });
+
+        imv_image_three_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageOneName = "";
+                setPaddingForView(context, imv_image_three, 40);
+                imv_image_three.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+                imv_image_three_delete.setVisibility(View.GONE);
             }
         });
 
@@ -473,7 +512,9 @@ public class EditOffers_Activity extends AppCompatActivity {
                                         .load(imageUrl)
                                         .resize(100, 100)
                                         .into(imv_image_one);
-                                imv_image_one.setPadding(0, 0, 0, 0);
+                                setPaddingForView(context, imv_image_one, 0);
+                                imv_image_one_delete.setVisibility(View.VISIBLE);
+                                imv_image_one_delete.bringToFront();
                             }
                         } else if (IMAGE_TYPE == 2) {
                             String imageUrl = jsonObject.getString("document_url");
@@ -484,7 +525,9 @@ public class EditOffers_Activity extends AppCompatActivity {
                                         .load(imageUrl)
                                         .resize(100, 100)
                                         .into(imv_image_two);
-                                imv_image_two.setPadding(0, 0, 0, 0);
+                                setPaddingForView(context, imv_image_two, 0);
+                                imv_image_two_delete.setVisibility(View.VISIBLE);
+                                imv_image_two_delete.bringToFront();
                             }
                         } else if (IMAGE_TYPE == 3) {
                             String imageUrl = jsonObject.getString("document_url");
@@ -495,7 +538,9 @@ public class EditOffers_Activity extends AppCompatActivity {
                                         .load(imageUrl)
                                         .resize(100, 100)
                                         .into(imv_image_three);
-                                imv_image_three.setPadding(0, 0, 0, 0);
+                                setPaddingForView(context, imv_image_three, 0);
+                                imv_image_three_delete.setVisibility(View.VISIBLE);
+                                imv_image_three_delete.bringToFront();
                             }
                         }
                     } else {

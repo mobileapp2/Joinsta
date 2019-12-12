@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -38,6 +41,7 @@ public class GroupSupervisors_Fragment extends Fragment {
 
     private Context context;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private EditText edt_search;
     private RecyclerView rv_group_supervisor;
     private FloatingActionButton btn_add;
     private SpinKitView progressBar;
@@ -45,6 +49,7 @@ public class GroupSupervisors_Fragment extends Fragment {
 
     private List<GroupSupervisorsListModel.ResultBean> groupSupervisors;
     private String groupId;
+
     private LocalBroadcastManager localBroadcastManager;
 
     @Override
@@ -60,6 +65,7 @@ public class GroupSupervisors_Fragment extends Fragment {
     }
 
     private void init(View rootView) {
+        edt_search = rootView.findViewById(R.id.edt_search);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         rv_group_supervisor = rootView.findViewById(R.id.rv_group_supervisor);
         rv_group_supervisor.setLayoutManager(new LinearLayoutManager(context));
@@ -108,6 +114,53 @@ public class GroupSupervisors_Fragment extends Fragment {
                         .putExtra("role", "group_supervisor"));
             }
         });
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_group_supervisor.setAdapter(new GroupSupervisorsAdapter(context, groupSupervisors, groupId));
+                    return;
+                }
+
+
+                if (groupSupervisors.size() == 0) {
+                    rv_group_supervisor.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<GroupSupervisorsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (GroupSupervisorsListModel.ResultBean groupsDetails : groupSupervisors) {
+
+                        String groupsToBeSearched = groupsDetails.getFirst_name().toLowerCase() +
+                                groupsDetails.getCountry_code().toLowerCase() +
+                                groupsDetails.getMobile().toLowerCase() +
+                                groupsDetails.getEmail().toLowerCase();
+
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase().replace(" ", ""))) {
+                            groupsSearchedList.add(groupsDetails);
+                        }
+                    }
+                    rv_group_supervisor.setAdapter(new GroupSupervisorsAdapter(context, groupsSearchedList, groupId));
+                } else {
+                    rv_group_supervisor.setAdapter(new GroupSupervisorsAdapter(context, groupSupervisors, groupId));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private class GetGroupSupervisors extends AsyncTask<String, Void, String> {

@@ -200,6 +200,9 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menus_edit_delete, menu);
 
+            if (offerDetails.getIs_approved().equals("1")) {
+                menu.getItem(0).setVisible(false);
+            }
             return true;
         } else {
             return false;
