@@ -2,7 +2,11 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 
@@ -166,4 +171,29 @@ public class BizProfEmpDetails_Activity extends AppCompatActivity {
         hideSoftKeyboard(BizProfEmpDetails_Activity.this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_save, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                if (currentPosition == 0) {
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusiness_Fragment"));
+                } else if (currentPosition == 1) {
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddEmployee_Fragment"));
+                } else if (currentPosition == 2) {
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddProfessional_Fragment"));
+                }
+
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

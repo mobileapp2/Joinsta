@@ -19,6 +19,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -302,7 +305,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         edt_ifsc.setText(searchDetails.getIfsc_code());
         edt_account_no.setText(searchDetails.getAccount_no());
 
-        if (searchDetails.getIs_visible().equals("1")){
+        if (searchDetails.getIs_visible().equals("1")) {
             sw_isvisible.setChecked(true);
         }
 
@@ -1078,12 +1081,14 @@ public class EditProfessional_Activity extends AppCompatActivity {
         if (edt_firm.getText().toString().trim().isEmpty()) {
             edt_firm.setError("Please enter the name of firm");
             edt_firm.requestFocus();
+            edt_firm.getParent().requestChildFocus(edt_firm, edt_firm);
             return;
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
             edt_nature.setError("Please select the nature of profession");
             edt_nature.requestFocus();
+            edt_nature.getParent().requestChildFocus(edt_nature, edt_nature);
             return;
         }
 
@@ -1107,6 +1112,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
                 edt_mobile.setError("Please enter valid mobile number");
                 edt_mobile.requestFocus();
+                edt_mobile.getParent().requestChildFocus(edt_mobile, edt_mobile);
                 return;
             }
         }
@@ -1125,6 +1131,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
                 edt_landline.setError("Please enter valid landline number");
                 edt_landline.requestFocus();
+                edt_landline.getParent().requestChildFocus(edt_landline, edt_landline);
                 return;
             }
         }
@@ -1133,6 +1140,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
                 edt_email.setError("Please enter valid email");
                 edt_email.requestFocus();
+                edt_email.getParent().requestChildFocus(edt_email, edt_email);
                 return;
             }
         }
@@ -1147,6 +1155,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (edt_pincode.getText().toString().trim().length() != 6) {
                 edt_pincode.setError("Please enter pincode");
                 edt_pincode.requestFocus();
+                edt_pincode.getParent().requestChildFocus(edt_pincode, edt_pincode);
                 return;
             }
         }
@@ -1154,6 +1163,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         if (edt_city.getText().toString().trim().isEmpty()) {
             edt_city.setError("Please select area");
             edt_city.requestFocus();
+            edt_city.getParent().requestChildFocus(edt_city, edt_city);
             return;
         }
 
@@ -1161,6 +1171,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (!Utilities.isValidPanNum(edt_pan.getText().toString().trim())) {
                 edt_pan.setError("Please enter valid PAN ");
                 edt_pan.requestFocus();
+                edt_pan.getParent().requestChildFocus(edt_pan, edt_pan);
                 return;
             }
         }
@@ -1169,6 +1180,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (!Utilities.isGSTValid(edt_gst.getText().toString().trim())) {
                 edt_gst.setError("Please enter valid GST number");
                 edt_gst.requestFocus();
+                edt_gst.getParent().requestChildFocus(edt_gst, edt_gst);
                 return;
             }
         }
@@ -1177,6 +1189,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
             if (!Utilities.isIfscValid(edt_ifsc.getText().toString().trim())) {
                 edt_ifsc.setError("Please enter valid IFSC code");
                 edt_ifsc.requestFocus();
+                edt_ifsc.getParent().requestChildFocus(edt_ifsc, edt_ifsc);
                 return;
             }
         }
@@ -1227,7 +1240,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
 
         String isVisible = "0";
 
-        if (sw_isvisible.isChecked()){
+        if (sw_isvisible.isChecked()) {
             isVisible = "1";
         }
 
@@ -1556,11 +1569,29 @@ public class EditProfessional_Activity extends AppCompatActivity {
         }
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
         hideSoftKeyboard(EditProfessional_Activity.this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_save, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                submitData();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

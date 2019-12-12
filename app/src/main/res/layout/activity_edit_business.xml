@@ -793,7 +793,8 @@
                         android:layout_weight="0.5"
                         android:background="@drawable/button_background_filled"
                         android:text="Save"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

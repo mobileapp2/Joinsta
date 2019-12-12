@@ -2,9 +2,11 @@ package in.oriange.joinsta.fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -38,6 +40,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -126,8 +129,9 @@ public class AddProfessional_Fragment extends Fragment {
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private static TextView tv_selected_forconcode = null;
-
     private static AlertDialog countryCodeDialog;
+
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -247,6 +251,9 @@ public class AddProfessional_Fragment extends Fragment {
             new GetTagsList().execute("0");
         }
 
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("AddProfessional_Fragment");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventListner() {
@@ -902,12 +909,14 @@ public class AddProfessional_Fragment extends Fragment {
         if (edt_firm.getText().toString().trim().isEmpty()) {
             edt_firm.setError("Please enter the name of firm");
             edt_firm.requestFocus();
+            edt_firm.getParent().requestChildFocus(edt_firm, edt_firm);
             return;
         }
 
         if (edt_nature.getText().toString().trim().isEmpty()) {
             edt_nature.setError("Please select the nature of profession");
             edt_nature.requestFocus();
+            edt_nature.getParent().requestChildFocus(edt_nature, edt_nature);
             return;
         }
 
@@ -931,6 +940,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
                 edt_mobile.setError("Please enter valid mobile number");
                 edt_mobile.requestFocus();
+                edt_mobile.getParent().requestChildFocus(edt_mobile, edt_mobile);
                 return;
             }
         }
@@ -949,6 +959,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
                 edt_landline.setError("Please enter valid landline number");
                 edt_landline.requestFocus();
+                edt_landline.getParent().requestChildFocus(edt_landline, edt_landline);
                 return;
             }
         }
@@ -957,6 +968,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
                 edt_email.setError("Please enter valid email");
                 edt_email.requestFocus();
+                edt_email.getParent().requestChildFocus(edt_email, edt_email);
                 return;
             }
         }
@@ -971,6 +983,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (edt_pincode.getText().toString().trim().length() != 6) {
                 edt_pincode.setError("Please enter pincode");
                 edt_pincode.requestFocus();
+                edt_pincode.getParent().requestChildFocus(edt_pincode, edt_pincode);
                 return;
             }
         }
@@ -978,6 +991,7 @@ public class AddProfessional_Fragment extends Fragment {
         if (edt_city.getText().toString().trim().isEmpty()) {
             edt_city.setError("Please select area");
             edt_city.requestFocus();
+            edt_city.getParent().requestChildFocus(edt_city, edt_city);
             return;
         }
 
@@ -985,6 +999,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (!Utilities.isValidPanNum(edt_pan.getText().toString().trim())) {
                 edt_pan.setError("Please enter valid PAN ");
                 edt_pan.requestFocus();
+                edt_pan.getParent().requestChildFocus(edt_pan, edt_pan);
                 return;
             }
         }
@@ -993,6 +1008,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (!Utilities.isGSTValid(edt_gst.getText().toString().trim())) {
                 edt_gst.setError("Please enter valid GST number");
                 edt_gst.requestFocus();
+                edt_gst.getParent().requestChildFocus(edt_gst, edt_gst);
                 return;
             }
         }
@@ -1001,6 +1017,7 @@ public class AddProfessional_Fragment extends Fragment {
             if (!Utilities.isIfscValid(edt_ifsc.getText().toString().trim())) {
                 edt_ifsc.setError("Please enter valid IFSC code");
                 edt_ifsc.requestFocus();
+                edt_ifsc.getParent().requestChildFocus(edt_ifsc, edt_ifsc);
                 return;
             }
         }
@@ -1358,6 +1375,19 @@ public class AddProfessional_Fragment extends Fragment {
             }
 
         }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            submitData();
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 
 }

@@ -2,9 +2,11 @@ package in.oriange.joinsta.fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -37,6 +39,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -126,8 +129,9 @@ public class AddEmployee_Fragment extends Fragment {
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     private static TextView tv_selected_forconcode = null;
-
     private static AlertDialog countryCodeDialog;
+
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -246,6 +250,9 @@ public class AddEmployee_Fragment extends Fragment {
             new GetTagsList().execute("0");
         }
 
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("AddEmployee_Fragment");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventListner() {
@@ -1052,7 +1059,7 @@ public class AddEmployee_Fragment extends Fragment {
 
         String isVisible = "0";
 
-        if (sw_isvisible.isChecked()){
+        if (sw_isvisible.isChecked()) {
             isVisible = "1";
         }
 
@@ -1359,6 +1366,19 @@ public class AddEmployee_Fragment extends Fragment {
             }
 
         }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            submitData();
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 
 }
