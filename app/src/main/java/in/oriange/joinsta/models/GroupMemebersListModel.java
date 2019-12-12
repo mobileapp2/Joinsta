@@ -53,6 +53,7 @@ public class GroupMemebersListModel {
         private String password;
         private String image_url;
         private String is_joinsta_member;
+        private String city;
         private String searchQueryString;
         private List<BussinessInfoBean> bussinessInfo;
         private List<EmployeeInfoBean> employeeInfo;
@@ -172,6 +173,14 @@ public class GroupMemebersListModel {
 
         public void setIs_joinsta_member(String is_joinsta_member) {
             this.is_joinsta_member = is_joinsta_member;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
         }
 
         public String getSearchQueryString() {

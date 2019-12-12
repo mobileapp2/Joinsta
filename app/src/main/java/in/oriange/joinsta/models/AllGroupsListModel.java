@@ -146,6 +146,7 @@ public class AllGroupsListModel implements Serializable {
             private String image_url;
             private String is_joinsta_member;
             private String is_hidden;
+            private String city;
 
             public String getId() {
                 return id;
@@ -201,6 +202,18 @@ public class AllGroupsListModel implements Serializable {
 
             public void setIs_hidden(String is_hidden) {
                 this.is_hidden = is_hidden;
+            }
+
+            public String getCity() {
+                if (city != null) {
+                    return city;
+                } else {
+                    return "";
+                }
+            }
+
+            public void setCity(String city) {
+                this.city = city;
             }
         }
     }

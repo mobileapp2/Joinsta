@@ -601,6 +601,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
             holder.tv_name.setText(memberDetails.getFirst_name().trim());
             holder.tv_mobile.setText(memberDetails.getMobile());
+            holder.tv_city.setText(memberDetails.getCity());
 
             if (memberDetails.getIs_joinsta_member().equals("0")) {
                 holder.btn_invite.setVisibility(View.VISIBLE);
@@ -625,6 +626,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 Picasso.with(context)
                         .load(memberDetails.getImage_url().trim())
                         .placeholder(R.drawable.icon_user)
+                        .resize(100,100)
                         .into(holder.imv_user, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -705,7 +707,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             private ProgressBar progressBar;
             private Button btn_invite;
             private ImageButton ib_ishidden;
-            private TextView tv_name, tv_role, tv_mobile;
+            private TextView tv_name, tv_role, tv_mobile, tv_city;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -715,6 +717,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 tv_name = view.findViewById(R.id.tv_name);
                 tv_role = view.findViewById(R.id.tv_role);
                 tv_mobile = view.findViewById(R.id.tv_mobile);
+                tv_city = view.findViewById(R.id.tv_city);
                 btn_invite = view.findViewById(R.id.btn_invite);
                 ib_ishidden = view.findViewById(R.id.ib_ishidden);
             }

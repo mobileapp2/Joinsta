@@ -77,6 +77,13 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
         holder.tv_name.setText(memberDetails.getFirst_name().trim());
         holder.tv_mobile.setText(memberDetails.getMobile());
 
+        if (!memberDetails.getCity().isEmpty()) {
+            holder.tv_city.setText(memberDetails.getCity());
+        } else {
+            holder.tv_city.setVisibility(View.GONE);
+        }
+
+
         if (memberDetails.getIs_joinsta_member().equals("0")) {
             holder.btn_invite.setVisibility(View.VISIBLE);
         }
@@ -89,6 +96,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
             Picasso.with(context)
                     .load(memberDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
+                    .resize(100, 100)
                     .into(holder.imv_user, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -169,7 +177,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
         private CircleImageView imv_user;
         private ProgressBar progressBar;
         private Button btn_invite;
-        private TextView tv_name, tv_mobile;
+        private TextView tv_name, tv_mobile, tv_city;
         private ImageButton ib_ishidden;
 
         public MyViewHolder(View view) {
@@ -179,6 +187,7 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
             progressBar = view.findViewById(R.id.progressBar);
             tv_name = view.findViewById(R.id.tv_name);
             tv_mobile = view.findViewById(R.id.tv_mobile);
+            tv_city = view.findViewById(R.id.tv_city);
             btn_invite = view.findViewById(R.id.btn_invite);
             ib_ishidden = view.findViewById(R.id.ib_ishidden);
         }

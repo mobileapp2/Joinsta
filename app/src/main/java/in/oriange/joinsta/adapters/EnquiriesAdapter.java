@@ -93,7 +93,13 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
 
         holder.tv_subject.setText(enquiryDetails.getSubject());
         holder.tv_message.setText(enquiryDetails.getMessage());
-        holder.tv_createdby.setText(enquiryDetails.getName());
+
+        if (enquiryDetails.getCommunication_mode().equals("mobile")) {
+            holder.tv_createdby.setText(enquiryDetails.getName() + "\n (" + enquiryDetails.getMobile() + ")");
+        } else if (enquiryDetails.getCommunication_mode().equals("email")) {
+            holder.tv_createdby.setText(enquiryDetails.getName() + "\n (" + enquiryDetails.getEmail() + ")");
+        }
+
         holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", enquiryDetails.getCreated_at()));
 
 //        try {
