@@ -95,9 +95,10 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         } else if (groupDetails.getStatus().equalsIgnoreCase("rejected")) {
             holder.ll_buttons.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.btn_rejoin.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
             holder.tv_status.setText("Request is rejected");
+            holder.btn_rejoin.setText("Cancel");
         }
 
         if (groupDetails.getIs_admin().equals("1")) {
@@ -221,7 +222,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
-                } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
+                } else if (groupDetails.getStatus().equalsIgnoreCase("requested") || groupDetails.getStatus().equalsIgnoreCase("rejected")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new CancelRequest().execute(userId, groupDetails.getId());
                     } else {

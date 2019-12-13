@@ -83,10 +83,19 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
+                android:layout_weight="0.5"
+                android:text="Delete"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_share"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="0.5"
-                android:text="Delete"
+                android:text="Share"
                 android:textStyle="bold" />
 
         </LinearLayout>

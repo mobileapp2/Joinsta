@@ -216,6 +216,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         final TextView tv_time = promptView.findViewById(R.id.tv_time);
         final Button btn_download = promptView.findViewById(R.id.btn_download);
         final Button btn_delete = promptView.findViewById(R.id.btn_delete);
+        final Button btn_share = promptView.findViewById(R.id.btn_share);
         final TextView tv_viewdocs = promptView.findViewById(R.id.tv_viewdocs);
 
         if (!notificationDetails.getAttachment().equals("")) {

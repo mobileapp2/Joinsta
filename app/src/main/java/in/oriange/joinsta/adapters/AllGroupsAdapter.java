@@ -88,9 +88,11 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Joined");
         } else if (groupDetails.getStatus().equals("rejected")) {
-            holder.btn_connect.setVisibility(View.GONE);
-            holder.tv_status.setVisibility(View.VISIBLE);
-            holder.tv_status.setText("Rejected");
+            holder.btn_connect.setVisibility(View.VISIBLE);
+            holder.tv_status.setVisibility(View.GONE);
+            holder.btn_connect.setText("Cancel");
+            holder.tv_requested_status.setVisibility(View.VISIBLE);
+            holder.tv_requested_status.setText("Request is rejected");
         }
 
         if (groupDetails.getIs_admin().equals("1")) {
@@ -109,13 +111,13 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
         holder.btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (groupDetails.getStatus().equals("")) {
+                if (groupDetails.getStatus().equals("") || groupDetails.getStatus().equals("left")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new JoinGroup().execute(groupDetails.getId());
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
-                } else if (groupDetails.getStatus().equals("requested")) {
+                } else if (groupDetails.getStatus().equals("requested") || groupDetails.getStatus().equals("rejected")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new CancelRequest().execute(userId, groupDetails.getId());
                     } else {

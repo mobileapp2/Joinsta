@@ -64,6 +64,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private boolean isDownloaded = false;
 
     private File downloadedFile;
+    private String title, description;
 
     public NotificationAdapter(Context context, List<NotificationListModel.ResultBean> resultArrayList) {
         this.context = context;
@@ -188,6 +189,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final TextView tv_time = promptView.findViewById(R.id.tv_time);
         final TextView btn_download = promptView.findViewById(R.id.btn_download);
         final TextView btn_delete = promptView.findViewById(R.id.btn_delete);
+        final TextView btn_share = promptView.findViewById(R.id.btn_share);
 
         if (!notificationDetails.getImage().equals("0")) {
             String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
@@ -230,6 +232,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
         }
 
+        final AlertDialog alertD = alertDialogBuilder.create();
 
         btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,7 +249,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
 
-        final AlertDialog alertD = alertDialogBuilder.create();
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -275,7 +277,22 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
 
+        btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                title = notificationDetails.getTitle();
+                description = notificationDetails.getDescription();
+                if (Utilities.isNetworkAvailable(context)) {
+                    new DownloadDocumentForShare().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+
         alertD.show();
+
     }
 
     private class DeleteNotification extends AsyncTask<String, Void, String> {
@@ -413,5 +430,101 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
     }
 
+    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocsfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            Uri uri = Uri.parse("file:///" + file);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
+            Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/html");
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+
+        }
+    }
 
 }

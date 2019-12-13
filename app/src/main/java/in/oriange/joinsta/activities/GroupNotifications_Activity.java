@@ -3,7 +3,10 @@ package in.oriange.joinsta.activities;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,11 +38,14 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
     private static Context context;
     private UserSessionManager session;
+    private EditText edt_search;
     private static RecyclerView rv_notification;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static SpinKitView progressBar;
     private static LinearLayout ll_nopreview;
     private static String userId, groupId, groupName;
+
+    private static List<GroupNotificationListModel.ResultBean> notificationList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +63,14 @@ public class GroupNotifications_Activity extends AppCompatActivity {
         context = GroupNotifications_Activity.this;
         session = new UserSessionManager(context);
 
+        edt_search = findViewById(R.id.edt_search);
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         rv_notification = findViewById(R.id.rv_notification);
         rv_notification.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = findViewById(R.id.ll_nopreview);
+
+        notificationList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -101,6 +110,50 @@ public class GroupNotifications_Activity extends AppCompatActivity {
             }
         });
 
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_notification.setAdapter(new GroupNotificationAdapter(context, notificationList));
+                    return;
+                }
+
+                if (notificationList.size() == 0) {
+                    rv_notification.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<GroupNotificationListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (GroupNotificationListModel.ResultBean groupsDetails : notificationList) {
+
+                        String groupsToBeSearched = groupsDetails.getSubject().toLowerCase() +
+                                groupsDetails.getMessage().toLowerCase() +
+                                groupsDetails.getCreated_at().toLowerCase();
+
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase().replace(" ", ""))) {
+                            groupsSearchedList.add(groupsDetails);
+                        }
+                    }
+                    rv_notification.setAdapter(new GroupNotificationAdapter(context, groupsSearchedList));
+                } else {
+                    rv_notification.setAdapter(new GroupNotificationAdapter(context, notificationList));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     public static class GetGroupNotification extends AsyncTask<String, Void, String> {
@@ -133,7 +186,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    List<GroupNotificationListModel.ResultBean> notificationList = new ArrayList<>();
+                    notificationList = new ArrayList<>();
                     GroupNotificationListModel pojoDetails = new Gson().fromJson(result, GroupNotificationListModel.class);
                     type = pojoDetails.getType();
 

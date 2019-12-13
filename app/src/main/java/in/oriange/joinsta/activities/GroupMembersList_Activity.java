@@ -151,7 +151,6 @@ public class GroupMembersList_Activity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private class GetGroupMembers extends AsyncTask<String, Void, String> {

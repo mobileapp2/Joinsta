@@ -158,9 +158,10 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 btn_connect.setText("Cancel Request");
                 break;
             case "rejected":
-                btn_connect.setVisibility(View.GONE);
-                btn_status.setVisibility(View.VISIBLE);
-                btn_status.setText("Rejected");
+                btn_connect.setVisibility(View.VISIBLE);
+                btn_status.setVisibility(View.GONE);
+                cv_rejoin.setVisibility(View.GONE);
+                btn_connect.setText("Cancel");
                 break;
             case "accepted":
                 btn_connect.setVisibility(View.VISIBLE);
@@ -183,7 +184,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
                     }
                 }
 
-                for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails : foundMembers) {
+                ArrayList<AllGroupsListModel.ResultBean.GroupMemberDetailsBean> tempFoundMembers = new ArrayList<>(foundMembers);
+
+                for (AllGroupsListModel.ResultBean.GroupMemberDetailsBean memberDetails : tempFoundMembers) {
                     if (!groupDetails.getIs_admin().equals("1")) {
                         if (memberDetails.getIs_hidden().equals("1")) {
                             foundMembers.remove(memberDetails);
@@ -360,35 +363,15 @@ public class GroupDetails_Activity extends AppCompatActivity {
 
 
                     alertD.show();
-                } else if (groupDetails.getStatus().equals("requested")) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setMessage("Are you sure you want to cancel your request to join this group");
-                    builder.setCancelable(false);
-
-                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (Utilities.isNetworkAvailable(context)) {
-                                new CancelRequest().execute(
-                                        userId,
-                                        groupDetails.getId()
-                                );
-                            } else {
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            }
-                        }
-                    });
-
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-
-
-                    final AlertDialog alertD = builder.create();
-                    alertD.show();
+                } else if (groupDetails.getStatus().equals("requested") || groupDetails.getStatus().equals("rejected")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new CancelRequest().execute(
+                                userId,
+                                groupDetails.getId()
+                        );
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 }
             }
         });
@@ -567,7 +550,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 Picasso.with(context)
                         .load(memberDetails.getImage_url().trim())
                         .placeholder(R.drawable.icon_user)
-                        .resize(100,100)
+                        .resize(100, 100)
                         .into(holder.imv_user, new Callback() {
                             @Override
                             public void onSuccess() {

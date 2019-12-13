@@ -65,7 +65,7 @@ public class GroupNotificationListModel {
         private String created_at;
         private String group_id;
         private String user_id;
-        private Object groupnotification_id;
+        private String groupnotification_id;
         private String is_read;
         private String attachment;
         private List<DocumentsBean> documents;
@@ -142,11 +142,11 @@ public class GroupNotificationListModel {
             this.user_id = user_id;
         }
 
-        public Object getGroupnotification_id() {
+        public String getGroupnotification_id() {
             return groupnotification_id;
         }
 
-        public void setGroupnotification_id(Object groupnotification_id) {
+        public void setGroupnotification_id(String groupnotification_id) {
             this.groupnotification_id = groupnotification_id;
         }
 

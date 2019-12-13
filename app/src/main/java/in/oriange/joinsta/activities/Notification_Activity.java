@@ -43,6 +43,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
     private LinearLayout ll_nopreview;
     private String userId;
 
+    ArrayList<NotificationListModel.ResultBean> notificationList;
     private LocalBroadcastManager localBroadcastManager;
 
     @Override
@@ -68,6 +69,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
         rv_notification = findViewById(R.id.rv_notification);
         rv_notification.setLayoutManager(new LinearLayoutManager(context));
 
+        notificationList = new ArrayList<>();
 //        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
 //        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rv_notification);
 //
@@ -173,7 +175,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    ArrayList<NotificationListModel.ResultBean> notificationList = new ArrayList<>();
+                    notificationList = new ArrayList<>();
                     NotificationListModel pojoDetails = new Gson().fromJson(result, NotificationListModel.class);
                     type = pojoDetails.getType();
 
@@ -183,8 +185,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
                         if (notificationList.size() > 0) {
                             rv_notification.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            NotificationAdapter notificationAdapter = new NotificationAdapter(context, notificationList);
-                            rv_notification.setAdapter(notificationAdapter);
+                            rv_notification.setAdapter(new NotificationAdapter(context, notificationList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_notification.setVisibility(View.GONE);
