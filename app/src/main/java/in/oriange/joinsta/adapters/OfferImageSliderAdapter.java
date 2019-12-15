@@ -67,7 +67,6 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
 
         Picasso.with(context)
                 .load(bannerDetails.getBanners_image())
-                .resize(300, 300)
                 .into(holder.imageViewBackground);
 
         holder.ib_share.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +82,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
             }
         });
 
-        holder.ib_share.bringToFront();
+        holder.ib_share.setVisibility(View.GONE);
 
         holder.imageViewBackground.setOnClickListener(new View.OnClickListener() {
             @Override

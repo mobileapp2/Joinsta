@@ -550,7 +550,6 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 Picasso.with(context)
                         .load(memberDetails.getImage_url().trim())
                         .placeholder(R.drawable.icon_user)
-                        .resize(100, 100)
                         .into(holder.imv_user, new Callback() {
                             @Override
                             public void onSuccess() {

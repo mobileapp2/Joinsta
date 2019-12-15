@@ -72,13 +72,18 @@ public class OffersBusinessAdapter extends RecyclerView.Adapter<OffersBusinessAd
             holder.tv_new.setVisibility(View.VISIBLE);
         }
 
-        if (!offerDetails.getBusiness_name().isEmpty() && !offerDetails.getCategory_name().isEmpty()) {
-            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#EF6C00\"> <b>" + offerDetails.getBusiness_name() + "</b> </font>" + " (" + offerDetails.getCategory_name() + ")"));
-        } else if (offerDetails.getBusiness_name().isEmpty() && offerDetails.getCategory_name().isEmpty()) {
+        if (!offerDetails.getBusiness_name().trim().equals("")) {
+            holder.tv_business_name.setText(offerDetails.getBusiness_name());
+        } else {
             holder.tv_business_name.setVisibility(View.GONE);
-        } else if (!offerDetails.getBusiness_name().isEmpty()) {
-            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#EF6C00\"> <b>" + offerDetails.getBusiness_name() + "</b> </font>"));
         }
+//        if (!offerDetails.getBusiness_name().isEmpty() && !offerDetails.getCategory_name().isEmpty()) {
+//            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#EF6C00\"> <b>" + offerDetails.getBusiness_name() + "</b> </font>" + " (" + offerDetails.getCategory_name() + ")"));
+//        } else if (offerDetails.getBusiness_name().isEmpty() && offerDetails.getCategory_name().isEmpty()) {
+//            holder.tv_business_name.setVisibility(View.GONE);
+//        } else if (!offerDetails.getBusiness_name().isEmpty()) {
+//            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#EF6C00\"> <b>" + offerDetails.getBusiness_name() + "</b> </font>"));
+//        }
 
         holder.tv_title.setText(offerDetails.getTitle());
         holder.tv_description.setText(offerDetails.getDescription());

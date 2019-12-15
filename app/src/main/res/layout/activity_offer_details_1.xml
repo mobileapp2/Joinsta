@@ -41,8 +41,8 @@
         android:layout_height="220dp"
         app:autoPlaying="true"
         app:centerScale="1.3"
-        app:itemSpace="20"
-        app:moveSpeed="1.8"
+        app:itemSpace="10"
+        app:moveSpeed="1"
         app:showIndicator="false" />
 
     <androidx.cardview.widget.CardView

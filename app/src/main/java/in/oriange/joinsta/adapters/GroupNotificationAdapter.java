@@ -67,6 +67,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
     private boolean isDownloaded = false;
 
     private File downloadedFile;
+    private String title, description;
 
     public GroupNotificationAdapter(Context context, List<GroupNotificationListModel.ResultBean> resultArrayList) {
         this.context = context;
@@ -328,6 +329,26 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                 });
                 AlertDialog alertD = builder.create();
                 alertD.show();
+            }
+        });
+
+        btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                title = notificationDetails.getSubject();
+                description = notificationDetails.getMessage();
+                if (!notificationDetails.getAttachment().equals("")) {
+                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    shareIntent.setType("text/html");
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+                } else {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new DownloadDocumentForShare().execute(IMAGE_LINK + "groupnotifications/" + notificationDetails.getAttachment());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                }
             }
         });
 
@@ -645,6 +666,103 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                 context.startActivity(intent);
 
             }
+        }
+    }
+
+    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedImagefolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            Uri uri = Uri.parse("file:///" + file);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
+            Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/html");
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+
         }
     }
 }

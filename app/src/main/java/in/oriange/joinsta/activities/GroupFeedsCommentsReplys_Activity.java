@@ -109,7 +109,6 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
             Picasso.with(context)
                     .load(commentsDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
-                    .resize(100, 100)
                     .into(imv_user);
         } else {
             imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));

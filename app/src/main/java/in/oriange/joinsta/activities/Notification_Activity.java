@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +40,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
 
     private Context context;
     private UserSessionManager session;
+    private EditText edt_search;
     private RecyclerView rv_notification;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
@@ -62,6 +66,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
         context = Notification_Activity.this;
         session = new UserSessionManager(context);
 
+        edt_search = findViewById(R.id.edt_search);
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         ll_nopreview = findViewById(R.id.ll_nopreview);
@@ -131,6 +136,51 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
                 }
             }
         });
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_notification.setAdapter(new NotificationAdapter(context, notificationList));
+                    return;
+                }
+
+                if (notificationList.size() == 0) {
+                    rv_notification.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<NotificationListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (NotificationListModel.ResultBean groupsDetails : notificationList) {
+
+                        String groupsToBeSearched = groupsDetails.getTitle().toLowerCase() +
+                                groupsDetails.getDescription().toLowerCase() +
+                                groupsDetails.getCreated_at().toLowerCase();
+
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
+                            groupsSearchedList.add(groupsDetails);
+                        }
+                    }
+                    rv_notification.setAdapter(new NotificationAdapter(context, groupsSearchedList));
+                } else {
+                    rv_notification.setAdapter(new NotificationAdapter(context, notificationList));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
 //    @Override

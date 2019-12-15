@@ -33,6 +33,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -104,6 +105,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
     private static Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private ScrollView sv_scroll;
     private ProgressBar progressBar;
     private ImageView imv_photo1, imv_photo2;
     private MaterialEditText edt_nature, edt_subtype, edt_firm, edt_mobile, edt_landline, edt_designation,
@@ -156,6 +158,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        sv_scroll = findViewById(R.id.sv_scroll);
         progressBar = findViewById(R.id.progressBar);
         imv_photo1 = findViewById(R.id.imv_photo1);
         imv_photo2 = findViewById(R.id.imv_photo2);
@@ -657,6 +660,13 @@ public class EditProfessional_Activity extends AppCompatActivity {
         imv_show_hide_tax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sv_scroll.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+
                 if (ll_tax_details.getVisibility() == View.VISIBLE) {
                     ll_tax_details.setVisibility(View.GONE);
                 } else {
@@ -668,6 +678,13 @@ public class EditProfessional_Activity extends AppCompatActivity {
         imv_show_hide_bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sv_scroll.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+
                 if (ll_bank_details.getVisibility() == View.VISIBLE) {
                     ll_bank_details.setVisibility(View.GONE);
                 } else {

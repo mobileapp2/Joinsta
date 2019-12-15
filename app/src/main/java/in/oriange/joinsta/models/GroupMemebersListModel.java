@@ -53,7 +53,7 @@ public class GroupMemebersListModel {
         private String password;
         private String image_url;
         private String is_joinsta_member;
-        private String city;
+        private String native_place;
         private String searchQueryString;
         private List<BussinessInfoBean> bussinessInfo;
         private List<EmployeeInfoBean> employeeInfo;
@@ -176,11 +176,15 @@ public class GroupMemebersListModel {
         }
 
         public String getCity() {
-            return city;
+            if (native_place != null) {
+                return native_place;
+            } else {
+                return "";
+            }
         }
 
-        public void setCity(String city) {
-            this.city = city;
+        public void setCity(String native_place) {
+            this.native_place = native_place;
         }
 
         public String getSearchQueryString() {

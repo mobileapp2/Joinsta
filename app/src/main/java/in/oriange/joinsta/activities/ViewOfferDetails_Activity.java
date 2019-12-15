@@ -92,12 +92,18 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         isFromMyOfferOrFromParticularOffer = getIntent().getStringExtra("isFromMyOfferOrFromParticularOffer");
         isRecordAddedByCurrentUserId = getIntent().getStringExtra("isRecordAddedByCurrentUserId");
 
-        if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
-            tv_business_name.setText(offerDetails.getRecord_name() + " (" + offerDetails.getSub_category() + ")");
-        } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
-            tv_business_name.setVisibility(View.GONE);
-        } else if (!offerDetails.getRecord_name().isEmpty()) {
+//        if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
+//            tv_business_name.setText(offerDetails.getRecord_name() + " (" + offerDetails.getSub_category() + ")");
+//        } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
+//            tv_business_name.setVisibility(View.GONE);
+//        } else if (!offerDetails.getRecord_name().isEmpty()) {
+//            tv_business_name.setText(offerDetails.getRecord_name());
+//        }
+
+        if (!offerDetails.getRecord_name().trim().equals("")) {
             tv_business_name.setText(offerDetails.getRecord_name());
+        } else {
+            tv_business_name.setVisibility(View.GONE);
         }
 
         tv_title.setText(offerDetails.getTitle());

@@ -137,7 +137,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
                                 groupsDetails.getMessage().toLowerCase() +
                                 groupsDetails.getCreated_at().toLowerCase();
 
-                        if (groupsToBeSearched.contains(query.toString().toLowerCase().replace(" ", ""))) {
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
                             groupsSearchedList.add(groupsDetails);
                         }
                     }

@@ -57,9 +57,9 @@
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text="2 Documents Attached"
-            android:textSize="16sp"
             android:textColor="@color/colorPrimary"
-            android:visibility="gone"/>
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_buttons"
@@ -72,10 +72,9 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
                 android:layout_weight="0.5"
                 android:text="Download"
+                android:textAllCaps="false"
                 android:textStyle="bold" />
 
             <Button
@@ -85,6 +84,7 @@
                 android:layout_height="40dp"
                 android:layout_weight="0.5"
                 android:text="Delete"
+                android:textAllCaps="false"
                 android:textStyle="bold" />
 
             <Button
@@ -92,10 +92,9 @@
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
                 android:layout_weight="0.5"
                 android:text="Share"
+                android:textAllCaps="false"
                 android:textStyle="bold" />
 
         </LinearLayout>

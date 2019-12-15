@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sv_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
@@ -744,7 +744,8 @@
                     android:layout_weight="0.5"
                     android:background="@drawable/button_background_filled"
                     android:text="Save"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:visibility="gone"  />
 
             </LinearLayout>
 

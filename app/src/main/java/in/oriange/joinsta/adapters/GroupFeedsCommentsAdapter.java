@@ -55,7 +55,8 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
             Picasso.with(context)
                     .load(commentsDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
-                    .resize(100, 100)
+                    .resize(200, 200)// resizes the image to these dimensions (in pixel)
+                    .centerCrop()
                     .into(holder.imv_user);
         } else {
             holder.imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));
@@ -73,25 +74,17 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
         holder.tv_comment.setText(commentsDetails.getMessage());
 
         if (commentsDetails.getComment_reply().size() != 0) {
-            holder.btn_replies.setVisibility(View.VISIBLE);
+            holder.tv_replies.setVisibility(View.VISIBLE);
             if (commentsDetails.getComment_reply().size() == 1) {
-                holder.btn_replies.setText("1 Reply");
+                holder.tv_replies.setText("1 Reply");
             } else {
-                holder.btn_replies.setText(commentsDetails.getComment_reply().size() + " Replies");
+                holder.tv_replies.setText(commentsDetails.getComment_reply().size() + " Replies");
             }
         } else {
-            holder.btn_replies.setVisibility(View.GONE);
+            holder.tv_replies.setVisibility(View.GONE);
         }
 
         holder.ll_mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, GroupFeedsCommentsReplys_Activity.class)
-                        .putExtra("commentsDetails", commentsDetails));
-            }
-        });
-
-        holder.btn_replies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupFeedsCommentsReplys_Activity.class)
@@ -110,7 +103,7 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
         private LinearLayout ll_mainlayout;
         private CircleImageView imv_user;
         private TextView tv_name, tv_time, tv_comment;
-        private Button btn_replies;
+        private TextView tv_replies;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -119,7 +112,7 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
             tv_name = view.findViewById(R.id.tv_name);
             tv_time = view.findViewById(R.id.tv_time);
             tv_comment = view.findViewById(R.id.tv_comment);
-            btn_replies = view.findViewById(R.id.btn_replies);
+            tv_replies = view.findViewById(R.id.tv_replies);
         }
     }
 }

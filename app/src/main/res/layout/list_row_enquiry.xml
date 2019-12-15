@@ -42,7 +42,6 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:paddingLeft="5dp"
-            android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:text="Joinsta Development"
             android:textColor="@color/darkGray"
@@ -53,7 +52,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
-            android:paddingTop="5dp"
             android:paddingRight="5dp"
             android:text="Joinsta Development Joinsta Development Joinsta Development Joinsta Development"
             android:textColor="@color/darkGray"
@@ -70,8 +68,10 @@
                 android:id="@+id/tv_createdby"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.9"
+                android:layout_weight="0.95"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
+                android:maxLines="1"
                 android:text="Joinsta Development"
                 android:textColor="@color/darkGray"
                 android:textSize="16sp" />
@@ -80,7 +80,7 @@
                 android:id="@+id/ib_call"
                 android:layout_width="0dp"
                 android:layout_height="25dp"
-                android:layout_weight="0.1"
+                android:layout_weight="0.05"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/icon_call" />
 
@@ -113,8 +113,7 @@
                     android:paddingLeft="5dp"
                     android:text="Attended"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp"/>
 
                 <Button
                     android:id="@+id/btn_delete"

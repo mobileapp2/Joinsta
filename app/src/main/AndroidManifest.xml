@@ -227,7 +227,7 @@
             android:name=".activities.GroupNotifications_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
             android:name=".activities.MyGroupDetails_Activity"
             android:screenOrientation="portrait"
@@ -265,7 +265,7 @@
             android:name=".activities.GroupMembersSupervisors_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
             android:name=".activities.GroupsMembersRequests_Activity"
             android:screenOrientation="portrait"

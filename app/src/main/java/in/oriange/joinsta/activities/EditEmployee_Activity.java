@@ -33,6 +33,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -105,6 +106,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
     private static Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private ScrollView sv_scroll;
     private ProgressBar progressBar;
     private CircleImageView imv_user;
     private RelativeLayout rl_profilepic;
@@ -157,6 +159,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        sv_scroll = findViewById(R.id.sv_scroll);
         rl_profilepic = findViewById(R.id.rl_profilepic);
         progressBar = findViewById(R.id.progressBar);
         imv_user = findViewById(R.id.imv_user);
@@ -645,6 +648,13 @@ public class EditEmployee_Activity extends AppCompatActivity {
         imv_show_hide_tax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sv_scroll.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+
                 if (ll_tax_details.getVisibility() == View.VISIBLE) {
                     ll_tax_details.setVisibility(View.GONE);
                 } else {
@@ -656,6 +666,13 @@ public class EditEmployee_Activity extends AppCompatActivity {
         imv_show_hide_bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                sv_scroll.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+
                 if (ll_bank_details.getVisibility() == View.VISIBLE) {
                     ll_bank_details.setVisibility(View.GONE);
                 } else {

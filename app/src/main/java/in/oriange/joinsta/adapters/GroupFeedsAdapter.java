@@ -1,7 +1,13 @@
 package in.oriange.joinsta.adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +24,13 @@ import com.squareup.picasso.Picasso;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -27,6 +40,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.GroupFeedsComments_Activity;
 import in.oriange.joinsta.models.GroupFeedsModel;
+import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 
@@ -36,10 +50,23 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     private List<GroupFeedsModel.ResultBean> feedsList;
     private PrettyTime p;
 
+    private File downloadedDocsfolder, file;
+    private String description;
+
     public GroupFeedsAdapter(Context context, List<GroupFeedsModel.ResultBean> feedsList) {
         this.context = context;
         this.feedsList = feedsList;
         p = new PrettyTime();
+
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
+        if (!downloadedDocsfolder.exists())
+            downloadedDocsfolder.mkdirs();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     @NonNull
@@ -59,7 +86,6 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             Picasso.with(context)
                     .load(feedDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
-                    .resize(100, 100)
                     .into(holder.imv_user);
         } else {
             holder.imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));
@@ -80,7 +106,6 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
             Picasso.with(context)
                     .load(url)
-                    .resize(450, 300)
                     .into(holder.imv_feed_image, new Callback() {
                         @Override
                         public void onSuccess() {
@@ -119,6 +144,25 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                         .putExtra("feedDetails", feedDetails));
             }
         });
+
+        holder.btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                description = feedDetails.getFeed_text();
+                if (!feedDetails.getFeed_doc().equals("")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                } else {
+                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    shareIntent.setType("text/html");
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
+                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+                }
+            }
+        });
     }
 
     @Override
@@ -145,6 +189,103 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             imv_feed_image = view.findViewById(R.id.imv_feed_image);
             btn_comment = view.findViewById(R.id.btn_comment);
             btn_share = view.findViewById(R.id.btn_share);
+
+        }
+    }
+
+    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocsfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            Uri uri = Uri.parse("file:///" + file);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
+            Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+            shareIntent.setType("text/html");
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(shareIntent, "Share via"));
 
         }
     }

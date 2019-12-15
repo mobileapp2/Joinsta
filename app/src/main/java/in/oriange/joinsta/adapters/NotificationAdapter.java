@@ -93,7 +93,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             builder.detectFileUriExposure();
         }
 
-
     }
 
     @Override
@@ -282,10 +281,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             public void onClick(View v) {
                 title = notificationDetails.getTitle();
                 description = notificationDetails.getDescription();
-                if (Utilities.isNetworkAvailable(context)) {
-                    new DownloadDocumentForShare().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
+                if (!notificationDetails.getImage().equals("0")) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new DownloadDocumentForShare().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    shareIntent.setType("text/html");
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
                 }
             }
         });

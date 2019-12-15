@@ -74,7 +74,7 @@
                         android:text="Latur"
                         android:textAllCaps="false"
                         android:textColor="@color/darkGray"
-                        android:textSize="14sp" />
+                        android:textSize="15sp" />
 
                 </LinearLayout>
 

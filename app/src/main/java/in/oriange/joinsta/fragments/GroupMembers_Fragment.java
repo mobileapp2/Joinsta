@@ -144,7 +144,7 @@ public class GroupMembers_Fragment extends Fragment {
                                 groupsDetails.getMobile().toLowerCase() +
                                 groupsDetails.getEmail().toLowerCase();
 
-                        if (groupsToBeSearched.contains(query.toString().toLowerCase().replace(" ", ""))) {
+                        if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
                             groupsSearchedList.add(groupsDetails);
                         }
                     }
