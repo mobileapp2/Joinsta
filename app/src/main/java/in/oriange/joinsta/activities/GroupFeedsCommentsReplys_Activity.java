@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +28,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -45,13 +49,17 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private CircleImageView imv_user, imv_current_user;
-    private TextView tv_name, tv_time, tv_comment;
+    private TextView tv_name, tv_time, tv_comment, tv_replies;
     private RecyclerView rv_feeds_comments_replies;
     private EditText edt_reply;
     private ImageButton imb_post_reply;
 
     private GroupFeedsModel.ResultBean.FeedCommentsBean commentsDetails;
     private String userId;
+
+    private LocalBroadcastManager localBroadcastManager;
+    private List<GroupFeedsModel.ResultBean.FeedCommentsBean.CommentReplyBean> feedRepliesList;
+    private GroupFeedsCommentsRepliesAdapter groupFeedsCommentsRepliesAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +84,13 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
         tv_name = findViewById(R.id.tv_name);
         tv_time = findViewById(R.id.tv_time);
         tv_comment = findViewById(R.id.tv_comment);
+        tv_replies = findViewById(R.id.tv_replies);
         rv_feeds_comments_replies = findViewById(R.id.rv_feeds_comments_replies);
         rv_feeds_comments_replies.setLayoutManager(new LinearLayoutManager(context));
         edt_reply = findViewById(R.id.edt_reply);
         imb_post_reply = findViewById(R.id.imb_post_reply);
 
+        feedRepliesList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -125,8 +135,24 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
 
         tv_comment.setText(commentsDetails.getMessage());
 
-        rv_feeds_comments_replies.setAdapter(new GroupFeedsCommentsRepliesAdapter(context, commentsDetails.getComment_reply()));
+        if (commentsDetails.getComment_reply().size() != 0) {
+            tv_replies.setVisibility(View.VISIBLE);
+            if (commentsDetails.getComment_reply().size() == 1) {
+                tv_replies.setText("1 Reply");
+            } else {
+                tv_replies.setText(commentsDetails.getComment_reply().size() + " Replies");
+            }
+        } else {
+            tv_replies.setVisibility(View.GONE);
+        }
 
+        feedRepliesList = commentsDetails.getComment_reply();
+        groupFeedsCommentsRepliesAdapter = new GroupFeedsCommentsRepliesAdapter(context, feedRepliesList);
+        rv_feeds_comments_replies.setAdapter(groupFeedsCommentsRepliesAdapter);
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("GroupFeedsCommentsReplys_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
@@ -151,7 +177,6 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
             }
         });
     }
-
 
     private class AddFeedCommentReply extends AsyncTask<String, Void, String> {
 
@@ -181,11 +206,10 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
-                        finish();
+                        edt_reply.setText("");
                     } else {
-                        Utilities.showMessage("Failed to submit the details", context, 3);
+                        Utilities.showMessage("Failed to add reply", context, 3);
                     }
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -211,4 +235,28 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
         super.onPause();
         Utilities.hideSoftKeyboard(GroupFeedsCommentsReplys_Activity.this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            commentsDetails = (GroupFeedsModel.ResultBean.FeedCommentsBean) intent.getSerializableExtra("commentsDetails");
+            groupFeedsCommentsRepliesAdapter.swap(commentsDetails.getComment_reply());
+
+            if (commentsDetails.getComment_reply().size() != 0) {
+                tv_replies.setVisibility(View.VISIBLE);
+                if (commentsDetails.getComment_reply().size() == 1) {
+                    tv_replies.setText("1 Reply");
+                } else {
+                    tv_replies.setText(commentsDetails.getComment_reply().size() + " Replies");
+                }
+            } else {
+                tv_replies.setVisibility(View.GONE);
+            }
+        }
+    };
 }

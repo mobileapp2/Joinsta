@@ -110,7 +110,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         isAdmin = getIntent().getStringExtra("isAdmin");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetAllFeedDetails().execute();
+            new GetAllFeedDetails().execute("1");
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -125,7 +125,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetAllFeedDetails().execute();
+                    new GetAllFeedDetails().execute("1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     swipeRefreshLayout.setRefreshing(false);
@@ -145,6 +145,8 @@ public class GroupFeeds_Activity extends AppCompatActivity {
 
     private class GetAllFeedDetails extends AsyncTask<String, Void, String> {
 
+        private String TYPE = "0";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -157,6 +159,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
+            TYPE = params[0];
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("type", "giveAllFeedDetails"));
             param.add(new ParamsPojo("group_id", groupId));
@@ -184,6 +187,13 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                             rv_feeds.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
                             rv_feeds.setAdapter(new GroupFeedsAdapter(context, feedsList));
+
+                            if (TYPE.equals("2")) {
+                                GroupFeedsModel.ResultBean feedDetails = feedsList.get(GroupFeedsAdapter.itemClickedPosition);
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsComments_Activity")
+                                        .putExtra("feedDetails", feedDetails));
+                            }
+
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_feeds.setVisibility(View.GONE);
@@ -232,7 +242,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utilities.isNetworkAvailable(context)) {
-                new GetAllFeedDetails().execute();
+                new GetAllFeedDetails().execute("2");
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }

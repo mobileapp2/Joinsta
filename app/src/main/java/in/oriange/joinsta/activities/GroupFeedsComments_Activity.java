@@ -9,8 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +21,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +49,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -52,6 +60,7 @@ import in.oriange.joinsta.adapters.GroupFeedsCommentsAdapter;
 import in.oriange.joinsta.models.GroupFeedsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -77,6 +86,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
     private File downloadedDocsfolder, file;
     private String description;
+
+    private LocalBroadcastManager localBroadcastManager;
+    private List<GroupFeedsModel.ResultBean.FeedCommentsBean> feedCommentsList;
+    private GroupFeedsCommentsAdapter groupFeedsCommentsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +131,8 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             builder.detectFileUriExposure();
         }
+
+        feedCommentsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -187,8 +202,13 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
         }
 
-        rv_feeds_comments.setAdapter(new GroupFeedsCommentsAdapter(context, feedDetails.getFeed_comments()));
+        feedCommentsList = feedDetails.getFeed_comments();
+        groupFeedsCommentsAdapter = new GroupFeedsCommentsAdapter(context, feedCommentsList);
+        rv_feeds_comments.setAdapter(groupFeedsCommentsAdapter);
 
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("GroupFeedsComments_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
@@ -262,9 +282,9 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
-                        finish();
+                        edt_comment.setText("");
                     } else {
-                        Utilities.showMessage("Failed to submit the details", context, 3);
+                        Utilities.showMessage("Failed to add comment", context, 3);
                     }
 
                 }
@@ -385,8 +405,130 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (userId.equals(feedDetails.getCreated_by())) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menus_edit_delete, menu);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to delete this feed?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_alertred);
+                builder.setCancelable(false);
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DeleteFeed().execute();
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
+                break;
+            case R.id.action_edit:
+                context.startActivity(new Intent(context, EditGroupFeeds_Activity.class)
+                        .putExtra("feedDetails", feedDetails));
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    private class DeleteFeed extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "deleteFeedDetails"));
+            param.add(new ParamsPojo("feed_id", feedDetails.getId()));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.FEEDSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
+                        Utilities.showMessage("Feed deleted successfully", context, 1);
+                        finish();
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         Utilities.hideSoftKeyboard(GroupFeedsComments_Activity.this);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            feedDetails = (GroupFeedsModel.ResultBean) intent.getSerializableExtra("feedDetails");
+            if (feedDetails.getFeed_comments().size() == 1) {
+                btn_comment.setText("1 Comment");
+            } else {
+                btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+            }
+
+            feedCommentsList.clear();
+            feedCommentsList = feedDetails.getFeed_comments();
+            groupFeedsCommentsAdapter.swap(feedCommentsList);
+
+            if (GroupFeedsCommentsAdapter.isCommentClicked) {
+                GroupFeedsModel.ResultBean.FeedCommentsBean commentsDetails = feedCommentsList.get(GroupFeedsCommentsAdapter.itemClickedPosition);
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsCommentsReplys_Activity")
+                        .putExtra("commentsDetails", commentsDetails));
+            }
+        }
+    };
 }

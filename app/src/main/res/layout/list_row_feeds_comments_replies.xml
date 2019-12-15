@@ -3,64 +3,86 @@
     android:id="@+id/ll_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="50dp"
+    android:layout_marginRight="5dp"
     android:layout_marginBottom="5dp"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="horizontal">
-
-    <View
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:visibility="invisible" />
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="0px"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/bg_reply"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_name"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imv_user"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="5dp"
+            android:gravity="top"
+            android:src="@drawable/icon_user" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:background="@drawable/bg_comment"
+            android:orientation="vertical"
+            android:padding="5dp">
 
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:textColor="@color/darkGray"
-            android:textSize="12sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/colorPrimary" />
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Priyesh Pawar"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tv_reply"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/darkGray"
-            android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Days ago"
+                    android:textColor="@color/darkGray"
+                    android:textSize="12sp" />
+
+                <ImageButton
+                    android:id="@+id/imv_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/icon_menumore" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tv_reply"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingTop="2dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="2dp"
+                android:text="sbmvw skejbgkew eakjvbke kjbfkew ajkbvjebf ae vkaef evkubae kbaebkbeukqae kbeaekv kbev"
+                android:textColor="@color/darkGray"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imv_user"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:gravity="top"
-        android:padding="5dp"
-        android:src="@drawable/icon_user" />
 
 </LinearLayout>

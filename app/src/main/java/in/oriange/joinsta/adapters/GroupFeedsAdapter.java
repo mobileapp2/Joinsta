@@ -2,7 +2,9 @@ package in.oriange.joinsta.adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -12,16 +14,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.Lifecycle;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonObject;
+import com.skydoves.powermenu.MenuAnimation;
+import com.skydoves.powermenu.MenuEffect;
+import com.skydoves.powermenu.OnDismissedListener;
+import com.skydoves.powermenu.OnMenuItemClickListener;
+import com.skydoves.powermenu.PowerMenu;
+import com.skydoves.powermenu.PowerMenuItem;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.File;
@@ -33,19 +48,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EditGroupFeeds_Activity;
 import in.oriange.joinsta.activities.GroupFeedsComments_Activity;
 import in.oriange.joinsta.models.GroupFeedsModel;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.ParamsPojo;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.MyViewHolder> {
 
+    private String userId;
     private Context context;
     private List<GroupFeedsModel.ResultBean> feedsList;
     private PrettyTime p;
@@ -53,12 +75,27 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     private File downloadedDocsfolder, file;
     private String description;
 
+    private PowerMenu powerMenu;
+    public static int itemClickedPosition = 0;
+
     public GroupFeedsAdapter(Context context, List<GroupFeedsModel.ResultBean> feedsList) {
         this.context = context;
         this.feedsList = feedsList;
         p = new PrettyTime();
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
+        UserSessionManager session = new UserSessionManager(context);
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Feeds");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 
@@ -79,8 +116,14 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
 
     @Override
     public void onBindViewHolder(final @NonNull MyViewHolder holder, int pos) {
-        int position = holder.getAdapterPosition();
+        final int position = holder.getAdapterPosition();
         final GroupFeedsModel.ResultBean feedDetails = feedsList.get(position);
+
+        if (feedDetails.getCreated_by().equals(userId)) {
+            holder.imv_more.setVisibility(View.VISIBLE);
+        } else {
+            holder.imv_more.setVisibility(View.GONE);
+        }
 
         if (!feedDetails.getImage_url().trim().isEmpty()) {
             Picasso.with(context)
@@ -132,6 +175,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                itemClickedPosition = position;
                 context.startActivity(new Intent(context, GroupFeedsComments_Activity.class)
                         .putExtra("feedDetails", feedDetails));
             }
@@ -140,6 +184,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         holder.btn_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                itemClickedPosition = position;
                 context.startActivity(new Intent(context, GroupFeedsComments_Activity.class)
                         .putExtra("feedDetails", feedDetails));
             }
@@ -163,6 +208,17 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                 }
             }
         });
+
+        holder.imv_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClickedPosition = position;
+                powerMenu = getHamburgerPowerMenu(context,
+                        onHamburgerItemClickListener, onHamburgerMenuDismissedListener);
+                powerMenu.showAsDropDown(v);
+
+            }
+        });
     }
 
     @Override
@@ -177,9 +233,12 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         private CardView cv_mainlayout, cv_feed_image;
         private ImageView imv_feed_image;
         private Button btn_comment, btn_share;
+        private ImageButton imv_more;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
+
+            imv_more = view.findViewById(R.id.imv_more);
             imv_user = view.findViewById(R.id.imv_user);
             tv_name = view.findViewById(R.id.tv_name);
             tv_feed_text = view.findViewById(R.id.tv_feed_text);
@@ -289,4 +348,125 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
 
         }
     }
+
+    private OnMenuItemClickListener<PowerMenuItem> onHamburgerItemClickListener =
+            new OnMenuItemClickListener<PowerMenuItem>() {
+                @Override
+                public void onItemClick(int position, PowerMenuItem item) {
+                    switch (position) {
+                        case 0:
+                            context.startActivity(new Intent(context, EditGroupFeeds_Activity.class)
+                                    .putExtra("feedDetails", feedsList.get(itemClickedPosition)));
+                            break;
+
+                        case 1:
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                            builder.setMessage("Are you sure you want to delete this feed?");
+                            builder.setTitle("Alert");
+                            builder.setIcon(R.drawable.icon_alertred);
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    if (Utilities.isNetworkAvailable(context)) {
+                                        new DeleteFeed().execute(String.valueOf(itemClickedPosition));
+                                    } else {
+                                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                    }
+                                }
+                            });
+                            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            AlertDialog alertD = builder.create();
+                            alertD.show();
+                            break;
+
+                    }
+                }
+            };
+
+    private OnDismissedListener onHamburgerMenuDismissedListener =
+            new OnDismissedListener() {
+                @Override
+                public void onDismissed() {
+
+                }
+            };
+
+
+    public static PowerMenu getHamburgerPowerMenu(
+            Context context,
+            OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener,
+            OnDismissedListener onDismissedListener) {
+        return new PowerMenu.Builder(context)
+                .addItem(new PowerMenuItem("EDIT"))
+                .addItem(new PowerMenuItem("DELETE"))
+                .setAutoDismiss(true)
+                .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
+                .setMenuEffect(MenuEffect.BODY)
+                .setMenuRadius(10f)
+                .setMenuShadow(10f)
+                .setTextColor(context.getResources().getColor(R.color.black))
+                .setSelectedTextColor(Color.WHITE)
+                .setMenuColor(Color.WHITE)
+                .setSelectedMenuColor(context.getResources().getColor(R.color.colorPrimary))
+                .setOnMenuItemClickListener(onMenuItemClickListener)
+                .setOnDismissListener(onDismissedListener)
+                .setPreferenceName("HamburgerPowerMenu")
+                .setInitializeRule(Lifecycle.Event.ON_CREATE, 0)
+                .build();
+    }
+
+    private class DeleteFeed extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "deleteFeedDetails"));
+            param.add(new ParamsPojo("feed_id", feedsList.get(itemClickedPosition).getId()));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.FEEDSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
+                        Utilities.showMessage("Feed deleted successfully", context, 1);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
 }

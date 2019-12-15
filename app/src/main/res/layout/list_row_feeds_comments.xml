@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_mainlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:layout_marginBottom="5dp"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,34 +17,53 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imv_user"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="5dp"
             android:gravity="top"
-            android:padding="5dp"
             android:src="@drawable/icon_user" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_comment"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="5dp">
 
-            <TextView
-                android:id="@+id/tv_name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal"
                 android:paddingLeft="5dp"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="5dp"
-                android:textColor="@color/darkGray"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Priyesh Pawar"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Days ago"
+                    android:textColor="@color/darkGray"
+                    android:textSize="12sp" />
+
+                <ImageButton
+                    android:id="@+id/imv_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/icon_menumore" />
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -52,25 +74,26 @@
                 android:id="@+id/tv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="2dp"
                 android:paddingRight="5dp"
+                android:paddingBottom="2dp"
+                android:text="sbmvw skejbgkew eakjvbke kjbfkew ajkbvjebf ae vkaef evkubae kbaebkbeukqae kbeaekv kbev"
                 android:textColor="@color/darkGray"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_replies"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="15dp"
+                android:paddingLeft="10dp"
+                android:paddingBottom="2dp"
                 android:text="2 Replies"
                 android:textColor="@color/colorAccent"
-                android:textSize="12sp"
-                android:visibility="gone" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
     </LinearLayout>
-
 
 </LinearLayout>

@@ -49,39 +49,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:focusableInTouchMode="true"
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imv_user"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginRight="5dp"
                     android:gravity="top"
-                    android:padding="5dp"
                     android:src="@drawable/icon_user" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_comment"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                    <TextView
-                        android:id="@+id/tv_name"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
                         android:paddingLeft="5dp"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:paddingTop="2dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="2dp">
 
-                    <TextView
-                        android:id="@+id/tv_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:textColor="@color/darkGray"
-                        android:textSize="12sp" />
+                        <TextView
+                            android:id="@+id/tv_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/darkGray"
+                            android:textSize="12sp" />
+
+                        <ImageButton
+                            android:id="@+id/imv_more"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/icon_menumore"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
@@ -93,11 +111,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="5dp"
-                        android:paddingTop="5dp"
+                        android:paddingTop="2dp"
                         android:paddingRight="5dp"
-                        android:paddingBottom="5dp"
+                        android:paddingBottom="2dp"
                         android:textColor="@color/darkGray"
-                        android:textSize="14sp" />
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_replies"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="10dp"
+                        android:paddingBottom="2dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
