@@ -26,6 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -80,6 +81,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     private RecyclerView rv_feeds_comments;
     private EditText edt_comment;
     private ImageButton imb_post_comment;
+    private CheckBox cb_like;
 
     private GroupFeedsModel.ResultBean feedDetails;
     private String userId;
@@ -121,6 +123,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         rv_feeds_comments.setLayoutManager(new LinearLayoutManager(context));
         edt_comment = findViewById(R.id.edt_comment);
         imb_post_comment = findViewById(R.id.imb_post_comment);
+        cb_like = findViewById(R.id.cb_like);
 
         downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
         if (!downloadedDocsfolder.exists())
@@ -202,6 +205,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
         }
 
+        if (feedDetails.getIs_favourite() == 1) {
+            cb_like.setChecked(true);
+        }
+
         feedCommentsList = feedDetails.getFeed_comments();
         groupFeedsCommentsAdapter = new GroupFeedsCommentsAdapter(context, feedCommentsList);
         rv_feeds_comments.setAdapter(groupFeedsCommentsAdapter);
@@ -246,11 +253,37 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                 } else {
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/html");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
                     context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                 }
             }
         });
+
+        cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String isFav;
+
+                if (cb_like.isChecked())
+                    isFav = "1";
+                else
+                    isFav = "0";
+
+                JsonObject mainObj = new JsonObject();
+
+                mainObj.addProperty("type", "markFavouriteFeedDetails");
+                mainObj.addProperty("user_id", userId);
+                mainObj.addProperty("feed_id", feedDetails.getId());
+                mainObj.addProperty("is_fav", isFav);
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SetFavourite().execute(mainObj.toString());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
 
     }
 
@@ -384,7 +417,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
             Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
             sharingIntent.setType("text/html");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
             sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
             context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
 
@@ -489,6 +522,46 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
                         Utilities.showMessage("Feed deleted successfully", context, 1);
                         finish();
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class SetFavourite extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.FEEDSAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
                     }
 
                 }

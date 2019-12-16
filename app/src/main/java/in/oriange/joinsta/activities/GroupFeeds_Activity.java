@@ -67,6 +67,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
     private String userId, groupId, groupName, isAdmin;
 
     private LocalBroadcastManager localBroadcastManager;
+    private GroupFeedsAdapter groupFeedsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,14 +185,17 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                         feedsList = pojoDetails.getResult();
 
                         if (feedsList.size() > 0) {
+
                             rv_feeds.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_feeds.setAdapter(new GroupFeedsAdapter(context, feedsList));
-
                             if (TYPE.equals("2")) {
                                 GroupFeedsModel.ResultBean feedDetails = feedsList.get(GroupFeedsAdapter.itemClickedPosition);
                                 LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsComments_Activity")
                                         .putExtra("feedDetails", feedDetails));
+                                groupFeedsAdapter.swap(feedsList);
+                            } else {
+                                groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
+                                rv_feeds.setAdapter(groupFeedsAdapter);
                             }
 
                         } else {

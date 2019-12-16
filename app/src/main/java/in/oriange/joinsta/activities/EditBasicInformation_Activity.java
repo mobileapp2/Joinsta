@@ -279,7 +279,7 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
             try {
                 edt_about.setText(json.getString("about"));
 
-                if (edt_about.getText().toString().trim().equals("null")){
+                if (edt_about.getText().toString().trim().equals("null")) {
                     edt_about.setText("");
                 }
             } catch (Exception e) {
@@ -1152,7 +1152,7 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
             for (int i = 0; i < emailLayoutsList.size(); i++) {
                 if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
                     if (i < emailJsonArray.length() - 1) {
-                        emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0", emailJsonArray.getJSONObject(i).getString("user_email_id")));
+                        emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), emailJsonArray.getJSONObject(i).getString("is_primary"), emailJsonArray.getJSONObject(i).getString("user_email_id")));
                     } else {
                         emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0", "0"));
                     }
@@ -1161,7 +1161,7 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
 
             if (emailJsonArray.length() != 0) {
                 if (!edt_email.getText().toString().trim().isEmpty())
-                    emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
+                    emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("is_primary"), emailJsonArray.getJSONObject(emailJsonArray.length() - 1).getString("user_email_id")));
             } else {
                 if (!edt_email.getText().toString().trim().isEmpty())
                     emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", "0"));
@@ -1172,7 +1172,16 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
         }
 
         if (emailList.size() != 0) {
-            showPrimaryEmailDialog();
+            boolean isAlreadyPrimEmailExists = false;
+            for (int i = 0; i < emailList.size(); i++) {
+                if (emailList.get(i).getIsPrimary().equals("1")) {
+                    isAlreadyPrimEmailExists = true;
+                    submitData();
+                }
+            }
+
+            if (!isAlreadyPrimEmailExists)
+                showPrimaryEmailDialog();
         } else {
             submitData();
         }

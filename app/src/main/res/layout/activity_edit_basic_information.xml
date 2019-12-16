@@ -28,7 +28,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Basic Information"
+                android:text="Edit Basic Information"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />

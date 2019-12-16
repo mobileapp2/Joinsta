@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -172,6 +173,12 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             }
         }
 
+        if (feedDetails.getIs_favourite() == 1) {
+            holder.cb_like.setChecked(true);
+        } else {
+            holder.cb_like.setChecked(false);
+        }
+
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,7 +223,31 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                 powerMenu = getHamburgerPowerMenu(context,
                         onHamburgerItemClickListener, onHamburgerMenuDismissedListener);
                 powerMenu.showAsDropDown(v);
+            }
+        });
 
+        holder.cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String isFav;
+
+                if (holder.cb_like.isChecked())
+                    isFav = "1";
+                else
+                    isFav = "0";
+
+                JsonObject mainObj = new JsonObject();
+
+                mainObj.addProperty("type", "markFavouriteFeedDetails");
+                mainObj.addProperty("user_id", userId);
+                mainObj.addProperty("feed_id", feedDetails.getId());
+                mainObj.addProperty("is_fav", isFav);
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SetFavourite().execute(mainObj.toString());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
     }
@@ -234,6 +265,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         private ImageView imv_feed_image;
         private Button btn_comment, btn_share;
         private ImageButton imv_more;
+        private CheckBox cb_like;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -248,6 +280,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             imv_feed_image = view.findViewById(R.id.imv_feed_image);
             btn_comment = view.findViewById(R.id.btn_comment);
             btn_share = view.findViewById(R.id.btn_share);
+            cb_like = view.findViewById(R.id.cb_like);
 
         }
     }
@@ -464,9 +497,56 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         }
     }
 
+    private class SetFavourite extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.FEEDSAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public int getItemViewType(int position) {
         return position;
     }
+
+    public void swap(List<GroupFeedsModel.ResultBean> datas) {
+        feedsList.clear();
+        feedsList.addAll(datas);
+        notifyDataSetChanged();
+    }
+
 
 }

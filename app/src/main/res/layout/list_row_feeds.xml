@@ -106,6 +106,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <CheckBox
+                    android:id="@+id/cb_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/like_icon"
+                    android:button="@null"
+                    android:checked="false"
+                    android:stateListAnimator="@animator/scale" />
+
                 <Button
                     android:id="@+id/btn_comment"
                     style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -141,7 +152,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="5dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/icon_menumore"/>
+            android:src="@drawable/icon_menumore" />
 
     </FrameLayout>
 
