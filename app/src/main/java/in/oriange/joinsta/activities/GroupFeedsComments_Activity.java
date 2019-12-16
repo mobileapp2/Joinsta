@@ -244,10 +244,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 } else {
-                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    shareIntent.setType("text/html");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
-                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/html");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                 }
             }
         });
@@ -382,11 +382,11 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             Uri uri = Uri.parse("file:///" + file);
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
-            Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-            shareIntent.setType("text/html");
-            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+            sharingIntent.setType("text/html");
+            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+            sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
 
         }
     }

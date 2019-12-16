@@ -76,6 +76,7 @@ public class GroupFeedsModel implements Serializable {
         private String updated_at;
         private String first_name;
         private String image_url;
+        private String type;
         private int is_favourite;
         private List<FeedCommentsBean> feed_comments;
 
@@ -197,6 +198,14 @@ public class GroupFeedsModel implements Serializable {
 
         public void setImage_url(String image_url) {
             this.image_url = image_url;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
         }
 
         public int getIs_favourite() {

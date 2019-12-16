@@ -230,10 +230,10 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
                     }
                 } else {
                     String shareMessage = getShareMessage(offerDetails);
-                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    shareIntent.setType("text/html");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
-                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/html");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                 }
             }
         });
@@ -450,11 +450,11 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
             numOfFilesDownloaded = numOfFilesDownloaded + 1;
 
             if (numOfFilesDownloaded == numOfDocuments) {
-                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
-                shareIntent.setType("text/html");
-                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
-                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
-                context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
             }
         }
     }

@@ -142,12 +142,11 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         feedDetails = (GroupFeedsModel.ResultBean) getIntent().getSerializableExtra("feedDetails");
 
         typeId = feedDetails.getType_id();
-        edt_feed_type.setText(feedDetails.getType_id());
+        edt_feed_type.setText(feedDetails.getType());
         edt_description.setText(feedDetails.getFeed_text());
         imageName = feedDetails.getFeed_doc();
 
         if (!feedDetails.getImage_url().trim().isEmpty()) {
-
             String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
             Picasso.with(context)
                     .load(url)
