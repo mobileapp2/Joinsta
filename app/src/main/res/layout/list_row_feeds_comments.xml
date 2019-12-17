@@ -44,7 +44,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Priyesh Pawar"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -52,14 +51,15 @@
                     android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2 Days ago"
                     android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
                 <ImageButton
                     android:id="@+id/imv_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="18dp"
+                    android:layout_height="16dp"
+                    android:scaleType="fitXY"
+                    android:tint="@color/darkGray"
                     android:background="@android:color/transparent"
                     android:src="@drawable/icon_menumore" />
 
@@ -78,7 +78,6 @@
                 android:paddingTop="2dp"
                 android:paddingRight="5dp"
                 android:paddingBottom="2dp"
-                android:text="sbmvw skejbgkew eakjvbke kjbfkew ajkbvjebf ae vkaef evkubae kbaebkbeukqae kbeaekv kbev"
                 android:textColor="@color/darkGray"
                 android:textSize="16sp" />
 
@@ -88,7 +87,6 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingBottom="2dp"
-                android:text="2 Replies"
                 android:textColor="@color/colorAccent"
                 android:textSize="12sp" />
 

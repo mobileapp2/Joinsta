@@ -105,6 +105,8 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
                 Picasso.with(context)
                         .load(imageUrl)
                         .placeholder(R.drawable.icon_user)
+                        .resize(250, 250)
+                        .centerCrop()
                         .into(imv_current_user);
             }
         } catch (Exception e) {
@@ -119,6 +121,8 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
             Picasso.with(context)
                     .load(commentsDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
+                    .resize(250, 250)
+                    .centerCrop()
                     .into(imv_user);
         } else {
             imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));

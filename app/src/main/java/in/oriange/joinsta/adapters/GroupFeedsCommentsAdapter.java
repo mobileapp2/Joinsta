@@ -104,7 +104,7 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
             Picasso.with(context)
                     .load(commentsDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
-                    .resize(200, 200)// resizes the image to these dimensions (in pixel)
+                    .resize(250, 250)
                     .centerCrop()
                     .into(holder.imv_user);
         } else {

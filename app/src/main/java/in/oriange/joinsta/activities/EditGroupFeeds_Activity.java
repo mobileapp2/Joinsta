@@ -142,7 +142,7 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         feedDetails = (GroupFeedsModel.ResultBean) getIntent().getSerializableExtra("feedDetails");
 
         typeId = feedDetails.getType_id();
-        edt_feed_type.setText(feedDetails.getType());
+//        edt_feed_type.setText(feedDetails.getType());
         edt_description.setText(feedDetails.getFeed_text());
         imageName = feedDetails.getFeed_doc();
 
@@ -330,12 +330,11 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
-
-        if (edt_feed_type.getText().toString().trim().isEmpty()) {
-            edt_feed_type.setError("Please select feed type");
-            edt_feed_type.requestFocus();
-            return;
-        }
+//        if (edt_feed_type.getText().toString().trim().isEmpty()) {
+//            edt_feed_type.setError("Please select feed type");
+//            edt_feed_type.requestFocus();
+//            return;
+//        }
 
         if (edt_description.getText().toString().trim().isEmpty()) {
             edt_description.setError("Please enter banner Description");

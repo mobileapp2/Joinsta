@@ -150,7 +150,11 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                 Picasso.with(context)
                         .load(imageUrl)
                         .placeholder(R.drawable.icon_user)
+                        .resize(250, 250)
+                        .centerCrop()
                         .into(imv_current_user);
+            } else {
+                imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,6 +168,8 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             Picasso.with(context)
                     .load(feedDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
+                    .resize(250, 250)
+                    .centerCrop()
                     .into(imv_user);
         } else {
             imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));
@@ -199,10 +205,12 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             cv_feed_image.setVisibility(View.GONE);
         }
 
-        if (feedDetails.getFeed_comments().size() == 1) {
-            btn_comment.setText("1 Comment");
-        } else {
-            btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+        if (feedDetails.getFeed_comments().size() != 0) {
+            if (feedDetails.getFeed_comments().size() == 1) {
+                btn_comment.setText("1 Comment");
+            } else {
+                btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+            }
         }
 
         if (feedDetails.getIs_favourite() == 1) {
@@ -284,6 +292,12 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             }
         });
 
+        imv_feed_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageDialog(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+            }
+        });
 
     }
 
@@ -422,6 +436,22 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
 
         }
+    }
+
+    private void showImageDialog(String imageUrl) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+
+        Picasso.with(context)
+                .load(imageUrl)
+                .into(imv_offer);
+
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
     }
 
     private void setUpToolbar() {
@@ -587,10 +617,13 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             feedDetails = (GroupFeedsModel.ResultBean) intent.getSerializableExtra("feedDetails");
-            if (feedDetails.getFeed_comments().size() == 1) {
-                btn_comment.setText("1 Comment");
-            } else {
-                btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+
+            if (feedDetails.getFeed_comments().size() != 0) {
+                if (feedDetails.getFeed_comments().size() == 1) {
+                    btn_comment.setText("1 Comment");
+                } else {
+                    btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+                }
             }
 
             feedCommentsList.clear();
@@ -598,9 +631,11 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             groupFeedsCommentsAdapter.swap(feedCommentsList);
 
             if (GroupFeedsCommentsAdapter.isCommentClicked) {
-                GroupFeedsModel.ResultBean.FeedCommentsBean commentsDetails = feedCommentsList.get(GroupFeedsCommentsAdapter.itemClickedPosition);
-                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsCommentsReplys_Activity")
-                        .putExtra("commentsDetails", commentsDetails));
+                if (feedCommentsList.size() != 0) {
+                    GroupFeedsModel.ResultBean.FeedCommentsBean commentsDetails = feedCommentsList.get(GroupFeedsCommentsAdapter.itemClickedPosition);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsCommentsReplys_Activity")
+                            .putExtra("commentsDetails", commentsDetails));
+                }
             }
         }
     };

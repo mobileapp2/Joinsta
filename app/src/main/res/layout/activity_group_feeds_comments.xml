@@ -145,10 +145,10 @@
 
                         <CheckBox
                             android:id="@+id/cb_like"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
                             android:layout_gravity="center"
-                            android:layout_margin="5dp"
+                            android:layout_marginLeft="10dp"
                             android:background="@drawable/like_icon"
                             android:button="@null"
                             android:checked="false"
@@ -163,7 +163,7 @@
                             android:drawableRight="@drawable/icon_comment"
                             android:drawableTint="@color/colorPrimary"
                             android:text="Comment"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <Button
@@ -175,6 +175,7 @@
                             android:drawableRight="@drawable/icon_share"
                             android:drawableTint="@color/colorPrimary"
                             android:text="Share"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -220,6 +221,7 @@
             android:background="@android:color/transparent"
             android:hint="Comment Here..."
             android:inputType="textMultiLine"
+            android:paddingLeft="5dp"
             android:textColor="@color/black"
             android:textSize="16sp" />
 

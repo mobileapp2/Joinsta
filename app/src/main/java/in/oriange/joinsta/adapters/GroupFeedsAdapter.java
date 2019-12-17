@@ -130,6 +130,8 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             Picasso.with(context)
                     .load(feedDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
+                    .resize(250, 250)
+                    .centerCrop()
                     .into(holder.imv_user);
         } else {
             holder.imv_user.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_user));

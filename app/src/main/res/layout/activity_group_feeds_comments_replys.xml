@@ -49,6 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:focusableInTouchMode="true"
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -167,6 +168,7 @@
             android:background="@android:color/transparent"
             android:hint="Reply Here..."
             android:inputType="textMultiLine"
+            android:paddingLeft="5dp"
             android:textColor="@color/black"
             android:textSize="16sp" />
 

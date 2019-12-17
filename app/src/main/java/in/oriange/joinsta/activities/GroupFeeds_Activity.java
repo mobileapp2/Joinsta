@@ -189,10 +189,12 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                             rv_feeds.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
                             if (TYPE.equals("2")) {
-                                GroupFeedsModel.ResultBean feedDetails = feedsList.get(GroupFeedsAdapter.itemClickedPosition);
-                                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsComments_Activity")
-                                        .putExtra("feedDetails", feedDetails));
-                                groupFeedsAdapter.swap(feedsList);
+                                if (feedsList.size() != 0) {
+                                    GroupFeedsModel.ResultBean feedDetails = feedsList.get(GroupFeedsAdapter.itemClickedPosition);
+                                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsComments_Activity")
+                                            .putExtra("feedDetails", feedDetails));
+                                    groupFeedsAdapter.swap(feedsList);
+                                }
                             } else {
                                 groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
                                 rv_feeds.setAdapter(groupFeedsAdapter);

@@ -96,6 +96,8 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
             Picasso.with(context)
                     .load(memberDetails.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)
+                    .resize(250, 250)
+                    .centerCrop()
                     .into(holder.imv_user, new Callback() {
                         @Override
                         public void onSuccess() {

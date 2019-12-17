@@ -167,7 +167,7 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 btn_connect.setVisibility(View.VISIBLE);
                 btn_status.setVisibility(View.GONE);
                 cv_members.setVisibility(View.VISIBLE);
-                btn_connect.setText("EXIT GORUP");
+                btn_connect.setText("EXIT GROUP");
                 break;
         }
 
@@ -550,6 +550,8 @@ public class GroupDetails_Activity extends AppCompatActivity {
                 Picasso.with(context)
                         .load(memberDetails.getImage_url().trim())
                         .placeholder(R.drawable.icon_user)
+                        .resize(250, 250)
+                        .centerCrop()
                         .into(holder.imv_user, new Callback() {
                             @Override
                             public void onSuccess() {
