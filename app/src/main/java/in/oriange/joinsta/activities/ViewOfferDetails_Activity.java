@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.library.banner.BannerLayout;
 import com.squareup.picasso.Picasso;
@@ -77,7 +76,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_offer_details_1);
+        setContentView(R.layout.activity_view_offer_details);
 
         init();
         setDefault();

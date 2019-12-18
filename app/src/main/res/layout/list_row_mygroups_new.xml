@@ -16,8 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@color/white"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -32,24 +31,20 @@
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:padding="5dp"
-                android:text="Joinsta Development"
+                android:text="0001 - Joinsta Development"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_status"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:gravity="center"
                 android:singleLine="true"
                 android:text="Requested to join this group"
                 android:textColor="@color/colorPrimary"
                 android:textSize="12sp" />
 
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/tv_role"
@@ -62,58 +57,8 @@
             android:text="Admin"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
-            android:textSize="10sp" />
-
-        <LinearLayout
-            android:id="@+id/ll_buttons"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.2"
-            android:weightSum="2">
-
-            <ImageButton
-                android:id="@+id/ib_settings"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="5dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon_settings_1"
-                android:tint="@color/black" />
-
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/darkGray" />
-
-            <ImageButton
-                android:id="@+id/ib_notifications"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|end"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="5dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon_notification_1"
-                android:tint="@color/black" />
-
-            <ImageButton
-                android:id="@+id/ib_exit"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|end"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="5dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon_exit"
-                android:tint="@color/black" />
-
-        </LinearLayout>
+            android:textSize="10sp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_rejoin"
