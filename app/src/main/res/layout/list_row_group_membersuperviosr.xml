@@ -88,7 +88,8 @@
                 android:text="Active"
                 android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

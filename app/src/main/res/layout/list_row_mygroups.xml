@@ -44,9 +44,9 @@
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
                 android:singleLine="true"
-                android:text="Requested to join this group"
                 android:textColor="@color/colorPrimary"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -62,13 +62,15 @@
             android:text="Admin"
             android:textAllCaps="false"
             android:textColor="@color/colorPrimary"
-            android:textSize="10sp" />
+            android:textSize="10sp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/ll_buttons"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.2"
+            android:visibility="gone"
             android:weightSum="2">
 
             <ImageButton
@@ -111,7 +113,8 @@
                 android:padding="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/icon_exit"
-                android:tint="@color/black" />
+                android:tint="@color/black"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -123,7 +126,8 @@
             android:layout_gravity="center"
             android:layout_weight="0.3"
             android:text="Rejoin"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
