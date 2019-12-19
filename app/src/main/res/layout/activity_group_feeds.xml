@@ -27,7 +27,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Group Feeds"
+                android:text="Group Posts"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="There are no feed posts in this group"
+                android:text="There are no posts in this group"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

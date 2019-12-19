@@ -337,7 +337,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             public void onClick(View v) {
                 title = notificationDetails.getSubject();
                 description = notificationDetails.getMessage();
-                if (!notificationDetails.getAttachment().equals("")) {
+                if (notificationDetails.getAttachment().equals("")) {
                     Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                     shareIntent.setType("text/html");
                     shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);

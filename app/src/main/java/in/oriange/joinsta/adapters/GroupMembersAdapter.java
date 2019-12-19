@@ -4,12 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,6 +38,9 @@ import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.Utilities;
+
+import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
 public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
 
@@ -146,6 +153,34 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             }
         });
 
+        holder.ib_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    provideCallPremission(context);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setMessage("Are you sure you want to make a call?");
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.icon_call);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            context.startActivity(new Intent(Intent.ACTION_CALL,
+                                    Uri.parse("tel:" + memberDetails.getCountry_code() + "" + memberDetails.getMobile())));
+                        }
+                    });
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            }
+        });
 
     }
 
@@ -162,6 +197,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         private TextView tv_name, tv_mobile_email;
         private Button btn_edit, btn_delete;
         private Switch sw_active;
+        private ImageButton ib_call;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -173,6 +209,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             btn_edit = view.findViewById(R.id.btn_edit);
             btn_delete = view.findViewById(R.id.btn_delete);
             sw_active = view.findViewById(R.id.sw_active);
+            ib_call = view.findViewById(R.id.ib_call);
         }
     }
 

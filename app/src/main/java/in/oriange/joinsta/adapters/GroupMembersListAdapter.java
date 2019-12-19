@@ -77,8 +77,8 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
         holder.tv_name.setText(memberDetails.getFirst_name().trim());
         holder.tv_mobile.setText(memberDetails.getMobile());
 
-        if (!memberDetails.getCity().isEmpty()) {
-            holder.tv_city.setText(memberDetails.getCity());
+        if (!memberDetails.getNative_place().isEmpty()) {
+            holder.tv_city.setText(memberDetails.getNative_place());
         } else {
             holder.tv_city.setVisibility(View.GONE);
         }

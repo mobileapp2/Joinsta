@@ -396,7 +396,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
 
                         case 1:
                             AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                            builder.setMessage("Are you sure you want to delete this feed?");
+                            builder.setMessage("Are you sure you want to delete this post?");
                             builder.setTitle("Alert");
                             builder.setIcon(R.drawable.icon_alertred);
                             builder.setCancelable(false);
@@ -489,7 +489,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
-                        Utilities.showMessage("Feed deleted successfully", context, 1);
+                        Utilities.showMessage("Post deleted successfully", context, 1);
                     }
 
                 }

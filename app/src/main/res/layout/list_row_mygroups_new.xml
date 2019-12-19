@@ -103,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
-                    android:text="Feeds"
+                    android:text="Posts"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -114,11 +114,31 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:src="@drawable/icon_notification_1"
-                    android:tint="@color/colorPrimary" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/icon_notification_1"
+                        android:tint="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/menu_grid_tv_count"
+                        android:layout_width="12.5dp"
+                        android:layout_height="12.5dp"
+                        android:layout_gravity="right|top"
+                        android:background="@drawable/bg_circularview_red"
+                        android:gravity="center"
+                        android:text="99+"
+                        android:textColor="@color/white"
+                        android:textSize="6sp"
+                        android:textStyle="bold"/>
+                </FrameLayout>
+
+
 
                 <TextView
                     android:layout_width="match_parent"

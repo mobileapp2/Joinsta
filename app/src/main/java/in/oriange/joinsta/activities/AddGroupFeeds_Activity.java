@@ -268,7 +268,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
 
     private void showFeedListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Feed Type");
+        builderSingle.setTitle("Select Post Type");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -300,7 +300,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
     private void submitData() {
 
 //        if (edt_feed_type.getText().toString().trim().isEmpty()) {
-//            edt_feed_type.setError("Please select feed type");
+//            edt_feed_type.setError("Please select post type");
 //            edt_feed_type.requestFocus();
 //            return;
 //        }
@@ -367,7 +367,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Feed posted successfully");
+                        tv_title.setText("Posted submitted successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

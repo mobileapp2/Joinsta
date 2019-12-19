@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
@@ -146,9 +147,9 @@
                         android:id="@+id/edt_groups"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_arrowdown"
+                        android:clickable="false"
                         android:focusable="false"
-                        android:hint="Select Groups"
+                        android:hint="Groups Name"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -191,6 +192,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.25"
+                                android:checked="true"
                                 android:text="All"
                                 android:textSize="16sp" />
 

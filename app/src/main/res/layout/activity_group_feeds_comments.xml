@@ -27,7 +27,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Feed Details"
+                android:text="Post Details"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />

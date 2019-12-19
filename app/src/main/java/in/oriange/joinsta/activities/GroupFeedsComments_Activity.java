@@ -483,7 +483,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this feed?");
+                builder.setMessage("Are you sure you want to delete this post?");
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
@@ -550,7 +550,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
-                        Utilities.showMessage("Feed deleted successfully", context, 1);
+                        Utilities.showMessage("Post deleted successfully", context, 1);
                         finish();
                     }
 

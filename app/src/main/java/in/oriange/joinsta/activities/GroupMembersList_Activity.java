@@ -226,6 +226,7 @@ public class GroupMembersList_Activity extends AppCompatActivity {
                             resultBean.setMobile(memberDetails.getMobile());
                             resultBean.setPassword(memberDetails.getPassword());
                             resultBean.setImage_url(memberDetails.getImage_url());
+                            resultBean.setNative_place(memberDetails.getNative_place());
                             resultBean.setIs_joinsta_member(memberDetails.getIs_joinsta_member());
 
                             StringBuilder searchQuery = new StringBuilder();

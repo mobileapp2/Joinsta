@@ -175,7 +175,7 @@ public class GroupMemebersListModel {
             this.is_joinsta_member = is_joinsta_member;
         }
 
-        public String getCity() {
+        public String getNative_place() {
             if (native_place != null) {
                 return native_place;
             } else {
@@ -183,7 +183,7 @@ public class GroupMemebersListModel {
             }
         }
 
-        public void setCity(String native_place) {
+        public void setNative_place(String native_place) {
             this.native_place = native_place;
         }
 

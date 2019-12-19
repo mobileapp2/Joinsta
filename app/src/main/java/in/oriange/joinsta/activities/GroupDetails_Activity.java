@@ -436,7 +436,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
         cv_send_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, GroupsSendMessage_Activity.class));
+                startActivity(new Intent(context, GroupsSendMessage_Activity.class)
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name()));
             }
         });
 

@@ -97,16 +97,15 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private ArrayList<LinearLayout> docsLayoutsList;
 
     private JsonArray selectedGroups;
-    private String userId, imageUrl = "", imageName = "";
+    private String userId, imageUrl = "", imageName = "", groupId, groupName;
 
-    private boolean isSmsPressed, isEmailPressed, isNotificationPressed;
+    private boolean isSmsPressed, isEmailPressed, isNotificationPressed = true;
 
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
     private File photoFileFolder;
 
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,29 +170,36 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        if (Utilities.isNetworkAvailable(context)) {
-            new GetMessageCount().execute();
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-        }
+        groupId = getIntent().getStringExtra("groupId");
+        groupName = getIntent().getStringExtra("groupName");
+
+        btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
+
+        edt_groups.setText(groupName);
+
+//        if (Utilities.isNetworkAvailable(context)) {
+//            new GetMessageCount().execute();
+//        } else {
+//            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
-        edt_groups.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (groupsList.size() == 0) {
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new GetGroupAdminsGroups().execute();
-                    } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    }
-                } else {
-                    showGroupsListDialog();
-                }
-            }
-        });
+//        edt_groups.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (groupsList.size() == 0) {
+//                    if (Utilities.isNetworkAvailable(context)) {
+//                        new GetGroupAdminsGroups().execute();
+//                    } else {
+//                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//                    }
+//                } else {
+//                    showGroupsListDialog();
+//                }
+//            }
+//        });
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,7 +351,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -669,6 +674,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         if (isNotificationPressed) {
             messageTypes.add("notification");
         }
+
+        selectedGroups = new JsonArray();
+        selectedGroups.add(groupId);
 
         JsonArray messageDocArray = new JsonArray();
 
