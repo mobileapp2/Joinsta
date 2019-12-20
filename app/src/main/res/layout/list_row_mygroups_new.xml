@@ -127,14 +127,15 @@
 
                     <TextView
                         android:id="@+id/menu_grid_tv_count"
-                        android:layout_width="12.5dp"
-                        android:layout_height="12.5dp"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
                         android:layout_gravity="right|top"
                         android:background="@drawable/bg_circularview_red"
                         android:gravity="center"
+                        android:layout_marginLeft="15dp"
                         android:text="99+"
                         android:textColor="@color/white"
-                        android:textSize="6sp"
+                        android:textSize="7sp"
                         android:textStyle="bold"/>
                 </FrameLayout>
 

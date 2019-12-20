@@ -21,6 +21,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +61,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
+    private EditText edt_search;
     private RecyclerView rv_feeds;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
@@ -68,6 +71,8 @@ public class GroupFeeds_Activity extends AppCompatActivity {
 
     private LocalBroadcastManager localBroadcastManager;
     private GroupFeedsAdapter groupFeedsAdapter;
+
+    private List<GroupFeedsModel.ResultBean> feedsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +90,15 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         context = GroupFeeds_Activity.this;
         session = new UserSessionManager(context);
 
+        edt_search = findViewById(R.id.edt_search);
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         rv_feeds = findViewById(R.id.rv_feeds);
         rv_feeds.setLayoutManager(new LinearLayoutManager(context));
         ll_nopreview = findViewById(R.id.ll_nopreview);
         btn_add_post = findViewById(R.id.btn_add_post);
+
+        feedsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -142,6 +150,54 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                         .putExtra("isAdmin", isAdmin));
             }
         });
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
+                    rv_feeds.setAdapter(groupFeedsAdapter);
+                    return;
+                }
+
+
+                if (feedsList.size() == 0) {
+                    rv_feeds.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<GroupFeedsModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (GroupFeedsModel.ResultBean groupsDetails : feedsList) {
+
+                        String feedToBeSearched = groupsDetails.getFirst_name().toLowerCase() + groupsDetails.getFeed_text().toLowerCase();
+
+                        if (feedToBeSearched.contains(query.toString().toLowerCase())) {
+                            groupsSearchedList.add(groupsDetails);
+                        }
+                    }
+
+                    groupFeedsAdapter = new GroupFeedsAdapter(context, groupsSearchedList);
+                    rv_feeds.setAdapter(groupFeedsAdapter);
+                } else {
+                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
+                    rv_feeds.setAdapter(groupFeedsAdapter);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private class GetAllFeedDetails extends AsyncTask<String, Void, String> {
@@ -177,7 +233,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    List<GroupFeedsModel.ResultBean> feedsList = new ArrayList<>();
+                    feedsList = new ArrayList<>();
                     GroupFeedsModel pojoDetails = new Gson().fromJson(result, GroupFeedsModel.class);
                     type = pojoDetails.getType();
 
