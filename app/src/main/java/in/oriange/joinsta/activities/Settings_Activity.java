@@ -38,7 +38,7 @@ public class Settings_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private CardView cv_logout, cv_feedback, cv_invite, cv_password, cv_report_issue;
     private UserSessionManager session;
-    private String userId, password, mobile;
+    private String userId, password, mobile, referral_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class Settings_Activity extends AppCompatActivity {
             userId = json.getString("userid");
             password = json.getString("password");
             mobile = json.getString("mobile");
+            referral_code = json.getString("referral_code");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,9 +92,12 @@ public class Settings_Activity extends AppCompatActivity {
         cv_invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String shareMessage = "Welcome to Joinsta\n\nConnect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                        "Below is the link to download the app.\nGoogle play store: " + JOINSTA_PLAYSTORELINK + "\n\nJoinsta - Team";
-
+                String shareMessage = "Welcome to Joinsta\n\n" +
+                        "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
+                        "Enter my referral code - " + referral_code + "\n" +
+                        "Below is the link to download the app.\n" +
+                        "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
+                        "Joinsta - Team";
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");

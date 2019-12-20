@@ -247,8 +247,8 @@ public class GroupFeedsCommentsRepliesAdapter extends RecyclerView.Adapter<Group
             OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener,
             OnDismissedListener onDismissedListener) {
         return new PowerMenu.Builder(context)
-                .addItem(new PowerMenuItem("EDIT"))
-                .addItem(new PowerMenuItem("DELETE"))
+                .addItem(new PowerMenuItem("Edit"))
+                .addItem(new PowerMenuItem("Delete"))
                 .setAutoDismiss(true)
                 .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
                 .setMenuEffect(MenuEffect.BODY)

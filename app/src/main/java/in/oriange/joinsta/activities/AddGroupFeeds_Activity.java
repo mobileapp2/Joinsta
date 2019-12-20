@@ -76,7 +76,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
     private ImageView imv_photo1, imv_photo2;
     private Button btn_save;
 
-    private String userId, groupId, isAdmin, typeId = "0", imageName = "";
+    private String userId, groupId, isAdmin, typeId = "1", imageName = "";
     private List<GetFeedTypesListModel.ResultBean> feedTypeList;
 
     private Uri photoURI;

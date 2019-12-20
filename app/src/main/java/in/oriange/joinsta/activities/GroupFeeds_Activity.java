@@ -161,7 +161,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
+                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList, isAdmin);
                     rv_feeds.setAdapter(groupFeedsAdapter);
                     return;
                 }
@@ -183,10 +183,10 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                         }
                     }
 
-                    groupFeedsAdapter = new GroupFeedsAdapter(context, groupsSearchedList);
+                    groupFeedsAdapter = new GroupFeedsAdapter(context, groupsSearchedList, isAdmin);
                     rv_feeds.setAdapter(groupFeedsAdapter);
                 } else {
-                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
+                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList, isAdmin);
                     rv_feeds.setAdapter(groupFeedsAdapter);
                 }
 
@@ -242,18 +242,39 @@ public class GroupFeeds_Activity extends AppCompatActivity {
 
                         if (feedsList.size() > 0) {
 
-                            rv_feeds.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            if (TYPE.equals("2")) {
-                                if (feedsList.size() != 0) {
-                                    GroupFeedsModel.ResultBean feedDetails = feedsList.get(GroupFeedsAdapter.itemClickedPosition);
-                                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsComments_Activity")
-                                            .putExtra("feedDetails", feedDetails));
-                                    groupFeedsAdapter.swap(feedsList);
+                            List<GroupFeedsModel.ResultBean> tempFeedsList = new ArrayList<>();
+
+                            if (!isAdmin.equals("1")) {
+                                for (GroupFeedsModel.ResultBean feedDetails : feedsList) {
+                                    if (feedDetails.getIs_hidden().equals("1")) {
+                                        if (feedDetails.getCreated_by().equals(userId)) {
+                                            tempFeedsList.add(feedDetails);
+                                        }
+                                    } else {
+                                        tempFeedsList.add(feedDetails);
+                                    }
+                                }
+                                feedsList.clear();
+                                feedsList.addAll(tempFeedsList);
+                            }
+
+                            if (feedsList.size() > 0) {
+                                rv_feeds.setVisibility(View.VISIBLE);
+                                ll_nopreview.setVisibility(View.GONE);
+                                if (TYPE.equals("2")) {
+                                    if (feedsList.size() != 0) {
+                                        GroupFeedsModel.ResultBean feedDetails = feedsList.get(GroupFeedsAdapter.itemClickedPosition);
+                                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeedsComments_Activity")
+                                                .putExtra("feedDetails", feedDetails));
+                                        groupFeedsAdapter.swap(feedsList);
+                                    }
+                                } else {
+                                    groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList, isAdmin);
+                                    rv_feeds.setAdapter(groupFeedsAdapter);
                                 }
                             } else {
-                                groupFeedsAdapter = new GroupFeedsAdapter(context, feedsList);
-                                rv_feeds.setAdapter(groupFeedsAdapter);
+                                ll_nopreview.setVisibility(View.VISIBLE);
+                                rv_feeds.setVisibility(View.GONE);
                             }
 
                         } else {

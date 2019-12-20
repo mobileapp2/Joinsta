@@ -74,14 +74,15 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     private PrettyTime p;
 
     private File downloadedDocsfolder, file;
-    private String description;
+    private String description, isAdmin;
 
     private PowerMenu powerMenu;
     public static int itemClickedPosition = 0;
 
-    public GroupFeedsAdapter(Context context, List<GroupFeedsModel.ResultBean> feedsList) {
+    public GroupFeedsAdapter(Context context, List<GroupFeedsModel.ResultBean> feedsList, String isAdmin) {
         this.context = context;
         this.feedsList = feedsList;
+        this.isAdmin = isAdmin;
         p = new PrettyTime();
 
         UserSessionManager session = new UserSessionManager(context);
@@ -120,7 +121,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         final int position = holder.getAdapterPosition();
         final GroupFeedsModel.ResultBean feedDetails = feedsList.get(position);
 
-        if (feedDetails.getCreated_by().equals(userId)) {
+        if (feedDetails.getCreated_by().equals(userId) || isAdmin.equals("1")) {
             holder.imv_more.setVisibility(View.VISIBLE);
         } else {
             holder.imv_more.setVisibility(View.GONE);
@@ -222,8 +223,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             @Override
             public void onClick(View v) {
                 itemClickedPosition = position;
-                powerMenu = getHamburgerPowerMenu(context,
-                        onHamburgerItemClickListener, onHamburgerMenuDismissedListener);
+                powerMenu = getHamburgerPowerMenu(context, onHamburgerItemClickListener, onHamburgerMenuDismissedListener, feedDetails.getIs_hidden());
                 powerMenu.showAsDropDown(v);
             }
         });
@@ -239,7 +239,6 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                     isFav = "0";
 
                 JsonObject mainObj = new JsonObject();
-
                 mainObj.addProperty("type", "markFavouriteFeedDetails");
                 mainObj.addProperty("user_id", userId);
                 mainObj.addProperty("feed_id", feedDetails.getId());
@@ -388,13 +387,13 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             new OnMenuItemClickListener<PowerMenuItem>() {
                 @Override
                 public void onItemClick(int position, PowerMenuItem item) {
-                    switch (position) {
-                        case 0:
+                    switch (item.getTitle()) {
+                        case "Edit":
                             context.startActivity(new Intent(context, EditGroupFeeds_Activity.class)
                                     .putExtra("feedDetails", feedsList.get(itemClickedPosition)));
                             break;
 
-                        case 1:
+                        case "Delete":
                             AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                             builder.setMessage("Are you sure you want to delete this post?");
                             builder.setTitle("Alert");
@@ -418,7 +417,30 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                             AlertDialog alertD = builder.create();
                             alertD.show();
                             break;
-
+                        case "Unhide":
+                            JsonObject mainObj = new JsonObject();
+                            mainObj.addProperty("type", "updateFeedVisiblity");
+                            mainObj.addProperty("user_id", userId);
+                            mainObj.addProperty("feed_id", feedsList.get(itemClickedPosition).getId());
+                            mainObj.addProperty("is_hide", "0");
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new HideUnhidePost().execute(mainObj.toString());
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                            break;
+                        case "Hide":
+                            JsonObject mainObj1 = new JsonObject();
+                            mainObj1.addProperty("type", "updateFeedVisiblity");
+                            mainObj1.addProperty("user_id", userId);
+                            mainObj1.addProperty("feed_id", feedsList.get(itemClickedPosition).getId());
+                            mainObj1.addProperty("is_hide", "1");
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new HideUnhidePost().execute(mainObj1.toString());
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
+                            break;
                     }
                 }
             };
@@ -432,27 +454,34 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             };
 
 
-    public static PowerMenu getHamburgerPowerMenu(
-            Context context,
-            OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener,
-            OnDismissedListener onDismissedListener) {
-        return new PowerMenu.Builder(context)
-                .addItem(new PowerMenuItem("EDIT"))
-                .addItem(new PowerMenuItem("DELETE"))
-                .setAutoDismiss(true)
-                .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
-                .setMenuEffect(MenuEffect.BODY)
-                .setMenuRadius(10f)
-                .setMenuShadow(10f)
-                .setTextColor(context.getResources().getColor(R.color.black))
-                .setSelectedTextColor(Color.WHITE)
-                .setMenuColor(Color.WHITE)
-                .setSelectedMenuColor(context.getResources().getColor(R.color.colorPrimary))
-                .setOnMenuItemClickListener(onMenuItemClickListener)
-                .setOnDismissListener(onDismissedListener)
-                .setPreferenceName("HamburgerPowerMenu")
-                .setInitializeRule(Lifecycle.Event.ON_CREATE, 0)
-                .build();
+    private PowerMenu getHamburgerPowerMenu(Context context,
+                                            OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener,
+                                            OnDismissedListener onDismissedListener,
+                                            String isHidden) {
+        PowerMenu.Builder powerMenuBuilder = new PowerMenu.Builder(context);
+        if (feedsList.get(itemClickedPosition).getCreated_by().equals(userId)) {
+            powerMenuBuilder.addItem(new PowerMenuItem("Edit"));
+        }
+        powerMenuBuilder.addItem(new PowerMenuItem("Delete"));
+        if (isHidden.equals("1")) {
+            powerMenuBuilder.addItem(new PowerMenuItem("Unhide"));
+        } else {
+            powerMenuBuilder.addItem(new PowerMenuItem("Hide"));
+        }
+        powerMenuBuilder.setAutoDismiss(true);
+        powerMenuBuilder.setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT);
+        powerMenuBuilder.setMenuEffect(MenuEffect.BODY);
+        powerMenuBuilder.setMenuRadius(10f);
+        powerMenuBuilder.setMenuShadow(10f);
+        powerMenuBuilder.setTextColor(context.getResources().getColor(R.color.black));
+        powerMenuBuilder.setSelectedTextColor(Color.WHITE);
+        powerMenuBuilder.setMenuColor(Color.WHITE);
+        powerMenuBuilder.setSelectedMenuColor(context.getResources().getColor(R.color.colorPrimary));
+        powerMenuBuilder.setOnMenuItemClickListener(onMenuItemClickListener);
+        powerMenuBuilder.setOnDismissListener(onDismissedListener);
+        powerMenuBuilder.setPreferenceName("HamburgerPowerMenu");
+        powerMenuBuilder.setInitializeRule(Lifecycle.Event.ON_CREATE, 0);
+        return powerMenuBuilder.build();
     }
 
     private class DeleteFeed extends AsyncTask<String, Void, String> {
@@ -500,6 +529,46 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     }
 
     private class SetFavourite extends AsyncTask<String, Void, String> {
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.FEEDSAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupFeeds_Activity"));
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class HideUnhidePost extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
 
         @Override

@@ -58,7 +58,7 @@ public class Register_Activity extends AppCompatActivity {
     private Context context;
     private ProgressDialog pd;
     private TextView tv_already_registered;
-    private TextInputEditText edt_name, edt_mobile, edt_password;
+    private TextInputEditText edt_name, edt_mobile, edt_password, edt_referral_code;
     private TextView tv_countrycode_mobile;
     private Button btn_register;
     private UserSessionManager session;
@@ -84,6 +84,7 @@ public class Register_Activity extends AppCompatActivity {
         edt_name = findViewById(R.id.edt_name);
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_password = findViewById(R.id.edt_password);
+        edt_referral_code = findViewById(R.id.edt_referral_code);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
         btn_register = findViewById(R.id.btn_register);
     }
@@ -140,6 +141,7 @@ public class Register_Activity extends AppCompatActivity {
 //            public void afterTextChanged(Editable s) {
 //            }
 //        });
+
         tv_already_registered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,7 +221,8 @@ public class Register_Activity extends AppCompatActivity {
                                     edt_name.getText().toString().trim(),
                                     edt_mobile.getText().toString().trim(),
                                     tv_countrycode_mobile.getText().toString().trim().replace("+", ""),
-                                    edt_password.getText().toString().trim());
+                                    edt_password.getText().toString().trim(),
+                                    edt_referral_code.getText().toString().trim());
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
@@ -565,6 +568,7 @@ public class Register_Activity extends AppCompatActivity {
             obj.addProperty("mobile", params[1]);
             obj.addProperty("country_code", params[2]);
             obj.addProperty("password", params[3]);
+            obj.addProperty("referal_code", params[4]);
             res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, obj.toString());
             return res.trim();
         }
@@ -584,7 +588,6 @@ public class Register_Activity extends AppCompatActivity {
                     } else if (type.equalsIgnoreCase("failure")) {
                         Utilities.showAlertDialog(context, message, false);
                     }
-
                 }
             } catch (Exception e) {
                 Utilities.showAlertDialog(context, "Server Not Responding", false);

@@ -58,7 +58,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private CircleImageView imv_user;
     private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
-            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about;
+            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about, edt_referral_code;
     private TextView tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
@@ -98,6 +98,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
         edt_reg_mobile = findViewById(R.id.edt_reg_mobile);
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
         edt_about = findViewById(R.id.edt_about);
+        edt_referral_code = findViewById(R.id.edt_referral_code);
 
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
         tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
@@ -169,6 +170,13 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
                 countryCode = "91";
             }
 
+            try {
+                String referral_code;
+                referral_code = json.getString("referral_code");
+                edt_referral_code.setText(referral_code);
+            } catch (Exception e) {
+                edt_referral_code.setText("");
+            }
 
             edt_reg_mobile.setText("+" + countryCode + " " + json.getString("mobile"));
 

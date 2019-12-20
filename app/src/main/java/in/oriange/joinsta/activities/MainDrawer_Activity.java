@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -38,6 +39,10 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +50,8 @@ import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
+import in.oriange.joinsta.utilities.APICall;
+import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -62,6 +69,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
     private AHBottomNavigationViewPager view_pager;
 
     private UserSessionManager session;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +108,8 @@ public class MainDrawer_Activity extends AppCompatActivity {
             return;
         }
 
-
         init();
         setUpBottomNavigation();
-
-
     }
 
     @Override
@@ -130,6 +135,20 @@ public class MainDrawer_Activity extends AppCompatActivity {
         view_pager.setOffscreenPageLimit(4);
         adapter = new BotNavViewPagerAdapter(getSupportFragmentManager());
         view_pager.setAdapter(adapter);
+
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new RefreshSession().execute();
+        }
 
         if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
             return;
@@ -269,6 +288,49 @@ public class MainDrawer_Activity extends AppCompatActivity {
                     AlertDialog alertD = builder.create();
                     alertD.show();
                 }
+        }
+    }
+
+    private class RefreshSession extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getUserDetails");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+
+                        JSONArray jsonarr = mainObj.getJSONArray("result");
+                        if (jsonarr.length() > 0) {
+                            for (int i = 0; i < jsonarr.length(); i++) {
+                                session.createUserLoginSession(jsonarr.toString());
+                            }
+                        }
+                    } else {
+                        Utilities.showMessage("User details failed to update", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
