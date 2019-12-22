@@ -182,6 +182,12 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             holder.cb_like.setChecked(false);
         }
 
+        if (feedDetails.getIs_hidden().equals("1")) {
+            holder.ib_ishidden.setVisibility(View.VISIBLE);
+        } else {
+            holder.ib_ishidden.setVisibility(View.GONE);
+        }
+
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,6 +234,13 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             }
         });
 
+        holder.ib_ishidden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilities.showMessage("Post is marked hidden and is visible to you and group admin only", context, 2);
+            }
+        });
+
         holder.cb_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,13 +278,14 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         private CardView cv_mainlayout, cv_feed_image;
         private ImageView imv_feed_image;
         private Button btn_comment, btn_share;
-        private ImageButton imv_more;
+        private ImageButton imv_more, ib_ishidden;
         private CheckBox cb_like;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
 
             imv_more = view.findViewById(R.id.imv_more);
+            ib_ishidden = view.findViewById(R.id.ib_ishidden);
             imv_user = view.findViewById(R.id.imv_user);
             tv_name = view.findViewById(R.id.tv_name);
             tv_feed_text = view.findViewById(R.id.tv_feed_text);
@@ -279,6 +293,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             cv_feed_image = view.findViewById(R.id.cv_feed_image);
             imv_feed_image = view.findViewById(R.id.imv_feed_image);
+            ib_ishidden = view.findViewById(R.id.ib_ishidden);
             btn_comment = view.findViewById(R.id.btn_comment);
             btn_share = view.findViewById(R.id.btn_share);
             cb_like = view.findViewById(R.id.cb_like);

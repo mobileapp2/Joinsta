@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.GroupFeeds_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.MyGroupDetails_Activity;
 import in.oriange.joinsta.fragments.Groups_Fragment;
@@ -64,7 +65,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_mygroups, parent, false);
+        View view = inflater.inflate(R.layout.list_row_mygroups_new, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -76,24 +77,24 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         holder.tv_heading.setText(groupDetails.getGroup_code() + " - " + groupDetails.getGroup_name());
 
         if (groupDetails.getStatus().equalsIgnoreCase("accepted")) {
-            holder.ll_buttons.setVisibility(View.VISIBLE);
+            holder.ll_group_utilities.setVisibility(View.VISIBLE);
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.INVISIBLE);
         } else if (groupDetails.getStatus().equalsIgnoreCase("left")) {
-            holder.ll_buttons.setVisibility(View.GONE);
+            holder.ll_group_utilities.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
-            holder.ll_buttons.setVisibility(View.GONE);
+            holder.ll_group_utilities.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Requested to join this group");
             holder.btn_rejoin.setText("Cancel");
         } else if (groupDetails.getStatus().equalsIgnoreCase("rejected")) {
-            holder.ll_buttons.setVisibility(View.GONE);
+            holder.ll_group_utilities.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
@@ -114,7 +115,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             }
         });
 
-        holder.ib_settings.setOnClickListener(new View.OnClickListener() {
+        holder.ll_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -176,7 +177,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             }
         });
 
-        holder.ib_notifications.setOnClickListener(new View.OnClickListener() {
+        holder.ll_notifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GroupNotifications_Activity.class)
@@ -185,31 +186,13 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             }
         });
 
-        holder.ib_exit.setOnClickListener(new View.OnClickListener() {
+        holder.ll_posts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to exit this group?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_alertred);
-                builder.setCancelable(false);
-                builder.setPositiveButton("EXIT GROUP", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        new ExitGroup().execute(
-                                userId,
-                                groupDetails.getId(),
-                                "left"
-                        );
-                    }
-                });
-                builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
+                context.startActivity(new Intent(context, GroupFeeds_Activity.class)
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name())
+                        .putExtra("isAdmin", groupDetails.getIs_admin()));
             }
         });
 
@@ -241,21 +224,21 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_heading, tv_role;
-        private LinearLayout ll_buttons;
+        private TextView tv_heading, tv_role, tv_notifications_count;
+        private LinearLayout ll_group_utilities, ll_posts, ll_notifications, ll_settings;
         private TextView tv_status;
         private Button btn_rejoin;
-        private ImageButton ib_settings, ib_notifications, ib_exit;
 
         public MyViewHolder(View view) {
             super(view);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             tv_heading = view.findViewById(R.id.tv_heading);
             tv_role = view.findViewById(R.id.tv_role);
-            ib_settings = view.findViewById(R.id.ib_settings);
-            ib_notifications = view.findViewById(R.id.ib_notifications);
-            ib_exit = view.findViewById(R.id.ib_exit);
-            ll_buttons = view.findViewById(R.id.ll_buttons);
+            tv_notifications_count = view.findViewById(R.id.tv_notifications_count);
+            ll_group_utilities = view.findViewById(R.id.ll_group_utilities);
+            ll_posts = view.findViewById(R.id.ll_posts);
+            ll_notifications = view.findViewById(R.id.ll_notifications);
+            ll_settings = view.findViewById(R.id.ll_settings);
             tv_status = view.findViewById(R.id.tv_status);
             btn_rejoin = view.findViewById(R.id.btn_rejoin);
         }
@@ -500,6 +483,5 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             }
         }
     }
-
 
 }

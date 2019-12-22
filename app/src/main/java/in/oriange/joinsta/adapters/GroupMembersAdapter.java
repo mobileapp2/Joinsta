@@ -85,6 +85,12 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             holder.sw_active.setChecked(false);
         }
 
+        if (memberDetails.getCan_post().equals("1")) {
+            holder.sw_can_post.setChecked(true);
+        } else {
+            holder.sw_can_post.setChecked(false);
+        }
+
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +159,23 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             }
         });
 
+        holder.sw_can_post.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (Utilities.isNetworkAvailable(context))
+                        new CanPost().execute(memberDetails.getId(), "1");
+                    else
+                        Utilities.showMessage("Please check your internet connection", context, 2);
+                } else {
+                    if (Utilities.isNetworkAvailable(context))
+                        new CanPost().execute(memberDetails.getId(), "0");
+                    else
+                        Utilities.showMessage("Please check your internet connection", context, 2);
+                }
+            }
+        });
+
         holder.ib_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,7 +219,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         private View view_divider;
         private TextView tv_name, tv_mobile_email;
         private Button btn_edit, btn_delete;
-        private Switch sw_active;
+        private Switch sw_active, sw_can_post;
         private ImageButton ib_call;
 
         public MyViewHolder(@NonNull View view) {
@@ -209,6 +232,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             btn_edit = view.findViewById(R.id.btn_edit);
             btn_delete = view.findViewById(R.id.btn_delete);
             sw_active = view.findViewById(R.id.sw_active);
+            sw_can_post = view.findViewById(R.id.sw_can_post);
             ib_call = view.findViewById(R.id.ib_call);
         }
     }
@@ -296,6 +320,49 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Active status changed successfully", context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class CanPost extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "postFeedAction");
+            obj.addProperty("member_id", params[0]);
+            obj.addProperty("is_post", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.FEEDSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Can post status changed successfully", context, 1);
                     }
                 }
             } catch (Exception e) {
