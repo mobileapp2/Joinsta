@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.AllGroups_Activity;
 import in.oriange.joinsta.activities.GroupFeeds_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.MyGroupDetails_Activity;
@@ -76,34 +77,49 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
         holder.tv_heading.setText(groupDetails.getGroup_code() + " - " + groupDetails.getGroup_name());
 
-        if (groupDetails.getStatus().equalsIgnoreCase("accepted")) {
+        if (groupDetails.getStatus().equals("")) {
+            holder.ll_group_utilities.setVisibility(View.GONE);
+            holder.tv_status.setVisibility(View.GONE);
+            holder.tv_role.setVisibility(View.INVISIBLE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
+            holder.btn_rejoin.setText("Join");
+        } else if (groupDetails.getStatus().equalsIgnoreCase("accepted")) {
             holder.ll_group_utilities.setVisibility(View.VISIBLE);
             holder.tv_status.setVisibility(View.GONE);
-            holder.btn_rejoin.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.INVISIBLE);
+            holder.btn_rejoin.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equalsIgnoreCase("left")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.GONE);
-            holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.tv_role.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
+            holder.btn_rejoin.setText("Rejoin");
         } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
-            holder.btn_rejoin.setVisibility(View.VISIBLE);
-            holder.tv_role.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Requested to join this group");
+            holder.tv_role.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setText("Cancel");
         } else if (groupDetails.getStatus().equalsIgnoreCase("rejected")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
-            holder.btn_rejoin.setVisibility(View.VISIBLE);
-            holder.tv_role.setVisibility(View.GONE);
             holder.tv_status.setText("Request is rejected");
+            holder.tv_role.setVisibility(View.GONE);
+            holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setText("Cancel");
         }
 
         if (groupDetails.getIs_admin().equals("1")) {
             holder.tv_role.setVisibility(View.VISIBLE);
+        }
+
+        if (groupDetails.getGroup_Notification_Count() == 0) {
+            holder.tv_notifications_count.setVisibility(View.GONE);
+        } else if (groupDetails.getGroup_Notification_Count() > 99) {
+            holder.tv_notifications_count.setText("99+");
+        } else {
+            holder.tv_notifications_count.setText(groupDetails.getGroup_Notification_Count() + "");
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -192,20 +208,21 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                 context.startActivity(new Intent(context, GroupFeeds_Activity.class)
                         .putExtra("groupId", groupDetails.getId())
                         .putExtra("groupName", groupDetails.getGroup_name())
-                        .putExtra("isAdmin", groupDetails.getIs_admin()));
+                        .putExtra("isAdmin", groupDetails.getIs_admin())
+                        .putExtra("canPost", groupDetails.getCan_post()));
             }
         });
 
         holder.btn_rejoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (groupDetails.getStatus().equalsIgnoreCase("left")) {
+                if (groupDetails.getStatus().equals("") || groupDetails.getStatus().equals("left")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new JoinGroup().execute(groupDetails.getId());
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
-                } else if (groupDetails.getStatus().equalsIgnoreCase("requested") || groupDetails.getStatus().equalsIgnoreCase("rejected")) {
+                } else if (groupDetails.getStatus().equals("requested") || groupDetails.getStatus().equals("rejected")) {
                     if (Utilities.isNetworkAvailable(context)) {
                         new CancelRequest().execute(userId, groupDetails.getId());
                     } else {
@@ -383,8 +400,6 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -407,6 +422,9 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         });
 
                         alertD.show();
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     } else {
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
@@ -452,7 +470,6 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
@@ -476,6 +493,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         });
 
                         alertD.show();
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
                     }
                 }
             } catch (Exception e) {

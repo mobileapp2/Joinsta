@@ -9,7 +9,7 @@ public class MyGroupsListModel implements Serializable {
     /**
      * type : success
      * message : Groups returned successfully!
-     * result : [{"id":"1","group_name":"Test group 1","group_code":"0001","group_description":"Group description 1","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"}]},{"id":"2","group_name":"Test group 1","group_code":"0002","group_description":"Group description 1","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"1","group_name":"Test group 1","group_code":"0001","group_description":"Group description 1","is_hidden":"0","allow_notifiication":"1","status":"left","Group_Member_Details":[{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"}]},{"id":"3","group_name":"Joinsta Admins","group_code":"0003","group_description":"Joinsta Admin","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"Test supervisor    ","mobile":"9032930247","role":"group_supervisor"},{"first_name":"sandesh","mobile":"9049396189","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_supervisor"},{"first_name":"Varsharani","mobile":"8275460300","role":"group_supervisor"}]},{"id":"4","group_name":"Joinsta Admins test","group_code":"0004","group_description":"Joinsta Admin test","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"komal","mobile":"8007140035","role":"group_member"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"Test supervisor 11","mobile":"9637617162","role":"group_supervisor"}]},{"id":"5","group_name":"namrata","group_code":"0005","group_description":"employee","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"staff    ","mobile":"654655654","role":"group_admin"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"7","group_name":"wueqi","group_code":"0007","group_description":"kjqwe","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"8","group_name":"wueqi","group_code":"0008","group_description":"kjqwe","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"9","group_name":"wueqi","group_code":"0009","group_description":"kjqwe","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"10","group_name":"New Group Admin","group_code":"0010","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"11","group_name":"New Group Admin","group_code":"0011","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"12","group_name":"New Group Admin","group_code":"0012","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"13","group_name":"New Group Admin","group_code":"0013","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"14","group_name":"New Group Admin","group_code":"0014","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"15","group_name":"New Group Admin","group_code":"0015","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"16","group_name":"New Group Admin","group_code":"0016","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"17","group_name":"New Group Admin","group_code":"0017","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"18","group_name":"New Group Admin","group_code":"0018","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"19","group_name":"New Group Admin By Namrata","group_code":"0019","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"20","group_name":"New Group Admin By Namrata","group_code":"0020","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"}]},{"id":"2","group_name":"Test group 1","group_code":"0002","group_description":"Group description 1","is_hidden":"0","allow_notifiication":"0","status":"requested","Group_Member_Details":[{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"2","group_name":"Test group 1","group_code":"0002","group_description":"Group description 1","is_hidden":"0","allow_notifiication":"0","status":"requested","Group_Member_Details":[{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"3","group_name":"Joinsta Admins","group_code":"0003","group_description":"Joinsta Admin","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"Test supervisor    ","mobile":"9032930247","role":"group_supervisor"},{"first_name":"sandesh","mobile":"9049396189","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_supervisor"},{"first_name":"Varsharani","mobile":"8275460300","role":"group_supervisor"}]},{"id":"3","group_name":"Joinsta Admins","group_code":"0003","group_description":"Joinsta Admin","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"Test supervisor    ","mobile":"9032930247","role":"group_supervisor"},{"first_name":"sandesh","mobile":"9049396189","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_supervisor"},{"first_name":"Varsharani","mobile":"8275460300","role":"group_supervisor"}]},{"id":"3","group_name":"Joinsta Admins","group_code":"0003","group_description":"Joinsta Admin","is_hidden":"0","allow_notifiication":"0","status":"requested","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"Test supervisor    ","mobile":"9032930247","role":"group_supervisor"},{"first_name":"sandesh","mobile":"9049396189","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_supervisor"},{"first_name":"Varsharani","mobile":"8275460300","role":"group_supervisor"}]},{"id":"3","group_name":"Joinsta Admins","group_code":"0003","group_description":"Joinsta Admin","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"Test supervisor    ","mobile":"9032930247","role":"group_supervisor"},{"first_name":"sandesh","mobile":"9049396189","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_supervisor"},{"first_name":"Varsharani","mobile":"8275460300","role":"group_supervisor"}]},{"id":"3","group_name":"Joinsta Admins","group_code":"0003","group_description":"Joinsta Admin","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"Test supervisor    ","mobile":"9032930247","role":"group_supervisor"},{"first_name":"sandesh","mobile":"9049396189","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_member"},{"first_name":"Sarika","mobile":"9307728041","role":"group_supervisor"},{"first_name":"Varsharani","mobile":"8275460300","role":"group_supervisor"}]},{"id":"4","group_name":"Joinsta Admins test","group_code":"0004","group_description":"Joinsta Admin test","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"komal","mobile":"8007140035","role":"group_member"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"Test supervisor 11","mobile":"9637617162","role":"group_supervisor"}]},{"id":"4","group_name":"Joinsta Admins test","group_code":"0004","group_description":"Joinsta Admin test","is_hidden":"0","allow_notifiication":"0","status":"requested","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"komal","mobile":"8007140035","role":"group_member"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"Test supervisor 11","mobile":"9637617162","role":"group_supervisor"}]},{"id":"4","group_name":"Joinsta Admins test","group_code":"0004","group_description":"Joinsta Admin test","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"komal","mobile":"8007140035","role":"group_member"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"Test supervisor 11","mobile":"9637617162","role":"group_supervisor"}]},{"id":"4","group_name":"Joinsta Admins test","group_code":"0004","group_description":"Joinsta Admin test","is_hidden":"0","allow_notifiication":"0","status":"accepted","Group_Member_Details":[{"first_name":"Radhika          ","mobile":"9689282338","role":"group_admin"},{"first_name":"komal","mobile":"8007140035","role":"group_member"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"komal","mobile":"8007140035","role":"group_supervisor"},{"first_name":"Test supervisor 11","mobile":"9637617162","role":"group_supervisor"}]},{"id":"6","group_name":"New Group Admin By Namrata","group_code":"0006","group_description":"Test New Group","is_hidden":"0","allow_notifiication":"0","status":"requested","Group_Member_Details":[{"first_name":"Monika  ","mobile":"8830648438","role":"group_admin"},{"first_name":"Test Group Memeber","mobile":"8878765434","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_member"},{"first_name":" shagufta ","mobile":"7841095280","role":"group_supervisor"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]},{"id":"2","group_name":"Test group 1","group_code":"0002","group_description":"Group description 1","is_hidden":"0","allow_notifiication":"0","status":"requested","Group_Member_Details":[{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"},{"first_name":"Priyesh Pawar    ","mobile":"8149115089","role":"group_member"}]}]
+     * result : [{"id":"117","group_name":"Android Testing","group_code":"0117","group_description":"Group created fot android unit testing","is_hidden":"1","is_favourite":"1","allow_notifiication":"0","status":"accepted","is_visible":"0","is_public_group":"1","is_admin":"1","can_post":"1","Group_Notification_Count":0,"Group_Member_Details":[{"id":"10","first_name":"Priyesh Pawar","mobile":"8149115089","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","password":"123456","role":"group_admin","is_hidden":"1","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"386","first_name":"Jdkskakak","mobile":"897946799494","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"0","is_joinsta_member":"0"},{"id":"387","first_name":"HdjsjkKz","mobile":"89676497976","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"}]},{"id":"126","group_name":"B","group_code":"0126","group_description":"B","is_hidden":"0","is_favourite":"0","allow_notifiication":"0","status":"accepted","is_visible":"0","is_public_group":"1","is_admin":"1","can_post":"1","Group_Notification_Count":0,"Group_Member_Details":[{"id":"10","first_name":"new join group ","mobile":"8149115089","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","password":"123456","role":"group_admin","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"}]},{"id":"118","group_name":"Android Testing","group_code":"0118","group_description":"Group created fot android unit testing","is_hidden":"0","is_favourite":"0","allow_notifiication":"0","status":"accepted","is_visible":"0","is_public_group":"1","is_admin":"1","can_post":"1","Group_Notification_Count":0,"Group_Member_Details":[{"id":"10","first_name":"Priyesh Pawar","mobile":"8149115089","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","password":"123456","role":"group_admin","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"}]},{"id":"11","group_name":"new test group","group_code":"0011","group_description":"software developers,software engireer,software and hardware all software related project hgggggggggggggggggggggggggggggggj","is_hidden":"0","is_favourite":"0","allow_notifiication":"0","status":"accepted","is_visible":"0","is_public_group":"1","is_admin":"0","can_post":"1","Group_Notification_Count":1,"Group_Member_Details":[{"id":"1","first_name":"Monika  ","mobile":"8830648438","image_url":"","password":"3432","role":"group_admin","is_hidden":"0","native_place":"latur","can_post":"1","is_joinsta_member":"1"},{"id":"10","first_name":"Priyesh Pawar","mobile":"8149115089","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","password":"123456","role":"group_member","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"265","first_name":"sanika deshamukh","mobile":"","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"261","first_name":"shital","mobile":"98949494911","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"266","first_name":"Hrjsn Fkdns","mobile":"8989497979","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"269","first_name":"Yjjyyjyj","mobile":"8855859955","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"15","first_name":"Savavava","mobile":"8275460300","image_url":"","password":"123456","role":"group_supervisor","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"15","first_name":"Savavava","mobile":"8275460300","image_url":"","password":"123456","role":"group_member","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"15","first_name":"Savavava","mobile":"8275460300","image_url":"","password":"123456","role":"group_supervisor","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"270","first_name":"Aaa","mobile":"8965231471","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"272","first_name":"aaaaaa","mobile":"8965231490","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"281","first_name":"Qqq","mobile":"9898979797","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"282","first_name":"Www","mobile":"8668855885","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"283","first_name":"Ppp","mobile":"8997799797","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"284","first_name":"Ooo","mobile":"9894946466","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"285","first_name":"vaishnav","mobile":"9998979695","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"286","first_name":"sanvi ","mobile":"9864573845","image_url":"","password":"1111","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"1"},{"id":"287","first_name":"samnatha ","mobile":"89876554445","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"289","first_name":"saray ","mobile":"896756756546","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"276","first_name":"Sarika","mobile":"8007140035","image_url":"","password":"1111","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"1"},{"id":"305","first_name":"salman khan ","mobile":"8965646464654","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"306","first_name":"abhishekh ","mobile":"586587445","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"307","first_name":"some ","mobile":"565645646456","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"384","first_name":"aaaaaa","mobile":"9860392913","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"}]},{"id":"2","group_name":"Group by  saba ","group_code":"0002","group_description":"engineer","is_hidden":"0","is_favourite":"0","allow_notifiication":"0","status":"requested","is_visible":"1","is_public_group":"1","is_admin":"0","can_post":"1","Group_Notification_Count":0,"Group_Member_Details":[{"id":"103","first_name":"saba bagwan","mobile":"8180012531","image_url":"","password":"1111","role":"group_admin","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"1"},{"id":"6","first_name":"Nikita  ","mobile":"9860392913","image_url":"","password":"1111","role":"group_member","is_hidden":"0","native_place":"latur","can_post":"1","is_joinsta_member":"1"},{"id":"15","first_name":"Savavava","mobile":"8275460300","image_url":"","password":"123456","role":"group_member","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"314","first_name":"Poiuyt","mobile":"8959469794","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"276","first_name":"Sarika","mobile":"8007140035","image_url":"","password":"1111","role":"group_supervisor","is_hidden":"1","native_place":"","can_post":"1","is_joinsta_member":"1"},{"id":"12","first_name":"Sunita","mobile":"8830537273","image_url":"http://joinsta.in/images/12/uplimg-20190610070558.png","password":"sonu@1234","role":"group_admin","is_hidden":"0","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"371","first_name":"Ssss","mobile":"9421554887","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"},{"id":"385","first_name":"SSskdjaskd","mobile":"8007140035","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"}]}]
      */
 
     private String type;
@@ -42,14 +42,20 @@ public class MyGroupsListModel implements Serializable {
 
     public static class ResultBean implements Serializable {
         /**
-         * id : 1
-         * group_name : Test group 1
-         * group_code : 0001
-         * group_description : Group description 1
-         * is_hidden : 0
+         * id : 117
+         * group_name : Android Testing
+         * group_code : 0117
+         * group_description : Group created fot android unit testing
+         * is_hidden : 1
+         * is_favourite : 1
          * allow_notifiication : 0
          * status : accepted
-         * Group_Member_Details : [{"first_name":"Radhika        ","mobile":"9237294738","role":"group_admin"},{"first_name":"Monika  ","mobile":"8830648438","role":"group_member"}]
+         * is_visible : 0
+         * is_public_group : 1
+         * is_admin : 1
+         * can_post : 1
+         * Group_Notification_Count : 0
+         * Group_Member_Details : [{"id":"10","first_name":"Priyesh Pawar","mobile":"8149115089","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","password":"123456","role":"group_admin","is_hidden":"1","native_place":"Latur","can_post":"1","is_joinsta_member":"1"},{"id":"386","first_name":"Jdkskakak","mobile":"897946799494","image_url":"","password":"","role":"group_member","is_hidden":"0","native_place":"","can_post":"0","is_joinsta_member":"0"},{"id":"387","first_name":"HdjsjkKz","mobile":"89676497976","image_url":"","password":"","role":"group_supervisor","is_hidden":"0","native_place":"","can_post":"1","is_joinsta_member":"0"}]
          */
 
         private String id;
@@ -58,11 +64,13 @@ public class MyGroupsListModel implements Serializable {
         private String group_description;
         private String is_hidden;
         private String is_favourite;
-        private String is_visible;
-        private String is_public_group;
         private String allow_notifiication;
         private String status;
+        private String is_visible;
+        private String is_public_group;
         private String is_admin;
+        private String can_post;
+        private int Group_Notification_Count;
         private ArrayList<GroupMemberDetailsBean> Group_Member_Details;
 
         public String getId() {
@@ -113,6 +121,26 @@ public class MyGroupsListModel implements Serializable {
             this.is_favourite = is_favourite;
         }
 
+        public String getAllow_notifiication() {
+            return allow_notifiication;
+        }
+
+        public void setAllow_notifiication(String allow_notifiication) {
+            this.allow_notifiication = allow_notifiication;
+        }
+
+        public String getStatus() {
+            if (status != null){
+                return status;
+            } else {
+                return "";
+            }
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public String getIs_visible() {
             return is_visible;
         }
@@ -129,28 +157,28 @@ public class MyGroupsListModel implements Serializable {
             this.is_public_group = is_public_group;
         }
 
-        public String getAllow_notifiication() {
-            return allow_notifiication;
-        }
-
-        public void setAllow_notifiication(String allow_notifiication) {
-            this.allow_notifiication = allow_notifiication;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
         public String getIs_admin() {
             return is_admin;
         }
 
         public void setIs_admin(String is_admin) {
             this.is_admin = is_admin;
+        }
+
+        public String getCan_post() {
+            return can_post;
+        }
+
+        public void setCan_post(String can_post) {
+            this.can_post = can_post;
+        }
+
+        public int getGroup_Notification_Count() {
+            return Group_Notification_Count;
+        }
+
+        public void setGroup_Notification_Count(int Group_Notification_Count) {
+            this.Group_Notification_Count = Group_Notification_Count;
         }
 
         public ArrayList<GroupMemberDetailsBean> getGroup_Member_Details() {
@@ -163,19 +191,28 @@ public class MyGroupsListModel implements Serializable {
 
         public static class GroupMemberDetailsBean implements Serializable {
             /**
-             * first_name : Radhika
-             * mobile : 9237294738
+             * id : 10
+             * first_name : Priyesh Pawar
+             * mobile : 8149115089
+             * image_url : https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png
+             * password : 123456
              * role : group_admin
+             * is_hidden : 1
+             * native_place : Latur
+             * can_post : 1
+             * is_joinsta_member : 1
              */
 
             private String id;
             private String first_name;
             private String mobile;
-            private String role;
             private String image_url;
-            private String is_joinsta_member;
+            private String password;
+            private String role;
             private String is_hidden;
             private String native_place;
+            private String can_post;
+            private String is_joinsta_member;
 
             public String getId() {
                 return id;
@@ -201,14 +238,6 @@ public class MyGroupsListModel implements Serializable {
                 this.mobile = mobile;
             }
 
-            public String getRole() {
-                return role;
-            }
-
-            public void setRole(String role) {
-                this.role = role;
-            }
-
             public String getImage_url() {
                 return image_url;
             }
@@ -217,12 +246,20 @@ public class MyGroupsListModel implements Serializable {
                 this.image_url = image_url;
             }
 
-            public String getIs_joinsta_member() {
-                return is_joinsta_member;
+            public String getPassword() {
+                return password;
             }
 
-            public void setIs_joinsta_member(String is_joinsta_member) {
-                this.is_joinsta_member = is_joinsta_member;
+            public void setPassword(String password) {
+                this.password = password;
+            }
+
+            public String getRole() {
+                return role;
+            }
+
+            public void setRole(String role) {
+                this.role = role;
             }
 
             public String getIs_hidden() {
@@ -233,16 +270,28 @@ public class MyGroupsListModel implements Serializable {
                 this.is_hidden = is_hidden;
             }
 
-            public String getCity() {
-                if (native_place != null) {
-                    return native_place;
-                } else {
-                    return "";
-                }
+            public String getNative_place() {
+                return native_place;
             }
 
-            public void setCity(String native_place) {
+            public void setNative_place(String native_place) {
                 this.native_place = native_place;
+            }
+
+            public String getCan_post() {
+                return can_post;
+            }
+
+            public void setCan_post(String can_post) {
+                this.can_post = can_post;
+            }
+
+            public String getIs_joinsta_member() {
+                return is_joinsta_member;
+            }
+
+            public void setIs_joinsta_member(String is_joinsta_member) {
+                this.is_joinsta_member = is_joinsta_member;
             }
         }
     }

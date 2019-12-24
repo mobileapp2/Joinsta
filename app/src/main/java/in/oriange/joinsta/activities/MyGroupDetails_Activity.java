@@ -477,7 +477,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 context.startActivity(new Intent(context, GroupFeeds_Activity.class)
                         .putExtra("groupId", groupDetails.getId())
                         .putExtra("groupName", groupDetails.getGroup_name())
-                        .putExtra("isAdmin", groupDetails.getIs_admin()));
+                        .putExtra("isAdmin", groupDetails.getIs_admin())
+                        .putExtra("canPost", groupDetails.getCan_post()));
             }
         });
 
@@ -582,7 +583,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
             holder.tv_name.setText(memberDetails.getFirst_name().trim());
             holder.tv_mobile.setText(memberDetails.getMobile());
-            holder.tv_city.setText(memberDetails.getCity());
+            holder.tv_city.setText(memberDetails.getNative_place());
 
             if (memberDetails.getIs_joinsta_member().equals("0")) {
                 holder.btn_invite.setVisibility(View.VISIBLE);
@@ -749,9 +750,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new AllGroups_Activity.GetGroupsList().execute();
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -772,6 +770,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                                 finish();
                             }
                         });
+
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
 
                         alertD.show();
                     } else {
@@ -864,8 +865,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -889,6 +888,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
+
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
             } catch (Exception e) {
@@ -1020,8 +1022,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -1045,6 +1045,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
+
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
             } catch (Exception e) {
@@ -1085,6 +1088,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
+                        new AllGroups_Activity.GetGroupsList().execute();
                         new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
@@ -1128,8 +1132,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -1153,6 +1155,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
             } catch (Exception e) {
@@ -1248,8 +1252,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
                         Utilities.showMessage("Group members visibility status changed successfully", context, 1);
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
             } catch (Exception e) {
@@ -1292,8 +1297,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
                         Utilities.showMessage("Group visibility status changed successfully", context, 1);
+                        new AllGroups_Activity.GetGroupsList().execute();
+                        new Groups_Fragment.GetMyGroupsList().execute();
                     }
                 }
             } catch (Exception e) {

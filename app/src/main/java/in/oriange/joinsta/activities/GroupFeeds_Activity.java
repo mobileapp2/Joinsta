@@ -67,7 +67,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private FloatingActionButton btn_add_post;
-    private String userId, groupId, groupName, isAdmin;
+    private String userId, groupId, groupName, isAdmin, canPost;
 
     private LocalBroadcastManager localBroadcastManager;
     private GroupFeedsAdapter groupFeedsAdapter;
@@ -117,6 +117,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         groupId = getIntent().getStringExtra("groupId");
         groupName = getIntent().getStringExtra("groupName");
         isAdmin = getIntent().getStringExtra("isAdmin");
+        canPost = getIntent().getStringExtra("canPost");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAllFeedDetails().execute("1");
@@ -145,9 +146,13 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         btn_add_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, AddGroupFeeds_Activity.class)
-                        .putExtra("groupId", groupId)
-                        .putExtra("isAdmin", isAdmin));
+                if (canPost.equals("1")) {
+                    startActivity(new Intent(context, AddGroupFeeds_Activity.class)
+                            .putExtra("groupId", groupId)
+                            .putExtra("isAdmin", isAdmin));
+                } else {
+                    Utilities.showMessage("You are not authorised to add post", context, 2);
+                }
             }
         });
 

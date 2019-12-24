@@ -26,8 +26,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.AllGroupsAdapter;
-import in.oriange.joinsta.models.AllGroupsListModel;
+import in.oriange.joinsta.adapters.MyGroupsAdapter;
+import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -45,7 +45,7 @@ public class AllGroups_Activity extends AppCompatActivity {
     private static SpinKitView progressBar;
     private static LinearLayout ll_nopreview;
     private static String userId;
-    private static ArrayList<AllGroupsListModel.ResultBean> groupsList;
+    private static ArrayList<MyGroupsListModel.ResultBean> groupsList;
     private static InputMethodManager inputMethodManager;
 
     @Override
@@ -131,8 +131,8 @@ public class AllGroups_Activity extends AppCompatActivity {
                 }
 
                 if (!query.toString().equals("")) {
-                    ArrayList<AllGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
-                    for (AllGroupsListModel.ResultBean groupsDetails : groupsList) {
+                    ArrayList<MyGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    for (MyGroupsListModel.ResultBean groupsDetails : groupsList) {
 
                         String groupsToBeSearched = groupsDetails.getGroup_name().toLowerCase() +
                                 groupsDetails.getGroup_code().toLowerCase();
@@ -141,9 +141,9 @@ public class AllGroups_Activity extends AppCompatActivity {
                             groupsSearchedList.add(groupsDetails);
                         }
                     }
-                    rv_groups.setAdapter(new AllGroupsAdapter(context, groupsSearchedList));
+                    rv_groups.setAdapter(new MyGroupsAdapter(context, groupsSearchedList));
                 } else {
-                    rv_groups.setAdapter(new AllGroupsAdapter(context, groupsList));
+                    rv_groups.setAdapter(new MyGroupsAdapter(context, groupsList));
                 }
 
             }
@@ -187,15 +187,15 @@ public class AllGroups_Activity extends AppCompatActivity {
             try {
                 if (!result.equals("")) {
                     groupsList = new ArrayList<>();
-                    AllGroupsListModel pojoDetails = new Gson().fromJson(result, AllGroupsListModel.class);
+                    MyGroupsListModel pojoDetails = new Gson().fromJson(result, MyGroupsListModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
                         groupsList = pojoDetails.getResult();
 
                         if (!edt_search.getText().toString().trim().isEmpty()) {
-                            ArrayList<AllGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
-                            for (AllGroupsListModel.ResultBean groupsDetails : groupsList) {
+                            ArrayList<MyGroupsListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                            for (MyGroupsListModel.ResultBean groupsDetails : groupsList) {
 
                                 String groupsToBeSearched = groupsDetails.getGroup_name().toLowerCase() +
                                         groupsDetails.getGroup_code().toLowerCase();
@@ -205,7 +205,7 @@ public class AllGroups_Activity extends AppCompatActivity {
                                 }
                             }
 
-                            rv_groups.setAdapter(new AllGroupsAdapter(context, groupsSearchedList));
+                            rv_groups.setAdapter(new MyGroupsAdapter(context, groupsSearchedList));
                         }
                         rv_groups.setVisibility(View.VISIBLE);
                         inputMethodManager.toggleSoftInputFromWindow(edt_search.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
