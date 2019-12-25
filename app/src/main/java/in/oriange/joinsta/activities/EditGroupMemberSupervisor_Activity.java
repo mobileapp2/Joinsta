@@ -217,12 +217,12 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             }
         });
 
-        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCountryCodesListDialog();
-            }
-        });
+//        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showCountryCodesListDialog();
+//            }
+//        });
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override

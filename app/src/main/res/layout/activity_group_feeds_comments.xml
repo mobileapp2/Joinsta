@@ -148,7 +148,7 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginLeft="20dp"
                             android:background="@drawable/like_icon"
                             android:button="@null"
                             android:checked="false"
@@ -162,7 +162,7 @@
                             android:layout_weight="0.5"
                             android:drawableRight="@drawable/icon_comment"
                             android:drawableTint="@color/colorPrimary"
-                            android:text="Comment"
+                            android:text="Comments"
                             android:textSize="13sp"
                             android:textStyle="bold" />
 
@@ -171,7 +171,7 @@
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:layout_weight="0.5"
+                            android:layout_weight="0.4"
                             android:drawableRight="@drawable/icon_share"
                             android:drawableTint="@color/colorPrimary"
                             android:text="Share"
