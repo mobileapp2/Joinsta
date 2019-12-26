@@ -162,7 +162,7 @@ public class EditGroupMemberSupervisor_Activity extends AppCompatActivity {
             edt_name.setText(memberDetails.getFirst_name());
             edt_mobile.setText(memberDetails.getMobile());
             edt_email.setText(memberDetails.getEmail());
-            tv_countrycode_mobile.setText("+" + memberDetails.getCountry_code());
+            tv_countrycode_mobile.setText(memberDetails.getCountry_code());
 
         }
 

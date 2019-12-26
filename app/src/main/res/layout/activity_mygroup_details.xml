@@ -279,8 +279,8 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.9"
-                                        android:paddingLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
                                         android:text="Participants"
                                         android:textColor="@color/white"
                                         android:textSize="16sp"
@@ -292,7 +292,8 @@
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:tint="@color/white"
+                                        android:visibility="gone"/>
 
                                 </LinearLayout>
 
@@ -322,8 +323,8 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.9"
-                                        android:paddingLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
                                         android:text="Requests"
                                         android:textColor="@color/white"
                                         android:textSize="16sp"
@@ -335,7 +336,8 @@
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:tint="@color/white"
+                                        android:visibility="gone" />
 
                                 </LinearLayout>
 
@@ -372,8 +374,8 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.9"
-                                        android:paddingLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
                                         android:text="Send Message"
                                         android:textColor="@color/white"
                                         android:textSize="16sp"
@@ -385,7 +387,8 @@
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:tint="@color/white"
+                                        android:visibility="gone"/>
 
                                 </LinearLayout>
 
@@ -415,8 +418,8 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.9"
-                                        android:paddingLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
                                         android:text="Banners"
                                         android:textColor="@color/white"
                                         android:textSize="16sp"
@@ -428,7 +431,8 @@
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:tint="@color/white"
+                                        android:visibility="gone" />
 
                                 </LinearLayout>
 
@@ -474,8 +478,8 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.9"
-                                        android:paddingLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
                                         android:text="Notifications"
                                         android:textColor="@color/white"
                                         android:textSize="16sp"
@@ -487,7 +491,8 @@
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:tint="@color/white"
+                                        android:visibility="gone" />
 
                                 </LinearLayout>
 
@@ -517,8 +522,8 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.9"
-                                        android:paddingLeft="10dp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
                                         android:text="Posts"
                                         android:textColor="@color/white"
                                         android:textSize="16sp"
@@ -530,7 +535,8 @@
                                         android:layout_gravity="center_vertical"
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:tint="@color/white"
+                                        android:visibility="gone" />
 
                                 </LinearLayout>
 
