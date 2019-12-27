@@ -192,9 +192,6 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        new AllGroups_Activity.GetGroupsList().execute();
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -217,6 +214,9 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                         });
 
                         alertD.show();
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     } else {
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
@@ -263,9 +263,6 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new AllGroups_Activity.GetGroupsList().execute();
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -276,7 +273,7 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Request canceled successfully");
+                        tv_title.setText("Request cancelled successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -288,6 +285,9 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
                         });
 
                         alertD.show();
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {

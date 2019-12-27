@@ -481,23 +481,77 @@ public class Register_Activity extends AppCompatActivity {
                             Utilities.showAlertDialog(context, "Mobile number is already registered", false);
                             edt_mobile.setText("");
                         } else {
-                            Utilities.showMessage("You can proceed.", context, 1);
-                            if (Utilities.isNetworkAvailable(context)) {
-                                new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                            if (edt_referral_code.getText().toString().trim().isEmpty()) {
+                                if (Utilities.isNetworkAvailable(context)) {
+                                    new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                                } else {
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                }
                             } else {
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                if (Utilities.isNetworkAvailable(context)) {
+                                    new VerifyReferralCode().execute(edt_referral_code.getText().toString().trim());
+                                } else {
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                }
                             }
-                        }
 
+                        }
                     } else if (type.equalsIgnoreCase("failure")) {
                         Utilities.showAlertDialog(context, "Failed to verify. Please try again", false);
                         edt_mobile.setText("");
                     }
-
                 }
             } catch (Exception e) {
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
                 edt_mobile.setText("");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class VerifyReferralCode extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("referral_code", params[0]));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.REFERRALCODEAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new SendOTP().execute(edt_mobile.getText().toString().trim(), tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showAlertDialog(context, message, false);
+                        edt_referral_code.setText("");
+                    }
+                }
+            } catch (Exception e) {
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+                edt_referral_code.setText("");
                 e.printStackTrace();
             }
         }

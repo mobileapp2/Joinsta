@@ -45,6 +45,8 @@ import java.net.URL;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.AllGroups_Activity;
+import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.AllGroupNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -427,6 +429,17 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             obj.addProperty("msg_details_id", params[0]);
             res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
             return res;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                new Groups_Fragment.GetMyGroupsList().execute();
+                new AllGroups_Activity.GetGroupsList().execute();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

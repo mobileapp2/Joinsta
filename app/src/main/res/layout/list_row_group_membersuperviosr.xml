@@ -79,8 +79,9 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.45"
+                android:textColor="@color/darkGray"
                 android:drawableRight="@drawable/icon_edit"
-                android:drawableTint="@color/colorPrimary"
+                android:drawableTint="@color/darkGray"
                 android:text="Edit"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -91,8 +92,9 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.45"
+                android:textColor="@color/darkGray"
                 android:drawableRight="@drawable/icon_delete"
-                android:drawableTint="@color/colorPrimary"
+                android:drawableTint="@color/darkGray"
                 android:text="Delete"
                 android:textStyle="bold" />
 
@@ -104,7 +106,7 @@
                 android:gravity="center"
                 android:paddingLeft="5dp"
                 android:text="Active"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/darkGray"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
@@ -117,7 +119,7 @@
                 android:gravity="center"
                 android:paddingLeft="5dp"
                 android:text="Can Post"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/darkGray"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

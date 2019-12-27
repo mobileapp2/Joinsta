@@ -79,6 +79,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
         if (groupDetails.getStatus().equals("")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
+            holder.view_divider.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.INVISIBLE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
@@ -90,12 +91,14 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             holder.btn_rejoin.setVisibility(View.GONE);
         } else if (groupDetails.getStatus().equalsIgnoreCase("left")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
+            holder.view_divider.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.GONE);
             holder.tv_role.setVisibility(View.GONE);
             holder.btn_rejoin.setVisibility(View.VISIBLE);
             holder.btn_rejoin.setText("Rejoin");
         } else if (groupDetails.getStatus().equalsIgnoreCase("requested")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
+            holder.view_divider.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Requested to join this group");
             holder.tv_role.setVisibility(View.GONE);
@@ -103,6 +106,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             holder.btn_rejoin.setText("Cancel");
         } else if (groupDetails.getStatus().equalsIgnoreCase("rejected")) {
             holder.ll_group_utilities.setVisibility(View.GONE);
+            holder.view_divider.setVisibility(View.GONE);
             holder.tv_status.setVisibility(View.VISIBLE);
             holder.tv_status.setText("Request is rejected");
             holder.tv_role.setVisibility(View.GONE);
@@ -244,6 +248,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
         private TextView tv_heading, tv_role, tv_notifications_count;
         private LinearLayout ll_group_utilities, ll_posts, ll_notifications, ll_settings;
         private TextView tv_status;
+        private View view_divider;
         private Button btn_rejoin;
 
         public MyViewHolder(View view) {
@@ -257,6 +262,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             ll_notifications = view.findViewById(R.id.ll_notifications);
             ll_settings = view.findViewById(R.id.ll_settings);
             tv_status = view.findViewById(R.id.tv_status);
+            view_divider = view.findViewById(R.id.view_divider);
             btn_rejoin = view.findViewById(R.id.btn_rejoin);
         }
     }
@@ -481,7 +487,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Request canceled successfully");
+                        tv_title.setText("Request cancelled successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

@@ -247,18 +247,35 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_referral_code"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:hint="Referral Code"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:orientation="horizontal">
+
+                        <com.rengwuxian.materialedittext.MaterialEditText
+                            android:id="@+id/edt_referral_code"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:hint="Referral Code"
+                            android:inputType="textCapWords|textNoSuggestions"
+                            android:textSize="16sp"
+                            app:met_floatingLabel="highlight"
+                            app:met_textColorHint="@color/darkGray"
+                            app:met_underlineColor="@color/mediumGray" />
+
+                        <ImageButton
+                            android:id="@+id/imv_share"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="10dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/icon_share" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -270,7 +287,6 @@
                 app:cardBackgroundColor="@android:color/white"
                 app:cardElevation="2dp"
                 app:cardUseCompatPadding="true">
-
 
                 <LinearLayout
                     android:id="@+id/ll_mobile"

@@ -187,7 +187,6 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_weight="0.5"
-                        android:drawableRight="@drawable/icon_enquiry"
                         android:text="Enquire"
                         android:textSize="14sp" />
 
@@ -199,7 +198,6 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_weight="0.5"
-                        android:drawableRight="@drawable/icon_distance"
                         android:text="Distance"
                         android:textSize="14sp" />
 

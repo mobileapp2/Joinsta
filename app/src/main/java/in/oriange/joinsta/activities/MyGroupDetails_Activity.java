@@ -770,11 +770,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                                 finish();
                             }
                         });
-
-                        new AllGroups_Activity.GetGroupsList().execute();
-                        new Groups_Fragment.GetMyGroupsList().execute();
-
                         alertD.show();
+
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     } else {
                         Utilities.showMessage("Failed to submit the details", context, 3);
                     }
@@ -889,8 +889,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
                         alertD.show();
 
-                        new AllGroups_Activity.GetGroupsList().execute();
                         new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {
@@ -1046,8 +1047,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
                         alertD.show();
 
-                        new AllGroups_Activity.GetGroupsList().execute();
                         new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {
@@ -1088,8 +1090,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new AllGroups_Activity.GetGroupsList().execute();
                         new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {
@@ -1142,7 +1145,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Request canceled successfully");
+                        tv_title.setText("Request cancelled successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -1155,8 +1158,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
-                        new AllGroups_Activity.GetGroupsList().execute();
                         new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {
@@ -1253,8 +1257,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Group members visibility status changed successfully", context, 1);
-                        new AllGroups_Activity.GetGroupsList().execute();
+
                         new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {
@@ -1298,8 +1304,10 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Group visibility status changed successfully", context, 1);
-                        new AllGroups_Activity.GetGroupsList().execute();
+
                         new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
+
                     }
                 }
             } catch (Exception e) {

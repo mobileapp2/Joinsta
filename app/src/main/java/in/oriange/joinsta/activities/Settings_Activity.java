@@ -92,12 +92,21 @@ public class Settings_Activity extends AppCompatActivity {
         cv_invite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String shareMessage = "Welcome to Joinsta\n\n" +
-                        "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                        "Enter my referral code - " + referral_code + "\n" +
-                        "Below is the link to download the app.\n" +
-                        "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
-                        "Joinsta - Team";
+                String shareMessage;
+                if (!referral_code.trim().equals("")) {
+                    shareMessage = "Welcome to Joinsta\n\n" +
+                            "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
+                            "Enter my referral code - " + referral_code + "\n" +
+                            "Below is the link to download the app.\n" +
+                            "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
+                            "Joinsta - Team";
+                } else {
+                    shareMessage = "Welcome to Joinsta\n\n" +
+                            "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
+                            "Below is the link to download the app.\n" +
+                            "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
+                            "Joinsta - Team";
+                }
 
                 Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");

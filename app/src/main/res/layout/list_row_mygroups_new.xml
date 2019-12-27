@@ -82,6 +82,7 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/view_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/colorPrimary" />
@@ -106,7 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_feeds"
-                    android:tint="@color/colorPrimary" />
+                    android:tint="@color/darkGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -114,6 +115,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Posts"
+                    android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -135,7 +137,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:src="@drawable/icon_notification_1"
-                        android:tint="@color/colorPrimary" />
+                        android:tint="@color/darkGray" />
 
                     <TextView
                         android:id="@+id/tv_notifications_count"
@@ -158,6 +160,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Notifications"
+                    android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -174,7 +177,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_settings_1"
-                    android:tint="@color/colorPrimary" />
+                    android:tint="@color/darkGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -182,6 +185,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Settings"
+                    android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
             </LinearLayout>

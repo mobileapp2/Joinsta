@@ -49,6 +49,7 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 
 public class ViewBasicInformation_Activity extends AppCompatActivity {
@@ -62,6 +63,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
     private TextView tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
+    private ImageButton imv_share;
 
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
@@ -76,6 +78,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
 
         init();
         setDefault();
+        setEventHandlers();
         setUpToolbar();
     }
 
@@ -99,6 +102,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
         edt_about = findViewById(R.id.edt_about);
         edt_referral_code = findViewById(R.id.edt_referral_code);
+        imv_share = findViewById(R.id.imv_share);
 
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
         tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
@@ -325,6 +329,27 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setEventHandlers() {
+        imv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!edt_referral_code.getText().toString().trim().isEmpty()) {
+                    String shareMessage = "Welcome to Joinsta\n\n" +
+                            "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
+                            "Enter my referral code - " + edt_referral_code.getText().toString().trim() + "\n" +
+                            "Below is the link to download the app.\n" +
+                            "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
+                            "Joinsta - Team";
+
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                    context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+                }
+            }
+        });
     }
 
     private class RefreshSession extends AsyncTask<String, Void, String> {

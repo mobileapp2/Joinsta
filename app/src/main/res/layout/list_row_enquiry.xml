@@ -112,8 +112,8 @@
                     android:gravity="center"
                     android:paddingLeft="5dp"
                     android:text="Attended"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"/>
+                    android:textColor="@color/darkGray"
+                    android:textSize="16sp" />
 
                 <Button
                     android:id="@+id/btn_delete"
@@ -122,8 +122,9 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:drawableRight="@drawable/icon_delete"
-                    android:drawableTint="@color/colorPrimary"
+                    android:drawableTint="@color/darkGray"
                     android:text="Delete"
+                    android:textColor="@color/darkGray"
                     android:textStyle="bold" />
 
                 <Button
@@ -133,8 +134,9 @@
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
                     android:drawableRight="@drawable/icon_share"
-                    android:drawableTint="@color/colorPrimary"
+                    android:drawableTint="@color/darkGray"
                     android:text="Share"
+                    android:textColor="@color/darkGray"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 

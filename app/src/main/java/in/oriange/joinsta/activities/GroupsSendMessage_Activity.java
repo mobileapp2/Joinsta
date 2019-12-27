@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.GroupAdminsGroupsListModel;
 import in.oriange.joinsta.models.GroupMessagesCountsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -743,7 +744,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
-                        androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         alertDialogBuilder.setView(promptView);
 
                         LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
@@ -753,7 +754,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                         animation_view.playAnimation();
                         tv_title.setText("Message sent successfully");
                         alertDialogBuilder.setCancelable(false);
-                        final androidx.appcompat.app.AlertDialog alertD = alertDialogBuilder.create();
+                        final AlertDialog alertD = alertDialogBuilder.create();
 
                         btn_ok.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -764,6 +765,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                         });
 
                         alertD.show();
+
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new AllGroups_Activity.GetGroupsList().execute();
                     } else {
                         Utilities.showAlertDialog(context, message, false);
                     }
