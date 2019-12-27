@@ -15,47 +15,11 @@ public class ApplicationConstants {
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
-    // LIVE API LINK
-//    private static final String API_LINK = "http://joinsta.in/Api/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    //LIVE API LINK V2
-//    private static final String API_LINK = "http://joinsta.in/Api_v2/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    //LIVE API LINK V3
-//    private static final String API_LINK = "http://joinsta.in/Api_v3/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    //LIVE API LINK V4
-//    private static final String API_LINK = "http://joinsta.in/Api_v4/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    //LIVE API LINK V5
-//    private static final String API_LINK = "http://joinsta.in/Api_v5/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    //LIVE API LINK V6
-//    private static final String API_LINK = "http://joinsta.in/Api_v6/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
     // BETA API LINK V2
 //    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
-    //LIVE API LINK V7
-//    private static final String API_LINK = "http://joinsta.in/Api_v7/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    //LIVE API LINK V8
-//    private static final String API_LINK = "http://joinsta.in/Api_v8/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
-
-    // BETA API LINK V2
-//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
-
-    //LIVE API LINK V9
+    //LIVE API LINK V10
     private static final String API_LINK = "http://joinsta.in/Api_v10/";
     public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
