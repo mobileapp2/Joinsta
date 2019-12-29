@@ -432,7 +432,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         new AllGroups_Activity.GetGroupsList().execute();
 
                     } else {
-                        Utilities.showMessage("Failed to submit the details", context, 3);
+                        Utilities.showMessage(message, context, 3);
                     }
 
                 }
