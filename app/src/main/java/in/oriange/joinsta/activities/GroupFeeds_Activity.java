@@ -25,6 +25,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.Window;
@@ -313,6 +316,32 @@ public class GroupFeeds_Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isAdmin.equals("1")) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menus_settings, menu);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(context, CanPostAuthorization_Activity.class)
+                        .putExtra("isAdmin", isAdmin)
+                        .putExtra("groupId", groupId));
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onPause() {

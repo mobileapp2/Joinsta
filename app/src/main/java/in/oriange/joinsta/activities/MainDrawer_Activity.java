@@ -233,6 +233,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
             if (requestCode == 0 || requestCode == 1 || requestCode == 3)
                 try {
                     Place place = PlacePicker.getPlace(this, data);
+//                    Place place = Autocomplete.getPlaceFromIntent(data);
                     Geocoder gcd = new Geocoder(context, Locale.getDefault());
                     List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
 

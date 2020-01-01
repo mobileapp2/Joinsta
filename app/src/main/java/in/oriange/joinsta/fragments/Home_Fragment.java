@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import in.oriange.joinsta.R;
@@ -144,6 +146,20 @@ public class Home_Fragment extends Fragment {
                 } catch (GooglePlayServicesNotAvailableException e) {
                     e.printStackTrace();
                 }
+
+//                Places.initialize(context, "AIzaSyAbJV1S2i3HcrO9IADky8omovUTUC1FDU8");
+//                List<com.google.android.libraries.places.api.model.Place.Field> placeFields = new ArrayList<>(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.values()));
+//                List<TypeFilter> typeFilters = new ArrayList<>(Arrays.asList(TypeFilter.values()));
+//
+//                RectangularBounds bounds = RectangularBounds.newInstance(
+//                        new LatLng(-33.880490, 151.184363),
+//                        new LatLng(-33.858754, 151.229596));
+//                Intent autocompleteIntent =
+//                        new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, placeFields)
+//                                .setLocationBias(bounds)
+//                                .setTypeFilter(typeFilters.get(0))
+//                                .build(context);
+//                startActivityForResult(autocompleteIntent, 0);
 
             }
         });

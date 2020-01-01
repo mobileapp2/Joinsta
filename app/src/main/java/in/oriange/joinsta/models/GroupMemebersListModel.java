@@ -55,6 +55,7 @@ public class GroupMemebersListModel {
         private String is_joinsta_member;
         private String native_place;
         private String searchQueryString;
+        private String can_post;
         private List<BussinessInfoBean> bussinessInfo;
         private List<EmployeeInfoBean> employeeInfo;
         private List<ProfessionalInfoBean> professionalInfo;
@@ -193,6 +194,14 @@ public class GroupMemebersListModel {
 
         public void setSearchQueryString(String searchQueryString) {
             this.searchQueryString = searchQueryString;
+        }
+
+        public String getCan_post() {
+            return can_post;
+        }
+
+        public void setCan_post(String can_post) {
+            this.can_post = can_post;
         }
 
         public List<BussinessInfoBean> getBussinessInfo() {
