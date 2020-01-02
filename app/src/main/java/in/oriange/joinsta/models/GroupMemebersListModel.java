@@ -56,6 +56,7 @@ public class GroupMemebersListModel {
         private String native_place;
         private String searchQueryString;
         private String can_post;
+        private String group_member_id;
         private List<BussinessInfoBean> bussinessInfo;
         private List<EmployeeInfoBean> employeeInfo;
         private List<ProfessionalInfoBean> professionalInfo;
@@ -202,6 +203,14 @@ public class GroupMemebersListModel {
 
         public void setCan_post(String can_post) {
             this.can_post = can_post;
+        }
+
+        public String getGroup_member_id() {
+            return group_member_id;
+        }
+
+        public void setGroup_member_id(String group_member_id) {
+            this.group_member_id = group_member_id;
         }
 
         public List<BussinessInfoBean> getBussinessInfo() {

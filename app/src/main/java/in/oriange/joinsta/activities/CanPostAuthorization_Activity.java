@@ -288,7 +288,7 @@ public class CanPostAuthorization_Activity extends AppCompatActivity {
                 JsonArray jsonArray = new JsonArray();
                 for (GroupMemebersListModel.ResultBean bean : groupMembersList) {
                     JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("member_id", bean.getId());
+                    jsonObject.addProperty("member_id", bean.getGroup_member_id());
                     jsonObject.addProperty("can_post", bean.getCan_post());
                     jsonArray.add(jsonObject);
                 }
