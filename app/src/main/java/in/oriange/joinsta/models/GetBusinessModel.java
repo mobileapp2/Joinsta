@@ -79,6 +79,7 @@ public class GetBusinessModel implements Serializable {
         private String tax_status;
         private String is_visible;
         private String offer_count;
+        private String order_online;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -497,6 +498,18 @@ public class GetBusinessModel implements Serializable {
 
         public void setOffer_count(String offer_count) {
             this.offer_count = offer_count;
+        }
+
+        public String getOrder_online() {
+            if (order_online != null) {
+                return order_online;
+            } else {
+                return "";
+            }
+        }
+
+        public void setOrder_online(String order_online) {
+            this.order_online = order_online;
         }
 
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {

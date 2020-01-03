@@ -104,7 +104,7 @@ public class AddProfessional_Fragment extends Fragment {
     private ScrollView sv_scroll;
     private ImageView imv_photo1, imv_photo2;
     private MaterialEditText edt_nature, edt_subtype, edt_firm, edt_mobile, edt_landline, edt_designation,
-            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country,
+            edt_email, edt_website, edt_order_online, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country,
             edt_tax_alias, edt_pan, edt_gst, edt_accholdername, edt_bank_alias, edt_bank_name, edt_ifsc, edt_account_no;
     private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
@@ -161,6 +161,7 @@ public class AddProfessional_Fragment extends Fragment {
         edt_landline = rootView.findViewById(R.id.edt_landline);
         edt_email = rootView.findViewById(R.id.edt_email);
         edt_website = rootView.findViewById(R.id.edt_website);
+        edt_order_online = rootView.findViewById(R.id.edt_order_online);
         edt_select_area = rootView.findViewById(R.id.edt_select_area);
         edt_address = rootView.findViewById(R.id.edt_address);
         edt_pincode = rootView.findViewById(R.id.edt_pincode);
@@ -1103,6 +1104,7 @@ public class AddProfessional_Fragment extends Fragment {
         mainObj.addProperty("is_verified", "0");
         mainObj.addProperty("firm_name", edt_firm.getText().toString().trim());
         mainObj.addProperty("website", edt_website.getText().toString().trim());
+        mainObj.addProperty("order_online", edt_order_online.getText().toString().trim());
         mainObj.addProperty("image_url", imageName);
         mainObj.addProperty("is_active", "0");
         mainObj.addProperty("record_status_id", "0");

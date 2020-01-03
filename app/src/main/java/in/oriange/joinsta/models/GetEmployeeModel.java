@@ -35,7 +35,6 @@ public class GetEmployeeModel implements Serializable {
 
     public static class ResultBean implements Serializable {
 
-
         private String id;
         private String employee_code;
         private String address;
@@ -83,6 +82,7 @@ public class GetEmployeeModel implements Serializable {
         private String tax_status;
         private String is_visible;
         private String offer_count;
+        private String order_online;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -524,6 +524,17 @@ public class GetEmployeeModel implements Serializable {
             this.offer_count = offer_count;
         }
 
+        public String getOrder_online() {
+            if (order_online != null) {
+                return order_online;
+            } else {
+                return "";
+            }
+        }
+
+        public void setOrder_online(String order_online) {
+            this.order_online = order_online;
+        }
 
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {
             return mobiles;
