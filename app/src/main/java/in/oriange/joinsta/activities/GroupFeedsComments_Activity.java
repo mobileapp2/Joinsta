@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -185,6 +186,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         }
 
         tv_feed_text.setText(feedDetails.getFeed_text());
+        Linkify.addLinks(tv_feed_text, Linkify.ALL);
 
         if (!feedDetails.getFeed_doc().equals("")) {
             String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();

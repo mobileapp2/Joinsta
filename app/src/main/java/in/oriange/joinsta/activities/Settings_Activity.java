@@ -38,7 +38,7 @@ public class Settings_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private CardView cv_logout, cv_feedback, cv_invite, cv_password, cv_report_issue;
     private UserSessionManager session;
-    private String userId, password, mobile, referral_code;
+    private String userId, password, mobile, referral_code, country_code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,7 @@ public class Settings_Activity extends AppCompatActivity {
             password = json.getString("password");
             mobile = json.getString("mobile");
             referral_code = json.getString("referral_code");
+            country_code = json.getString("country_code");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,6 +219,7 @@ public class Settings_Activity extends AppCompatActivity {
                 obj.put("type", "changepassword");
                 obj.put("userId", userId);
                 obj.put("mobile", mobile);
+                obj.put("country_code", country_code);
                 obj.put("oldpassword", params[0]);
                 obj.put("newpasssword", params[1]);
             } catch (JSONException e) {

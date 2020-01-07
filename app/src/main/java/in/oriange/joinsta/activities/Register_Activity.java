@@ -9,11 +9,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -59,7 +61,8 @@ public class Register_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private TextView tv_already_registered;
     private TextInputEditText edt_name, edt_mobile, edt_password, edt_referral_code;
-    private TextView tv_countrycode_mobile;
+    private CheckBox cb_iagree;
+    private TextView tv_countrycode_mobile, tv_tandc;
     private Button btn_register;
     private UserSessionManager session;
     private ArrayList<ContryCodeModel> countryCodeList;
@@ -86,6 +89,8 @@ public class Register_Activity extends AppCompatActivity {
         edt_password = findViewById(R.id.edt_password);
         edt_referral_code = findViewById(R.id.edt_referral_code);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
+        cb_iagree = findViewById(R.id.cb_iagree);
+        tv_tandc = findViewById(R.id.tv_tandc);
         btn_register = findViewById(R.id.btn_register);
     }
 
@@ -107,6 +112,9 @@ public class Register_Activity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        tv_tandc.setText(Html.fromHtml("I agree to your" + "<font color=\"#EF6C00\"> <b> Terms and Conditions </b> </font>"));
+
     }
 
     private void setEventHandler() {
@@ -176,6 +184,11 @@ public class Register_Activity extends AppCompatActivity {
                         return;
                     }
 
+                    if (!cb_iagree.isChecked()) {
+                        Utilities.showMessage("Please check that you agree to our Terms and Conditions", context, 2);
+                        return;
+                    }
+
                     if (Utilities.isNetworkAvailable(context)) {
                         new VerifyMobile().execute(edt_mobile.getText().toString().trim());
                     } else {
@@ -191,7 +204,15 @@ public class Register_Activity extends AppCompatActivity {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 }
+            }
+        });
 
+        tv_tandc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, PolicyDetails_Activity.class)
+                        .putExtra("title", "Terms and Conditions")
+                        .putExtra("filePath", "termsandconditions.html"));
             }
         });
     }

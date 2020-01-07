@@ -140,11 +140,32 @@
                         android:id="@+id/edt_referral_code"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Referral Code"
+                        android:hint="Referral Code (if any)"
                         android:inputType="textNoSuggestions|textCapWords"
                         android:textSize="18sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/cb_iagree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_tandc"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="I agree to your Terms and Conditions" />
+
+                </LinearLayout>
 
                 <android.widget.Button
                     android:id="@+id/btn_register"

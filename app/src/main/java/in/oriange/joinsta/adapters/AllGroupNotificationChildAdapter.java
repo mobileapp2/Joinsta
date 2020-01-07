@@ -437,7 +437,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             try {
                 new Groups_Fragment.GetMyGroupsList().execute();
                 new AllGroups_Activity.GetGroupsList().execute();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

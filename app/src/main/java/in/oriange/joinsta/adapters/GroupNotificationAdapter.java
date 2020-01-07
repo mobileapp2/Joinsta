@@ -1,5 +1,6 @@
 package in.oriange.joinsta.adapters;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -455,7 +456,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             try {
                 new Groups_Fragment.GetMyGroupsList().execute();
                 new AllGroups_Activity.GetGroupsList().execute();
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

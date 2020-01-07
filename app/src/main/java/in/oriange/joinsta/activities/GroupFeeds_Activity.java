@@ -70,7 +70,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private FloatingActionButton btn_add_post;
-    private String userId, groupId, groupName, isAdmin, canPost;
+    private String userId, groupId, isAdmin, canPost;
 
     private LocalBroadcastManager localBroadcastManager;
     private GroupFeedsAdapter groupFeedsAdapter;
@@ -118,7 +118,6 @@ public class GroupFeeds_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
-        groupName = getIntent().getStringExtra("groupName");
         isAdmin = getIntent().getStringExtra("isAdmin");
         canPost = getIntent().getStringExtra("canPost");
 
