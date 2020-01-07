@@ -109,7 +109,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
     private ProgressBar progressBar;
     private ImageView imv_photo1, imv_photo2;
     private MaterialEditText edt_nature, edt_subtype, edt_firm, edt_mobile, edt_landline, edt_designation,
-            edt_email, edt_website, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country,
+            edt_email, edt_website, edt_order_online, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country,
             edt_tax_alias, edt_pan, edt_gst, edt_accholdername, edt_bank_alias, edt_bank_name, edt_ifsc, edt_account_no;
     private AutoCompleteTextView edt_tag;
     private static LinearLayout ll_mobile, ll_landline;
@@ -170,6 +170,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         edt_landline = findViewById(R.id.edt_landline);
         edt_email = findViewById(R.id.edt_email);
         edt_website = findViewById(R.id.edt_website);
+        edt_order_online = findViewById(R.id.edt_order_online);
         edt_select_area = findViewById(R.id.edt_select_area);
         edt_address = findViewById(R.id.edt_address);
         edt_pincode = findViewById(R.id.edt_pincode);
@@ -292,6 +293,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         edt_designation.setText(searchDetails.getDesignation());
         edt_email.setText(searchDetails.getEmail());
         edt_website.setText(searchDetails.getWebsite());
+        edt_order_online.setText(searchDetails.getOrder_online());
         edt_select_area.setText(searchDetails.getLandmark());
         edt_address.setText(searchDetails.getAddress());
         edt_pincode.setText(searchDetails.getPincode());
@@ -1277,6 +1279,7 @@ public class EditProfessional_Activity extends AppCompatActivity {
         mainObj.addProperty("is_verified", "0");
         mainObj.addProperty("firm_name", edt_firm.getText().toString().trim());
         mainObj.addProperty("website", edt_website.getText().toString().trim());
+        mainObj.addProperty("order_online", edt_order_online.getText().toString().trim());
         mainObj.addProperty("image_url", imageName);
         mainObj.addProperty("is_active", "0");
         mainObj.addProperty("record_status_id", "0");

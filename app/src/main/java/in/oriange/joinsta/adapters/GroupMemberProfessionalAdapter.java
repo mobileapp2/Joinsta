@@ -133,50 +133,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
             }
         });
 
-
-        holder.btn_caldist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
-                    return;
-                }
-
-                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                    provideLocationAccess(context);
-                    return;
-                }
-
-                if (!isLocationEnabled(context)) {
-                    turnOnLocation(context);
-                    return;
-                }
-
-                if (MainDrawer_Activity.latLng == null) {
-                    holder.btn_caldist.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Try again</b></font>"));
-                    return;
-                }
-
-                startLocationUpdates();
-
-                LatLng currentLocation = new LatLng(MainDrawer_Activity.latLng.latitude, MainDrawer_Activity.latLng.longitude);
-                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
-
-                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
-
-                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
-
-                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
-                    @Override
-                    public void taskCompleted(String[] time_distance) {
-                        holder.btn_caldist.setText(time_distance[0]);
-//                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
-
-                    }
-
-                });
-            }
-        });
+        holder.btn_caldist.setVisibility(View.GONE);
 
         holder.btn_enquire.setOnClickListener(new View.OnClickListener() {
             @Override
