@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -277,6 +279,46 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             }
         });
 
+        edt_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Rect displayRectangle = new Rect();
+                Window window = GroupsSendMessage_Activity.this.getWindow();
+                window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                View promptView = layoutInflater.inflate(R.layout.dialog_message, null);
+
+                promptView.setMinimumWidth((int)(displayRectangle.width() * 0.9f));
+                promptView.setMinimumHeight((int)(displayRectangle.height() * 0.9f));
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertDialogBuilder.setTitle("Type your message here");
+                alertDialogBuilder.setView(promptView);
+
+                final EditText edt_text = promptView.findViewById(R.id.edt_text);
+                edt_text.setText(edt_message.getText().toString().trim());
+
+                alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        edt_message.setText(edt_text.getText().toString().trim());
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+
+                final AlertDialog alertD = alertDialogBuilder.create();
+                alertD.show();
+            }
+        });
+
         ib_add_doc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -291,7 +333,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         edt_attach_doc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (Utilities.isNetworkAvailable(context)) {
                     Intent intent = new Intent(context, NormalFilePickActivity.class);
                     intent.putExtra(Constant.MAX_NUMBER, 1);
@@ -300,7 +341,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
-
             }
         });
 

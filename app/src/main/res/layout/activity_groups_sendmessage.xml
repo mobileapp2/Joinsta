@@ -217,6 +217,7 @@
                         android:layout_height="100dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/bg_outline"
+                        android:focusable="false"
                         android:gravity="top"
                         android:hint="Message"
                         android:inputType="textCapSentences|textMultiLine"
