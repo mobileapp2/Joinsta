@@ -2,16 +2,24 @@ package in.oriange.joinsta.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -47,8 +55,12 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
     private LinearLayout ll_nopreview;
     private String userId;
 
-    ArrayList<NotificationListModel.ResultBean> notificationList;
+    private ArrayList<NotificationListModel.ResultBean> notificationList, notificationListForSearch;
     private LocalBroadcastManager localBroadcastManager;
+
+    private NotificationAdapter notificationAdapter;
+
+    boolean isFavouriteFiltered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +87,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
         rv_notification.setLayoutManager(new LinearLayoutManager(context));
 
         notificationList = new ArrayList<>();
+        notificationListForSearch = new ArrayList<>();
 //        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
 //        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rv_notification);
 //
@@ -101,7 +114,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
 
     private void setDefault() {
         if (Utilities.isNetworkAvailable(context)) {
-            new GetNotification().execute();
+            new GetNotification().execute("0");
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -129,7 +142,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetNotification().execute();
+                    new GetNotification().execute("0");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     swipeRefreshLayout.setRefreshing(false);
@@ -147,30 +160,35 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_notification.setAdapter(new NotificationAdapter(context, notificationList));
+                    notificationAdapter = new NotificationAdapter(context, notificationListForSearch);
+                    rv_notification.setAdapter(notificationAdapter);
                     return;
                 }
 
-                if (notificationList.size() == 0) {
+                if (notificationListForSearch.size() == 0) {
                     rv_notification.setVisibility(View.GONE);
                     return;
                 }
 
                 if (!query.toString().equals("")) {
-                    ArrayList<NotificationListModel.ResultBean> groupsSearchedList = new ArrayList<>();
-                    for (NotificationListModel.ResultBean groupsDetails : notificationList) {
+                    ArrayList<NotificationListModel.ResultBean> notificationSearchedList = new ArrayList<>();
+                    for (NotificationListModel.ResultBean groupsDetails : notificationListForSearch) {
 
                         String groupsToBeSearched = groupsDetails.getTitle().toLowerCase() +
                                 groupsDetails.getDescription().toLowerCase() +
                                 groupsDetails.getCreated_at().toLowerCase();
 
                         if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
-                            groupsSearchedList.add(groupsDetails);
+                            notificationSearchedList.add(groupsDetails);
                         }
                     }
-                    rv_notification.setAdapter(new NotificationAdapter(context, groupsSearchedList));
+
+                    notificationAdapter = new NotificationAdapter(context, notificationSearchedList);
+                    rv_notification.setAdapter(notificationAdapter);
                 } else {
-                    rv_notification.setAdapter(new NotificationAdapter(context, notificationList));
+
+                    notificationAdapter = new NotificationAdapter(context, notificationListForSearch);
+                    rv_notification.setAdapter(notificationAdapter);
                 }
 
             }
@@ -198,6 +216,8 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
 
     private class GetNotification extends AsyncTask<String, Void, String> {
 
+        private String TYPE = "";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -209,6 +229,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
 
         @Override
         protected String doInBackground(String... params) {
+            TYPE = params[0];
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getNotificationDetails");
@@ -235,16 +256,44 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
                         if (notificationList.size() > 0) {
                             rv_notification.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_notification.setAdapter(new NotificationAdapter(context, notificationList));
+
+                            if (TYPE.equals("0")) {
+                                if (!isFavouriteFiltered) {
+                                    notificationAdapter = new NotificationAdapter(context, notificationList);
+                                    rv_notification.setAdapter(notificationAdapter);
+                                    notificationListForSearch = notificationList;
+                                } else {
+                                    ArrayList<NotificationListModel.ResultBean> filteredNotifications = new ArrayList<>();
+                                    for (NotificationListModel.ResultBean resultBean : notificationList) {
+                                        if (resultBean.getIs_fav().equals("1"))
+                                            filteredNotifications.add(resultBean);
+                                    }
+                                    notificationAdapter = new NotificationAdapter(context, filteredNotifications);
+                                    rv_notification.setAdapter(notificationAdapter);
+
+                                    notificationListForSearch = filteredNotifications;
+                                }
+                            } else {
+                                if (!isFavouriteFiltered) {
+                                    notificationAdapter.refresh(notificationList);
+                                    notificationListForSearch = notificationList;
+                                } else {
+                                    ArrayList<NotificationListModel.ResultBean> filteredNotifications = new ArrayList<>();
+                                    for (NotificationListModel.ResultBean resultBean : notificationList) {
+                                        if (resultBean.getIs_fav().equals("1"))
+                                            filteredNotifications.add(resultBean);
+                                    }
+                                    notificationAdapter.refresh(filteredNotifications);
+                                    notificationListForSearch = filteredNotifications;
+                                }
+                            }
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_notification.setVisibility(View.GONE);
                         }
-
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_notification.setVisibility(View.GONE);
-
                     }
                 }
             } catch (Exception e) {
@@ -290,7 +339,7 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utilities.isNetworkAvailable(context)) {
-                new GetNotification().execute();
+                new GetNotification().execute("1");
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
@@ -301,5 +350,52 @@ public class Notification_Activity extends AppCompatActivity/* implements Recycl
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_filter, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_filter) {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.dialog_filter_notifications, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            alertDialogBuilder.setView(promptView);
+
+            final RadioButton rb_all = promptView.findViewById(R.id.rb_all);
+            final RadioButton rb_favourite = promptView.findViewById(R.id.rb_favourite);
+
+            if (isFavouriteFiltered) rb_favourite.setChecked(true);
+            else rb_all.setChecked(true);
+
+            alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (rb_all.isChecked()) {
+                        isFavouriteFiltered = false;
+                        notificationAdapter.refresh(notificationList);
+                        notificationListForSearch = notificationList;
+                    } else if (rb_favourite.isChecked()) {
+                        isFavouriteFiltered = true;
+                        ArrayList<NotificationListModel.ResultBean> filteredNotifications = new ArrayList<>();
+                        for (NotificationListModel.ResultBean resultBean : notificationList) {
+                            if (resultBean.getIs_fav().equals("1"))
+                                filteredNotifications.add(resultBean);
+                        }
+                        notificationAdapter.refresh(filteredNotifications);
+                        notificationListForSearch = filteredNotifications;
+                    }
+                }
+            });
+
+            final AlertDialog alertD = alertDialogBuilder.create();
+            alertD.show();
+        }
+        return true;
     }
 }

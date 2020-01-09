@@ -25,7 +25,7 @@
                 android:id="@+id/tv_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.95"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
                 android:paddingTop="2.5dp"
@@ -36,13 +36,24 @@
                 android:textSize="16sp" />
 
             <ImageButton
-                android:id="@+id/ib_call"
-                android:layout_width="0dp"
+                android:id="@+id/ib_ishidden"
+                android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_margin="2dp"
-                android:layout_weight="0.05"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/icon_call" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon_hide"
+                android:tint="@color/darkGray"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/ib_call"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_margin="2dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/icon_call"
+                android:tint="@color/darkGray" />
 
 
         </LinearLayout>
@@ -79,10 +90,10 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.45"
-                android:textColor="@color/darkGray"
                 android:drawableRight="@drawable/icon_edit"
                 android:drawableTint="@color/darkGray"
                 android:text="Edit"
+                android:textColor="@color/darkGray"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -92,10 +103,10 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="0.45"
-                android:textColor="@color/darkGray"
                 android:drawableRight="@drawable/icon_delete"
                 android:drawableTint="@color/darkGray"
                 android:text="Delete"
+                android:textColor="@color/darkGray"
                 android:textStyle="bold" />
 
             <Switch

@@ -43,6 +43,7 @@ public class NotificationListModel {
         private String userid;
         private String is_read;
         private String is_deleted;
+        private String is_fav;
         private String created_by;
         private String updated_by;
         private String created_at;
@@ -118,6 +119,14 @@ public class NotificationListModel {
 
         public void setIs_deleted(String is_deleted) {
             this.is_deleted = is_deleted;
+        }
+
+        public String getIs_fav() {
+            return is_fav;
+        }
+
+        public void setIs_fav(String is_fav) {
+            this.is_fav = is_fav;
         }
 
         public String getCreated_by() {

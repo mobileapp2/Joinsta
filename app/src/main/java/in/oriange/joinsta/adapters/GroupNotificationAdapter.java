@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +27,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
@@ -42,7 +45,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroups_Activity;
@@ -120,10 +126,21 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         holder.tv_title.setText(notificationDetails.getSubject().trim());
         holder.tv_message.setText(notificationDetails.getMessage().trim());
 
+        if (notificationDetails.getIs_fav().equalsIgnoreCase("1"))
+            holder.cb_like.setChecked(true);
+        else
+            holder.cb_like.setChecked(false);
+
+
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
-            holder.tv_time.setText("");
+            holder.tv_time.setText(notificationDetails.getSender_name());
         } else {
-            holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                holder.tv_time.setText(notificationDetails.getSender_name() + " | " + p.format(formatter.parse(notificationDetails.getCreated_at())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         if (notificationDetails.getIs_read().equals("0")) {
@@ -176,6 +193,26 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             }
         });
 
+        holder.cb_like.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            }
+        });
+
+        holder.cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String isFav = holder.cb_like.isChecked() ? "1" : "0";
+
+                if (Utilities.isNetworkAvailable(context))
+                    new MarkFavourite().execute(notificationDetails.getMsg_details_id(), isFav);
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+
     }
 
     @Override
@@ -190,6 +227,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         private TextView tv_title, tv_message, tv_time;
         private TriangleLabelView tv_new;
         private LinearLayout ll_outimage;
+        private CheckBox cb_like;
 
         public MyViewHolder(View view) {
             super(view);
@@ -200,6 +238,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             tv_time = view.findViewById(R.id.tv_time);
             tv_new = view.findViewById(R.id.tv_new);
             ll_outimage = view.findViewById(R.id.ll_outimage);
+            cb_like = view.findViewById(R.id.cb_like);
         }
     }
 
@@ -390,7 +429,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         builderSingle.show();
     }
 
-    public class DeleteNotification extends AsyncTask<String, Void, String> {
+    private class DeleteNotification extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -423,7 +462,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new GroupNotifications_Activity.GetGroupNotification().execute();
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupNotifications_Activity"));
                         Utilities.showMessage("Notification deleted successfully", context, 1);
                     }
                 }
@@ -433,7 +472,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         }
     }
 
-    public class ReadNotification extends AsyncTask<String, Void, String> {
+    private class ReadNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -460,6 +499,51 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                 e.printStackTrace();
             }
         }
+    }
+
+    private class MarkFavourite extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "markFavouriteNotification");
+            obj.addProperty("msg_details_id", params[0]);
+            obj.addProperty("is_fav", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupNotifications_Activity"));
+                        Utilities.showMessage("Notification deleted successfully", context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     private class DownloadImage extends AsyncTask<String, Integer, Boolean> {
@@ -779,4 +863,10 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
 
         }
     }
+
+    public void refresh(List<GroupNotificationListModel.ResultBean> resultArrayList) {
+        this.resultArrayList = resultArrayList;
+        notifyDataSetChanged();
+    }
+
 }

@@ -1,17 +1,28 @@
 package in.oriange.joinsta.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -36,16 +47,23 @@ import in.oriange.joinsta.utilities.Utilities;
 
 public class GroupNotifications_Activity extends AppCompatActivity {
 
-    private static Context context;
+    private Context context;
     private UserSessionManager session;
     private EditText edt_search;
-    private static RecyclerView rv_notification;
-    private static SwipeRefreshLayout swipeRefreshLayout;
-    private static SpinKitView progressBar;
-    private static LinearLayout ll_nopreview;
-    private static String userId, groupId, groupName;
+    private RecyclerView rv_notification;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private SpinKitView progressBar;
+    private LinearLayout ll_nopreview;
+    private String userId, groupId, groupName;
 
-    private static List<GroupNotificationListModel.ResultBean> notificationList;
+    private List<GroupNotificationListModel.ResultBean> notificationList, notificationListForSearch;
+    private LocalBroadcastManager localBroadcastManager;
+
+
+    private GroupNotificationAdapter notificationAdapter;
+
+    private boolean isFavouriteFiltered = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +107,15 @@ public class GroupNotifications_Activity extends AppCompatActivity {
         groupId = getIntent().getStringExtra("groupId");
         groupName = getIntent().getStringExtra("groupName");
 
-
         if (Utilities.isNetworkAvailable(context)) {
-            new GetGroupNotification().execute();
+            new GetGroupNotification().execute("0");
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("GroupNotifications_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
@@ -102,7 +123,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetGroupNotification().execute();
+                    new GetGroupNotification().execute("0");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     swipeRefreshLayout.setRefreshing(false);
@@ -120,7 +141,8 @@ public class GroupNotifications_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_notification.setAdapter(new GroupNotificationAdapter(context, notificationList));
+                    notificationAdapter = new GroupNotificationAdapter(context, notificationListForSearch);
+                    rv_notification.setAdapter(notificationAdapter);
                     return;
                 }
 
@@ -130,7 +152,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
                 }
 
                 if (!query.toString().equals("")) {
-                    ArrayList<GroupNotificationListModel.ResultBean> groupsSearchedList = new ArrayList<>();
+                    ArrayList<GroupNotificationListModel.ResultBean> notificationSearchedList = new ArrayList<>();
                     for (GroupNotificationListModel.ResultBean groupsDetails : notificationList) {
 
                         String groupsToBeSearched = groupsDetails.getSubject().toLowerCase() +
@@ -138,13 +160,14 @@ public class GroupNotifications_Activity extends AppCompatActivity {
                                 groupsDetails.getCreated_at().toLowerCase();
 
                         if (groupsToBeSearched.contains(query.toString().toLowerCase())) {
-                            groupsSearchedList.add(groupsDetails);
+                            notificationSearchedList.add(groupsDetails);
                         }
                     }
-                    rv_notification.setAdapter(new GroupNotificationAdapter(context, groupsSearchedList));
+                    notificationAdapter = new GroupNotificationAdapter(context, notificationSearchedList);
+                    rv_notification.setAdapter(notificationAdapter);
                 } else {
-                    rv_notification.setAdapter(new GroupNotificationAdapter(context, notificationList));
-                }
+                    notificationAdapter = new GroupNotificationAdapter(context, notificationListForSearch);
+                    rv_notification.setAdapter(notificationAdapter);                }
 
             }
 
@@ -156,7 +179,9 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
     }
 
-    public static class GetGroupNotification extends AsyncTask<String, Void, String> {
+    private class GetGroupNotification extends AsyncTask<String, Void, String> {
+
+        private String TYPE = "";
 
         @Override
         protected void onPreExecute() {
@@ -169,6 +194,7 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            TYPE = params[0];
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getGroupNotificationDetails");
@@ -192,14 +218,35 @@ public class GroupNotifications_Activity extends AppCompatActivity {
 
                     if (type.equalsIgnoreCase("success")) {
                         notificationList = pojoDetails.getResult();
+                        if (TYPE.equals("0")) {
+                            if (!isFavouriteFiltered) {
+                                notificationAdapter = new GroupNotificationAdapter(context, notificationList);
+                                rv_notification.setAdapter(notificationAdapter);
+                                notificationListForSearch = notificationList;
+                            } else {
+                                ArrayList<GroupNotificationListModel.ResultBean> filteredNotifications = new ArrayList<>();
+                                for (GroupNotificationListModel.ResultBean resultBean : notificationList) {
+                                    if (resultBean.getIs_fav().equals("1"))
+                                        filteredNotifications.add(resultBean);
+                                }
+                                notificationAdapter = new GroupNotificationAdapter(context, filteredNotifications);
+                                rv_notification.setAdapter(notificationAdapter);
 
-                        if (notificationList.size() > 0) {
-                            rv_notification.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_notification.setAdapter(new GroupNotificationAdapter(context, notificationList));
+                                notificationListForSearch = filteredNotifications;
+                            }
                         } else {
-                            ll_nopreview.setVisibility(View.VISIBLE);
-                            rv_notification.setVisibility(View.GONE);
+                            if (!isFavouriteFiltered) {
+                                notificationAdapter.refresh(notificationList);
+                                notificationListForSearch = notificationList;
+                            } else {
+                                ArrayList<GroupNotificationListModel.ResultBean> filteredNotifications = new ArrayList<>();
+                                for (GroupNotificationListModel.ResultBean resultBean : notificationList) {
+                                    if (resultBean.getIs_fav().equals("1"))
+                                        filteredNotifications.add(resultBean);
+                                }
+                                notificationAdapter.refresh(filteredNotifications);
+                                notificationListForSearch = filteredNotifications;
+                            }
                         }
 
                     } else {
@@ -229,5 +276,69 @@ public class GroupNotifications_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetGroupNotification().execute("1");
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_filter, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_filter) {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.dialog_filter_notifications, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            alertDialogBuilder.setView(promptView);
+
+            final RadioButton rb_all = promptView.findViewById(R.id.rb_all);
+            final RadioButton rb_favourite = promptView.findViewById(R.id.rb_favourite);
+
+            if (isFavouriteFiltered) rb_favourite.setChecked(true);
+            else rb_all.setChecked(true);
+
+            alertDialogBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (rb_all.isChecked()) {
+                        isFavouriteFiltered = false;
+                        notificationAdapter.refresh(notificationList);
+                        notificationListForSearch = notificationList;
+                    } else if (rb_favourite.isChecked()) {
+                        isFavouriteFiltered = true;
+                        ArrayList<GroupNotificationListModel.ResultBean> filteredNotifications = new ArrayList<>();
+                        for (GroupNotificationListModel.ResultBean resultBean : notificationList) {
+                            if (resultBean.getIs_fav().equals("1"))
+                                filteredNotifications.add(resultBean);
+                        }
+                        notificationAdapter.refresh(filteredNotifications);
+                        notificationListForSearch = filteredNotifications;
+                    }
+                }
+            });
+
+            final AlertDialog alertD = alertDialogBuilder.create();
+            alertD.show();
+        }
+        return true;
     }
 }

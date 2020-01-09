@@ -56,6 +56,7 @@ public class GroupSupervisorsListModel implements Serializable {
         private String id;
         private String country_code;
         private String can_post;
+        private String is_hidden;
 
         public String getFirst_name() {
             if (first_name != null) {
@@ -135,6 +136,18 @@ public class GroupSupervisorsListModel implements Serializable {
 
         public void setCan_post(String can_post) {
             this.can_post = can_post;
+        }
+
+        public String getIs_hidden() {
+            if (is_hidden != null) {
+                return is_hidden;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setIs_hidden(String is_hidden) {
+            this.is_hidden = is_hidden;
         }
     }
 }

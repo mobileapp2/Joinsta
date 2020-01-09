@@ -289,8 +289,8 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 LayoutInflater layoutInflater = LayoutInflater.from(context);
                 View promptView = layoutInflater.inflate(R.layout.dialog_message, null);
 
-                promptView.setMinimumWidth((int)(displayRectangle.width() * 0.9f));
-                promptView.setMinimumHeight((int)(displayRectangle.height() * 0.9f));
+                promptView.setMinimumWidth((int) (displayRectangle.width() * 0.9f));
+                promptView.setMinimumHeight((int) (displayRectangle.height() * 0.9f));
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 alertDialogBuilder.setTitle("Type your message here");

@@ -14,6 +14,8 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,7 +41,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.Notification_Activity;
@@ -108,10 +113,22 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final NotificationListModel.ResultBean notificationDetails = resultArrayList.get(position);
 
         holder.view_foreground.bringToFront();
+        holder.cb_like.bringToFront();
 
         holder.tv_title.setText(notificationDetails.getTitle().trim());
         holder.tv_message.setText(notificationDetails.getDescription().trim());
-        holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+
+        if (notificationDetails.getIs_fav().equalsIgnoreCase("1"))
+            holder.cb_like.setChecked(true);
+        else
+            holder.cb_like.setChecked(false);
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            holder.tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         if (!notificationDetails.getImage().equals("0")) {
             String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
@@ -139,6 +156,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
 
+        holder.cb_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String isFav = holder.cb_like.isChecked() ? "1" : "0";
+
+                if (Utilities.isNetworkAvailable(context))
+                    new MarkFavourite().execute(notificationDetails.getUsernotification_id(), isFav);
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
     }
 
     @Override
@@ -158,6 +187,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         private TextView tv_title, tv_message, tv_time;
         public LinearLayout view_foreground;
         private RelativeLayout view_background;
+        private CheckBox cb_like;
 
         public MyViewHolder(View view) {
             super(view);
@@ -168,6 +198,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             tv_time = view.findViewById(R.id.tv_time);
             view_foreground = view.findViewById(R.id.view_foreground);
             view_background = view.findViewById(R.id.view_background);
+            cb_like = view.findViewById(R.id.cb_like);
         }
     }
 
@@ -298,6 +329,51 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
 
         alertD.show();
+
+    }
+
+    private class MarkFavourite extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "markGeneralNotificationFav");
+            obj.addProperty("user_notification_id", params[0]);
+            obj.addProperty("is_fav", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("Notification_Activity"));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -531,6 +607,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             context.startActivity(Intent.createChooser(shareIntent, "Share via"));
 
         }
+    }
+
+    public void refresh(List<NotificationListModel.ResultBean> resultArrayList) {
+        this.resultArrayList = resultArrayList;
+        notifyDataSetChanged();
     }
 
 }

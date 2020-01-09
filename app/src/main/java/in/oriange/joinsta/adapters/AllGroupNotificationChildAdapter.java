@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +36,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,7 +45,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroups_Activity;
@@ -63,6 +69,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
 
     private File downloadedImagefolder, downloadedDocumentfolder, file;
     private boolean isDownloaded = false;
+    private PrettyTime p;
 
     private File downloadedFile;
     private String title, description;
@@ -70,6 +77,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
     public AllGroupNotificationChildAdapter(Context context, List<AllGroupNotificationListModel.ResultBean.GroupMemberDetailsBean> resultList) {
         this.context = context;
         this.resultList = resultList;
+        p = new PrettyTime();
 
         downloadedImagefolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
         if (!downloadedImagefolder.exists())
@@ -103,11 +111,22 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         holder.tv_title.setText(notificationDetails.getSubject().trim());
         holder.tv_message.setText(notificationDetails.getMessage().trim());
 
+        if (notificationDetails.getIs_fav().equalsIgnoreCase("1"))
+            holder.cb_like.setChecked(true);
+        else
+            holder.cb_like.setChecked(false);
+
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
-            holder.tv_time.setText("");
+            holder.tv_time.setText(notificationDetails.getSender_name());
         } else {
-            holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                holder.tv_time.setText(notificationDetails.getSender_name() + " | " + p.format(formatter.parse(notificationDetails.getCreated_at())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
+
 
         if (notificationDetails.getIs_read().equals("0")) {
             holder.ll_outimage.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
@@ -157,6 +176,19 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             }
         });
 
+        holder.cb_like.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String isFav = isChecked ? "1" : "0";
+
+                if (Utilities.isNetworkAvailable(context))
+                    new MarkFavourite().execute(notificationDetails.getMsg_details_id(), isFav);
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+
     }
 
     @Override
@@ -170,6 +202,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         private ImageView imv_notificationimg;
         private TextView tv_title, tv_message, tv_time;
         private TriangleLabelView tv_new;
+        private CheckBox cb_like;
         private LinearLayout ll_outimage;
 
         public MyViewHolder(View view) {
@@ -181,6 +214,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             tv_time = view.findViewById(R.id.tv_time);
             tv_new = view.findViewById(R.id.tv_new);
             ll_outimage = view.findViewById(R.id.ll_outimage);
+            cb_like = view.findViewById(R.id.cb_like);
         }
     }
 
@@ -371,7 +405,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         builderSingle.show();
     }
 
-    public class DeleteNotification extends AsyncTask<String, Void, String> {
+    private class DeleteNotification extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -414,7 +448,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         }
     }
 
-    public class ReadNotification extends AsyncTask<String, Void, String> {
+    private class ReadNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -440,6 +474,25 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private class MarkFavourite extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "markFavouriteNotification");
+            obj.addProperty("msg_details_id", params[0]);
+            obj.addProperty("is_fav", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
+            return res;
         }
     }
 

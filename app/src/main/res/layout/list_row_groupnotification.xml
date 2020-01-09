@@ -60,6 +60,7 @@
                 android:id="@+id/tv_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
                 android:clickable="false"
                 android:gravity="end|center_vertical"
                 android:longClickable="false"
@@ -84,5 +85,16 @@
         app:secondaryText="New"
         app:secondaryTextColor="@color/white"
         app:secondaryTextSize="14sp" />
+
+
+    <CheckBox
+        android:id="@+id/cb_like"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end|bottom"
+        android:background="@drawable/like_icon"
+        android:button="@null"
+        android:checked="false"
+        android:stateListAnimator="@animator/scale" />
 
 </androidx.cardview.widget.CardView>

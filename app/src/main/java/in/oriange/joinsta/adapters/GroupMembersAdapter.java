@@ -79,17 +79,20 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             holder.tv_mobile_email.setVisibility(View.GONE);
         }
 
-        if (memberDetails.getIs_active().equals("1")) {
+        if (memberDetails.getIs_active().equals("1"))
             holder.sw_active.setChecked(true);
-        } else {
+        else
             holder.sw_active.setChecked(false);
-        }
 
-        if (memberDetails.getCan_post().equals("1")) {
+        if (memberDetails.getCan_post().equals("1"))
             holder.sw_can_post.setChecked(true);
-        } else {
+        else
             holder.sw_can_post.setChecked(false);
-        }
+
+        if (memberDetails.getIs_hidden().equals("1"))
+            holder.ib_ishidden.setVisibility(View.VISIBLE);
+        else
+            holder.ib_ishidden.setVisibility(View.GONE);
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +105,13 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                     holder.view_divider.setVisibility(View.GONE);
                 }
 
+            }
+        });
+
+        holder.ib_ishidden.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilities.showMessage("User has marked himself/herself as hidden member", context, 2);
             }
         });
 
@@ -220,7 +230,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         private TextView tv_name, tv_mobile_email;
         private Button btn_edit, btn_delete;
         private Switch sw_active, sw_can_post;
-        private ImageButton ib_call;
+        private ImageButton ib_call, ib_ishidden;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -234,6 +244,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             sw_active = view.findViewById(R.id.sw_active);
             sw_can_post = view.findViewById(R.id.sw_can_post);
             ib_call = view.findViewById(R.id.ib_call);
+            ib_ishidden = view.findViewById(R.id.ib_ishidden);
         }
     }
 

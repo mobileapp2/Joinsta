@@ -125,6 +125,8 @@ public class AllGroupNotificationListModel {
             private Object groupnotification_id;
             private String is_read;
             private String attachment;
+            private String sender_name;
+            private String is_fav;
             private List<DocumentsBean> documents;
 
             public String getMsg_details_id() {
@@ -233,6 +235,22 @@ public class AllGroupNotificationListModel {
 
             public void setAttachment(String attachment) {
                 this.attachment = attachment;
+            }
+
+            public String getSender_name() {
+                return sender_name;
+            }
+
+            public void setSender_name(String sender_name) {
+                this.sender_name = sender_name;
+            }
+
+            public String getIs_fav() {
+                return is_fav;
+            }
+
+            public void setIs_fav(String is_fav) {
+                this.is_fav = is_fav;
             }
 
             public List<DocumentsBean> getDocuments() {

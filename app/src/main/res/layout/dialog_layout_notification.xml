@@ -115,10 +115,9 @@
             android:src="@drawable/icon_cross"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:tint="@color/white" />
-
+            android:tint="@color/white"
+            android:visibility="gone" />
 
     </RelativeLayout>
-
 
 </ScrollView>
