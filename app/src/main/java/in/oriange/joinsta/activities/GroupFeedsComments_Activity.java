@@ -1,19 +1,12 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -26,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -33,7 +27,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.airbnb.lottie.LottieAnimationView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -75,7 +76,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private CircleImageView imv_user, imv_current_user;
-    private TextView tv_name, tv_time, tv_feed_text;
+    private TextView tv_name, tv_time, tv_feed_text, tv_viewdocs;
     private CardView cv_feed_image;
     private ImageView imv_feed_image;
     private Button btn_comment, btn_share;
@@ -87,7 +88,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     private GroupFeedsModel.ResultBean feedDetails;
     private String userId;
 
-    private File downloadedDocsfolder, file;
+    private File downloadedDocsfolder, downloadedDocumentfolder, file;
     private String description;
 
     private LocalBroadcastManager localBroadcastManager;
@@ -116,6 +117,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         tv_name = findViewById(R.id.tv_name);
         tv_time = findViewById(R.id.tv_time);
         tv_feed_text = findViewById(R.id.tv_feed_text);
+        tv_viewdocs = findViewById(R.id.tv_viewdocs);
         cv_feed_image = findViewById(R.id.cv_feed_image);
         imv_feed_image = findViewById(R.id.imv_feed_image);
         btn_comment = findViewById(R.id.btn_comment);
@@ -126,9 +128,14 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         imb_post_comment = findViewById(R.id.imb_post_comment);
         cb_like = findViewById(R.id.cb_like);
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Posts");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
+
+
+        downloadedDocumentfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Posts Documents");
+        if (!downloadedDocumentfolder.exists())
+            downloadedDocumentfolder.mkdirs();
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -219,6 +226,17 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             cb_like.setChecked(true);
         }
 
+        if (feedDetails.getFeed_documents().size() != 0) {
+            tv_viewdocs.setVisibility(View.VISIBLE);
+            if (feedDetails.getFeed_documents().size() == 1) {
+                tv_viewdocs.setText(feedDetails.getFeed_documents().size() + " Document Attached");
+            } else {
+                tv_viewdocs.setText(feedDetails.getFeed_documents().size() + " Documents Attached");
+            }
+            tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
+
+
         feedCommentsList = feedDetails.getFeed_comments();
         groupFeedsCommentsAdapter = new GroupFeedsCommentsAdapter(context, feedCommentsList);
         rv_feeds_comments.setAdapter(groupFeedsCommentsAdapter);
@@ -253,18 +271,22 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                description = feedDetails.getFeed_text();
-                if (!feedDetails.getFeed_doc().equals("")) {
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+                if (feedDetails.getCan_share().equals("1")) {
+                    description = feedDetails.getFeed_text();
+                    if (!feedDetails.getFeed_doc().equals("")) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
                     } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/html");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                        context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
                     }
                 } else {
-                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    sharingIntent.setType("text/html");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
-                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                    Utilities.showMessage("You cannot share this feed", context, 2);
                 }
             }
         });
@@ -298,6 +320,13 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showImageDialog(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+            }
+        });
+
+        tv_viewdocs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDocumentsList(feedDetails.getFeed_documents());
             }
         });
 
@@ -456,6 +485,38 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void showDocumentsList(final List<GroupFeedsModel.ResultBean.FeedDocumentsBean> documentList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Document List");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < documentList.size(); i++) {
+            arrayAdapter.add("View document " + (i + 1));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(IMAGE_LINK + "feed_doc/" + documentList.get(which).getDocuments());
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+        builderSingle.show();
+    }
+
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -599,6 +660,136 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocumentfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            if (aBoolean == true) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("file://" + file);
+                if (downloadurl.toString().contains(".doc") || downloadurl.toString().contains(".docx")) {
+                    // Word document
+                    intent.setDataAndType(uri, "application/msword");
+                } else if (downloadurl.toString().contains(".pdf")) {
+                    // PDF file
+                    intent.setDataAndType(uri, "application/pdf");
+                } else if (downloadurl.toString().contains(".ppt") || downloadurl.toString().contains(".pptx")) {
+                    // Powerpoint file
+                    intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                } else if (downloadurl.toString().contains(".xls") || downloadurl.toString().contains(".xlsx")) {
+                    // Excel file
+                    intent.setDataAndType(uri, "application/vnd.ms-excel");
+                } else if (downloadurl.toString().contains(".zip") || downloadurl.toString().contains(".rar")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "application/x-wav");
+                } else if (downloadurl.toString().contains(".rtf")) {
+                    // RTF file
+                    intent.setDataAndType(uri, "application/rtf");
+                } else if (downloadurl.toString().contains(".wav") || downloadurl.toString().contains(".mp3")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "audio/x-wav");
+                } else if (downloadurl.toString().contains(".gif")) {
+                    // GIF file
+                    intent.setDataAndType(uri, "image/gif");
+                } else if (downloadurl.toString().contains(".jpg") || downloadurl.toString().contains(".jpeg") || downloadurl.toString().contains(".png")) {
+                    // JPG file
+                    intent.setDataAndType(uri, "image/jpeg");
+                } else if (downloadurl.toString().contains(".txt")) {
+                    // Text file
+                    intent.setDataAndType(uri, "text/plain");
+                } else if (downloadurl.toString().contains(".3gp") || downloadurl.toString().contains(".mpg") || downloadurl.toString().contains(".mpeg") || downloadurl.toString().contains(".mpe") || downloadurl.toString().contains(".mp4") || downloadurl.toString().contains(".avi")) {
+                    // Video files
+                    intent.setDataAndType(uri, "video/*");
+                } else {
+                    intent.setDataAndType(uri, "*/*");
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+
             }
         }
     }

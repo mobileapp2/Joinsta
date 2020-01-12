@@ -9,7 +9,7 @@ public class GroupFeedsModel implements Serializable {
     /**
      * type : success
      * message : Offer details returned successfully!
-     * result : [{"id":"1","group_id":"10","type_id":"1","feed_text":"Good morning","feed_doc":"abc.jpg","is_admin":"0","is_private":"0","is_hidden":"0","is_deleted":"0","created_by":"10","updated_by":"10","created_at":"2019-12-05 11:37:41","updated_at":"2019-12-05 11:37:41","first_name":"Priyesh Pawar","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","is_favourite":0,"feed_comments":[{"id":"1","feed_id":"1","message":"Good Evening","is_private":"0","is_deleted":"0","created_by":"12","created_at":"2019-12-05 11:43:30","first_name":"Bhokare Sunita    ","image_url":"http://joinsta.in/images/12/uplimg-20190610070558.png","comment_reply":[{"id":"1","comment_id":"1","message":"Its Good Afternoon","is_private":"0","is_deleted":"0","created_by":"10","created_at":"2019-12-05 11:43:56","first_name":"Priyesh Pawar","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png"}]}]},{"id":"4","group_id":"10","type_id":"1","feed_text":"Good morning","feed_doc":"abc.jpg","is_admin":"0","is_private":"0","is_hidden":"0","is_deleted":"0","created_by":"10","updated_by":"10","created_at":"2019-12-06 16:09:28","updated_at":"2019-12-06 16:09:28","first_name":"Priyesh Pawar","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png","is_favourite":0,"feed_comments":[]}]
+     * result : [{"id":"32","group_id":"92","type_id":"1","feed_text":"Djjsjakakka jsnansks snsan dNsks wskwnw\nDkdkskks nrje ejebee enwkeenen ejebee e e e\nDkdkskks ekdjsnsjre rktenwnjr ejebee jrbe \nwww.google.com","feed_doc":"uplimg-20200107071409.png","is_admin":"1","is_private":"0","is_hidden":"0","is_deleted":"0","created_by":"271","updated_by":"271","created_at":"2020-01-07 23:35:58","updated_at":"2020-01-08 00:44:16","can_share":"0","type":"personal","first_name":"Saba","image_url":"","feed_documents":[{"id":"2","feed_details_id":"39","documents":"5_6053197452373131396-20200107071039-20200112125712.pdf"},{"id":"3","feed_details_id":"39","documents":"9-android-fundamentals-services-m9-slides-20200112125722.pdf"}],"is_favourite":0,"feed_comments":[{"id":"65","feed_id":"32","message":"ndjskakaw","is_private":"0","is_deleted":"0","created_by":"271","created_at":"2020-01-12 18:36:47","first_name":"Saba","image_url":"","comment_reply":[{"id":"21","comment_id":"65","message":"djjsjakakka dNsks","is_private":"0","is_deleted":"0","created_by":"271","created_at":"2020-01-12 18:37:16","first_name":"Saba","image_url":""}]}]},{"id":"33","group_id":"92","type_id":"1","feed_text":"Djjskak dNsks dNsks dNsks snsns","feed_doc":"","is_admin":"1","is_private":"0","is_hidden":"0","is_deleted":"0","created_by":"271","updated_by":"271","created_at":"2020-01-07 23:36:30","updated_at":"2020-01-07 23:36:30","can_share":"0","type":"personal","first_name":"Saba","image_url":"","feed_documents":[],"is_favourite":0,"feed_comments":[]},{"id":"38","group_id":"92","type_id":"1","feed_text":"Nsjskkakwk","feed_doc":"","is_admin":"1","is_private":"0","is_hidden":"0","is_deleted":"0","created_by":"271","updated_by":"271","created_at":"2020-01-12 18:04:05","updated_at":"2020-01-12 18:04:05","can_share":"0","type":"personal","first_name":"Saba","image_url":"","feed_documents":[{"id":"1","feed_details_id":"38","documents":""}],"is_favourite":0,"feed_comments":[]},{"id":"39","group_id":"92","type_id":"1","feed_text":"Dksksksk","feed_doc":"uplimg-20200112125654.png","is_admin":"1","is_private":"0","is_hidden":"0","is_deleted":"0","created_by":"271","updated_by":"271","created_at":"2020-01-12 18:27:23","updated_at":"2020-01-12 18:27:23","can_share":"1","type":"personal","first_name":"Saba","image_url":"","feed_documents":[{"id":"2","feed_details_id":"39","documents":"5_6053197452373131396-20200107071039-20200112125712.pdf"},{"id":"3","feed_details_id":"39","documents":"9-android-fundamentals-services-m9-slides-20200112125722.pdf"}],"is_favourite":0,"feed_comments":[]}]
      */
 
     private String type;
@@ -40,25 +40,31 @@ public class GroupFeedsModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
-         * id : 1
-         * group_id : 10
+         * id : 32
+         * group_id : 92
          * type_id : 1
-         * feed_text : Good morning
-         * feed_doc : abc.jpg
-         * is_admin : 0
+         * feed_text : Djjsjakakka jsnansks snsan dNsks wskwnw
+         * Dkdkskks nrje ejebee enwkeenen ejebee e e e
+         * Dkdkskks ekdjsnsjre rktenwnjr ejebee jrbe
+         * www.google.com
+         * feed_doc : uplimg-20200107071409.png
+         * is_admin : 1
          * is_private : 0
          * is_hidden : 0
          * is_deleted : 0
-         * created_by : 10
-         * updated_by : 10
-         * created_at : 2019-12-05 11:37:41
-         * updated_at : 2019-12-05 11:37:41
-         * first_name : Priyesh Pawar
-         * image_url : https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png
+         * created_by : 271
+         * updated_by : 271
+         * created_at : 2020-01-07 23:35:58
+         * updated_at : 2020-01-08 00:44:16
+         * can_share : 0
+         * type : personal
+         * first_name : Saba
+         * image_url :
+         * feed_documents : [{"id":"2","feed_details_id":"39","documents":"5_6053197452373131396-20200107071039-20200112125712.pdf"},{"id":"3","feed_details_id":"39","documents":"9-android-fundamentals-services-m9-slides-20200112125722.pdf"}]
          * is_favourite : 0
-         * feed_comments : [{"id":"1","feed_id":"1","message":"Good Evening","is_private":"0","is_deleted":"0","created_by":"12","created_at":"2019-12-05 11:43:30","first_name":"Bhokare Sunita    ","image_url":"http://joinsta.in/images/12/uplimg-20190610070558.png","comment_reply":[{"id":"1","comment_id":"1","message":"Its Good Afternoon","is_private":"0","is_deleted":"0","created_by":"10","created_at":"2019-12-05 11:43:56","first_name":"Priyesh Pawar","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png"}]}]
+         * feed_comments : [{"id":"65","feed_id":"32","message":"ndjskakaw","is_private":"0","is_deleted":"0","created_by":"271","created_at":"2020-01-12 18:36:47","first_name":"Saba","image_url":"","comment_reply":[{"id":"21","comment_id":"65","message":"djjsjakakka dNsks","is_private":"0","is_deleted":"0","created_by":"271","created_at":"2020-01-12 18:37:16","first_name":"Saba","image_url":""}]}]
          */
 
         private String id;
@@ -74,10 +80,12 @@ public class GroupFeedsModel implements Serializable {
         private String updated_by;
         private String created_at;
         private String updated_at;
+        private String can_share;
+        private String type;
         private String first_name;
         private String image_url;
-        private String type;
         private int is_favourite;
+        private List<FeedDocumentsBean> feed_documents;
         private List<FeedCommentsBean> feed_comments;
 
         public String getId() {
@@ -184,6 +192,22 @@ public class GroupFeedsModel implements Serializable {
             this.updated_at = updated_at;
         }
 
+        public String getCan_share() {
+            return can_share;
+        }
+
+        public void setCan_share(String can_share) {
+            this.can_share = can_share;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
         public String getFirst_name() {
             return first_name;
         }
@@ -200,20 +224,20 @@ public class GroupFeedsModel implements Serializable {
             this.image_url = image_url;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
         public int getIs_favourite() {
             return is_favourite;
         }
 
         public void setIs_favourite(int is_favourite) {
             this.is_favourite = is_favourite;
+        }
+
+        public List<FeedDocumentsBean> getFeed_documents() {
+            return feed_documents;
+        }
+
+        public void setFeed_documents(List<FeedDocumentsBean> feed_documents) {
+            this.feed_documents = feed_documents;
         }
 
         public List<FeedCommentsBean> getFeed_comments() {
@@ -224,18 +248,62 @@ public class GroupFeedsModel implements Serializable {
             this.feed_comments = feed_comments;
         }
 
-        public static class FeedCommentsBean implements Serializable{
+        public static class FeedDocumentsBean implements Serializable {
             /**
-             * id : 1
-             * feed_id : 1
-             * message : Good Evening
+             * id : 2
+             * feed_details_id : 39
+             * documents : 5_6053197452373131396-20200107071039-20200112125712.pdf
+             */
+
+            private String id;
+            private String feed_details_id;
+            private String documents;
+
+            public FeedDocumentsBean(String documents, String id) {
+                this.documents = documents;
+                this.id = id;
+            }
+
+            public FeedDocumentsBean() {
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getFeed_details_id() {
+                return feed_details_id;
+            }
+
+            public void setFeed_details_id(String feed_details_id) {
+                this.feed_details_id = feed_details_id;
+            }
+
+            public String getDocuments() {
+                return documents;
+            }
+
+            public void setDocuments(String documents) {
+                this.documents = documents;
+            }
+        }
+
+        public static class FeedCommentsBean implements Serializable {
+            /**
+             * id : 65
+             * feed_id : 32
+             * message : ndjskakaw
              * is_private : 0
              * is_deleted : 0
-             * created_by : 12
-             * created_at : 2019-12-05 11:43:30
-             * first_name : Bhokare Sunita
-             * image_url : http://joinsta.in/images/12/uplimg-20190610070558.png
-             * comment_reply : [{"id":"1","comment_id":"1","message":"Its Good Afternoon","is_private":"0","is_deleted":"0","created_by":"10","created_at":"2019-12-05 11:43:56","first_name":"Priyesh Pawar","image_url":"https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png"}]
+             * created_by : 271
+             * created_at : 2020-01-12 18:36:47
+             * first_name : Saba
+             * image_url :
+             * comment_reply : [{"id":"21","comment_id":"65","message":"djjsjakakka dNsks","is_private":"0","is_deleted":"0","created_by":"271","created_at":"2020-01-12 18:37:16","first_name":"Saba","image_url":""}]
              */
 
             private String id;
@@ -329,17 +397,17 @@ public class GroupFeedsModel implements Serializable {
                 this.comment_reply = comment_reply;
             }
 
-            public static class CommentReplyBean implements Serializable{
+            public static class CommentReplyBean implements Serializable {
                 /**
-                 * id : 1
-                 * comment_id : 1
-                 * message : Its Good Afternoon
+                 * id : 21
+                 * comment_id : 65
+                 * message : djjsjakakka dNsks
                  * is_private : 0
                  * is_deleted : 0
-                 * created_by : 10
-                 * created_at : 2019-12-05 11:43:56
-                 * first_name : Priyesh Pawar
-                 * image_url : https://gstkhata.com/joinsta_test/joinsta_updated/images/10/uplimg-20190929120455.png
+                 * created_by : 271
+                 * created_at : 2020-01-12 18:37:16
+                 * first_name : Saba
+                 * image_url :
                  */
 
                 private String id;

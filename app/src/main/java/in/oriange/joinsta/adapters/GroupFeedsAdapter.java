@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -210,18 +209,22 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         holder.btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                description = feedDetails.getFeed_text();
-                if (!feedDetails.getFeed_doc().equals("")) {
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+                if (feedDetails.getCan_share().equals("1")) {
+                    description = feedDetails.getFeed_text();
+                    if (!feedDetails.getFeed_doc().equals("")) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
                     } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        shareIntent.setType("text/html");
+                        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
+                        context.startActivity(Intent.createChooser(shareIntent, "Share via"));
                     }
                 } else {
-                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    shareIntent.setType("text/html");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
-                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+                    Utilities.showMessage("You cannot share this feed", context, 2);
                 }
             }
         });

@@ -122,11 +122,12 @@ public class AllGroupNotificationListModel {
             private String group_id;
             private String user_id;
             private String group_name;
-            private Object groupnotification_id;
+            private String groupnotification_id;
             private String is_read;
             private String attachment;
             private String sender_name;
             private String is_fav;
+            private String can_share;
             private List<DocumentsBean> documents;
 
             public String getMsg_details_id() {
@@ -209,11 +210,11 @@ public class AllGroupNotificationListModel {
                 this.group_name = group_name;
             }
 
-            public Object getGroupnotification_id() {
+            public String getGroupnotification_id() {
                 return groupnotification_id;
             }
 
-            public void setGroupnotification_id(Object groupnotification_id) {
+            public void setGroupnotification_id(String groupnotification_id) {
                 this.groupnotification_id = groupnotification_id;
             }
 
@@ -226,7 +227,7 @@ public class AllGroupNotificationListModel {
             }
 
             public String getAttachment() {
-                if (attachment != null){
+                if (attachment != null) {
                     return attachment;
                 } else {
                     return "";
@@ -251,6 +252,18 @@ public class AllGroupNotificationListModel {
 
             public void setIs_fav(String is_fav) {
                 this.is_fav = is_fav;
+            }
+
+            public String getCan_share() {
+                if (can_share != null) {
+                    return can_share;
+                } else {
+                    return "0";
+                }
+            }
+
+            public void setCan_share(String can_share) {
+                this.can_share = can_share;
             }
 
             public List<DocumentsBean> getDocuments() {

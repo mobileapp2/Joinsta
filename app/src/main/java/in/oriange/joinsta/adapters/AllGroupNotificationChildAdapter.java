@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,10 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -236,6 +233,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         final Button btn_download = promptView.findViewById(R.id.btn_download);
         final Button btn_delete = promptView.findViewById(R.id.btn_delete);
         final Button btn_share = promptView.findViewById(R.id.btn_share);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
         final TextView tv_viewdocs = promptView.findViewById(R.id.tv_viewdocs);
 
         if (!notificationDetails.getAttachment().equals("")) {
@@ -287,6 +285,11 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             else
                 Utilities.showMessage("Please check your internet connection", context, 2);
         }
+
+        if (notificationDetails.getCan_share().equals("1")) {
+            btn_share.setVisibility(View.VISIBLE);
+        } else
+            btn_share.setVisibility(View.GONE);
 
         if (notificationDetails.getDocuments().size() != 0) {
             tv_viewdocs.setVisibility(View.VISIBLE);
@@ -367,6 +370,13 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 }
+            }
+        });
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
             }
         });
 

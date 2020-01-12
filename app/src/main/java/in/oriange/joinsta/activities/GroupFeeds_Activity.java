@@ -1,7 +1,20 @@
 package in.oriange.joinsta.activities;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -9,43 +22,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewAnimationUtils;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -331,7 +312,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(context, CanPostAuthorization_Activity.class)
+                startActivity(new Intent(context, CanPostFeedsAuthorization_Activity.class)
                         .putExtra("isAdmin", isAdmin)
                         .putExtra("groupId", groupId));
                 break;

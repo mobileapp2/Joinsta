@@ -1,14 +1,7 @@
 package in.oriange.joinsta.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -19,14 +12,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.airbnb.lottie.LottieAnimationView;
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -46,7 +47,7 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 
-public class CanPostAuthorization_Activity extends AppCompatActivity {
+public class CanPostFeedsAuthorization_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -61,7 +62,7 @@ public class CanPostAuthorization_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_can_post_authorization);
+        setContentView(R.layout.activity_can_post_feeds_authorization);
 
         init();
         getSessionDetails();
@@ -71,7 +72,7 @@ public class CanPostAuthorization_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = CanPostAuthorization_Activity.this;
+        context = CanPostFeedsAuthorization_Activity.this;
         session = new UserSessionManager(context);
 
         edt_search = findViewById(R.id.edt_search);
@@ -340,7 +341,30 @@ public class CanPostAuthorization_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        Utilities.showMessage("Can post status changed successfully", context, 1);
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Can post status changed successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
                     }
                 }
             } catch (Exception e) {
@@ -365,7 +389,7 @@ public class CanPostAuthorization_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(CanPostAuthorization_Activity.this);
+        hideSoftKeyboard(CanPostFeedsAuthorization_Activity.this);
     }
 
 }

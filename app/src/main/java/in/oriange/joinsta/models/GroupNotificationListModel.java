@@ -70,6 +70,7 @@ public class GroupNotificationListModel {
         private String attachment;
         private String sender_name;
         private String is_fav;
+        private String can_share;
         private List<DocumentsBean> documents;
 
         public String getMsg_details_id() {
@@ -187,6 +188,18 @@ public class GroupNotificationListModel {
 
         public void setIs_fav(String is_fav) {
             this.is_fav = is_fav;
+        }
+
+        public String getCan_share() {
+            if (can_share != null) {
+                return can_share;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setCan_share(String can_share) {
+            this.can_share = can_share;
         }
 
         public List<DocumentsBean> getDocuments() {

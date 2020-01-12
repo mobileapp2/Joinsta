@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,8 +13,8 @@ import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -47,7 +46,6 @@ import java.util.List;
 import java.util.Locale;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.models.NotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -220,6 +218,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final TextView btn_download = promptView.findViewById(R.id.btn_download);
         final TextView btn_delete = promptView.findViewById(R.id.btn_delete);
         final TextView btn_share = promptView.findViewById(R.id.btn_share);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
 
         if (!notificationDetails.getImage().equals("0")) {
             String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
@@ -327,6 +326,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
 
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+            }
+        });
 
         alertD.show();
 

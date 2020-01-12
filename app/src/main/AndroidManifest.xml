@@ -372,7 +372,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".activities.CanPostAuthorization_Activity"
+            android:name=".activities.CanPostFeedsAuthorization_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />

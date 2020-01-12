@@ -336,6 +336,13 @@
 
                     </LinearLayout>
 
+                    <CheckBox
+                        android:id="@+id/cb_canshare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Allow other people to share this message" />
+
                     <android.widget.Button
                         android:id="@+id/btn_save"
                         android:layout_width="match_parent"
@@ -344,7 +351,6 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginRight="5dp"
-                        android:layout_weight="0.5"
                         android:background="@drawable/button_background_filled"
                         android:text="Send"
                         android:textColor="@color/white" />

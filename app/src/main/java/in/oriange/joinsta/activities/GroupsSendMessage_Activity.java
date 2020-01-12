@@ -1,14 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -40,6 +31,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
@@ -94,13 +93,14 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private RadioButton rb_supervisor, rb_all;
     private ImageButton ib_add_doc;
     private Button btn_save, btn_sms, btn_email, btn_notification;
+    private CheckBox cb_canshare;
     private LinearLayout ll_attach_docs;
 
     private List<GroupAdminsGroupsListModel.ResultBean> groupsList;
     private ArrayList<LinearLayout> docsLayoutsList;
 
     private JsonArray selectedGroups;
-    private String userId, imageUrl = "", imageName = "", groupId, groupName;
+    private String userId, imageName = "", groupId, groupName;
 
     private boolean isSmsPressed, isEmailPressed, isNotificationPressed = true;
 
@@ -143,6 +143,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
         rb_supervisor = findViewById(R.id.rb_supervisor);
         rb_all = findViewById(R.id.rb_all);
+        cb_canshare = findViewById(R.id.cb_canshare);
         btn_save = findViewById(R.id.btn_save);
 
         groupsList = new ArrayList<>();
@@ -735,6 +736,8 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             }
         }
 
+        String canShare = cb_canshare.isChecked() ? "1" : "0";
+
         JsonObject mainObject = new JsonObject();
         mainObject.addProperty("type", "sendMessage");
         mainObject.addProperty("user_id", userId);
@@ -743,6 +746,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         mainObject.add("groups", selectedGroups);
         mainObject.addProperty("document", imageName);
         mainObject.addProperty("receiver_type", receiverType);
+        mainObject.addProperty("can_share", canShare);
         mainObject.add("message_types", messageTypes);
         mainObject.add("message_doc", messageDocArray);
 
@@ -868,18 +872,17 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type = "", message = "";
+            String type = "";
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
 
                         if (TYPE.equals("0")) {
-                            imageUrl = jsonObject.getString("document_url");
+                            String imageUrl = jsonObject.getString("document_url");
                             imageName = jsonObject.getString("name");
 
                             if (!imageUrl.equals("")) {

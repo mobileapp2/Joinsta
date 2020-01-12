@@ -1,13 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,18 +19,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,11 +83,16 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_feed_type;
     private EditText edt_description;
+    private MaterialEditText edt_attach_doc, edt_attach_multidoc;
     private ImageView imv_photo1, imv_photo2;
     private Button btn_save;
+    private ImageButton ib_add_doc;
+    private LinearLayout ll_attach_docs;
+    private CheckBox cb_canshare;
 
-    private String userId, typeId, imageName = "";
+    private String userId, isAdmin, typeId, imageName = "";
     private List<GetFeedTypesListModel.ResultBean> feedTypeList;
+    private ArrayList<LinearLayout> docsLayoutsList;
 
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
@@ -111,11 +123,16 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         edt_description = findViewById(R.id.edt_description);
         imv_photo1 = findViewById(R.id.imv_photo1);
         imv_photo2 = findViewById(R.id.imv_photo2);
+        ib_add_doc = findViewById(R.id.ib_add_doc);
+        cb_canshare = findViewById(R.id.cb_canshare);
+        edt_attach_doc = findViewById(R.id.edt_attach_doc);
+        ll_attach_docs = findViewById(R.id.ll_attach_docs);
         btn_save = findViewById(R.id.btn_save);
 
         feedTypeList = new ArrayList<>();
+        docsLayoutsList = new ArrayList<>();
 
-        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Feeds");
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Posts");
         if (!photoFileFolder.exists())
             photoFileFolder.mkdirs();
 
@@ -145,8 +162,9 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 //        edt_feed_type.setText(feedDetails.getType());
         edt_description.setText(feedDetails.getFeed_text());
         imageName = feedDetails.getFeed_doc();
+        isAdmin = feedDetails.getIs_admin();
 
-        if (!feedDetails.getImage_url().trim().isEmpty()) {
+        if (!feedDetails.getFeed_doc().trim().isEmpty()) {
             String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
             Picasso.with(context)
                     .load(url)
@@ -168,6 +186,23 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
             imv_photo1.setVisibility(View.GONE);
         }
 
+        if (feedDetails.getCan_share().equals("1")) cb_canshare.setChecked(true);
+        else cb_canshare.setChecked(false);
+
+        List<GroupFeedsModel.ResultBean.FeedDocumentsBean> feedDocumentsList = feedDetails.getFeed_documents();
+
+        for (int i = 0; i < feedDocumentsList.size(); i++) {
+            if (i == (feedDocumentsList.size() - 1)) {
+                edt_attach_doc.setText(feedDocumentsList.get(i).getDocuments());
+            } else {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+                LinearLayout ll = (LinearLayout) rowView;
+                docsLayoutsList.add(ll);
+                ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount() - 1);
+                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(feedDocumentsList.get(i).getDocuments());
+            }
+        }
     }
 
     private void setEventHandler() {
@@ -212,6 +247,31 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
             }
         });
 
+        edt_attach_doc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    Intent intent = new Intent(context, NormalFilePickActivity.class);
+                    intent.putExtra(Constant.MAX_NUMBER, 1);
+                    intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+                    startActivityForResult(intent, 1024);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        ib_add_doc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+                LinearLayout ll = (LinearLayout) rowView;
+                docsLayoutsList.add(ll);
+                ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
+            }
+        });
+
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,6 +308,23 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         });
         AlertDialog alertD = builder.create();
         alertD.show();
+    }
+
+    public void removeAttachDoc(View v) {
+        ll_attach_docs.removeView((View) v.getParent());
+        docsLayoutsList.remove(v.getParent());
+    }
+
+    public void pickAttachDoc(View v) {
+        if (Utilities.isNetworkAvailable(context)) {
+            edt_attach_multidoc = (MaterialEditText) v;
+            Intent intent = new Intent(context, NormalFilePickActivity.class);
+            intent.putExtra(Constant.MAX_NUMBER, 1);
+            intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+            startActivityForResult(intent, 1025);
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
     }
 
     private class GetFeedTypes extends AsyncTask<String, Void, String> {
@@ -330,6 +407,7 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
+
 //        if (edt_feed_type.getText().toString().trim().isEmpty()) {
 //            edt_feed_type.setError("Please select post type");
 //            edt_feed_type.requestFocus();
@@ -342,13 +420,46 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
             return;
         }
 
+        ArrayList<GroupFeedsModel.ResultBean.FeedDocumentsBean> docList = new ArrayList<>();
+        JsonArray messageDocArray = new JsonArray();
+
+        for (int i = 0; i < docsLayoutsList.size(); i++) {
+            if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
+                if (i < feedDetails.getFeed_documents().size() - 1) {
+                    docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean((((TextView) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString()), feedDetails.getFeed_documents().get(i).getId()));
+                } else {
+                    docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean((((TextView) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString()), "0"));
+                }
+            }
+        }
+
+        if (feedDetails.getFeed_documents().size() != 0) {
+            if (!edt_attach_doc.getText().toString().trim().isEmpty())
+                docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean(edt_attach_doc.getText().toString(), feedDetails.getFeed_documents().get(feedDetails.getFeed_documents().size() - 1).getId()));
+        } else {
+            if (!edt_attach_doc.getText().toString().trim().isEmpty())
+                docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean(edt_attach_doc.getText().toString(), "0"));
+        }
+
+        for (GroupFeedsModel.ResultBean.FeedDocumentsBean feedDocuments : docList) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("id", feedDocuments.getId());
+            jsonObject.addProperty("document", feedDocuments.getDocuments());
+            messageDocArray.add(jsonObject);
+        }
+
+        String canShare = cb_canshare.isChecked() ? "1" : "0";
+
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "updateFeedDetails");
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("feed_id", feedDetails.getId());
         mainObj.addProperty("edit_type_id", typeId);
         mainObj.addProperty("edit_feed_text", edt_description.getText().toString().trim());
-        mainObj.addProperty("edit_document", imageName);
+        mainObj.addProperty("edit_image", imageName);
+        mainObj.addProperty("is_admin", isAdmin);
+        mainObj.addProperty("can_share", canShare);
+        mainObj.add("edit_document", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {
             new EditGroupFeed().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
@@ -435,6 +546,15 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
                 CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditGroupFeeds_Activity.this);
             }
 
+            if (requestCode == 1024) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                new UploadImage().execute(list.get(0).getPath(), "1");
+            }
+
+            if (requestCode == 1025) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                new UploadImage().execute(list.get(0).getPath(), "2");
+            }
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -475,11 +595,13 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload);
+        new UploadImage().execute(photoFileToUpload.getPath(), "0");
 
     }
 
-    private class UploadImage extends AsyncTask<File, Integer, String> {
+    private class UploadImage extends AsyncTask<String, Integer, String> {
+
+        String TYPE;
 
         @Override
         protected void onPreExecute() {
@@ -490,13 +612,14 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(File... params) {
+        protected String doInBackground(String... params) {
+            TYPE = params[1];
             StringBuilder res = new StringBuilder();
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
                 multipart.addFormField("request_type", "uploadFeedFile");
-                multipart.addFilePart("document", params[0]);
+                multipart.addFilePart("document", new File(params[0]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {
@@ -511,24 +634,29 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type = "", message = "";
+            String type = "";
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        String imageUrl = jsonObject.getString("document_url");
-                        imageName = jsonObject.getString("name");
+                        if (TYPE.equals("0")) {
+                            String imageUrl = jsonObject.getString("document_url");
+                            imageName = jsonObject.getString("name");
 
-                        if (!imageUrl.equals("")) {
-                            Picasso.with(context)
-                                    .load(imageUrl)
-                                    .into(imv_photo1);
-                            imv_photo2.setVisibility(View.GONE);
-                            imv_photo1.setVisibility(View.VISIBLE);
+                            if (!imageUrl.equals("")) {
+                                Picasso.with(context)
+                                        .load(imageUrl)
+                                        .into(imv_photo1);
+                                imv_photo2.setVisibility(View.GONE);
+                                imv_photo1.setVisibility(View.VISIBLE);
+                            }
+                        } else if (TYPE.equals("1")) {
+                            edt_attach_doc.setText(jsonObject.getString("name"));
+                        } else if (TYPE.equals("2")) {
+                            edt_attach_multidoc.setText(jsonObject.getString("name"));
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);

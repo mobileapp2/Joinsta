@@ -59,11 +59,9 @@ public class GroupNotifications_Activity extends AppCompatActivity {
     private List<GroupNotificationListModel.ResultBean> notificationList, notificationListForSearch;
     private LocalBroadcastManager localBroadcastManager;
 
-
     private GroupNotificationAdapter notificationAdapter;
 
     private boolean isFavouriteFiltered = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

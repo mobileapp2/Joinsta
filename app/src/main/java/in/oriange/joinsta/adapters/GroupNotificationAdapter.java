@@ -1,12 +1,10 @@
 package in.oriange.joinsta.adapters;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,7 +31,6 @@ import com.google.gson.JsonObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -52,12 +48,10 @@ import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroups_Activity;
-import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.GroupNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 import jp.shts.android.library.TriangleLabelView;
 
@@ -68,8 +62,6 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
 
     private List<GroupNotificationListModel.ResultBean> resultArrayList;
     private Context context;
-    private UserSessionManager session;
-    private String userId;
     private PrettyTime p;
 
     private File downloadedImagefolder, downloadedDocumentfolder, file;
@@ -82,18 +74,6 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         this.context = context;
         this.resultArrayList = resultArrayList;
         p = new PrettyTime();
-        session = new UserSessionManager(context);
-        try {
-            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-                    ApplicationConstants.KEY_LOGIN_INFO));
-            JSONObject json = user_info.getJSONObject(0);
-
-            userId = json.getString("userid");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
 
         downloadedImagefolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
         if (!downloadedImagefolder.exists())
@@ -260,6 +240,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         final Button btn_download = promptView.findViewById(R.id.btn_download);
         final Button btn_delete = promptView.findViewById(R.id.btn_delete);
         final Button btn_share = promptView.findViewById(R.id.btn_share);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
         final TextView tv_viewdocs = promptView.findViewById(R.id.tv_viewdocs);
 
         if (!notificationDetails.getAttachment().equals("")) {
@@ -311,6 +292,11 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
             else
                 Utilities.showMessage("Please check your internet connection", context, 2);
         }
+
+        if (notificationDetails.getCan_share().equals("1")) {
+            btn_share.setVisibility(View.VISIBLE);
+        } else
+            btn_share.setVisibility(View.GONE);
 
         if (notificationDetails.getDocuments().size() != 0) {
             tv_viewdocs.setVisibility(View.VISIBLE);
@@ -391,6 +377,13 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 }
+            }
+        });
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
             }
         });
 
