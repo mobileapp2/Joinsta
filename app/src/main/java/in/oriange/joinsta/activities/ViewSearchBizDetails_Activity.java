@@ -75,10 +75,9 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
     private ImageView imv_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_mutual_groups;
     private Button btn_enquire, btn_caldist;
-    private CheckBox likeIcon;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_mutual_groups;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -118,6 +117,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
         cv_address = findViewById(R.id.cv_address);
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
+        cv_mutual_groups = findViewById(R.id.cv_mutual_groups);
 
         tv_name = findViewById(R.id.tv_name);
         tv_nature = findViewById(R.id.tv_nature);
@@ -133,6 +133,7 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
         tv_bank_name = findViewById(R.id.tv_bank_name);
         tv_acc_no = findViewById(R.id.tv_acc_no);
         tv_ifsc = findViewById(R.id.tv_ifsc);
+        tv_mutual_groups = findViewById(R.id.tv_mutual_groups);
         imv_share = findViewById(R.id.imv_share);
 
         btn_enquire = findViewById(R.id.btn_enquire);
@@ -246,6 +247,14 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
             cv_address.setVisibility(View.GONE);
         }
 
+        if (searchDetails.getCommon_groups_count() > 0) {
+            cv_mutual_groups.setVisibility(View.VISIBLE);
+            tv_mutual_groups.setText(searchDetails.getCommon_groups_count() + " Mutual groups found");
+        } else {
+            cv_mutual_groups.setVisibility(View.GONE);
+            tv_mutual_groups.setText("");
+        }
+
 //        if (!searchDetails.getTax_id().trim().isEmpty()) {
 //            if (!searchDetails.getTax_alias().trim().isEmpty()) {
 //                tv_tax_alias.setText("Alias - " + searchDetails.getTax_alias());
@@ -295,7 +304,6 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
 //        } else {
 //            cv_bank.setVisibility(View.GONE);
 //        }
-
     }
 
     private void getSessionDetails() {
@@ -717,6 +725,13 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
             }
         });
 
+        cv_mutual_groups.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCommonGroupList(searchDetails.getCommon_groups_data());
+            }
+        });
+
     }
 
     private void showMobileListDialog(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> mobileList) {
@@ -806,6 +821,29 @@ public class ViewSearchBizDetails_Activity extends AppCompatActivity {
                         Uri.parse("tel:" + landlineList.get(which).getLandline_number())));
             }
         });
+        builderSingle.show();
+    }
+
+    private void showCommonGroupList(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.CommonGroupsDataBeanXX> groupList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Mutual Groups");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < groupList.size(); i++)
+            arrayAdapter.add(groupList.get(i).getGroup_code() + " - " + groupList.get(i).getGroup_name());
+
+        builderSingle.setNegativeButton(
+                "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, null);
+
         builderSingle.show();
     }
 

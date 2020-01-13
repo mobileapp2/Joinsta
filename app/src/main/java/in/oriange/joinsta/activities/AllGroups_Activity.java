@@ -145,7 +145,6 @@ public class AllGroups_Activity extends AppCompatActivity {
                 } else {
                     rv_groups.setAdapter(new MyGroupsAdapter(context, groupsList));
                 }
-
             }
 
             @Override

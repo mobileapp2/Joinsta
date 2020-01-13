@@ -163,28 +163,27 @@ public class Offers_Fragment extends Fragment {
             }
         });
 
-//        edt_search.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                searchDetails(categoryTypeId, s.toString());
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchDetails(categoryTypeId, s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         edt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
                 try {
                     getActivity().startActivityForResult(builder.build(getActivity()), 3);
                 } catch (GooglePlayServicesRepairableException e) {
@@ -197,97 +196,41 @@ public class Offers_Fragment extends Fragment {
 
     }
 
-//    private void searchDetails(String categoryTypeId, String query) {
-//        switch (categoryTypeId) {
-//            case "1":
-//                if (businessOffersList.size() == 0) {
-//                    return;
-//                }
-//
-//                if (!query.equals("")) {
-//                    ArrayList<OfferDetailsModel.ResultBean.BusinessesBean> businessSearchedList = new ArrayList<>();
-//                    for (OfferDetailsModel.ResultBean.BusinessesBean businessDetails : businessOffersList) {
-//
-//                        StringBuilder tag = new StringBuilder();
-//                        if (businessDetails.getTag().get(0) != null)
-//                            for (OfferDetailsModel.ResultBean.BusinessesBean.TagBeanXX tags : businessDetails.getTag().get(0)) {
-//                                if (tags != null)
-//                                    tag.append(tags.getTag_name());
-//                            }
-//
-//                        String businessToBeSearched = businessDetails.getBusiness_code().toLowerCase() +
-//                                businessDetails.getBusiness_name().toLowerCase() +
-//                                businessDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
-//                        if (businessToBeSearched.contains(query.toLowerCase())) {
-//                            businessSearchedList.add(businessDetails);
-//                        }
-//                    }
-//                    rv_offerslist.setAdapter(new SearchBusinessAdapter(context, businessSearchedList, "1"));
-//                } else {
-//                    rv_offerslist.setAdapter(new SearchBusinessAdapter(context, businessOffersList, "1"));
-//                }
-//
-//                break;
-//            case "2":
-//                if (employeeOffersList.size() == 0) {
-//                    return;
-//                }
-//
-//                if (!query.equals("")) {
-//                    ArrayList<OfferDetailsModel.ResultBean.EmployeesBean> employeeSearchedList = new ArrayList<>();
-//                    for (OfferDetailsModel.ResultBean.EmployeesBean employeeDetails : employeeOffersList) {
-//
-//                        StringBuilder tag = new StringBuilder();
-//                        if (employeeDetails.getTag().get(0) != null)
-//                            for (OfferDetailsModel.ResultBean.EmployeesBean.TagBean tags : employeeDetails.getTag().get(0)) {
-//                                if (tags != null)
-//                                    tag.append(tags.getTag_name());
-//                            }
-//
-//                        String employeeToBeSearched = employeeDetails.getEmployee_code().toLowerCase() +
-//                                employeeDetails.getOrganization_name().toLowerCase() +
-//                                employeeDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
-//                        if (employeeToBeSearched.contains(query.toLowerCase())) {
-//                            employeeSearchedList.add(employeeDetails);
-//                        }
-//                    }
-//                    rv_offerslist.setAdapter(new SearchEmployeeAdapter(context, employeeSearchedList, "1"));
-//                } else {
-//                    rv_offerslist.setAdapter(new SearchEmployeeAdapter(context, employeeOffersList, "1"));
-//                }
-//
-//                break;
-//            case "3":
-//                if (professionalOffersList.size() == 0) {
-//                    return;
-//                }
-//
-//                if (!query.equals("")) {
-//                    ArrayList<OfferDetailsModel.ResultBean.ProfessionalsBean> professionalSearchedList = new ArrayList<>();
-//                    for (OfferDetailsModel.ResultBean.ProfessionalsBean professionalDetails : professionalOffersList) {
-//
-//                        StringBuilder tag = new StringBuilder();
-//                        if (professionalDetails.getTag().get(0) != null)
-//                            for (OfferDetailsModel.ResultBean.ProfessionalsBean.TagBeanX tags : professionalDetails.getTag().get(0)) {
-//                                if (tags != null)
-//                                    tag.append(tags.getTag_name());
-//                            }
-//
-//                        String professionalToBeSearched = professionalDetails.getProfessional_code().toLowerCase() +
-//                                professionalDetails.getFirm_name().toLowerCase() +
-//                                professionalDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
-//                        if (professionalToBeSearched.contains(query.toLowerCase())) {
-//                            professionalSearchedList.add(professionalDetails);
-//                        }
-//                    }
-//                    rv_offerslist.setAdapter(new SearchProfessionalAdapter(context, professionalSearchedList, "1"));
-//                } else {
-//                    rv_offerslist.setAdapter(new SearchProfessionalAdapter(context, professionalOffersList, "1"));
-//                }
-//
-//                break;
-//        }
-//    }
+    private void searchDetails(String categoryTypeId, String query) {
+        switch (categoryTypeId) {
+            case "1":
+                if (businessOffersList.size() == 0) {
+                    return;
+                }
+
+                if (!query.equals("")) {
+                    ArrayList<OfferDetailsModel.ResultBean.BusinessesBean> businessOfferSearchedList = new ArrayList<>();
+                    for (OfferDetailsModel.ResultBean.BusinessesBean businessDetails : businessOffersList) {
+
+                        String businessToBeSearched = businessDetails.getBusiness_code().toLowerCase() +
+                                businessDetails.getBusiness_name().toLowerCase() +
+                                businessDetails.getCity().toLowerCase() +
+                                businessDetails.getTitle().toLowerCase() +
+                                businessDetails.getDescription().toLowerCase() +
+                                businessDetails.getStart_date().toLowerCase() +
+                                businessDetails.getEnd_date().toLowerCase() +
+                                businessDetails.getPromo_code().toLowerCase() +
+                                businessDetails.getCategory_name().toLowerCase();
+                        if (businessToBeSearched.contains(query.toLowerCase())) {
+                            businessOfferSearchedList.add(businessDetails);
+                        }
+                    }
+                    rv_offerslist.setAdapter(new OffersBusinessAdapter(context, businessOfferSearchedList));
+                } else {
+                    rv_offerslist.setAdapter(new OffersBusinessAdapter(context, businessOffersList));
+                }
+                break;
+            case "2":
+                break;
+            case "3":
+                break;
+        }
+    }
 
     public static class GetOffersList extends AsyncTask<String, Void, String> {
 
