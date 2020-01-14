@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -245,12 +246,21 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         alertDialogBuilder.setView(promptView);
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
 
         Picasso.with(context)
                 .load(offerUrl)
                 .into(imv_offer);
 
-        AlertDialog dialog = alertDialogBuilder.create();
+        final  AlertDialog dialog = alertDialogBuilder.create();
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
     }
 

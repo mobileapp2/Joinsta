@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroupNotifications_Activity;
 import in.oriange.joinsta.activities.AllGroups_Activity;
+import in.oriange.joinsta.activities.GroupRequests_Activity;
 import in.oriange.joinsta.adapters.MyGroupsAdapter;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -45,7 +46,7 @@ public class Groups_Fragment extends Fragment {
     private static RecyclerView rv_groups;
     private static LinearLayout ll_nopreview;
     private static SpinKitView progressBar;
-    private ImageButton ib_notifications;
+    private ImageButton ib_notifications, ib_requests;
 
     private static String userId;
     private static ArrayList<MyGroupsListModel.ResultBean> myGroupsList;
@@ -71,6 +72,7 @@ public class Groups_Fragment extends Fragment {
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         progressBar = rootView.findViewById(R.id.progressBar);
         ib_notifications = rootView.findViewById(R.id.ib_notifications);
+        ib_requests = rootView.findViewById(R.id.ib_requests);
 
         myGroupsList = new ArrayList<>();
     }
@@ -117,6 +119,13 @@ public class Groups_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, AllGroupNotifications_Activity.class));
+            }
+        });
+
+        ib_requests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, GroupRequests_Activity.class));
             }
         });
     }

@@ -476,12 +476,21 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         alertDialogBuilder.setView(promptView);
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
 
         Picasso.with(context)
                 .load(imageUrl)
                 .into(imv_offer);
 
-        AlertDialog dialog = alertDialogBuilder.create();
+        final  AlertDialog dialog = alertDialogBuilder.create();
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
     }
 

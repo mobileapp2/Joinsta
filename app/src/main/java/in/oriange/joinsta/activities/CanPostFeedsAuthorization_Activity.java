@@ -2,6 +2,7 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -304,6 +305,17 @@ public class CanPostFeedsAuthorization_Activity extends AppCompatActivity {
                 break;
             case R.id.action_info:
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Please checked members are allowed to add posts in this group");
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
                 break;
             default:
                 break;

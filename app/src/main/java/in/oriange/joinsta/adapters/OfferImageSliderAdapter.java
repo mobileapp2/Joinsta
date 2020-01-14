@@ -11,6 +11,7 @@ import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -210,12 +211,21 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         alertDialogBuilder.setView(promptView);
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
 
         Picasso.with(context)
                 .load(offerUrl)
                 .into(imv_offer);
 
-        AlertDialog dialog = alertDialogBuilder.create();
+       final  AlertDialog dialog = alertDialogBuilder.create();
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
         dialog.show();
     }
 

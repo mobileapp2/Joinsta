@@ -26,16 +26,17 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize">
 
                     <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/edt_location"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="20dp"
+                        android:layout_weight="1"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:clickable="false"
                         android:focusable="false"
@@ -46,16 +47,26 @@
                         app:backgroundTint="@color/white" />
 
                     <ImageButton
+                        android:id="@+id/ib_requests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="20dp"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/icon_group_request"
+                        android:tint="@color/white"
+                        android:scaleType="fitXY"/>
+
+                    <ImageButton
                         android:id="@+id/ib_notifications"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
                         android:layout_marginRight="20dp"
+                        android:layout_gravity="center"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/icon_notification" />
 
-                </RelativeLayout>
+                </LinearLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
