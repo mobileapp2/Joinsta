@@ -130,7 +130,7 @@ public class MyGroupsListModel implements Serializable {
         }
 
         public String getStatus() {
-            if (status != null){
+            if (status != null) {
                 return status;
             } else {
                 return "";

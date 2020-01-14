@@ -31,7 +31,6 @@ import com.skydoves.powermenu.PowerMenuItem;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 

@@ -2,7 +2,6 @@ package in.oriange.joinsta.adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +24,6 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.GroupMembersRequestsModel;
-import in.oriange.joinsta.models.GroupMembersRequestsModel.ResultBean;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;

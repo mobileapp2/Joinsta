@@ -40,9 +40,9 @@ public class GroupMembersListModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
-         * first_name : Nikita  
+         * first_name : Nikita
          * mobile : 9860392913
          * email : null
          * is_active : 0
@@ -56,7 +56,7 @@ public class GroupMembersListModel implements Serializable {
         private String id;
 
         public String getFirst_name() {
-            if (first_name != null){
+            if (first_name != null) {
                 return first_name;
             } else {
                 return "";
@@ -68,7 +68,7 @@ public class GroupMembersListModel implements Serializable {
         }
 
         public String getMobile() {
-            if (mobile != null){
+            if (mobile != null) {
                 return mobile;
             } else {
                 return "";
@@ -80,7 +80,7 @@ public class GroupMembersListModel implements Serializable {
         }
 
         public String getEmail() {
-            if (email != null){
+            if (email != null) {
                 return email;
             } else {
                 return "";
@@ -92,7 +92,7 @@ public class GroupMembersListModel implements Serializable {
         }
 
         public String getIs_active() {
-            if (is_active != null){
+            if (is_active != null) {
                 return is_active;
             } else {
                 return "";
@@ -104,7 +104,7 @@ public class GroupMembersListModel implements Serializable {
         }
 
         public String getId() {
-            if (id != null){
+            if (id != null) {
                 return id;
             } else {
                 return "";

@@ -293,7 +293,7 @@
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
                                         android:tint="@color/white"
-                                        android:visibility="gone"/>
+                                        android:visibility="gone" />
 
                                 </LinearLayout>
 
@@ -388,7 +388,7 @@
                                         android:layout_weight="0.1"
                                         android:src="@drawable/icon_arrowright"
                                         android:tint="@color/white"
-                                        android:visibility="gone"/>
+                                        android:visibility="gone" />
 
                                 </LinearLayout>
 

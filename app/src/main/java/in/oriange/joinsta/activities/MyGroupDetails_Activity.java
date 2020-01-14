@@ -31,9 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.goodiebag.pinview.Pinview;
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.smarteist.autoimageslider.IndicatorAnimations;

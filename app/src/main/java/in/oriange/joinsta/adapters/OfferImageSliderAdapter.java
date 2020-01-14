@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -217,7 +216,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
                 .load(offerUrl)
                 .into(imv_offer);
 
-       final  AlertDialog dialog = alertDialogBuilder.create();
+        final AlertDialog dialog = alertDialogBuilder.create();
 
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override

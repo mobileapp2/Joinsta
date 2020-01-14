@@ -756,7 +756,7 @@
                     android:background="@drawable/button_background_filled"
                     android:text="Save"
                     android:textColor="@color/white"
-                    android:visibility="gone"  />
+                    android:visibility="gone" />
 
             </LinearLayout>
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 import in.oriange.joinsta.models.OfferDetailsModel;
 
-public class OffersEmployeeAdapter extends RecyclerView.Adapter<OffersEmployeeAdapter.MyViewHolder>{
+public class OffersEmployeeAdapter extends RecyclerView.Adapter<OffersEmployeeAdapter.MyViewHolder> {
     public OffersEmployeeAdapter(Context context, List<OfferDetailsModel.ResultBean.EmployeesBean> employeeOffersList) {
     }
 

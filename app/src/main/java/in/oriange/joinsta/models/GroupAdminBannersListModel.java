@@ -40,7 +40,7 @@ public class GroupAdminBannersListModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
          * id : 39
          * banner_name : testing

@@ -62,9 +62,9 @@ public class GroupMembersRequestsModel implements Serializable {
         }
 
         public String getMobile() {
-            if (mobile != null){
+            if (mobile != null) {
                 return mobile;
-            } else{
+            } else {
                 return "";
             }
         }
@@ -74,9 +74,9 @@ public class GroupMembersRequestsModel implements Serializable {
         }
 
         public String getEmail() {
-            if (email != null){
+            if (email != null) {
                 return email;
-            } else{
+            } else {
                 return "";
             }
         }

@@ -1282,7 +1282,7 @@ public class OfferDetailsModel implements Serializable {
             }
 
             public String getCategory_name() {
-                if (category_name != null){
+                if (category_name != null) {
                     return category_name;
                 } else {
                     return "";

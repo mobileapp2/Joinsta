@@ -55,7 +55,7 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/icon_group_request"
                         android:tint="@color/white"
-                        android:scaleType="fitXY"/>
+                        android:scaleType="fitXY" />
 
                     <ImageButton
                         android:id="@+id/ib_notifications"

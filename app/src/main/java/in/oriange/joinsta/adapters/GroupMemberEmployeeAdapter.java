@@ -3,9 +3,7 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +15,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -31,20 +27,12 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.MainDrawer_Activity;
 import in.oriange.joinsta.activities.ViewGroupMemberEmpDetails_Activity;
 import in.oriange.joinsta.models.GetEmployeeModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.CalculateDistanceTime;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static in.oriange.joinsta.activities.MainDrawer_Activity.startLocationUpdates;
-import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
-import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 public class GroupMemberEmployeeAdapter extends RecyclerView.Adapter<GroupMemberEmployeeAdapter.MyViewHolder> {
 

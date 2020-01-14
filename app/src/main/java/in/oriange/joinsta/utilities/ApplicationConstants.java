@@ -9,7 +9,7 @@ public class ApplicationConstants {
     public static final String IS_LOCATION_SET = "IS_LOCATION_SET";
     public static final String KEY_LOCATION_INFO = "KEY_LOCATION_INFO";
     public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
-    public static final String NUMVERIFY_ACCESS_TOKEN= "66471b999885e2c244a615e17aae423f";
+    public static final String NUMVERIFY_ACCESS_TOKEN = "66471b999885e2c244a615e17aae423f";
 
     // BETA API LINK
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";

@@ -32,8 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.EditBasicInformation_Activity;
 import in.oriange.joinsta.activities.BizProfEmpDetails_Activity;
+import in.oriange.joinsta.activities.EditBasicInformation_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.adapters.MyAddedBusinessAdapter;
 import in.oriange.joinsta.adapters.MyAddedEmployeeAdapter;

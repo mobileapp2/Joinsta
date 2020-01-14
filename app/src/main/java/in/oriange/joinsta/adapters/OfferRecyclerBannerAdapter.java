@@ -62,9 +62,9 @@ public class OfferRecyclerBannerAdapter extends RecyclerView.Adapter<OfferRecycl
     @Override
     public int getItemCount() {
         if (urlList != null) {
-           return urlList.size();
+            return urlList.size();
         }
-       return 0;
+        return 0;
     }
 
 

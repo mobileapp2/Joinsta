@@ -482,7 +482,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                 .load(imageUrl)
                 .into(imv_offer);
 
-        final  AlertDialog dialog = alertDialogBuilder.create();
+        final AlertDialog dialog = alertDialogBuilder.create();
 
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override

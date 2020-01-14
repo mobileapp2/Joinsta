@@ -51,7 +51,7 @@
         app:stl_indicatorInterpolation="smart"
         app:stl_indicatorThickness="2dp"
         app:stl_underlineColor="@android:color/transparent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <in.oriange.joinsta.utilities.NonSwipeableViewPager
         android:id="@+id/viewpager"

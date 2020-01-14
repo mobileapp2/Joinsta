@@ -85,7 +85,7 @@
                             android:textColor="@color/colorPrimary"
                             android:textSize="12sp"
                             android:textStyle="bold"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                         <TextView
                             android:id="@+id/tv_city"

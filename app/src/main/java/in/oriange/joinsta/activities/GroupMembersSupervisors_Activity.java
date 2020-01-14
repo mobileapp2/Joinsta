@@ -18,7 +18,6 @@ import java.util.List;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.GroupMembers_Fragment;
 import in.oriange.joinsta.fragments.GroupSupervisors_Fragment;
-import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.NonSwipeableViewPager;
 
 public class GroupMembersSupervisors_Activity extends AppCompatActivity {

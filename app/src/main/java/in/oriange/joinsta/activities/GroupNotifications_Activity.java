@@ -165,7 +165,8 @@ public class GroupNotifications_Activity extends AppCompatActivity {
                     rv_notification.setAdapter(notificationAdapter);
                 } else {
                     notificationAdapter = new GroupNotificationAdapter(context, notificationListForSearch);
-                    rv_notification.setAdapter(notificationAdapter);                }
+                    rv_notification.setAdapter(notificationAdapter);
+                }
 
             }
 

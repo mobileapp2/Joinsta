@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,12 +37,11 @@ import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.adapters.BannerSliderAdapter;
+import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.MainCategoryListModel;

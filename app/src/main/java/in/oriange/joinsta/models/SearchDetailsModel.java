@@ -1666,7 +1666,7 @@ public class SearchDetailsModel implements Serializable {
             }
         }
 
-        public static class BusinessesBean implements Serializable{
+        public static class BusinessesBean implements Serializable {
             /**
              * id : 2145
              * order_online :

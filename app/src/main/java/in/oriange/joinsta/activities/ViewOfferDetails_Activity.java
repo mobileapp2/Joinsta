@@ -1,11 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.app.ProgressDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -26,6 +20,12 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.library.banner.BannerLayout;
 import com.squareup.picasso.Picasso;
@@ -252,7 +252,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
                 .load(offerUrl)
                 .into(imv_offer);
 
-        final  AlertDialog dialog = alertDialogBuilder.create();
+        final AlertDialog dialog = alertDialogBuilder.create();
 
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override

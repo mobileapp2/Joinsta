@@ -77,10 +77,10 @@ public class ContactUs_Activity extends AppCompatActivity {
                         }
                     });
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
                     AlertDialog alert11 = builder.create();
                     alert11.show();
                 }

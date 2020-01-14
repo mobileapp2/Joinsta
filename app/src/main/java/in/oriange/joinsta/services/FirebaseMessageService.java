@@ -1,6 +1,5 @@
 package in.oriange.joinsta.services;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
