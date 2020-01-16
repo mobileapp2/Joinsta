@@ -304,9 +304,8 @@ public class CanPostFeedsAuthorization_Activity extends AppCompatActivity {
                     Utilities.showMessage("Please check your internet connection", context, 2);
                 break;
             case R.id.action_info:
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Please checked members are allowed to add posts in this group");
+                builder.setMessage("Only selected members will be allowed to send posts in this group");
                 builder.setCancelable(false);
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

@@ -3,6 +3,7 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -381,6 +382,20 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             }
         });
 
+        holder.btn_order_online.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = searchDetails.getOrder_online();
+
+                if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                    url = "http://" + url;
+                }
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                context.startActivity(i);
+            }
+        });
+
 
     }
 
@@ -394,7 +409,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         private ImageView imv_preview;
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
-        private Button btn_enquire, btn_caldist;
+        private Button btn_enquire, btn_caldist, btn_order_online;
         private TextView tv_heading, tv_subheading, tv_subsubheading, tv_offers;
 
         public MyViewHolder(View view) {
@@ -408,6 +423,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             progressBar = view.findViewById(R.id.progressBar);
             btn_enquire = view.findViewById(R.id.btn_enquire);
             btn_caldist = view.findViewById(R.id.btn_caldist);
+            btn_order_online = view.findViewById(R.id.btn_order_online);
         }
     }
 

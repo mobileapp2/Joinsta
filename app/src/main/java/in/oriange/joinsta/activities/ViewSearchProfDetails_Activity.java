@@ -42,12 +42,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.Search_Fragment;
+import in.oriange.joinsta.models.MutualGroupsModel;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -729,7 +731,14 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         cv_mutual_groups.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCommonGroupList(searchDetails.getCommon_groups_data());
+                List<MutualGroupsModel> mutualGroupsList = new ArrayList<>();
+
+                for (SearchDetailsModel.ResultBean.ProfessionalsBean.CommonGroupsDataBeanX groups : searchDetails.getCommon_groups_data()) {
+                    mutualGroupsList.add(new MutualGroupsModel(groups.getId(), groups.getGroup_name(), groups.getGroup_code()));
+                }
+
+                startActivity(new Intent(context, MutualGroupsList_Activity.class)
+                        .putExtra("mutualGroupsList", (Serializable) mutualGroupsList));
             }
         });
 

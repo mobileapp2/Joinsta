@@ -26,7 +26,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Add Feed"
+                android:text="Add Post"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />

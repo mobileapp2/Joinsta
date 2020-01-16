@@ -128,8 +128,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_enquire"
@@ -137,21 +136,38 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="2.5dp"
                 android:layout_weight="0.5"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Enquire"
-                android:textSize="14sp" />
+                android:textSize="12sp"/>
 
             <Button
                 android:id="@+id/btn_caldist"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="2.5dp"
+                android:layout_marginRight="2.5dp"
+                android:layout_weight="0.5"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Offers"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btn_order_online"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="2.5dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="0.5"
-                android:text="Offers"
-                android:textSize="14sp" />
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Online"
+                android:textSize="12sp" />
 
 
         </LinearLayout>

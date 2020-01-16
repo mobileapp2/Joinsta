@@ -71,20 +71,6 @@ public class GroupRequestsAdapter extends RecyclerView.Adapter<GroupRequestsAdap
         holder.tv_name.setText(memberDetails.getGroup_code() + " " + memberDetails.getGroup_name());
         holder.tv_mobile_email.setText("From - " + memberDetails.getSender_name());
 
-        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.ll_buttons.getVisibility() == View.GONE) {
-                    holder.ll_buttons.setVisibility(View.VISIBLE);
-                    holder.view_divider.setVisibility(View.VISIBLE);
-                } else if (holder.ll_buttons.getVisibility() == View.VISIBLE) {
-                    holder.ll_buttons.setVisibility(View.GONE);
-                    holder.view_divider.setVisibility(View.GONE);
-                }
-
-            }
-        });
-
         holder.btn_accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -188,6 +174,5 @@ public class GroupRequestsAdapter extends RecyclerView.Adapter<GroupRequestsAdap
             }
         }
     }
-
 
 }

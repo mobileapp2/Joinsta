@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class SearchDetailsModel implements Serializable {
 
-
     /**
      * type : success
      * message : Search details returned successfully!
@@ -670,7 +669,7 @@ public class SearchDetailsModel implements Serializable {
                 }
             }
 
-            public static class LandlineBean {
+            public static class LandlineBean implements Serializable {
                 /**
                  * id : 213
                  * landline_numbers : +917264835395
@@ -2201,7 +2200,7 @@ public class SearchDetailsModel implements Serializable {
                 this.common_groups_data = common_groups_data;
             }
 
-            public static class MobilesBeanXX {
+            public static class MobilesBeanXX implements Serializable {
                 /**
                  * id : 2927
                  * mobile_number : +919049396189
