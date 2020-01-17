@@ -246,7 +246,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         alertDialogBuilder.setView(promptView);
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-        final Button btn_close = promptView.findViewById(R.id.btn_close);
+        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
 
         Picasso.with(context)
                 .load(offerUrl)
@@ -254,7 +254,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
 
         final AlertDialog dialog = alertDialogBuilder.create();
 
-        btn_close.setOnClickListener(new View.OnClickListener() {
+        imb_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();

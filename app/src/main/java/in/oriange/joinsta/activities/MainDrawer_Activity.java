@@ -50,6 +50,7 @@ import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
+import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -192,7 +193,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
-
+                new Groups_Fragment.GetRequestedGroups().execute();
                 if (currentFragment == null) {
                     currentFragment = adapter.getCurrentFragment();
                 }

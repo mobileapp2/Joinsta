@@ -6,9 +6,9 @@
     <color name="colorPrimaryLight">#FFF3E0</color>
     <color name="primaryVeryDark">#EF6C00</color>
 
-    <!--        <color name="colorPrimary">#8b60c8</color>-->
-    <!--        <color name="colorPrimaryDark">#8b60c8</color>-->
-    <!--        <color name="colorAccent">#8b60c8</color>-->
+<!--            <color name="colorPrimary">#8b60c8</color>-->
+<!--            <color name="colorPrimaryDark">#8b60c8</color>-->
+<!--            <color name="colorAccent">#8b60c8</color>-->
 
     <color name="default_text">#212121</color>
     <color name="default_hint_text">#757575</color>

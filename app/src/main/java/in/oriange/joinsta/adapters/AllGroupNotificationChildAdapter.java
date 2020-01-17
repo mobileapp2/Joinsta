@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -234,6 +235,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         final Button btn_delete = promptView.findViewById(R.id.btn_delete);
         final Button btn_share = promptView.findViewById(R.id.btn_share);
         final Button btn_close = promptView.findViewById(R.id.btn_close);
+        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
         final TextView tv_viewdocs = promptView.findViewById(R.id.tv_viewdocs);
 
         if (!notificationDetails.getAttachment().equals("")) {
@@ -274,9 +276,14 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         Linkify.addLinks(tv_message, Linkify.ALL);
 
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
-            tv_time.setText("");
+            tv_time.setText(notificationDetails.getSender_name());
         } else {
-            tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+                tv_time.setText(notificationDetails.getSender_name() + " | " + p.format(formatter.parse(notificationDetails.getCreated_at())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         if (notificationDetails.getIs_read().equals("0")) {
@@ -373,7 +380,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
             }
         });
 
-        btn_close.setOnClickListener(new View.OnClickListener() {
+        imb_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertD.dismiss();

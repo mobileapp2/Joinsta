@@ -164,7 +164,8 @@
                         android:id="@+id/cb_canshare"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Allow other people to share this feed" />
+                        android:checked="true"
+                        android:text="Allow members to share this post" />
 
                 </LinearLayout>
 

@@ -388,7 +388,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             edt_attach_multidoc = (MaterialEditText) v;
             Intent intent = new Intent(context, NormalFilePickActivity.class);
             intent.putExtra(Constant.MAX_NUMBER, 1);
-            intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+            intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf", "txt"});
             startActivityForResult(intent, 1025);
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);

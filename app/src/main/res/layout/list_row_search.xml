@@ -124,8 +124,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_weight="1.7"
+            android:layout_height="40dp"
             android:orientation="horizontal">
 
             <Button
@@ -137,29 +136,33 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Enquire"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btn_caldist"
                 style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.6"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Offers"
-                android:textSize="12sp" />
+                android:text="No Offers"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btn_order_online"
-                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0.7"
+                android:layout_height="30dp"
+                android:layout_weight="0.6"
+                android:background="@drawable/button_background_filled_green"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Order Online"
-                android:textSize="12sp" />
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

@@ -123,12 +123,10 @@ public class GroupSupervisors_Fragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence query, int start, int before, int count) {
-
                 if (query.toString().isEmpty()) {
                     rv_group_supervisor.setAdapter(new GroupSupervisorsAdapter(context, groupSupervisors, groupId));
                     return;
                 }
-
 
                 if (groupSupervisors.size() == 0) {
                     rv_group_supervisor.setVisibility(View.GONE);
@@ -152,7 +150,6 @@ public class GroupSupervisors_Fragment extends Fragment {
                 } else {
                     rv_group_supervisor.setAdapter(new GroupSupervisorsAdapter(context, groupSupervisors, groupId));
                 }
-
             }
 
             @Override

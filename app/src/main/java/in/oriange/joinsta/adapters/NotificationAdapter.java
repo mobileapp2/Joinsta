@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -53,7 +54,6 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
-import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
 
@@ -218,6 +218,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final TextView btn_download = promptView.findViewById(R.id.btn_download);
         final TextView btn_delete = promptView.findViewById(R.id.btn_delete);
         final TextView btn_share = promptView.findViewById(R.id.btn_share);
+        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
         final Button btn_close = promptView.findViewById(R.id.btn_close);
 
         if (!notificationDetails.getImage().equals("0")) {
@@ -255,10 +256,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         tv_title.setText(notificationDetails.getTitle().trim());
         tv_message.setText(notificationDetails.getDescription().trim());
         Linkify.addLinks(tv_message, Linkify.ALL);
-        if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
-            tv_time.setText("");
-        } else {
-            tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+            tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         final AlertDialog alertD = alertDialogBuilder.create();
@@ -326,7 +329,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         });
 
-        btn_close.setOnClickListener(new View.OnClickListener() {
+        imb_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertD.dismiss();
