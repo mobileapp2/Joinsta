@@ -46,23 +46,43 @@
                         android:textStyle="bold"
                         app:backgroundTint="@color/white" />
 
-                    <ImageButton
-                        android:id="@+id/ib_requests"
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
                         android:layout_gravity="center"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/icon_group_request"
-                        android:tint="@color/white"
-                        android:scaleType="fitXY" />
+                        android:layout_marginRight="20dp">
+
+                        <ImageButton
+                            android:id="@+id/ib_requests"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/icon_group_request"
+                            android:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tv_group_request_count"
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="right|top"
+                            android:background="@drawable/bg_circularview_red"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:layout_marginLeft="15dp"
+                            android:textColor="@color/white"
+                            android:textSize="7sp"
+                            android:textStyle="bold" />
+
+                    </FrameLayout>
 
                     <ImageButton
                         android:id="@+id/ib_notifications"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
                         android:layout_gravity="center"
+                        android:layout_marginRight="20dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/icon_notification" />
 

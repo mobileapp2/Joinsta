@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -25,15 +26,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroupNotifications_Activity;
 import in.oriange.joinsta.activities.AllGroups_Activity;
 import in.oriange.joinsta.activities.GroupRequests_Activity;
 import in.oriange.joinsta.adapters.MyGroupsAdapter;
+import in.oriange.joinsta.models.GroupRequestsListModel;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -47,9 +51,11 @@ public class Groups_Fragment extends Fragment {
     private static LinearLayout ll_nopreview;
     private static SpinKitView progressBar;
     private ImageButton ib_notifications, ib_requests;
+    private static TextView tv_group_request_count;
 
     private static String userId;
     private static ArrayList<MyGroupsListModel.ResultBean> myGroupsList;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -73,6 +79,7 @@ public class Groups_Fragment extends Fragment {
         progressBar = rootView.findViewById(R.id.progressBar);
         ib_notifications = rootView.findViewById(R.id.ib_notifications);
         ib_requests = rootView.findViewById(R.id.ib_requests);
+        tv_group_request_count = rootView.findViewById(R.id.tv_group_request_count);
 
         myGroupsList = new ArrayList<>();
     }
@@ -92,6 +99,7 @@ public class Groups_Fragment extends Fragment {
     private void setDefault() {
         if (Utilities.isNetworkAvailable(context)) {
             new GetMyGroupsList().execute();
+            new GetRequestedGroups().execute();
         }
     }
 
@@ -175,6 +183,49 @@ public class Groups_Fragment extends Fragment {
                 e.printStackTrace();
                 ll_nopreview.setVisibility(View.VISIBLE);
                 rv_groups.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public static class GetRequestedGroups extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "getRequestedGroups"));
+            param.add(new ParamsPojo("user_id", userId));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.GRPADMINMEMBERSSUPERVISORSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressBar.setVisibility(View.GONE);
+            String type;
+            try {
+                if (!result.equals("")) {
+                    GroupRequestsListModel pojoDetails = new Gson().fromJson(result, GroupRequestsListModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        List<GroupRequestsListModel.ResultBean> groupRequests = pojoDetails.getResult();
+
+                        if (groupRequests.size() > 0) {
+                            tv_group_request_count.setVisibility(View.VISIBLE);
+                            tv_group_request_count.setText(String.valueOf(groupRequests.size()));
+                        } else {
+                            tv_group_request_count.setVisibility(View.GONE);
+                        }
+
+                    } else {
+                        tv_group_request_count.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                tv_group_request_count.setVisibility(View.GONE);
             }
         }
     }

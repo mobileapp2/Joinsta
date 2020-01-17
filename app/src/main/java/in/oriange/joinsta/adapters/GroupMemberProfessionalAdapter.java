@@ -124,6 +124,10 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
 
         holder.btn_caldist.setVisibility(View.GONE);
 
+        if (searchDetails.getOrder_online().trim().equals("")) {
+            holder.btn_order_online.setVisibility(View.INVISIBLE);
+        }
+
         holder.btn_enquire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,12 +288,16 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
             public void onClick(View v) {
                 String url = searchDetails.getOrder_online();
 
-                if (!url.startsWith("https://") || !url.startsWith("http://")) {
-                    url = "http://" + url;
+                if (!url.trim().equals("")) {
+                    if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                        url = "http://" + url;
+                    }
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    context.startActivity(i);
+                } else {
+                    Utilities.showMessage("Order online not added", context, 2);
                 }
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                context.startActivity(i);
             }
         });
 

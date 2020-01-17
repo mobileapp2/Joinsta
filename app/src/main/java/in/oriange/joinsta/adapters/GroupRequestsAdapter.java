@@ -160,8 +160,9 @@ public class GroupRequestsAdapter extends RecyclerView.Adapter<GroupRequestsAdap
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        new Groups_Fragment.GetMyGroupsList().execute();
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupRequests_Activity"));
+                        new Groups_Fragment.GetMyGroupsList().execute();
+                        new Groups_Fragment.GetRequestedGroups().execute();
                         if (Type.equals("accepted")) {
                             Utilities.showMessage("Group request accepted", context, 1);
                         } else if (Type.equals("rejected")) {

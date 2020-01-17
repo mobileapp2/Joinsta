@@ -135,6 +135,11 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
 
 
         holder.btn_caldist.setVisibility(View.GONE);
+
+        if (searchDetails.getOrder_online().trim().equals("")) {
+            holder.btn_order_online.setVisibility(View.INVISIBLE);
+        }
+
 //        float scale = context.getResources().getDisplayMetrics().density;
 //        final int dpAsPixels = (int) (5 * scale + 0.5f);
 //        if (!searchDetails.getImage_url().trim().isEmpty()) {
@@ -366,12 +371,16 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             public void onClick(View v) {
                 String url = searchDetails.getOrder_online();
 
-                if (!url.startsWith("https://") || !url.startsWith("http://")) {
-                    url = "http://" + url;
+                if (!url.trim().equals("")) {
+                    if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                        url = "http://" + url;
+                    }
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    context.startActivity(i);
+                } else {
+                    Utilities.showMessage("Order online not added", context, 2);
                 }
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                context.startActivity(i);
             }
         });
 
