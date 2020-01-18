@@ -106,7 +106,7 @@
                         android:layout_marginTop="5dp"
                         android:background="@drawable/bg_color_outline"
                         android:gravity="top"
-                        android:hint="Tell us you issue"
+                        android:hint="Tell us your issue"
                         android:inputType="textCapSentences|textMultiLine"
                         android:padding="5dp"
                         android:textColorHint="@color/darkGray"

@@ -95,7 +95,16 @@ public class GroupRequests_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetRequestedGroups().execute();
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
     }
 
     private class GetRequestedGroups extends AsyncTask<String, Void, String> {
