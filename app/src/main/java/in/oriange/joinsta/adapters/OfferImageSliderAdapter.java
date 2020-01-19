@@ -3,6 +3,7 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -11,12 +12,14 @@ import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.bumptech.glide.Glide;
 import com.smarteist.autoimageslider.SliderViewAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -62,12 +65,17 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
     }
 
     @Override
-    public void onBindViewHolder(SliderAdapterVH holder, int position) {
+    public void onBindViewHolder(final SliderAdapterVH holder, int position) {
         final BannerListModel.ResultBean bannerDetails = bannerList.get(position);
 
-        Picasso.with(context)
+//        Picasso.with(context)
+//                .load(bannerDetails.getBanners_image())
+//                .into(holder.imageViewBackground);
+
+        Glide.with(context)
                 .load(bannerDetails.getBanners_image())
                 .into(holder.imageViewBackground);
+
 
         holder.ib_share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,7 +218,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         alertDialogBuilder.setView(promptView);
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-        final Button btn_close = promptView.findViewById(R.id.btn_close);
+        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
 
         Picasso.with(context)
                 .load(offerUrl)
@@ -218,7 +226,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
 
         final AlertDialog dialog = alertDialogBuilder.create();
 
-        btn_close.setOnClickListener(new View.OnClickListener() {
+        imb_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
