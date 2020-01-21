@@ -54,7 +54,6 @@ public class APICall {
                     .readTimeout(5, TimeUnit.MINUTES)
                     .build();
 
-            ;
             Request request = new Request.Builder()
                     .url(url)
                     .build();
