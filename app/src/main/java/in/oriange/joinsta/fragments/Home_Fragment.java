@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,9 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.Gson;
@@ -40,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.BannerSliderAdapter;
 import in.oriange.joinsta.adapters.CategoryAdapter;
 import in.oriange.joinsta.models.BannerListModel;
@@ -135,15 +134,16 @@ public class Home_Fragment extends Fragment {
         edt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    getActivity().startActivityForResult(builder.build(getActivity()), 0);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
 
-                try {
-                    getActivity().startActivityForResult(builder.build(getActivity()), 0);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
 
 //                Places.initialize(context, "AIzaSyAbJV1S2i3HcrO9IADky8omovUTUC1FDU8");
 //                List<com.google.android.libraries.places.api.model.Place.Field> placeFields = new ArrayList<>(Arrays.asList(com.google.android.libraries.places.api.model.Place.Field.values()));
@@ -158,6 +158,8 @@ public class Home_Fragment extends Fragment {
 //                                .setTypeFilter(typeFilters.get(0))
 //                                .build(context);
 //                startActivityForResult(autocompleteIntent, 0);
+                startActivity(new Intent(context, SelectCity_Activity.class)
+                        .putExtra("requestCode", 0));
 
             }
         });

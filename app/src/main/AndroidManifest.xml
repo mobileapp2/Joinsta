@@ -23,7 +23,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-        <activity android:name=".activities.SelectCity_Activity"></activity>
+
         <activity
             android:name=".activities.SplashScreen_Activity"
             android:screenOrientation="portrait"
@@ -391,6 +391,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".activities.SelectCity_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

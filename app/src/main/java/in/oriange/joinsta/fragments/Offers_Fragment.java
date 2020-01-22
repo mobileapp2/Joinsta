@@ -2,6 +2,7 @@ package in.oriange.joinsta.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.OffersBusinessAdapter;
 import in.oriange.joinsta.adapters.OffersEmployeeAdapter;
 import in.oriange.joinsta.adapters.OffersProfessionalAdapter;
@@ -183,14 +185,17 @@ public class Offers_Fragment extends Fragment {
         edt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    getActivity().startActivityForResult(builder.build(getActivity()), 3);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                try {
+//                    getActivity().startActivityForResult(builder.build(getActivity()), 3);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
+
+                startActivity(new Intent(context, SelectCity_Activity.class)
+                        .putExtra("requestCode", 3));
             }
         });
 

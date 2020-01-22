@@ -117,16 +117,17 @@ public class MainDrawer_Activity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!session.isLocationSet()) {
-            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-            try {
-                startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
-            } catch (GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
-            } catch (GooglePlayServicesNotAvailableException e) {
-                e.printStackTrace();
-            }
-
+//            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//            try {
+//                startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
+//            } catch (GooglePlayServicesRepairableException e) {
+//                e.printStackTrace();
+//            } catch (GooglePlayServicesNotAvailableException e) {
+//                e.printStackTrace();
+//            }
+            startActivity(new Intent(context, SelectCity_Activity.class)
+                    .putExtra("requestCode", 0));
         }
     }
 

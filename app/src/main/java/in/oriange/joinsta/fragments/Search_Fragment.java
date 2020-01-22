@@ -2,6 +2,7 @@ package in.oriange.joinsta.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,9 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.skydoves.powermenu.MenuAnimation;
@@ -39,6 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
 import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
 import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
@@ -185,15 +184,18 @@ public class Search_Fragment extends Fragment {
             public void onClick(View v) {
 //                startActivity(new Intent(context, SelectLocation_Activity.class)
 //                        .putExtra("startOrigin", 1));
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    getActivity().startActivityForResult(builder.build(getActivity()), 1);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
 
-                try {
-                    getActivity().startActivityForResult(builder.build(getActivity()), 1);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+                startActivity(new Intent(context, SelectCity_Activity.class)
+                        .putExtra("requestCode", 1));
             }
         });
 

@@ -16,12 +16,12 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     // BETA API LINK V2
-//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
     //LIVE API LINK V11
-    private static final String API_LINK = "http://joinsta.in/Api_v11/";
-    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+//    private static final String API_LINK = "http://joinsta.in/Api_v11/";
+//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";
     public static final String LOGINAPI = API_LINK + "login.php";
@@ -59,4 +59,5 @@ public class ApplicationConstants {
     public static final String OFFERSAPI = API_LINK + "offer.php";
     public static final String FEEDSAPI = API_LINK + "feed.php";
     public static final String REFERRALCODEAPI = API_LINK + "referral_code.php";
+    public static final String CITYAPI = API_LINK + "city.php";
 }
