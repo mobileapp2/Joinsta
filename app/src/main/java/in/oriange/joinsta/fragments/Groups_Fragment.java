@@ -202,7 +202,6 @@ public class Groups_Fragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
             String type;
             try {
                 if (!result.equals("")) {

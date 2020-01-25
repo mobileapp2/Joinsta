@@ -54,6 +54,7 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
 
@@ -257,12 +258,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         tv_message.setText(notificationDetails.getDescription().trim());
         Linkify.addLinks(tv_message, Linkify.ALL);
 
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-            tv_time.setText(p.format(formatter.parse(notificationDetails.getCreated_at())));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
 
         final AlertDialog alertD = alertDialogBuilder.create();
 

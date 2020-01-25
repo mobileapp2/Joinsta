@@ -285,12 +285,8 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         if (notificationDetails.getCreated_at().equalsIgnoreCase("0000-00-00 00:00:00")) {
             tv_time.setText(notificationDetails.getSender_name());
         } else {
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-                tv_time.setText(notificationDetails.getSender_name() + " | " + p.format(formatter.parse(notificationDetails.getCreated_at())));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            tv_time.setText(notificationDetails.getSender_name() + " | " +
+                    changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
         }
 
         if (notificationDetails.getIs_read().equals("0")) {

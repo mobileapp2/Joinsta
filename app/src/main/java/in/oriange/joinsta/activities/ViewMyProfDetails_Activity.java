@@ -54,9 +54,9 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private ProgressBar progressBar;
     private LinearLayout ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_order_online;
     private ImageView imv_share;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice, cv_add_offer, cv_view_offer, cv_order_online;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -89,6 +89,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
         cv_texbank_notice = findViewById(R.id.cv_texbank_notice);
+        cv_order_online = findViewById(R.id.cv_order_online);
 
         imb_share_tax = findViewById(R.id.imb_share_tax);
         imb_share_bank = findViewById(R.id.imb_share_bank);
@@ -107,6 +108,7 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         tv_bank_name = findViewById(R.id.tv_bank_name);
         tv_acc_no = findViewById(R.id.tv_acc_no);
         tv_ifsc = findViewById(R.id.tv_ifsc);
+        tv_order_online = findViewById(R.id.tv_order_online);
         imv_share = findViewById(R.id.imv_share);
 
         container_tags = findViewById(R.id.container_tags);
@@ -282,6 +284,12 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
             cv_bank.setVisibility(View.GONE);
         }
 
+        if (!searchDetails.getOrder_online().trim().isEmpty()) {
+            cv_order_online.setVisibility(View.VISIBLE);
+            tv_order_online.setText(searchDetails.getOrder_online());
+        } else {
+            cv_order_online.setVisibility(View.GONE);
+        }
 
     }
 
