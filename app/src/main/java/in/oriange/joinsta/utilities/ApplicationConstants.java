@@ -60,4 +60,7 @@ public class ApplicationConstants {
     public static final String FEEDSAPI = API_LINK + "feed.php";
     public static final String REFERRALCODEAPI = API_LINK + "referral_code.php";
     public static final String CITYAPI = API_LINK + "city.php";
+    public static final String FREEEVENTSAPI = API_LINK + "paid_events.php";
+    public static final String PAIDEVENTSAPI = API_LINK + "free_events.php";
+    public static final String EVENTSTYPEAPI = API_LINK + "event_types.php";
 }

@@ -65,7 +65,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message,
-            cv_group_banners, cv_grp_settings, cv_group_utils, cv_notifications, cv_feeds;
+            cv_group_banners, cv_grp_settings, cv_group_utils, cv_notifications, cv_feeds, cv_events;
     private LinearLayout ll_group_admin, ll_notification_feeds;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
@@ -109,6 +109,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_group_utils = findViewById(R.id.cv_group_utils);
         cv_notifications = findViewById(R.id.cv_notifications);
         cv_feeds = findViewById(R.id.cv_feeds);
+        cv_events = findViewById(R.id.cv_events);
         ll_group_admin = findViewById(R.id.ll_group_admin);
         ll_notification_feeds = findViewById(R.id.ll_notification_feeds);
         imageSlider = findViewById(R.id.imageSlider);
@@ -477,6 +478,16 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         .putExtra("groupName", groupDetails.getGroup_name())
                         .putExtra("isAdmin", groupDetails.getIs_admin())
                         .putExtra("canPost", groupDetails.getCan_post()));
+            }
+        });
+
+        cv_events.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, Events_Activity.class)
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name())
+                        .putExtra("isAdmin", groupDetails.getIs_admin()));
             }
         });
 
