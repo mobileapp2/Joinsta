@@ -103,7 +103,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Description"
-                        android:inputType="textCapWords|textNoSuggestions"
+                        android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -222,7 +222,7 @@
                         android:background="@color/colorPrimary" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_select_area"
+                        android:id="@+id/edt_select_from_map"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/icon_current_location"
@@ -240,7 +240,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Address"
-                        android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
+                        android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
@@ -330,7 +330,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Remark"
-                        android:inputType="textCapWords|textNoSuggestions"
+                        android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                         android:textColorHint="@color/colorAccent"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"

@@ -1,8 +1,13 @@
 package in.oriange.joinsta.activities;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,11 +16,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -23,17 +34,23 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
 public class AddEventsPaid_Activity extends AppCompatActivity {
 
@@ -43,11 +60,12 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_early_bird_amount, edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date,
-            edt_remark, edt_msg_forpaid, edt_msg_forunpaid;
-    private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city;
+            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paytm_link;
+    private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
-    private String userId, groupId, eventTypeId;
+    private String userId, groupId, eventTypeId, eventDate, latitude = "", longitude = "";
+    private int mYear, mMonth, mDay, startHour, startMinutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +100,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         edt_remark = findViewById(R.id.edt_remark);
         edt_msg_forpaid = findViewById(R.id.edt_msg_forpaid);
         edt_msg_forunpaid = findViewById(R.id.edt_msg_forunpaid);
-        cb_confirmation_required = findViewById(R.id.cb_confirmation_required);
+        edt_payment_mode = findViewById(R.id.edt_payment_mode);
+        edt_paytm_link = findViewById(R.id.edt_paytm_link);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
@@ -103,6 +122,11 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
+        Calendar calendar = Calendar.getInstance();
+
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     private void setEventHandler() {
@@ -124,48 +148,247 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         edt_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        eventDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDate));
 
+                        mYear = year;
+                        mMonth = month;
+                        mDay = dayOfMonth;
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.show();
             }
         });
 
         edt_start_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        edt_end_time.setText("");
+                        startMinutes = selectedMinute;
+                        startHour = selectedHour;
+                        edt_start_time.setText(selectedHour + ":" + selectedMinute + ":00");
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select Event Start Time");
+                mTimePicker.show();
             }
         });
 
         edt_end_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (edt_start_time.getText().toString().trim().isEmpty()) {
+                    edt_start_time.setError("Please select start date");
+                    edt_start_time.requestFocus();
+                    edt_start_time.getParent().requestChildFocus(edt_start_time, edt_start_time);
+                }
 
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+
+                        if (selectedHour < startHour) {
+                            Utilities.showMessage("End time cannot be before start time", context, 2);
+                            return;
+                        } else if ((selectedHour == startHour)) {
+                            if (selectedMinute <= startMinutes) {
+                                Utilities.showMessage("End time cannot be before start time", context, 2);
+                                return;
+                            }
+                        }
+
+                        edt_end_time.setText(selectedHour + ":" + selectedMinute + ":00");
+                    }
+                }, hour, minute, true);
+                mTimePicker.setTitle("Select Event End Time");
+                mTimePicker.show();
             }
         });
 
         edt_select_from_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
+                try {
+                    startActivityForResult(builder.build(AddEventsPaid_Activity.this), 10001);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         edt_early_bird_due_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        eventDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDate));
 
+                        mYear = year;
+                        mMonth = month;
+                        mDay = dayOfMonth;
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.show();
             }
         });
 
         edt_normal_due_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        eventDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDate));
 
+                        mYear = year;
+                        mMonth = month;
+                        mDay = dayOfMonth;
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.show();
+            }
+        });
+
+        edt_payment_mode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<MasterModel> paymentMode = new ArrayList<>();
+                paymentMode.add(new MasterModel("Online", "online"));
+                paymentMode.add(new MasterModel("Offline", "offline"));
+                paymentMode.add(new MasterModel("Payment Link", "paymentlink"));
+                showPaymentModelListDialog(paymentMode);
             }
         });
     }
 
+    private void showPaymentModelListDialog(List<MasterModel> paymentMode) {
+
+    }
+
     private void submitData() {
 
+        if (edt_name.getText().toString().trim().isEmpty()) {
+            edt_name.setError("Please enter name");
+            edt_name.requestFocus();
+            edt_name.getParent().requestChildFocus(edt_name, edt_name);
+            return;
+        }
+
+        if (edt_type.getText().toString().trim().isEmpty()) {
+            edt_type.setError("Please select type");
+            edt_type.requestFocus();
+            edt_type.getParent().requestChildFocus(edt_type, edt_type);
+            return;
+        }
+
+        if (edt_description.getText().toString().trim().isEmpty()) {
+            edt_description.setError("Please enter description");
+            edt_description.requestFocus();
+            edt_description.getParent().requestChildFocus(edt_description, edt_description);
+            return;
+        }
+
+        if (edt_date.getText().toString().trim().isEmpty()) {
+            edt_date.setError("Please select date");
+            edt_date.requestFocus();
+            edt_date.getParent().requestChildFocus(edt_date, edt_date);
+            return;
+        }
+
+        if (edt_start_time.getText().toString().trim().isEmpty()) {
+            edt_start_time.setError("Please select start time");
+            edt_start_time.requestFocus();
+            edt_start_time.getParent().requestChildFocus(edt_start_time, edt_start_time);
+            return;
+        }
+
+        if (edt_end_time.getText().toString().trim().isEmpty()) {
+            edt_end_time.setError("Please select end time");
+            edt_end_time.requestFocus();
+            edt_end_time.getParent().requestChildFocus(edt_end_time, edt_end_time);
+            return;
+        }
+
+        if (edt_address.getText().toString().trim().isEmpty()) {
+            edt_address.setError("Please enter address");
+            edt_address.requestFocus();
+            edt_address.getParent().requestChildFocus(edt_address, edt_address);
+            return;
+        }
+
+        if (edt_city.getText().toString().trim().isEmpty()) {
+            edt_city.setError("Please enter city");
+            edt_city.requestFocus();
+            edt_city.getParent().requestChildFocus(edt_city, edt_city);
+            return;
+        }
+
+        if (edt_early_bird_amount.getText().toString().trim().isEmpty()) {
+            edt_early_bird_amount.setError("Please enter amount");
+            edt_early_bird_amount.requestFocus();
+            edt_early_bird_amount.getParent().requestChildFocus(edt_early_bird_amount, edt_early_bird_amount);
+            return;
+        }
+
+        if (edt_early_bird_due_date.getText().toString().trim().isEmpty()) {
+            edt_early_bird_due_date.setError("Please select date");
+            edt_early_bird_due_date.requestFocus();
+            edt_early_bird_due_date.getParent().requestChildFocus(edt_early_bird_due_date, edt_early_bird_due_date);
+            return;
+        }
+
+        if (edt_normal_amount.getText().toString().trim().isEmpty()) {
+            edt_normal_amount.setError("Please enter amount");
+            edt_normal_amount.requestFocus();
+            edt_normal_amount.getParent().requestChildFocus(edt_normal_amount, edt_normal_amount);
+            return;
+        }
+
+        if (edt_normal_due_date.getText().toString().trim().isEmpty()) {
+            edt_normal_due_date.setError("Please select date");
+            edt_normal_due_date.requestFocus();
+            edt_normal_due_date.getParent().requestChildFocus(edt_normal_due_date, edt_normal_due_date);
+            return;
+        }
     }
 
     private class GetEventTypeList extends AsyncTask<String, Void, String> {
@@ -245,6 +468,35 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             }
         });
         builderSingle.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10001) {
+                try {
+                    Place place = PlacePicker.getPlace(context, data);
+                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses = null;
+                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    place.getAddress();
+                    if (addresses.size() != 0) {
+
+                        latitude = String.valueOf(place.getLatLng().latitude);
+                        longitude = String.valueOf(place.getLatLng().longitude);
+                        edt_address.setText(place.getAddress());
+                        edt_city.setText(addresses.get(0).getLocality());
+                    } else {
+                        Utilities.showMessage("Address not found, please try again", context, 3);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.showMessage("Address not found, please try again", context, 3);
+                }
+            }
+        }
     }
 
     @Override
