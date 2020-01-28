@@ -50,7 +50,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
 
     private List<EventTypeModel.ResultBean> eventTypeList;
     private String userId, eventTypeId;
-    private EventsFreeModel.ResultBean eventsFreeDetails;
+    private EventsFreeModel.ResultBean eventDetails;
 
 
     @Override
@@ -101,31 +101,31 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        eventsFreeDetails = (EventsFreeModel.ResultBean) getIntent().getSerializableExtra("eventsFreeDetails");
+        eventDetails = (EventsFreeModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
 
-        eventTypeId = eventsFreeDetails.getEvent_type_id();
+        eventTypeId = eventDetails.getEvent_type_id();
 
-        edt_name.setText(eventsFreeDetails.getName());
-        edt_type.setText(eventsFreeDetails.getEvent_type_id());
-        edt_description.setText(eventsFreeDetails.getDescription());
-        edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventsFreeDetails.getEvent_date()));
-        edt_start_time.setText(eventsFreeDetails.getEvent_start_time());
-        edt_end_time.setText(eventsFreeDetails.getEvent_end_time());
-//        edt_select_from_map.setText(eventsFreeDetails);
-        edt_address.setText(eventsFreeDetails.getVenue_address());
-        edt_city.setText(eventsFreeDetails.getEvent_city());
-        edt_remark.setText(eventsFreeDetails.getRemark());
+        edt_name.setText(eventDetails.getName());
+        edt_type.setText(eventDetails.getEvent_type_id());
+        edt_description.setText(eventDetails.getDescription());
+        edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_date()));
+        edt_start_time.setText(eventDetails.getEvent_start_time());
+        edt_end_time.setText(eventDetails.getEvent_end_time());
+//        edt_select_from_map.setText(eventDetails);
+        edt_address.setText(eventDetails.getVenue_address());
+        edt_city.setText(eventDetails.getEvent_city());
+        edt_remark.setText(eventDetails.getRemark());
 
-        if (eventsFreeDetails.getIs_confirmation_required().equals("1"))
+        if (eventDetails.getIs_confirmation_required().equals("1"))
             cb_confirmation_required.setChecked(true);
 
-        if (eventsFreeDetails.getIs_online_event().equals("1"))
+        if (eventDetails.getIs_online_event().equals("1"))
             cb_online_event.setChecked(true);
 
-        if (eventsFreeDetails.getIs_displaytomembers().equals("1"))
+        if (eventDetails.getIs_displaytomembers().equals("1"))
             cb_displayto_members.setChecked(true);
 
-        if (eventsFreeDetails.getDisplay_in_city().equals("1"))
+        if (eventDetails.getDisplay_in_city().equals("1"))
             cb_displayin_city.setChecked(true);
     }
 

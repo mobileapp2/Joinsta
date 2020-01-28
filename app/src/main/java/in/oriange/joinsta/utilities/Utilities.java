@@ -357,6 +357,25 @@ public class Utilities {
         return result;
     }
 
+    public static String getAmPmFrom24Hour(String time) {
+        String result = "";
+        if (time.equals("")) {
+            return "";
+        }
+        SimpleDateFormat formatterOld = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat formatterNew = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+        Date date = null;
+        try {
+            date = formatterOld.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date != null) {
+            result = formatterNew.format(date);
+        }
+        return result;
+    }
+
     public static String yyyyMMddDate(int day, int month, int year) {
         return year + "-" + month + "-" + day;
     }

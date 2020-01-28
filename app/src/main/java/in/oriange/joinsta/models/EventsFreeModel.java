@@ -3,13 +3,16 @@ package in.oriange.joinsta.models;
 import java.io.Serializable;
 import java.util.List;
 
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
+import static in.oriange.joinsta.utilities.Utilities.getAmPmFrom24Hour;
+
 public class EventsFreeModel implements Serializable {
 
 
     /**
      * type : success
      * message : get free event successfully!
-     * result : [{"id":"1","event_code":"L00001","event_type_id":"81","group_id":"88","name":"first event 1","description":"test 1","event_date":"2011-02-20","event_start_time":"04:00:00","event_end_time":"05:10:00","venue_address":"nanded","venue_longitude":"12.211","venue_latitude":"4.4","is_confirmation_required":"1","is_online_event":"1","is_displaytomembers":"1","event_city":"latur","display_in_city":"1","remark":"0","event_category_id":"1","created_by":"512","updated_by":"10","created_at":"2020-01-24 02:06:10","updated_at":"2020-01-25 13:27:20"},{"id":"3","event_code":"0003","event_type_id":"2","group_id":"88","name":"first event","description":"test","event_date":"2012-02-20","event_start_time":"04:20:00","event_end_time":"07:20:00","venue_address":"pune","venue_longitude":"12.2","venue_latitude":"23.43","is_confirmation_required":"1","is_online_event":"1","is_displaytomembers":"1","event_city":"latur","display_in_city":"1","remark":"1","event_category_id":"1","created_by":"512","updated_by":"512","created_at":"2020-01-25 13:25:18","updated_at":"2020-01-25 13:25:18"}]
+     * result : [{"id":"12","event_code":"0012","event_type_id":"81","group_id":"88","name":"first event 1","description":"test 1","event_date":"2011-02-20","event_start_time":"04:00:00","event_end_time":"05:10:00","venue_address":"nanded","venue_longitude":"12.211","venue_latitude":"23.43","is_online_event":"1","is_displaytomembers":"1","is_confirmation_required":"1","event_city":"latur","display_in_city":"1","remark":"0","event_category_id":"1","created_by":"512","updated_by":"10","created_at":"2020-01-27 17:33:06","updated_at":"2020-01-27 18:12:54","group_name":null,"group_code":null,"event_type_name":null,"documents":[{"document_type":"invitationdocument","document_path":"password.jpg"},{"document_type":"invitationdocument","document_path":"username.jpg"},{"document_type":"invitationdocument","document_path":"abc.jpg"},{"document_type":"invitationdocument","document_path":"login.jpg"}]}]
      */
 
     private String type;
@@ -40,10 +43,10 @@ public class EventsFreeModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
-         * id : 1
-         * event_code : L00001
+         * id : 12
+         * event_code : 0012
          * event_type_id : 81
          * group_id : 88
          * name : first event 1
@@ -53,18 +56,22 @@ public class EventsFreeModel implements Serializable {
          * event_end_time : 05:10:00
          * venue_address : nanded
          * venue_longitude : 12.211
-         * venue_latitude : 4.4
-         * is_confirmation_required : 1
+         * venue_latitude : 23.43
          * is_online_event : 1
          * is_displaytomembers : 1
+         * is_confirmation_required : 1
          * event_city : latur
          * display_in_city : 1
          * remark : 0
          * event_category_id : 1
          * created_by : 512
          * updated_by : 10
-         * created_at : 2020-01-24 02:06:10
-         * updated_at : 2020-01-25 13:27:20
+         * created_at : 2020-01-27 17:33:06
+         * updated_at : 2020-01-27 18:12:54
+         * group_name : null
+         * group_code : null
+         * event_type_name : null
+         * documents : [{"document_type":"invitationdocument","document_path":"password.jpg"},{"document_type":"invitationdocument","document_path":"username.jpg"},{"document_type":"invitationdocument","document_path":"abc.jpg"},{"document_type":"invitationdocument","document_path":"login.jpg"}]
          */
 
         private String id;
@@ -79,9 +86,9 @@ public class EventsFreeModel implements Serializable {
         private String venue_address;
         private String venue_longitude;
         private String venue_latitude;
-        private String is_confirmation_required;
         private String is_online_event;
         private String is_displaytomembers;
+        private String is_confirmation_required;
         private String event_city;
         private String display_in_city;
         private String remark;
@@ -90,6 +97,10 @@ public class EventsFreeModel implements Serializable {
         private String updated_by;
         private String created_at;
         private String updated_at;
+        private String group_name;
+        private String group_code;
+        private String event_type_name;
+        private List<DocumentsBean> documents;
 
         public String getId() {
             return id;
@@ -187,14 +198,6 @@ public class EventsFreeModel implements Serializable {
             this.venue_latitude = venue_latitude;
         }
 
-        public String getIs_confirmation_required() {
-            return is_confirmation_required;
-        }
-
-        public void setIs_confirmation_required(String is_confirmation_required) {
-            this.is_confirmation_required = is_confirmation_required;
-        }
-
         public String getIs_online_event() {
             return is_online_event;
         }
@@ -209,6 +212,14 @@ public class EventsFreeModel implements Serializable {
 
         public void setIs_displaytomembers(String is_displaytomembers) {
             this.is_displaytomembers = is_displaytomembers;
+        }
+
+        public String getIs_confirmation_required() {
+            return is_confirmation_required;
+        }
+
+        public void setIs_confirmation_required(String is_confirmation_required) {
+            this.is_confirmation_required = is_confirmation_required;
         }
 
         public String getEvent_city() {
@@ -273,6 +284,81 @@ public class EventsFreeModel implements Serializable {
 
         public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
+        }
+
+        public String getGroup_name() {
+            if (group_name != null) {
+                return group_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setGroup_name(String group_name) {
+            this.group_name = group_name;
+        }
+
+        public String getGroup_code() {
+            if (group_code != null) {
+                return group_code;
+            } else {
+                return "";
+            }
+        }
+
+        public void setGroup_code(String group_code) {
+            this.group_code = group_code;
+        }
+
+        public String getEvent_type_name() {
+            if (event_type_name != null) {
+                return event_type_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setEvent_type_name(String event_type_name) {
+            this.event_type_name = event_type_name;
+        }
+
+        public String getDateTime() {
+            return "Event is held on " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
+                    " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+        }
+
+        public List<DocumentsBean> getDocuments() {
+            return documents;
+        }
+
+        public void setDocuments(List<DocumentsBean> documents) {
+            this.documents = documents;
+        }
+
+        public static class DocumentsBean implements Serializable {
+            /**
+             * document_type : invitationdocument
+             * document_path : password.jpg
+             */
+
+            private String document_type;
+            private String document_path;
+
+            public String getDocument_type() {
+                return document_type;
+            }
+
+            public void setDocument_type(String document_type) {
+                this.document_type = document_type;
+            }
+
+            public String getDocument_path() {
+                return document_path;
+            }
+
+            public void setDocument_path(String document_path) {
+                this.document_path = document_path;
+            }
         }
     }
 }
