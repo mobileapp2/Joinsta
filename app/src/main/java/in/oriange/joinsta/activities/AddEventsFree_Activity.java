@@ -8,8 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -33,12 +41,23 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,8 +67,10 @@ import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -64,12 +85,20 @@ public class AddEventsFree_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
-            edt_address, edt_city, edt_remark;
+            edt_address, edt_city, edt_remark,
+            edt_attach_doc_multi, edt_doc_type_multi;
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city;
+    private LinearLayout ll_documents;
+    private Button btn_add_document;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
+    private ArrayList<LinearLayout> docsLayoutsList;
     private String userId, groupId, eventTypeId, eventDate, latitude = "", longitude = "";
+    private File photoFileFolder;
+    private Uri photoURI;
     private int mYear, mMonth, mDay, startHour, startMinutes;
+
+    private final int DOCUMENT_REQUEST = 100, CAMERA_REQUEST = 200, GALLERY_REQUEST = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +127,25 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         edt_address = findViewById(R.id.edt_address);
         edt_city = findViewById(R.id.edt_city);
         edt_remark = findViewById(R.id.edt_remark);
+        ll_documents = findViewById(R.id.ll_documents);
+        btn_add_document = findViewById(R.id.btn_add_document);
         cb_confirmation_required = findViewById(R.id.cb_confirmation_required);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
 
         eventTypeList = new ArrayList<>();
+        docsLayoutsList = new ArrayList<>();
+
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Events");
+        if (!photoFileFolder.exists())
+            photoFileFolder.mkdirs();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     private void getSessionDetails() {
@@ -125,6 +167,12 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mYear = calendar.get(Calendar.YEAR);
         mMonth = calendar.get(Calendar.MONTH);
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        docsLayoutsList.add(ll);
+        ll_documents.addView(rowView, ll_documents.getChildCount());
     }
 
     private void setEventHandler() {
@@ -237,6 +285,17 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                 }
             }
         });
+
+        btn_add_document.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+                final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
+                LinearLayout ll = (LinearLayout) rowView;
+                docsLayoutsList.add(ll);
+                ll_documents.addView(rowView, ll_documents.getChildCount());
+            }
+        });
     }
 
     private void submitData() {
@@ -301,6 +360,17 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         String is_displaytomembers = cb_displayto_members.isChecked() ? "1" : "0";
         String display_in_city = cb_displayin_city.isChecked() ? "1" : "0";
 
+        JsonArray documentsArray = new JsonArray();
+
+        for (int i = 0; i < docsLayoutsList.size(); i++) {
+            if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString());
+                jsonObject.addProperty("document_type", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                documentsArray.add(jsonObject);
+            }
+        }
+
         JsonObject mainObj = new JsonObject();
 
         mainObj.addProperty("type", "CreateFreeEvent");
@@ -323,11 +393,231 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
         mainObj.addProperty("group_id", groupId);
+        mainObj.add("document_path", documentsArray);
 
         if (Utilities.isNetworkAvailable(context)) {
             new AddFreeEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    public void selectDocType(View view) {
+        edt_doc_type_multi = (MaterialEditText) view;
+        final List<MasterModel> invitationDoc = new ArrayList<>();
+        invitationDoc.add(new MasterModel("Image", "invitationimage"));
+        invitationDoc.add(new MasterModel("Document", "invitationdocument"));
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Document Type");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < invitationDoc.size(); i++) {
+            arrayAdapter.add(String.valueOf(invitationDoc.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_doc_type_multi.setText(invitationDoc.get(which).getName());
+            }
+        });
+        builderSingle.show();
+    }
+
+    public void pickAttachDoc(View view) {
+        edt_attach_doc_multi = (MaterialEditText) view;
+        LinearLayout linearLayout = (LinearLayout) view.getParent();
+        if (((MaterialEditText) linearLayout.findViewById(R.id.edt_doc_type)).getText().toString().trim().equals("Image")) {
+            final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            builder.setCancelable(false);
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (options[item].equals("Take a Photo")) {
+                        File file = new File(photoFileFolder, "doc_image.png");
+                        photoURI = Uri.fromFile(file);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(intent, CAMERA_REQUEST);
+                    } else if (options[item].equals("Choose from Gallery")) {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, GALLERY_REQUEST);
+                    }
+                }
+            });
+            builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertD = builder.create();
+            alertD.show();
+        } else if (((MaterialEditText) linearLayout.findViewById(R.id.edt_doc_type)).getText().toString().trim().equals("Document")) {
+            if (Utilities.isNetworkAvailable(context)) {
+                Intent intent = new Intent(context, NormalFilePickActivity.class);
+                intent.putExtra(Constant.MAX_NUMBER, 1);
+                intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+                startActivityForResult(intent, DOCUMENT_REQUEST);
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        }
+
+    }
+
+    public void removeAttachDoc(View view) {
+        ll_documents.removeView((View) view.getParent());
+        docsLayoutsList.remove(view.getParent());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10001) {
+                try {
+                    Place place = PlacePicker.getPlace(context, data);
+                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses;
+                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    place.getAddress();
+                    if (addresses.size() != 0) {
+
+                        latitude = String.valueOf(place.getLatLng().latitude);
+                        longitude = String.valueOf(place.getLatLng().longitude);
+                        edt_address.setText(place.getAddress());
+                        edt_city.setText(addresses.get(0).getLocality());
+                    } else {
+                        Utilities.showMessage("Address not found, please try again", context, 3);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.showMessage("Address not found, please try again", context, 3);
+                }
+            }
+
+            if (requestCode == GALLERY_REQUEST) {
+                Uri imageUri = data.getData();
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(AddEventsFree_Activity.this);
+            }
+
+            if (requestCode == CAMERA_REQUEST) {
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(AddEventsFree_Activity.this);
+            }
+
+            if (requestCode == DOCUMENT_REQUEST) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                new UploadImage().execute(list.get(0).getPath(), "1");
+            }
+
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                savefile(resultUri);
+            }
+        }
+    }
+
+    private void savefile(Uri sourceuri) {
+        Log.i("sourceuri1", "" + sourceuri);
+        String sourceFilename = sourceuri.getPath();
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+                + "Events/" + "uplimg.png";
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFile, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File photoFileToUpload = new File(destinationFile);
+        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+
+    }
+
+    private class UploadImage extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            StringBuilder res = new StringBuilder();
+            try {
+                MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
+
+                multipart.addFormField("request_type", "uploadFeedFile");
+                multipart.addFilePart("document", new File(params[0]));
+
+                List<String> response = multipart.finish();
+                for (String line : response) {
+                    res.append(line);
+                }
+                return res.toString();
+            } catch (IOException ex) {
+                return ex.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject jsonObject = mainObj.getJSONObject("result");
+                        edt_attach_doc_multi.setText(jsonObject.getString("name"));
+                    } else {
+                        Utilities.showMessage("Image upload failed", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -470,35 +760,6 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 10001) {
-                try {
-                    Place place = PlacePicker.getPlace(context, data);
-                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                    List<Address> addresses = null;
-                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    place.getAddress();
-                    if (addresses.size() != 0) {
-
-                        latitude = String.valueOf(place.getLatLng().latitude);
-                        longitude = String.valueOf(place.getLatLng().longitude);
-                        edt_address.setText(place.getAddress());
-                        edt_city.setText(addresses.get(0).getLocality());
-                    } else {
-                        Utilities.showMessage("Address not found, please try again", context, 3);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Utilities.showMessage("Address not found, please try again", context, 3);
-                }
             }
         }
     }
