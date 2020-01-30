@@ -6,12 +6,19 @@ public class MasterModel {
 
     private String id;
 
+    private boolean isChecked;
+
     public MasterModel() {
     }
 
     public MasterModel(String name, String id) {
         this.name = name;
         this.id = id;
+    }
+
+    public MasterModel(String name, String id, boolean isChecked) {
+        this(name, id);
+        this.isChecked = isChecked;
     }
 
     public String getName() {
@@ -30,4 +37,11 @@ public class MasterModel {
         this.id = id;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }
