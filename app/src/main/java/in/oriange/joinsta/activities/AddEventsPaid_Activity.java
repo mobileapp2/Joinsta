@@ -72,6 +72,7 @@ import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
+import in.oriange.joinsta.models.GroupPaymentAccountModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -91,7 +92,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_early_bird_amount, edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date,
-            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paytm_link,
+            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paytm_link, edt_payment_account,
             edt_attach_doc_multi, edt_doc_type_multi;
     private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city;
     private LinearLayout ll_documents;
@@ -100,7 +101,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     private List<EventTypeModel.ResultBean> eventTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
     private List<MasterModel> paymentModeList;
-    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, latitude = "", longitude = "";
+    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, paymentAccountId = "0", latitude = "", longitude = "";
     private File photoFileFolder;
     private Uri photoURI;
     private JsonArray selectedPaymentModes;
@@ -143,6 +144,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         edt_msg_forunpaid = findViewById(R.id.edt_msg_forunpaid);
         edt_payment_mode = findViewById(R.id.edt_payment_mode);
         edt_paytm_link = findViewById(R.id.edt_paytm_link);
+        edt_payment_account = findViewById(R.id.edt_payment_account);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         cb_online_event = findViewById(R.id.cb_online_event);
@@ -360,6 +362,17 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
+        edt_payment_account.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetPaymentAccountDetails().execute();
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
         btn_add_document.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -394,7 +407,9 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
                 for (MasterModel grpDetails : paymentModeList) {
                     if (grpDetails.isChecked()) {
-                        selectedPaymentModes.add(grpDetails.getId());
+                        JsonObject jsonObject = new JsonObject();
+                        jsonObject.addProperty("mode", grpDetails.getId());
+                        selectedPaymentModes.add(jsonObject);
                         selectedGroupsName.append(grpDetails.getName()).append(", ");
                     }
                 }
@@ -402,8 +417,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 boolean isPaymentLinkSelected = false;
 
                 for (int i = 0; i < selectedPaymentModes.size(); i++) {
-                    String s = selectedPaymentModes.get(i).getAsString();
-                    if (s.equals("paymentlink")) {
+                    JsonObject s = selectedPaymentModes.get(i).getAsJsonObject();
+                    if (s.getAsString().equals("paymentlink")) {
                         isPaymentLinkSelected = true;
                         break;
                     }
@@ -585,12 +600,11 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
                 if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Image")) {
-                    jsonObject.addProperty("document", "invitationimage");
+                    jsonObject.addProperty("document_type", "invitationimage");
                 } else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
-                    jsonObject.addProperty("document", "invitationdocument");
+                    jsonObject.addProperty("document_type", "invitationdocument");
                 }
-
-                jsonObject.addProperty("document_type", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 documentsArray.add(jsonObject);
             }
         }
@@ -606,8 +620,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
-        mainObj.addProperty("venue_longitude", latitude);
-        mainObj.addProperty("venue_latitude", longitude);
+        mainObj.addProperty("venue_longitude", longitude);
+        mainObj.addProperty("venue_latitude", latitude);
         mainObj.addProperty("is_online_event", is_online_event);
         mainObj.addProperty("is_displaytomembers", is_displaytomembers);
         mainObj.addProperty("event_city", edt_city.getText().toString().trim());
@@ -617,7 +631,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("message_for_paidmember", edt_msg_forpaid.getText().toString().trim());
         mainObj.addProperty("message_for_unpaidmember", edt_msg_forunpaid.getText().toString().trim());
         mainObj.addProperty("is_offline_payments_allowed", "1");
-        mainObj.addProperty("payment_account_id", "1");
+        mainObj.addProperty("payment_account_id", paymentAccountId);
         mainObj.addProperty("earlybird_price", edt_early_bird_amount.getText().toString().trim());
         mainObj.addProperty("normal_price", edt_normal_amount.getText().toString().trim());
         mainObj.addProperty("earlybird_price_duedate", earlyBirdDueDate);
@@ -834,6 +848,55 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                         eventTypeList = pojoDetails.getResult();
                         if (eventTypeList.size() > 0) {
                             showEventTypeListDialog();
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
+    }
+
+    private class GetPaymentAccountDetails extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getAllPaymentAccount");
+            obj.addProperty("group_id", groupId);
+            res = APICall.JSONAPICall(ApplicationConstants.PAYMENTACCOUNTAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    List<GroupPaymentAccountModel.ResultBean> paymentList = new ArrayList<>();
+                    GroupPaymentAccountModel pojoDetails = new Gson().fromJson(result, GroupPaymentAccountModel.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        paymentList = pojoDetails.getResult();
+                        if (paymentList.size() > 0) {
+//                            showPaymentAccountListDialog(paymentList);
                         }
                     } else {
                         Utilities.showAlertDialog(context, message, false);

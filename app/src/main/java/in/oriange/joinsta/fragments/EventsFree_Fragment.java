@@ -151,7 +151,8 @@ public class EventsFree_Fragment extends Fragment {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getGroupFreeEvent");
+            obj.addProperty("type", "getAllFreeEvent");
+            obj.addProperty("user_id", userId);
             obj.addProperty("group_id", groupId);
             res = APICall.JSONAPICall(ApplicationConstants.FREEEVENTSAPI, obj.toString());
             return res.trim();

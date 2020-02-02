@@ -151,7 +151,8 @@ public class EventsPaid_Fragment extends Fragment {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getGroupPaidEvent");
+            obj.addProperty("type", "getAllPaidEvent");
+            obj.addProperty("user_id", userId);
             obj.addProperty("group_id", groupId);
             res = APICall.JSONAPICall(ApplicationConstants.PAIDEVENTSAPI, obj.toString());
             return res.trim();

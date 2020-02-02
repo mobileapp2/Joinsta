@@ -6,12 +6,16 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,19 +43,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
@@ -60,6 +76,7 @@ import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -171,8 +188,8 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
         eventsPaidDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventsPaidDetails");
-
         eventTypeId = eventsPaidDetails.getEvent_type_id();
+        eventDate = eventsPaidDetails.getEvent_date();
 
         edt_name.setText(eventsPaidDetails.getName());
         edt_type.setText(eventsPaidDetails.getEvent_type_id());
@@ -190,7 +207,6 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         edt_remark.setText(eventsPaidDetails.getRemark());
         edt_msg_forpaid.setText(eventsPaidDetails.getMessage_for_paidmember());
         edt_msg_forunpaid.setText(eventsPaidDetails.getMessage_for_unpaidmember());
-
 
 //        if (eventsPaidDetails.getIs_confirmation_required().equals("1"))
 //            cb_confirmation_required.setChecked(true);
@@ -596,13 +612,11 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
                 if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Image")) {
-                    jsonObject.addProperty("document", "invitationimage");
+                    jsonObject.addProperty("document_type", "invitationimage");
+                } else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
+                    jsonObject.addProperty("document_type", "invitationdocument");
                 }
-                else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
-                    jsonObject.addProperty("document", "invitationdocument");
-                }
-
-                jsonObject.addProperty("document_type", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 documentsArray.add(jsonObject);
             }
         }
@@ -615,12 +629,12 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("group_id", groupId);
         mainObj.addProperty("name", edt_name.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
-        mainObj.addProperty("event_date", edt_date.getText().toString().trim());
+        mainObj.addProperty("event_date", eventDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
-        mainObj.addProperty("venue_longitude", latitude);
-        mainObj.addProperty("venue_latitude", longitude);
+        mainObj.addProperty("venue_longitude", longitude);
+        mainObj.addProperty("venue_latitude", latitude);
         mainObj.addProperty("is_online_event", is_online_event);
         mainObj.addProperty("is_displaytomembers", is_displaytomembers);
         mainObj.addProperty("event_city", edt_city.getText().toString().trim());
@@ -646,6 +660,169 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             new AddPaidEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    private void showEventTypeListDialog() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Event Type");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < eventTypeList.size(); i++) {
+            arrayAdapter.add(String.valueOf(eventTypeList.get(i).getEvent_type()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                EventTypeModel.ResultBean event = eventTypeList.get(which);
+                edt_type.setText(event.getEvent_type());
+                eventTypeId = event.getId();
+            }
+        });
+        builderSingle.show();
+    }
+
+    public void selectDocType(View view) {
+        edt_doc_type_multi = (MaterialEditText) view;
+        final List<MasterModel> invitationDoc = new ArrayList<>();
+        invitationDoc.add(new MasterModel("Image", "invitationimage"));
+        invitationDoc.add(new MasterModel("Document", "invitationdocument"));
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Document Type");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < invitationDoc.size(); i++) {
+            arrayAdapter.add(String.valueOf(invitationDoc.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                edt_doc_type_multi.setText(invitationDoc.get(which).getName());
+            }
+        });
+        builderSingle.show();
+    }
+
+    public void pickAttachDoc(View view) {
+        edt_attach_doc_multi = (MaterialEditText) view;
+        LinearLayout linearLayout = (LinearLayout) view.getParent();
+        if (((MaterialEditText) linearLayout.findViewById(R.id.edt_doc_type)).getText().toString().trim().equals("Image")) {
+            final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            builder.setCancelable(false);
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (options[item].equals("Take a Photo")) {
+                        File file = new File(photoFileFolder, "doc_image.png");
+                        photoURI = Uri.fromFile(file);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(intent, CAMERA_REQUEST);
+                    } else if (options[item].equals("Choose from Gallery")) {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, GALLERY_REQUEST);
+                    }
+                }
+            });
+            builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertD = builder.create();
+            alertD.show();
+        } else if (((MaterialEditText) linearLayout.findViewById(R.id.edt_doc_type)).getText().toString().trim().equals("Document")) {
+            if (Utilities.isNetworkAvailable(context)) {
+                Intent intent = new Intent(context, NormalFilePickActivity.class);
+                intent.putExtra(Constant.MAX_NUMBER, 1);
+                intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+                startActivityForResult(intent, DOCUMENT_REQUEST);
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        }
+
+    }
+
+    public void removeAttachDoc(View view) {
+        ll_documents.removeView((View) view.getParent());
+        docsLayoutsList.remove(view.getParent());
+    }
+
+    private class UploadImage extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            StringBuilder res = new StringBuilder();
+            try {
+                MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
+
+                multipart.addFormField("request_type", "uploadFeedFile");
+                multipart.addFilePart("document", new File(params[0]));
+
+                List<String> response = multipart.finish();
+                for (String line : response) {
+                    res.append(line);
+                }
+                return res.toString();
+            } catch (IOException ex) {
+                return ex.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject jsonObject = mainObj.getJSONObject("result");
+                        edt_attach_doc_multi.setText(jsonObject.getString("name"));
+                    } else {
+                        Utilities.showMessage("Image upload failed", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -761,35 +938,88 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         }
     }
 
-    private void showEventTypeListDialog() {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Event Type");
-        builderSingle.setCancelable(false);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10001) {
+                try {
+                    Place place = PlacePicker.getPlace(context, data);
+                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses;
+                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    place.getAddress();
+                    if (addresses.size() != 0) {
 
-        for (int i = 0; i < eventTypeList.size(); i++) {
-            arrayAdapter.add(String.valueOf(eventTypeList.get(i).getEvent_type()));
+                        latitude = String.valueOf(place.getLatLng().latitude);
+                        longitude = String.valueOf(place.getLatLng().longitude);
+                        edt_address.setText(place.getAddress());
+                        edt_city.setText(addresses.get(0).getLocality());
+                    } else {
+                        Utilities.showMessage("Address not found, please try again", context, 3);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.showMessage("Address not found, please try again", context, 3);
+                }
+            }
+
+            if (requestCode == GALLERY_REQUEST) {
+                Uri imageUri = data.getData();
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditEventsPaid_Activity.this);
+            }
+
+            if (requestCode == CAMERA_REQUEST) {
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditEventsPaid_Activity.this);
+            }
+
+            if (requestCode == DOCUMENT_REQUEST) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                new UploadImage().execute(list.get(0).getPath(), "1");
+            }
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EventTypeModel.ResultBean event = eventTypeList.get(which);
-                edt_type.setText(event.getEvent_type());
-                eventTypeId = event.getId();
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                savefile(resultUri);
             }
-        });
-        builderSingle.show();
+        }
+    }
+
+    private void savefile(Uri sourceuri) {
+        Log.i("sourceuri1", "" + sourceuri);
+        String sourceFilename = sourceuri.getPath();
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+                + "Events/" + "uplimg.png";
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFile, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File photoFileToUpload = new File(destinationFile);
+        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+
     }
 
     @Override

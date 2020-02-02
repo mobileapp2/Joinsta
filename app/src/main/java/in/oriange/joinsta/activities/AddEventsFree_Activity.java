@@ -365,8 +365,12 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString());
-                jsonObject.addProperty("document_type", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Image")) {
+                    jsonObject.addProperty("document_type", "invitationimage");
+                } else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
+                    jsonObject.addProperty("document_type", "invitationdocument");
+                }
+                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 documentsArray.add(jsonObject);
             }
         }
@@ -377,12 +381,12 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("event_type_id", eventTypeId);
         mainObj.addProperty("name", edt_name.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
-        mainObj.addProperty("event_date", edt_date.getText().toString().trim());
+        mainObj.addProperty("event_date", eventDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
-        mainObj.addProperty("venue_longitude", latitude);
-        mainObj.addProperty("venue_latitude", longitude);
+        mainObj.addProperty("venue_longitude", longitude);
+        mainObj.addProperty("venue_latitude", latitude);
         mainObj.addProperty("is_confirmation_required", is_confirmation_required);
         mainObj.addProperty("is_online_event", is_online_event);
         mainObj.addProperty("is_displaytomembers", is_displaytomembers);
@@ -726,7 +730,6 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsFree_Fragment"));
 

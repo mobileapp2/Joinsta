@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -34,6 +35,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -127,10 +129,19 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        Calendar calendar = Calendar.getInstance();
+
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
         eventDetails = (EventsFreeModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
 
         eventTypeId = eventDetails.getEvent_type_id();
         groupId = eventDetails.getGroup_id();
+        eventDate = eventDetails.getEvent_date();
+        latitude = eventDetails.getVenue_latitude();
+        longitude = eventDetails.getVenue_longitude();
 
         edt_name.setText(eventDetails.getName());
         edt_type.setText(eventDetails.getEvent_type_id());
@@ -155,11 +166,23 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         if (eventDetails.getDisplay_in_city().equals("1"))
             cb_displayin_city.setChecked(true);
 
-        Calendar calendar = Calendar.getInstance();
+        List<EventsFreeModel.ResultBean.DocumentsBean> documentList = eventDetails.getDocuments();
 
-        mYear = calendar.get(Calendar.YEAR);
-        mMonth = calendar.get(Calendar.MONTH);
-        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        for (int i = 0; i < documentList.size(); i++) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
+            LinearLayout ll = (LinearLayout) rowView;
+            docsLayoutsList.add(ll);
+            ll_documents.addView(rowView, ll_documents.getChildCount() - 1);
+
+            if (documentList.get(i).getDocument_type().equals("invitationimage")) {
+                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).setText("Image");
+            } else if (documentList.get(i).getDocument_type().equals("invitationdocument")) {
+                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).setText("Document");
+            }
+            ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
+        }
+
     }
 
     private void setEventHandler() {
@@ -347,6 +370,21 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         String is_displaytomembers = cb_displayto_members.isChecked() ? "1" : "0";
         String display_in_city = cb_displayin_city.isChecked() ? "1" : "0";
 
+        JsonArray documentsArray = new JsonArray();
+
+        for (int i = 0; i < docsLayoutsList.size(); i++) {
+            if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Image")) {
+                    jsonObject.addProperty("document_type", "invitationimage");
+                } else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
+                    jsonObject.addProperty("document_type", "invitationdocument");
+                }
+                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                documentsArray.add(jsonObject);
+            }
+        }
+
         JsonObject mainObj = new JsonObject();
 
         mainObj.addProperty("type", "UpdateFreeEvent");
@@ -355,7 +393,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("event_type_id", eventTypeId);
         mainObj.addProperty("name", edt_name.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
-        mainObj.addProperty("event_date", edt_date.getText().toString().trim());
+        mainObj.addProperty("event_date", eventDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
@@ -369,6 +407,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("display_in_city", display_in_city);
         mainObj.addProperty("event_category_id", "1");
         mainObj.addProperty("updated_by", userId);
+        mainObj.add("document_path", documentsArray);
 
         if (Utilities.isNetworkAvailable(context)) {
             new EditFreeEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));

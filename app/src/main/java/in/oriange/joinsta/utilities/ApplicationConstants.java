@@ -63,5 +63,6 @@ public class ApplicationConstants {
     public static final String PAIDEVENTSAPI = API_LINK + "paid_events.php";
     public static final String FREEEVENTSAPI = API_LINK + "free_events.php";
     public static final String EVENTSTYPEAPI = API_LINK + "event_types.php";
+    public static final String PAYMENTACCOUNTAPI = API_LINK + "payment_account.php";
 
 }
