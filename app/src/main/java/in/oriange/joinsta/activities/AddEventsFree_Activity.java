@@ -21,11 +21,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -34,8 +36,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -76,6 +81,7 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
 public class AddEventsFree_Activity extends AppCompatActivity {
@@ -86,13 +92,16 @@ public class AddEventsFree_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_remark,
-            edt_attach_doc_multi, edt_doc_type_multi;
+            edt_attach_doc_multi;
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city;
+    private RecyclerView rv_images;
     private LinearLayout ll_documents;
-    private Button btn_add_document;
+    private Button btn_add_document, btn_add_image;
+    private int latestPosition;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
+    private ArrayList<MasterModel> imageList;
     private String userId, groupId, eventTypeId, eventDate, latitude = "", longitude = "";
     private File photoFileFolder;
     private Uri photoURI;
@@ -129,13 +138,17 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         edt_remark = findViewById(R.id.edt_remark);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
+        btn_add_image = findViewById(R.id.btn_add_image);
         cb_confirmation_required = findViewById(R.id.cb_confirmation_required);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
+        rv_images = findViewById(R.id.rv_images);
+        rv_images.setLayoutManager(new GridLayoutManager(context, 3));
 
         eventTypeList = new ArrayList<>();
         docsLayoutsList = new ArrayList<>();
+        imageList = new ArrayList<>();
 
         photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Events");
         if (!photoFileFolder.exists())
@@ -169,10 +182,14 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-        final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
+        final View rowView = inflater.inflate(R.layout.layout_add_document, null);
         LinearLayout ll = (LinearLayout) rowView;
         docsLayoutsList.add(ll);
         ll_documents.addView(rowView, ll_documents.getChildCount());
+
+
+        imageList.add(new MasterModel("", ""));
+        rv_images.setAdapter(new ImagesAdapter());
     }
 
     private void setEventHandler() {
@@ -290,10 +307,18 @@ public class AddEventsFree_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
+                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 docsLayoutsList.add(ll);
                 ll_documents.addView(rowView, ll_documents.getChildCount());
+            }
+        });
+
+        btn_add_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageList.add(new MasterModel("", ""));
+                rv_images.setAdapter(new ImagesAdapter());
             }
         });
     }
@@ -365,12 +390,17 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Image")) {
-                    jsonObject.addProperty("document_type", "invitationimage");
-                } else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
-                    jsonObject.addProperty("document_type", "invitationdocument");
-                }
+                jsonObject.addProperty("document_type", "invitationdocument");
                 jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                documentsArray.add(jsonObject);
+            }
+        }
+
+        for (int i = 0; i < imageList.size(); i++) {
+            if (!imageList.get(i).getName().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("document_type", "invitationimage");
+                jsonObject.addProperty("document", imageList.get(i).getName());
                 documentsArray.add(jsonObject);
             }
         }
@@ -402,91 +432,114 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         if (Utilities.isNetworkAvailable(context)) {
             new AddFreeEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 3);
         }
-    }
-
-    public void selectDocType(View view) {
-        edt_doc_type_multi = (MaterialEditText) view;
-        final List<MasterModel> invitationDoc = new ArrayList<>();
-        invitationDoc.add(new MasterModel("Image", "invitationimage"));
-        invitationDoc.add(new MasterModel("Document", "invitationdocument"));
-
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Document Type");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
-
-        for (int i = 0; i < invitationDoc.size(); i++) {
-            arrayAdapter.add(String.valueOf(invitationDoc.get(i).getName()));
-        }
-
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                edt_doc_type_multi.setText(invitationDoc.get(which).getName());
-            }
-        });
-        builderSingle.show();
     }
 
     public void pickAttachDoc(View view) {
-        edt_attach_doc_multi = (MaterialEditText) view;
-        LinearLayout linearLayout = (LinearLayout) view.getParent();
-        if (((MaterialEditText) linearLayout.findViewById(R.id.edt_doc_type)).getText().toString().trim().equals("Image")) {
-            final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-            builder.setCancelable(false);
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (options[item].equals("Take a Photo")) {
-                        File file = new File(photoFileFolder, "doc_image.png");
-                        photoURI = Uri.fromFile(file);
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                        startActivityForResult(intent, CAMERA_REQUEST);
-                    } else if (options[item].equals("Choose from Gallery")) {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, GALLERY_REQUEST);
-                    }
-                }
-            });
-            builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alertD = builder.create();
-            alertD.show();
-        } else if (((MaterialEditText) linearLayout.findViewById(R.id.edt_doc_type)).getText().toString().trim().equals("Document")) {
-            if (Utilities.isNetworkAvailable(context)) {
-                Intent intent = new Intent(context, NormalFilePickActivity.class);
-                intent.putExtra(Constant.MAX_NUMBER, 1);
-                intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
-                startActivityForResult(intent, DOCUMENT_REQUEST);
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
+        if (Utilities.isNetworkAvailable(context)) {
+            edt_attach_doc_multi = (MaterialEditText) view;
+            Intent intent = new Intent(context, NormalFilePickActivity.class);
+            intent.putExtra(Constant.MAX_NUMBER, 1);
+            intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+            startActivityForResult(intent, DOCUMENT_REQUEST);
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
-
     }
 
     public void removeAttachDoc(View view) {
         ll_documents.removeView((View) view.getParent());
         docsLayoutsList.remove(view.getParent());
+    }
+
+    public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+
+        public ImagesAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.grid_row_images, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
+
+            if (!imageList.get(position).getId().isEmpty()) {
+                Glide.with(context)
+                        .load(imageList.get(position).getId())
+                        .into(holder.imv_image);
+                setPaddingForView(context, holder.imv_image, 0);
+                holder.imv_image_delete.setVisibility(View.VISIBLE);
+                holder.imv_image_delete.bringToFront();
+            }
+
+            holder.imv_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    latestPosition = position;
+
+                    final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setCancelable(false);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int item) {
+                            if (options[item].equals("Take a Photo")) {
+                                File file = new File(photoFileFolder, "doc_image.png");
+                                photoURI = Uri.fromFile(file);
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(intent, CAMERA_REQUEST);
+                            } else if (options[item].equals("Choose from Gallery")) {
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("image/*");
+                                startActivityForResult(intent, GALLERY_REQUEST);
+                            }
+                        }
+                    });
+                    builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            });
+
+            holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageList.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return imageList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private ImageView imv_image, imv_image_delete;
+
+            private MyViewHolder(View view) {
+                super(view);
+                imv_image = view.findViewById(R.id.imv_image);
+                imv_image_delete = view.findViewById(R.id.imv_image_delete);
+
+            }
+        }
     }
 
     @Override
@@ -529,7 +582,6 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
                 new UploadImage().execute(list.get(0).getPath(), "1");
             }
-
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -571,10 +623,10 @@ public class AddEventsFree_Activity extends AppCompatActivity {
 
         File photoFileToUpload = new File(destinationFile);
         new UploadImage().execute(photoFileToUpload.getPath(), "0");
-
     }
 
     private class UploadImage extends AsyncTask<String, Integer, String> {
+        private String TYPE = "";
 
         @Override
         protected void onPreExecute() {
@@ -586,6 +638,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            TYPE = params[1];
             StringBuilder res = new StringBuilder();
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
@@ -614,7 +667,12 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        edt_attach_doc_multi.setText(jsonObject.getString("name"));
+                        if (TYPE.equals("1")) {
+                            edt_attach_doc_multi.setText(jsonObject.getString("name"));
+                        } else if (TYPE.equals("0")) {
+                            imageList.set(latestPosition, new MasterModel(jsonObject.getString("name"), jsonObject.getString("document_url")));
+                            rv_images.setAdapter(new ImagesAdapter());
+                        }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
                     }
