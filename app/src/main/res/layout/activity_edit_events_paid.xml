@@ -222,7 +222,7 @@
                         android:background="@color/colorPrimary" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_select_area"
+                        android:id="@+id/edt_select_from_map"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/icon_current_location"
@@ -295,7 +295,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
+                        android:padding="5dp"
                         android:text="For Early Birds"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -340,7 +340,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
+                        android:padding="5dp"
                         android:text="For Normal"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -381,6 +381,44 @@
                             app:met_underlineColor="@color/mediumGray" />
 
                     </LinearLayout>
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_payment_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/icon_arrowdown"
+                        android:focusable="false"
+                        android:hint="Mode of Payment"
+                        android:longClickable="false"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_paytm_link"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Payment Link"
+                        android:inputType="textWebEditText"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_payment_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/icon_arrowdown"
+                        android:focusable="false"
+                        android:hint="Select Payment Account"
+                        android:longClickable="false"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                 </LinearLayout>
 
@@ -501,6 +539,49 @@
                         app:met_floatingLabel="highlight"
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="Invitation Images"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <android.widget.Button
+                        android:id="@+id/btn_add_image"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="ADD" />
 
                 </LinearLayout>
 

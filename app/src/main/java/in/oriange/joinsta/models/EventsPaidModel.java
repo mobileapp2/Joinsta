@@ -3,6 +3,9 @@ package in.oriange.joinsta.models;
 import java.io.Serializable;
 import java.util.List;
 
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
+import static in.oriange.joinsta.utilities.Utilities.getAmPmFrom24Hour;
+
 public class EventsPaidModel implements Serializable {
 
 
@@ -102,6 +105,11 @@ public class EventsPaidModel implements Serializable {
         private String updated_by;
         private String created_at;
         private String updated_at;
+        private String group_name;
+        private String group_code;
+        private String event_type_name;
+        private List<DocumentsBean> documents;
+
 
         public String getId() {
             return id;
@@ -333,6 +341,81 @@ public class EventsPaidModel implements Serializable {
 
         public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
+        }
+
+        public String getGroup_name() {
+            if (group_name != null) {
+                return group_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setGroup_name(String group_name) {
+            this.group_name = group_name;
+        }
+
+        public String getGroup_code() {
+            if (group_code != null) {
+                return group_code;
+            } else {
+                return "";
+            }
+        }
+
+        public void setGroup_code(String group_code) {
+            this.group_code = group_code;
+        }
+
+        public String getEvent_type_name() {
+            if (event_type_name != null) {
+                return event_type_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setEvent_type_name(String event_type_name) {
+            this.event_type_name = event_type_name;
+        }
+
+        public String getDateTime() {
+            return "Event is held on " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
+                    " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+        }
+
+        public List<DocumentsBean> getDocuments() {
+            return documents;
+        }
+
+        public void setDocuments(List<DocumentsBean> documents) {
+            this.documents = documents;
+        }
+
+        public static class DocumentsBean implements Serializable {
+            /**
+             * document_type : invitationdocument
+             * document_path : password.jpg
+             */
+
+            private String document_type;
+            private String document_path;
+
+            public String getDocument_type() {
+                return document_type;
+            }
+
+            public void setDocument_type(String document_type) {
+                this.document_type = document_type;
+            }
+
+            public String getDocument_path() {
+                return document_path;
+            }
+
+            public void setDocument_path(String document_path) {
+                this.document_path = document_path;
+            }
         }
     }
 }

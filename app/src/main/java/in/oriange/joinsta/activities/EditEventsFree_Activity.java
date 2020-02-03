@@ -8,18 +8,26 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -28,8 +36,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
@@ -38,10 +49,20 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,13 +73,17 @@ import java.util.regex.Matcher;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
 import in.oriange.joinsta.models.EventsFreeModel;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.MultipartUtility;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
 public class EditEventsFree_Activity extends AppCompatActivity {
@@ -68,16 +93,25 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
-            edt_address, edt_city, edt_remark;
+            edt_address, edt_city, edt_remark,
+            edt_attach_doc_multi;
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city;
+    private RecyclerView rv_images;
     private LinearLayout ll_documents;
-    private Button btn_add_document;
+    private Button btn_add_document, btn_add_image;
+    private int latestPosition;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
+    private ArrayList<MasterModel> imageList;
     private String userId, groupId, eventTypeId, eventDate, latitude = "", longitude = "";
-    private EventsFreeModel.ResultBean eventDetails;
+    private File photoFileFolder;
+    private Uri photoURI;
     private int mYear, mMonth, mDay, startHour, startMinutes;
+
+    private EventsFreeModel.ResultBean eventDetails;
+
+    private final int DOCUMENT_REQUEST = 100, CAMERA_REQUEST = 200, GALLERY_REQUEST = 300;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,13 +142,27 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         edt_remark = findViewById(R.id.edt_remark);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
+        btn_add_image = findViewById(R.id.btn_add_image);
         cb_confirmation_required = findViewById(R.id.cb_confirmation_required);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
+        rv_images = findViewById(R.id.rv_images);
+        rv_images.setLayoutManager(new GridLayoutManager(context, 3));
 
         eventTypeList = new ArrayList<>();
         docsLayoutsList = new ArrayList<>();
+        imageList = new ArrayList<>();
+
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Events");
+        if (!photoFileFolder.exists())
+            photoFileFolder.mkdirs();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     private void getSessionDetails() {
@@ -169,18 +217,17 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         List<EventsFreeModel.ResultBean.DocumentsBean> documentList = eventDetails.getDocuments();
 
         for (int i = 0; i < documentList.size(); i++) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
-            LinearLayout ll = (LinearLayout) rowView;
-            docsLayoutsList.add(ll);
-            ll_documents.addView(rowView, ll_documents.getChildCount() - 1);
 
-            if (documentList.get(i).getDocument_type().equals("invitationimage")) {
-                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).setText("Image");
-            } else if (documentList.get(i).getDocument_type().equals("invitationdocument")) {
-                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).setText("Document");
+            if (documentList.get(i).getDocument_type().equals("invitationdocument")) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+                LinearLayout ll = (LinearLayout) rowView;
+                docsLayoutsList.add(ll);
+                ll_documents.addView(rowView, ll_documents.getChildCount() - 1);
+                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
+            } else if (documentList.get(i).getDocument_type().equals("invitationimage")) {
+                imageList.add(new MasterModel(documentList.get(i).getDocument_path(), IMAGE_LINK + "feed_doc/" + documentList.get(i).getDocument_path()));
             }
-            ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
         }
 
     }
@@ -196,7 +243,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
                 } else {
-                    showEventTypeListDialog();
+                    new GetEventTypeList().showEventTypeListDialog();
                 }
             }
         });
@@ -300,10 +347,18 @@ public class EditEventsFree_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_events_document, null);
+                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 docsLayoutsList.add(ll);
                 ll_documents.addView(rowView, ll_documents.getChildCount());
+            }
+        });
+
+        btn_add_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageList.add(new MasterModel("", ""));
+                rv_images.setAdapter(new ImagesAdapter());
             }
         });
     }
@@ -375,12 +430,17 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Image")) {
-                    jsonObject.addProperty("document_type", "invitationimage");
-                } else if (((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_doc_type)).getText().toString().equalsIgnoreCase("Document")) {
-                    jsonObject.addProperty("document_type", "invitationdocument");
-                }
+                jsonObject.addProperty("document_type", "invitationdocument");
                 jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                documentsArray.add(jsonObject);
+            }
+        }
+
+        for (int i = 0; i < imageList.size(); i++) {
+            if (!imageList.get(i).getName().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("document_type", "invitationimage");
+                jsonObject.addProperty("document", imageList.get(i).getName());
                 documentsArray.add(jsonObject);
             }
         }
@@ -413,6 +473,253 @@ public class EditEventsFree_Activity extends AppCompatActivity {
             new EditFreeEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    public void pickAttachDoc(View view) {
+        if (Utilities.isNetworkAvailable(context)) {
+            edt_attach_doc_multi = (MaterialEditText) view;
+            Intent intent = new Intent(context, NormalFilePickActivity.class);
+            intent.putExtra(Constant.MAX_NUMBER, 1);
+            intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+            startActivityForResult(intent, DOCUMENT_REQUEST);
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    public void removeAttachDoc(View view) {
+        ll_documents.removeView((View) view.getParent());
+        docsLayoutsList.remove(view.getParent());
+    }
+
+    public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+
+        public ImagesAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.grid_row_images, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
+
+            if (!imageList.get(position).getId().isEmpty()) {
+                Glide.with(context)
+                        .load(imageList.get(position).getId())
+                        .into(holder.imv_image);
+                setPaddingForView(context, holder.imv_image, 0);
+                holder.imv_image_delete.setVisibility(View.VISIBLE);
+                holder.imv_image_delete.bringToFront();
+            }
+
+            holder.imv_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    latestPosition = position;
+
+                    final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setCancelable(false);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int item) {
+                            if (options[item].equals("Take a Photo")) {
+                                File file = new File(photoFileFolder, "doc_image.png");
+                                photoURI = Uri.fromFile(file);
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(intent, CAMERA_REQUEST);
+                            } else if (options[item].equals("Choose from Gallery")) {
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("image/*");
+                                startActivityForResult(intent, GALLERY_REQUEST);
+                            }
+                        }
+                    });
+                    builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            });
+
+            holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageList.remove(position);
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return imageList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private ImageView imv_image, imv_image_delete;
+
+            private MyViewHolder(View view) {
+                super(view);
+                imv_image = view.findViewById(R.id.imv_image);
+                imv_image_delete = view.findViewById(R.id.imv_image_delete);
+
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 10001) {
+                try {
+                    Place place = PlacePicker.getPlace(context, data);
+                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses;
+                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    place.getAddress();
+                    if (addresses.size() != 0) {
+
+                        latitude = String.valueOf(place.getLatLng().latitude);
+                        longitude = String.valueOf(place.getLatLng().longitude);
+                        edt_address.setText(place.getAddress());
+                        edt_city.setText(addresses.get(0).getLocality());
+                    } else {
+                        Utilities.showMessage("Address not found, please try again", context, 3);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.showMessage("Address not found, please try again", context, 3);
+                }
+            }
+
+            if (requestCode == GALLERY_REQUEST) {
+                Uri imageUri = data.getData();
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditEventsFree_Activity.this);
+            }
+
+            if (requestCode == CAMERA_REQUEST) {
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditEventsFree_Activity.this);
+            }
+
+            if (requestCode == DOCUMENT_REQUEST) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                new UploadImage().execute(list.get(0).getPath(), "1");
+            }
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                savefile(resultUri);
+            }
+        }
+    }
+
+    private void savefile(Uri sourceuri) {
+        Log.i("sourceuri1", "" + sourceuri);
+        String sourceFilename = sourceuri.getPath();
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+                + "Events/" + "uplimg.png";
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+
+        try {
+            bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+            bos = new BufferedOutputStream(new FileOutputStream(destinationFile, false));
+            byte[] buf = new byte[1024];
+            bis.read(buf);
+            do {
+                bos.write(buf);
+            } while (bis.read(buf) != -1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bis != null) bis.close();
+                if (bos != null) bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        File photoFileToUpload = new File(destinationFile);
+        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+    }
+
+    private class UploadImage extends AsyncTask<String, Integer, String> {
+        private String TYPE = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            TYPE = params[1];
+            StringBuilder res = new StringBuilder();
+            try {
+                MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
+
+                multipart.addFormField("request_type", "uploadFeedFile");
+                multipart.addFilePart("document", new File(params[0]));
+
+                List<String> response = multipart.finish();
+                for (String line : response) {
+                    res.append(line);
+                }
+                return res.toString();
+            } catch (IOException ex) {
+                return ex.toString();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONObject jsonObject = mainObj.getJSONObject("result");
+                        if (TYPE.equals("1")) {
+                            edt_attach_doc_multi.setText(jsonObject.getString("name"));
+                        } else if (TYPE.equals("0")) {
+                            imageList.set(latestPosition, new MasterModel(jsonObject.getString("name"), jsonObject.getString("document_url")));
+                            rv_images.setAdapter(new ImagesAdapter());
+                        }
+                    } else {
+                        Utilities.showMessage("Image upload failed", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -454,7 +761,6 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                         }
                     } else {
                         Utilities.showAlertDialog(context, message, false);
-
                     }
                 }
             } catch (Exception e) {
@@ -462,37 +768,37 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
-    }
 
-    private void showEventTypeListDialog() {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Event Type");
-        builderSingle.setCancelable(false);
+        private void showEventTypeListDialog() {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            builderSingle.setTitle("Select Event Type");
+            builderSingle.setCancelable(false);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
-        for (int i = 0; i < eventTypeList.size(); i++) {
-            arrayAdapter.add(String.valueOf(eventTypeList.get(i).getEvent_type()));
-        }
-
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EventTypeModel.ResultBean event = eventTypeList.get(which);
-                edt_type.setText(event.getEvent_type());
-                eventTypeId = event.getId();
+            for (int i = 0; i < eventTypeList.size(); i++) {
+                arrayAdapter.add(String.valueOf(eventTypeList.get(i).getEvent_type()));
             }
-        });
-        builderSingle.show();
+
+            builderSingle.setNegativeButton(
+                    "Cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    EventTypeModel.ResultBean event = eventTypeList.get(which);
+                    edt_type.setText(event.getEvent_type());
+                    eventTypeId = event.getId();
+                }
+            });
+            builderSingle.show();
+        }
     }
 
     private class EditFreeEvent extends AsyncTask<String, Void, String> {
@@ -521,7 +827,6 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
-                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsFree_Fragment"));
 
@@ -555,35 +860,6 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 10001) {
-                try {
-                    Place place = PlacePicker.getPlace(context, data);
-                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                    List<Address> addresses = null;
-                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    place.getAddress();
-                    if (addresses.size() != 0) {
-
-                        latitude = String.valueOf(place.getLatLng().latitude);
-                        longitude = String.valueOf(place.getLatLng().longitude);
-                        edt_address.setText(place.getAddress());
-                        edt_city.setText(addresses.get(0).getLocality());
-                    } else {
-                        Utilities.showMessage("Address not found, please try again", context, 3);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Utilities.showMessage("Address not found, please try again", context, 3);
-                }
             }
         }
     }
