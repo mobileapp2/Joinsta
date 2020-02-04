@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -137,6 +138,7 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
         }
 
         tv_comment.setText(commentsDetails.getMessage());
+        Linkify.addLinks(tv_comment, Linkify.ALL);
 
         if (commentsDetails.getComment_reply().size() != 0) {
             tv_replies.setVisibility(View.VISIBLE);

@@ -27,7 +27,6 @@
                 android:cropToPadding="true"
                 android:scaleType="centerInside"
                 app:lottie_autoPlay="true"
-                app:lottie_cacheStrategy="strong"
                 app:lottie_fileName="success.json" />
 
             <TextView

@@ -374,7 +374,6 @@
 
                         </LinearLayout>
 
-
                     </LinearLayout>
 
                     <com.rengwuxian.materialedittext.MaterialEditText
@@ -411,7 +410,8 @@
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
                         app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        app:met_underlineColor="@color/mediumGray"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

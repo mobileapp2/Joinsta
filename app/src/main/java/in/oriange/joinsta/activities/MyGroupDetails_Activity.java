@@ -308,44 +308,60 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         btn_delete_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] mode = {"SMS", "Email"};
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setTitle("OTP verification is required to delete group");
-                builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            if (item == 0) {
-                                new GetOtpToDelete().execute(
-                                        userId,
-                                        "otp"
-                                );
-                            } else if (item == 1) {
-                                new GetOtpToDelete().execute(
-                                        userId,
-                                        "email"
-                                );
-                            }
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-
-                        dialog.dismiss();
-
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertBuilder.setMessage("Once you delete the group, all members, messages, posts will be deleted. Are you sure, you want to delete the group?");
+                alertBuilder.setCancelable(false);
+                alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        String[] mode = {"SMS", "Email"};
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        builder.setTitle("OTP verification is required to delete group");
+                        builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                if (Utilities.isNetworkAvailable(context)) {
+                                    if (item == 0) {
+                                        new GetOtpToDelete().execute(
+                                                userId,
+                                                "otp"
+                                        );
+                                    } else if (item == 1) {
+                                        new GetOtpToDelete().execute(
+                                                userId,
+                                                "email"
+                                        );
+                                    }
+                                } else {
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                }
+
+                                dialog.dismiss();
+
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                        AlertDialog alert = builder.create();
+                        alert.show();
                     }
                 });
-
-                AlertDialog alert = builder.create();
-                alert.show();
+                alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = alertBuilder.create();
+                alertDialog.show();
             }
         });
-
 
         ib_more.setOnClickListener(new View.OnClickListener() {
             @Override

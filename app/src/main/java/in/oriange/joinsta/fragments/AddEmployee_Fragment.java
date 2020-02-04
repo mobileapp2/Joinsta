@@ -980,6 +980,22 @@ public class AddEmployee_Fragment extends Fragment {
             }
         }
 
+        if (!edt_website.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isWebsiteValid(edt_website.getText().toString().trim())) {
+                edt_website.setError("Please enter valid website");
+                edt_website.requestFocus();
+                return;
+            }
+        }
+
+        if (!edt_order_online.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isWebsiteValid(edt_order_online.getText().toString().trim())) {
+                edt_order_online.setError("Please enter valid url");
+                edt_order_online.requestFocus();
+                return;
+            }
+        }
+
 //        if (edt_select_area.getText().toString().trim().isEmpty()) {
 //            edt_select_area.setError("Please select area");
 //            edt_select_area.requestFocus();

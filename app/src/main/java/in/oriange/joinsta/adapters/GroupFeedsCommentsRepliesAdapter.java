@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,7 @@ public class GroupFeedsCommentsRepliesAdapter extends RecyclerView.Adapter<Group
         }
 
         holder.tv_reply.setText(replyDetails.getMessage());
+        Linkify.addLinks(holder.tv_reply, Linkify.ALL);
 
         holder.imv_more.setOnClickListener(new View.OnClickListener() {
             @Override

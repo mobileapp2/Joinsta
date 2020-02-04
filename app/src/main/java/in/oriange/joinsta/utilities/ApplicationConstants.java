@@ -86,4 +86,7 @@ public class ApplicationConstants {
     public static final String PAYMENTACCOUNTAPI = API_LINK + "payment_account.php";
     public static final String BUYPLANAPI = API_LINK + "buy_plan.php";
 
+
+    public static final String VERSIONAPI = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/version.php";
+
 }

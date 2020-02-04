@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,6 +121,7 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
         }
 
         holder.tv_comment.setText(commentsDetails.getMessage());
+        Linkify.addLinks( holder.tv_comment, Linkify.ALL);
 
         if (commentsDetails.getComment_reply().size() != 0) {
             holder.tv_replies.setVisibility(View.VISIBLE);
