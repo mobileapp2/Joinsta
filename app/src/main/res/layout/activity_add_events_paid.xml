@@ -396,7 +396,7 @@
                         app:met_underlineColor="@color/mediumGray" />
 
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_paytm_link"
+                        android:id="@+id/edt_paylink"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Payment Link"
@@ -508,7 +508,7 @@
                         android:id="@+id/cb_online_event"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Is this a online event"
+                        android:text="Is this a online event?"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -516,7 +516,7 @@
                         android:id="@+id/cb_displayto_members"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Display this event to other members"
+                        android:text="Display to other members?"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -524,7 +524,7 @@
                         android:id="@+id/cb_displayin_city"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Display this event in the event section"
+                        android:text="Display in cities?"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 

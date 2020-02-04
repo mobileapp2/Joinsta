@@ -1,17 +1,20 @@
 package in.oriange.joinsta.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.ViewEventsPaid_Activity;
 import in.oriange.joinsta.models.EventsPaidModel;
 
 public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.MyViewHolder> {
@@ -40,10 +43,19 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
         int position = holder.getAdapterPosition();
 
-        EventsPaidModel.ResultBean eventDetails = eventList.get(position);
+        final EventsPaidModel.ResultBean eventDetails = eventList.get(position);
 
-        holder.tv_title.setText(eventDetails.getName());
+        holder.tv_title.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
         holder.tv_description.setText(eventDetails.getDescription());
+
+        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, ViewEventsPaid_Activity.class)
+                        .putExtra("eventDetails", eventDetails));
+            }
+        });
+
     }
 
     @Override
@@ -53,10 +65,12 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
+        private CardView cv_mainlayout;
         private TextView tv_title, tv_description;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            cv_mainlayout = itemView.findViewById(R.id.cv_mainlayout);
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_description = itemView.findViewById(R.id.tv_description);
         }

@@ -45,7 +45,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
 
         final EventsFreeModel.ResultBean eventDetails = eventList.get(position);
 
-        holder.tv_title.setText(eventDetails.getName());
+        holder.tv_title.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
         holder.tv_description.setText(eventDetails.getDescription());
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {

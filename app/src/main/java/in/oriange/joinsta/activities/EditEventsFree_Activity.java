@@ -192,7 +192,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         longitude = eventDetails.getVenue_longitude();
 
         edt_name.setText(eventDetails.getName());
-        edt_type.setText(eventDetails.getEvent_type_id());
+        edt_type.setText(eventDetails.getEvent_type_name());
         edt_description.setText(eventDetails.getDescription());
         edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_date()));
         edt_start_time.setText(eventDetails.getEvent_start_time());
@@ -224,11 +224,13 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                 LinearLayout ll = (LinearLayout) rowView;
                 docsLayoutsList.add(ll);
                 ll_documents.addView(rowView, ll_documents.getChildCount() - 1);
-                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
+                ((EditText) rowView.findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
             } else if (documentList.get(i).getDocument_type().equals("invitationimage")) {
                 imageList.add(new MasterModel(documentList.get(i).getDocument_path(), IMAGE_LINK + "feed_doc/" + documentList.get(i).getDocument_path()));
             }
         }
+
+        rv_images.setAdapter(new ImagesAdapter());
 
     }
 
@@ -430,6 +432,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", "0");
                 jsonObject.addProperty("document_type", "invitationdocument");
                 jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 documentsArray.add(jsonObject);
@@ -439,6 +442,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         for (int i = 0; i < imageList.size(); i++) {
             if (!imageList.get(i).getName().equals("")) {
                 JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", "0");
                 jsonObject.addProperty("document_type", "invitationimage");
                 jsonObject.addProperty("document", imageList.get(i).getName());
                 documentsArray.add(jsonObject);
@@ -493,9 +497,9 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         docsLayoutsList.remove(view.getParent());
     }
 
-    public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+    private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
 
-        public ImagesAdapter() {
+        ImagesAdapter() {
 
         }
 

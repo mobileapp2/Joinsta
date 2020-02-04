@@ -87,6 +87,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_recent_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -116,7 +117,7 @@
             android:paddingTop="5dp"
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
-            android:text="Latur"
+            android:text=""
             android:textSize="16sp" />
 
     </LinearLayout>

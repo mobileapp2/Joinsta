@@ -12,7 +12,7 @@ public class EventsPaidModel implements Serializable {
     /**
      * type : success
      * message : get paid event successfully!
-     * result : [{"id":"2","event_code":"","event_type_id":"2","group_id":"88","name":"third event","description":"test","event_date":"2012-02-20","event_start_time":"00:00:12","event_end_time":"00:00:30","venue_address":"latur","venue_longitude":"12.2","venue_latitude":"23.43","message_for_paidmember":"plz pay bill","message_for_unpaidmember":"plz paid","is_offline_payments_allowed":"1","is_online_events":"0","is_displaytomembers":"1","event_city":"latur","display_in_city":"0","payment_account_id":"45","remark":"1","earlybird_price":"200","normal_price":"122","earlybird_price_duedate":"0000-00-00","normal_price_duedate":"0000-00-00","created_by":"512","updated_by":"512","created_at":"2020-01-20 15:39:15","updated_at":"2020-01-20 15:39:15"},{"id":"5","event_code":"","event_type_id":"5","group_id":"88","name":"final event","description":"paid events","event_date":"2012-02-20","event_start_time":"04:00:00","event_end_time":"06:00:00","venue_address":"latur","venue_longitude":"3.4","venue_latitude":"90.9","message_for_paidmember":"thanks","message_for_unpaidmember":"plz pay bill","is_offline_payments_allowed":"1","is_online_events":"1","is_displaytomembers":"1","event_city":"pune","display_in_city":"0","payment_account_id":"40","remark":"1","earlybird_price":"10","normal_price":"20","earlybird_price_duedate":"0003-04-20","normal_price_duedate":"2010-04-20","created_by":"512","updated_by":"512","created_at":"2020-01-21 13:50:52","updated_at":"2020-01-21 13:50:52"},{"id":"4","event_code":"","event_type_id":"5","group_id":"88","name":"final event","description":"paid events","event_date":"2012-02-20","event_start_time":"04:00:00","event_end_time":"06:00:00","venue_address":"latur","venue_longitude":"3.4","venue_latitude":"90.9","message_for_paidmember":"thanks","message_for_unpaidmember":"plz pay bill","is_offline_payments_allowed":"1","is_online_events":"1","is_displaytomembers":"1","event_city":"pune","display_in_city":"0","payment_account_id":"40","remark":"1","earlybird_price":"10","normal_price":"20","earlybird_price_duedate":"0003-04-20","normal_price_duedate":"2010-04-20","created_by":"512","updated_by":"512","created_at":"2020-01-20 15:50:43","updated_at":"2020-01-20 15:50:43"}]
+     * result : [{"id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]},{"id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]},{"id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]}]
      */
 
     private String type;
@@ -43,37 +43,43 @@ public class EventsPaidModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
-         * id : 2
-         * event_code :
+         * id : 34
+         * event_code : 0034
          * event_type_id : 2
-         * group_id : 88
-         * name : third event
-         * description : test
-         * event_date : 2012-02-20
-         * event_start_time : 00:00:12
-         * event_end_time : 00:00:30
-         * venue_address : latur
-         * venue_longitude : 12.2
-         * venue_latitude : 23.43
-         * message_for_paidmember : plz pay bill
-         * message_for_unpaidmember : plz paid
+         * group_id : 47
+         * name : Jdjsjsj
+         * description : Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks
+         * event_date : 0000-00-00
+         * event_start_time : 12:00:00
+         * event_end_time : 18:30:00
+         * venue_address : Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India
+         * venue_longitude : 73.9376396
+         * venue_latitude : 18.497812300000003
+         * message_for_paidmember : Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj
+         * message_for_unpaidmember : Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj
          * is_offline_payments_allowed : 1
-         * is_online_events : 0
+         * is_online_events : 1
+         * is_confirmation_required : 0
          * is_displaytomembers : 1
-         * event_city : latur
-         * display_in_city : 0
-         * payment_account_id : 45
-         * remark : 1
-         * earlybird_price : 200
-         * normal_price : 122
-         * earlybird_price_duedate : 0000-00-00
-         * normal_price_duedate : 0000-00-00
-         * created_by : 512
-         * updated_by : 512
-         * created_at : 2020-01-20 15:39:15
-         * updated_at : 2020-01-20 15:39:15
+         * event_city : Pune
+         * display_in_city : 1
+         * payment_account_id : 4
+         * remark : Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb
+         * earlybird_price : 100
+         * normal_price : 1000
+         * earlybird_price_duedate : 2020-02-05
+         * normal_price_duedate : 2020-02-08
+         * created_by : 271
+         * updated_by : 271
+         * created_at : 2020-02-04 04:19:28
+         * updated_at : 2020-02-04 04:19:28
+         * group_name : Yuva Association Latur
+         * group_code : 0047
+         * event_type_name : Knowledge
+         * paidevents_paymentoptions : [{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}]
+         * documents : [{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]
          */
 
         private String id;
@@ -92,6 +98,7 @@ public class EventsPaidModel implements Serializable {
         private String message_for_unpaidmember;
         private String is_offline_payments_allowed;
         private String is_online_events;
+        private String is_confirmation_required;
         private String is_displaytomembers;
         private String event_city;
         private String display_in_city;
@@ -108,6 +115,7 @@ public class EventsPaidModel implements Serializable {
         private String group_name;
         private String group_code;
         private String event_type_name;
+        private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
 
@@ -237,6 +245,14 @@ public class EventsPaidModel implements Serializable {
 
         public void setIs_online_events(String is_online_events) {
             this.is_online_events = is_online_events;
+        }
+
+        public String getIs_confirmation_required() {
+            return is_confirmation_required;
+        }
+
+        public void setIs_confirmation_required(String is_confirmation_required) {
+            this.is_confirmation_required = is_confirmation_required;
         }
 
         public String getIs_displaytomembers() {
@@ -384,6 +400,14 @@ public class EventsPaidModel implements Serializable {
                     " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
         }
 
+        public List<PaideventsPaymentoptionsBean> getPaidevents_paymentoptions() {
+            return paidevents_paymentoptions;
+        }
+
+        public void setPaidevents_paymentoptions(List<PaideventsPaymentoptionsBean> paidevents_paymentoptions) {
+            this.paidevents_paymentoptions = paidevents_paymentoptions;
+        }
+
         public List<DocumentsBean> getDocuments() {
             return documents;
         }
@@ -392,10 +416,46 @@ public class EventsPaidModel implements Serializable {
             this.documents = documents;
         }
 
+        public static class PaideventsPaymentoptionsBean implements Serializable {
+            /**
+             * payment_mode : online
+             * payment_link :
+             * id : 53
+             */
+
+            private String payment_mode;
+            private String payment_link;
+            private String id;
+
+            public String getPayment_mode() {
+                return payment_mode;
+            }
+
+            public void setPayment_mode(String payment_mode) {
+                this.payment_mode = payment_mode;
+            }
+
+            public String getPayment_link() {
+                return payment_link;
+            }
+
+            public void setPayment_link(String payment_link) {
+                this.payment_link = payment_link;
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+        }
+
         public static class DocumentsBean implements Serializable {
             /**
              * document_type : invitationdocument
-             * document_path : password.jpg
+             * document_path : 5-android-fundamentals-services-m5-slides-20200203104831.pdf
              */
 
             private String document_type;

@@ -37,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -75,7 +76,6 @@ import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
-import in.oriange.joinsta.models.EventsFreeModel;
 import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.models.GroupPaymentAccountModel;
 import in.oriange.joinsta.models.MasterModel;
@@ -99,7 +99,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_early_bird_amount, edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date,
-            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paytm_link, edt_payment_account,
+            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paylink, edt_payment_account,
             edt_attach_doc_multi;
     private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city;
     private RecyclerView rv_images;
@@ -116,6 +116,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
     private Uri photoURI;
     private JsonArray selectedPaymentModes;
     private int mYear, mMonth, mDay, startHour, startMinutes;
+    private AlertDialog paymentDialog;
 
     private final int DOCUMENT_REQUEST = 100, CAMERA_REQUEST = 200, GALLERY_REQUEST = 300;
     private EventsPaidModel.ResultBean eventsPaidDetails;
@@ -154,7 +155,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         edt_msg_forpaid = findViewById(R.id.edt_msg_forpaid);
         edt_msg_forunpaid = findViewById(R.id.edt_msg_forunpaid);
         edt_payment_mode = findViewById(R.id.edt_payment_mode);
-        edt_paytm_link = findViewById(R.id.edt_paytm_link);
+        edt_paylink = findViewById(R.id.edt_paylink);
         edt_payment_account = findViewById(R.id.edt_payment_account);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
@@ -202,13 +203,19 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mMonth = calendar.get(Calendar.MONTH);
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
-        eventsPaidDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventsPaidDetails");
+        eventsPaidDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
+
         eventTypeId = eventsPaidDetails.getEvent_type_id();
+        groupId = eventsPaidDetails.getGroup_id();
         eventDate = eventsPaidDetails.getEvent_date();
+        earlyBirdDueDate = eventsPaidDetails.getEarlybird_price_duedate();
+        normalDueDate = eventsPaidDetails.getNormal_price_duedate();
+        latitude = eventsPaidDetails.getVenue_latitude();
+        longitude = eventsPaidDetails.getVenue_longitude();
         paymentAccountId = eventsPaidDetails.getPayment_account_id();
 
         edt_name.setText(eventsPaidDetails.getName());
-        edt_type.setText(eventsPaidDetails.getEvent_type_id());
+        edt_type.setText(eventsPaidDetails.getEvent_type_name());
         edt_description.setText(eventsPaidDetails.getDescription());
         edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventsPaidDetails.getEvent_date()));
         edt_start_time.setText(eventsPaidDetails.getEvent_start_time());
@@ -233,22 +240,22 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         if (eventsPaidDetails.getDisplay_in_city().equals("1"))
             cb_displayin_city.setChecked(true);
 
-
         List<EventsPaidModel.ResultBean.DocumentsBean> documentList = eventsPaidDetails.getDocuments();
 
         for (int i = 0; i < documentList.size(); i++) {
-
             if (documentList.get(i).getDocument_type().equals("invitationdocument")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.layout_add_document, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 docsLayoutsList.add(ll);
                 ll_documents.addView(rowView, ll_documents.getChildCount() - 1);
-                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
+                ((EditText) rowView.findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getDocument_path());
             } else if (documentList.get(i).getDocument_type().equals("invitationimage")) {
                 imageList.add(new MasterModel(documentList.get(i).getDocument_path(), IMAGE_LINK + "feed_doc/" + documentList.get(i).getDocument_path()));
             }
         }
+
+        rv_images.setAdapter(new ImagesAdapter());
     }
 
     private void setEventHandler() {
@@ -472,6 +479,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                     if (grpDetails.isChecked()) {
                         JsonObject jsonObject = new JsonObject();
                         jsonObject.addProperty("mode", grpDetails.getId());
+                        jsonObject.addProperty("id", "0");
                         selectedPaymentModes.add(jsonObject);
                         selectedGroupsName.append(grpDetails.getName()).append(", ");
                     }
@@ -481,14 +489,14 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
 
                 for (int i = 0; i < selectedPaymentModes.size(); i++) {
                     JsonObject s = selectedPaymentModes.get(i).getAsJsonObject();
-                    if (s.getAsString().equals("paymentlink")) {
+                    if (s.get("mode").getAsString().equals("paymentlink")) {
                         isPaymentLinkSelected = true;
                         break;
                     }
                 }
 
-                if (isPaymentLinkSelected) edt_paytm_link.setVisibility(View.VISIBLE);
-                else edt_paytm_link.setVisibility(View.GONE);
+                if (isPaymentLinkSelected) edt_paylink.setVisibility(View.VISIBLE);
+                else edt_paylink.setVisibility(View.GONE);
 
                 if (selectedGroupsName.toString().length() != 0) {
                     String selectedGroupsNameStr = selectedGroupsName.substring(0, selectedGroupsName.toString().length() - 2);
@@ -641,15 +649,15 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_paytm_link.getVisibility() == View.VISIBLE) {
-            if (!Utilities.isWebsiteValid(edt_paytm_link.getText().toString().trim())) {
-                edt_paytm_link.setError("Please enter valid website");
-                edt_paytm_link.requestFocus();
-                edt_paytm_link.getParent().requestChildFocus(edt_paytm_link, edt_paytm_link);
+        if (edt_paylink.getVisibility() == View.VISIBLE) {
+            if (!Utilities.isWebsiteValid(edt_paylink.getText().toString().trim())) {
+                edt_paylink.setError("Please enter valid website");
+                edt_paylink.requestFocus();
+                edt_paylink.getParent().requestChildFocus(edt_paylink, edt_paylink);
                 return;
             }
         } else {
-            edt_paytm_link.setText("");
+            edt_paylink.setText("");
         }
 
         String is_online_event = cb_online_event.isChecked() ? "1" : "0";
@@ -661,6 +669,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", "0");
                 jsonObject.addProperty("document_type", "invitationdocument");
                 jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 documentsArray.add(jsonObject);
@@ -670,6 +679,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         for (int i = 0; i < imageList.size(); i++) {
             if (!imageList.get(i).getName().equals("")) {
                 JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", "0");
                 jsonObject.addProperty("document_type", "invitationimage");
                 jsonObject.addProperty("document", imageList.get(i).getName());
                 documentsArray.add(jsonObject);
@@ -705,14 +715,14 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("earlybird_price_duedate", earlyBirdDueDate);
         mainObj.addProperty("normal_price_duedate", normalDueDate);
         mainObj.addProperty("is_online_events", is_online_event);
-        mainObj.addProperty("payment_link", edt_paytm_link.getText().toString().trim());
+        mainObj.addProperty("payment_link", edt_paylink.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
         mainObj.add("document_path", documentsArray);
         mainObj.add("payment_mode", selectedPaymentModes);
 
         if (Utilities.isNetworkAvailable(context)) {
-            new AddPaidEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+            new EditPaidEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -735,9 +745,9 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         docsLayoutsList.remove(view.getParent());
     }
 
-    public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+    private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
 
-        public ImagesAdapter() {
+        ImagesAdapter() {
 
         }
 
@@ -821,6 +831,69 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                 imv_image_delete = view.findViewById(R.id.imv_image_delete);
 
             }
+        }
+    }
+
+    private class PaymentAccountAdapter extends RecyclerView.Adapter<PaymentAccountAdapter.MyViewHolder> {
+
+        private List<GroupPaymentAccountModel.ResultBean> paymentList;
+
+        public PaymentAccountAdapter(List<GroupPaymentAccountModel.ResultBean> paymentList) {
+            this.paymentList = paymentList;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_bank, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.tv_alias_name.setText(paymentList.get(position).getNick_alias_name());
+            holder.tv_account_holder_name.setText(paymentList.get(position).getAccount_holder_name());
+            holder.tv_bank_name.setText(paymentList.get(position).getBank_name());
+            holder.tv_account_number.setText(paymentList.get(position).getAccount_number());
+            holder.tv_ifsc_code.setText(paymentList.get(position).getIfsc_code());
+
+            holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    paymentAccountId = paymentList.get(position).getPayment_account_id();
+                    edt_payment_account.setText(paymentList.get(position).getNick_alias_name());
+                    paymentDialog.dismiss();
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return paymentList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CardView cv_mainlayout;
+            private TextView tv_alias_name, tv_account_holder_name, tv_bank_name, tv_account_number, tv_ifsc_code;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+                tv_alias_name = view.findViewById(R.id.tv_alias_name);
+                tv_account_holder_name = view.findViewById(R.id.tv_account_holder_name);
+                tv_bank_name = view.findViewById(R.id.tv_bank_name);
+                tv_account_number = view.findViewById(R.id.tv_account_number);
+                tv_ifsc_code = view.findViewById(R.id.tv_ifsc_code);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
     }
 
@@ -1079,7 +1152,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         paymentList = pojoDetails.getResult();
                         if (paymentList.size() > 0) {
-//                            showPaymentAccountListDialog(paymentList);
+                            showPaymentAccountListDialog(paymentList);
                         }
                     } else {
                         Utilities.showAlertDialog(context, message, false);
@@ -1091,9 +1164,34 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
+
+        private void showPaymentAccountListDialog(List<GroupPaymentAccountModel.ResultBean> paymentList) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.dialog_paymentaccount_list, null);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            builder.setView(view);
+            builder.setTitle("Select Payment Account");
+            builder.setCancelable(false);
+
+            final RecyclerView rv_payment = view.findViewById(R.id.rv_payment);
+            rv_payment.setLayoutManager(new LinearLayoutManager(context));
+            rv_payment.setAdapter(new PaymentAccountAdapter(paymentList));
+
+            builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            paymentDialog = builder.create();
+            paymentDialog.show();
+        }
+
     }
 
-    private class AddPaidEvent extends AsyncTask<String, Void, String> {
+    private class EditPaidEvent extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -1106,7 +1204,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.PAIDEVENTSAPI, params[0]);
+//            res = APICall.JSONAPICall(ApplicationConstants.PAIDEVENTSAPI, params[0]);
             return res.trim();
         }
 

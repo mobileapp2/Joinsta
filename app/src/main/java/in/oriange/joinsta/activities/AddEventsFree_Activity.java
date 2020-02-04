@@ -453,9 +453,9 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         docsLayoutsList.remove(view.getParent());
     }
 
-    public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+    private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
 
-        public ImagesAdapter() {
+        ImagesAdapter() {
 
         }
 

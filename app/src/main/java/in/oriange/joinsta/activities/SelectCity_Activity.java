@@ -55,7 +55,7 @@ public class SelectCity_Activity extends AppCompatActivity {
 
     private EditText edt_search_city;
     private RecyclerView rv_city;
-    private LinearLayout ll_user_current_location;
+    private LinearLayout ll_user_current_location, ll_recent_city;
     private TextView tv_recent_city;
     private String userId;
 
@@ -81,6 +81,7 @@ public class SelectCity_Activity extends AppCompatActivity {
 
         edt_search_city = findViewById(R.id.edt_search_city);
         ll_user_current_location = findViewById(R.id.ll_user_current_location);
+        ll_recent_city = findViewById(R.id.ll_recent_city);
         tv_recent_city = findViewById(R.id.tv_recent_city);
         rv_city = findViewById(R.id.rv_city);
         rv_city.setLayoutManager(new LinearLayoutManager(context));
@@ -110,7 +111,12 @@ public class SelectCity_Activity extends AppCompatActivity {
     private void getSessionDetails() {
         try {
             session = new UserSessionManager(context);
-            tv_recent_city.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            String city = session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO);
+
+            if (city == null)
+                ll_recent_city.setVisibility(View.GONE);
+            else
+                tv_recent_city.setText(city);
 
         } catch (Exception e) {
             e.printStackTrace();
