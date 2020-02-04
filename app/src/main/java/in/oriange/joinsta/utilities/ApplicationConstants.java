@@ -11,6 +11,26 @@ public class ApplicationConstants {
     public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
     public static final String NUMVERIFY_ACCESS_TOKEN = "66471b999885e2c244a615e17aae423f";
 
+
+    //CC AVENUE CONSTANTS
+
+    public static final String ACCESS_CODE = "AVHT83GB59BP46THPB";
+    public static final String MERCHANT_ID = "153211";
+    public static final String CURRENCY = "INR";
+    public static final String REDIRECT_URL = "https://www.todojeeinsurance.in/includes/ccavResponseHandler.php";
+    public static final String CANCEL_URL = "https://www.todojeeinsurance.in/includes/ccavResponseHandler.php";
+    public static final String RSA_KEY_URL = "https://www.todojeeinsurance.in/includes/GetRSA.php";
+    public static final String TRANS_URL = "https://secure.ccavenue.com/transaction/initTrans";
+
+
+    //PATYM CONSTANTS
+
+    public static final String MID = "zTsnTb54694269714218"; /// your merchant key
+    public static final String PAYTMURL = "https://meravahan.in/paytm/generateChecksum.php";
+    public static final String TRANSSTATUSURL = "https://meravahan.in/paytm/transaction_status.php";
+
+
+
     // BETA API LINK
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
@@ -64,5 +84,6 @@ public class ApplicationConstants {
     public static final String FREEEVENTSAPI = API_LINK + "free_events.php";
     public static final String EVENTSTYPEAPI = API_LINK + "event_types.php";
     public static final String PAYMENTACCOUNTAPI = API_LINK + "payment_account.php";
+    public static final String BUYPLANAPI = API_LINK + "buy_plan.php";
 
 }
