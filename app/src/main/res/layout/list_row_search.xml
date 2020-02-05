@@ -85,17 +85,6 @@
                     android:text="This is the sub sub heading"
                     android:textColor="@color/darkGray" />
 
-                <TextView
-                    android:id="@+id/tv_offers"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingTop="2dp"
-                    android:paddingRight="5dp"
-                    android:text="This is the sub sub heading"
-                    android:textColor="@color/colorPrimary"
-                    android:visibility="gone" />
-
             </LinearLayout>
 
             <RelativeLayout
@@ -165,6 +154,16 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_mutual_groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

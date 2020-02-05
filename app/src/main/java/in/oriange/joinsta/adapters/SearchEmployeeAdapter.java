@@ -3,6 +3,7 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -27,10 +28,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.MutualGroupsList_Activity;
 import in.oriange.joinsta.activities.ViewSearchEmpDetails_Activity;
+import in.oriange.joinsta.models.MutualGroupsModel;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -138,6 +143,13 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             holder.btn_order_online.setVisibility(View.INVISIBLE);
         }
 
+        if (searchDetails.getCommon_groups_count() > 0) {
+            holder.tv_mutual_groups.setVisibility(View.VISIBLE);
+            holder.tv_mutual_groups.setText(searchDetails.getCommon_groups_count() + " Mutual groups found");
+            holder.tv_mutual_groups.setPaintFlags(holder.tv_mutual_groups.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        } else {
+            holder.tv_mutual_groups.setVisibility(View.GONE);
+        }
 
 //        float scale = context.getResources().getDisplayMetrics().density;
 //        final int dpAsPixels = (int) (5 * scale + 0.5f);
@@ -209,6 +221,20 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
 //                });
 //            }
 //        });
+
+        holder.tv_mutual_groups.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<MutualGroupsModel> mutualGroupsList = new ArrayList<>();
+
+                for (SearchDetailsModel.ResultBean.EmployeesBean.CommonGroupsDataBean groups : searchDetails.getCommon_groups_data()) {
+                    mutualGroupsList.add(new MutualGroupsModel(groups.getId(), groups.getGroup_name(), groups.getGroup_code()));
+                }
+
+                context.startActivity(new Intent(context, MutualGroupsList_Activity.class)
+                        .putExtra("mutualGroupsList", (Serializable) mutualGroupsList));
+            }
+        });
 
         holder.btn_enquire.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -396,7 +422,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
         private Button btn_enquire, btn_caldist, btn_order_online;
-        private TextView tv_heading, tv_subheading, tv_subsubheading;
+        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_mutual_groups;
 
         public MyViewHolder(View view) {
             super(view);
@@ -404,6 +430,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             tv_heading = view.findViewById(R.id.tv_heading);
             tv_subheading = view.findViewById(R.id.tv_subheading);
             tv_subsubheading = view.findViewById(R.id.tv_subsubheading);
+            tv_mutual_groups = view.findViewById(R.id.tv_mutual_groups);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             progressBar = view.findViewById(R.id.progressBar);
             btn_enquire = view.findViewById(R.id.btn_enquire);

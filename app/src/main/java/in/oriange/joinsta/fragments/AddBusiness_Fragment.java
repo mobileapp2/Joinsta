@@ -1001,6 +1001,7 @@ public class AddBusiness_Fragment extends Fragment {
 //                return;
 //            }
 //        }
+
 //        if (edt_select_area.getText().toString().trim().isEmpty()) {
 //            edt_select_area.setError("Please select area");
 //            edt_select_area.requestFocus();
