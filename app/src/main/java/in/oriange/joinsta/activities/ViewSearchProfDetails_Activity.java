@@ -77,9 +77,9 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
     private ImageView imv_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_mutual_groups;
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_mutual_groups, tv_order_online;
     private Button btn_enquire, btn_caldist;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_mutual_groups;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_mutual_groups, cv_order_online;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -120,6 +120,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
         cv_mutual_groups = findViewById(R.id.cv_mutual_groups);
+        cv_order_online = findViewById(R.id.cv_order_online);
 
         tv_name = findViewById(R.id.tv_name);
         tv_nature = findViewById(R.id.tv_nature);
@@ -136,6 +137,7 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         tv_acc_no = findViewById(R.id.tv_acc_no);
         tv_ifsc = findViewById(R.id.tv_ifsc);
         tv_mutual_groups = findViewById(R.id.tv_mutual_groups);
+        tv_order_online = findViewById(R.id.tv_order_online);
         imv_share = findViewById(R.id.imv_share);
 
         btn_enquire = findViewById(R.id.btn_enquire);
@@ -256,6 +258,13 @@ public class ViewSearchProfDetails_Activity extends AppCompatActivity {
         } else {
             cv_mutual_groups.setVisibility(View.GONE);
             tv_mutual_groups.setText("");
+        }
+
+        if (!searchDetails.getOrder_online().trim().isEmpty()) {
+            cv_order_online.setVisibility(View.VISIBLE);
+            tv_order_online.setText(searchDetails.getOrder_online());
+        } else {
+            cv_order_online.setVisibility(View.GONE);
         }
 
 //        if (!searchDetails.getTax_id().trim().isEmpty()) {

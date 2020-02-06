@@ -469,7 +469,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         }
     }
 
-    private void showImageDialog(String imageUrl) {
+    private void showImageDialog(final String imageUrl) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -477,6 +477,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
         final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
+        final ImageButton imb_download = promptView.findViewById(R.id.imb_download);
 
         Picasso.with(context)
                 .load(imageUrl)
@@ -488,6 +489,16 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+            }
+        });
+
+        imb_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(imageUrl, "2");
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
             }
         });
 
@@ -518,7 +529,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (Utilities.isNetworkAvailable(context))
-                    new DownloadDocument().execute(IMAGE_LINK + "feed_doc/" + documentList.get(which).getDocuments());
+                    new DownloadDocument().execute(IMAGE_LINK + "feed_doc/" + documentList.get(which).getDocuments(), "1");
                 else
                     Utilities.showMessage("Please check your internet connection", context, 2);
             }
@@ -682,6 +693,8 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         URL downloadurl = null;
         private ProgressDialog pd;
 
+        String TYPE = "";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -697,6 +710,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(String... params) {
+            TYPE = params[1];
             boolean success = false;
             HttpURLConnection httpURLConnection = null;
             InputStream inputStream = null;
@@ -758,46 +772,52 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             pd.dismiss();
             super.onPostExecute(aBoolean);
             if (aBoolean == true) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                Uri uri = Uri.parse("file://" + file);
-                if (downloadurl.toString().contains(".doc") || downloadurl.toString().contains(".docx")) {
-                    // Word document
-                    intent.setDataAndType(uri, "application/msword");
-                } else if (downloadurl.toString().contains(".pdf")) {
-                    // PDF file
-                    intent.setDataAndType(uri, "application/pdf");
-                } else if (downloadurl.toString().contains(".ppt") || downloadurl.toString().contains(".pptx")) {
-                    // Powerpoint file
-                    intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
-                } else if (downloadurl.toString().contains(".xls") || downloadurl.toString().contains(".xlsx")) {
-                    // Excel file
-                    intent.setDataAndType(uri, "application/vnd.ms-excel");
-                } else if (downloadurl.toString().contains(".zip") || downloadurl.toString().contains(".rar")) {
-                    // WAV audio file
-                    intent.setDataAndType(uri, "application/x-wav");
-                } else if (downloadurl.toString().contains(".rtf")) {
-                    // RTF file
-                    intent.setDataAndType(uri, "application/rtf");
-                } else if (downloadurl.toString().contains(".wav") || downloadurl.toString().contains(".mp3")) {
-                    // WAV audio file
-                    intent.setDataAndType(uri, "audio/x-wav");
-                } else if (downloadurl.toString().contains(".gif")) {
-                    // GIF file
-                    intent.setDataAndType(uri, "image/gif");
-                } else if (downloadurl.toString().contains(".jpg") || downloadurl.toString().contains(".jpeg") || downloadurl.toString().contains(".png")) {
-                    // JPG file
-                    intent.setDataAndType(uri, "image/jpeg");
-                } else if (downloadurl.toString().contains(".txt")) {
-                    // Text file
-                    intent.setDataAndType(uri, "text/plain");
-                } else if (downloadurl.toString().contains(".3gp") || downloadurl.toString().contains(".mpg") || downloadurl.toString().contains(".mpeg") || downloadurl.toString().contains(".mpe") || downloadurl.toString().contains(".mp4") || downloadurl.toString().contains(".avi")) {
-                    // Video files
-                    intent.setDataAndType(uri, "video/*");
-                } else {
-                    intent.setDataAndType(uri, "*/*");
+
+                if (TYPE.equals("1")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri uri = Uri.parse("file://" + file);
+                    if (downloadurl.toString().contains(".doc") || downloadurl.toString().contains(".docx")) {
+                        // Word document
+                        intent.setDataAndType(uri, "application/msword");
+                    } else if (downloadurl.toString().contains(".pdf")) {
+                        // PDF file
+                        intent.setDataAndType(uri, "application/pdf");
+                    } else if (downloadurl.toString().contains(".ppt") || downloadurl.toString().contains(".pptx")) {
+                        // Powerpoint file
+                        intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                    } else if (downloadurl.toString().contains(".xls") || downloadurl.toString().contains(".xlsx")) {
+                        // Excel file
+                        intent.setDataAndType(uri, "application/vnd.ms-excel");
+                    } else if (downloadurl.toString().contains(".zip") || downloadurl.toString().contains(".rar")) {
+                        // WAV audio file
+                        intent.setDataAndType(uri, "application/x-wav");
+                    } else if (downloadurl.toString().contains(".rtf")) {
+                        // RTF file
+                        intent.setDataAndType(uri, "application/rtf");
+                    } else if (downloadurl.toString().contains(".wav") || downloadurl.toString().contains(".mp3")) {
+                        // WAV audio file
+                        intent.setDataAndType(uri, "audio/x-wav");
+                    } else if (downloadurl.toString().contains(".gif")) {
+                        // GIF file
+                        intent.setDataAndType(uri, "image/gif");
+                    } else if (downloadurl.toString().contains(".jpg") || downloadurl.toString().contains(".jpeg") || downloadurl.toString().contains(".png")) {
+                        // JPG file
+                        intent.setDataAndType(uri, "image/jpeg");
+                    } else if (downloadurl.toString().contains(".txt")) {
+                        // Text file
+                        intent.setDataAndType(uri, "text/plain");
+                    } else if (downloadurl.toString().contains(".3gp") || downloadurl.toString().contains(".mpg") || downloadurl.toString().contains(".mpeg") || downloadurl.toString().contains(".mpe") || downloadurl.toString().contains(".mp4") || downloadurl.toString().contains(".avi")) {
+                        // Video files
+                        intent.setDataAndType(uri, "video/*");
+                    } else {
+                        intent.setDataAndType(uri, "*/*");
+                    }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else if (TYPE.equals("2")) {
+                    Utilities.showMessage("Image successfully downloaded", context, 1);
                 }
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
             }
         }

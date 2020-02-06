@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -287,7 +288,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         }
 
-        private void showImageDialog(String offerUrl) {
+        private void showImageDialog(final String offerUrl) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -295,6 +296,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
             final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
             final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
+            final ImageButton imb_download = promptView.findViewById(R.id.imb_download);
 
             Picasso.with(context)
                     .load(offerUrl)
@@ -306,6 +308,16 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
+                }
+            });
+
+            imb_download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Utilities.isNetworkAvailable(context))
+                        new DownloadDocument().execute(offerUrl);
+                    else
+                        Utilities.showMessage("Please check your internet connection", context, 2);
                 }
             });
 

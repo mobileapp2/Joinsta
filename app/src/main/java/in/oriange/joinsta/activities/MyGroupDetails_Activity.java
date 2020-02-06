@@ -128,8 +128,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cb_like = findViewById(R.id.cb_like);
 
         leadsList = new ArrayList<>();
-
-
     }
 
     private void getSessionDetails() {
@@ -180,6 +178,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_connect.setText("EXIT GROUP");
                 break;
         }
+
+        cv_events.setVisibility(View.GONE);
 
         int members = 0;
         if (leadsList != null) {

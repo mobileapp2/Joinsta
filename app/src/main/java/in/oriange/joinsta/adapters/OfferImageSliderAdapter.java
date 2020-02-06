@@ -3,7 +3,6 @@ package in.oriange.joinsta.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -15,8 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.bumptech.glide.Glide;
@@ -47,7 +44,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         this.context = context;
         this.bannerList = bannerList;
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Banners");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Offer Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 
@@ -83,7 +80,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
                 subject = bannerDetails.getBanner_name();
                 description = bannerDetails.getBanner_description();
                 if (Utilities.isNetworkAvailable(context)) {
-                    new DownloadDocument().execute(bannerDetails.getBanners_image());
+                    new DownloadDocumentForShare().execute(bannerDetails.getBanners_image());
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -117,7 +114,45 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         }
     }
 
-    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+    private void showImageDialog(final String offerUrl) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
+        final ImageButton imb_download = promptView.findViewById(R.id.imb_download);
+
+        Picasso.with(context)
+                .load(offerUrl)
+                .into(imv_offer);
+
+        final AlertDialog dialog = alertDialogBuilder.create();
+
+        imb_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+        imb_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(offerUrl);
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+
+        dialog.show();
+    }
+
+    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
         int lenghtOfFile = -1;
         int count = 0;
         int content = -1;
@@ -211,29 +246,96 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         }
     }
 
-    private void showImageDialog(String offerUrl) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setView(promptView);
+    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
 
-        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
 
-        Picasso.with(context)
-                .load(offerUrl)
-                .into(imv_offer);
+        }
 
-        final AlertDialog dialog = alertDialogBuilder.create();
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
 
-        imb_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocsfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        });
+            return success;
+        }
 
-        dialog.show();
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            if (aBoolean == true) {
+                Utilities.showMessage("Image successfully downloaded", context, 1);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
+            }
+        }
     }
 
 }
