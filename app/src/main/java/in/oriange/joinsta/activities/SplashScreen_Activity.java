@@ -148,7 +148,6 @@ public class SplashScreen_Activity extends Activity {
                     if ((isMandatory == 1) && (versionName < majorVersion)) {
                         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                         alertBuilder.setTitle("Update !!!");
-//                        alertBuilder.setIcon(R.drawable.icon_launcher);
                         alertBuilder.setMessage("We update the application regularly so we can make it better for you. Get the latest version for all of the available features and improvements.");
                         alertBuilder.setCancelable(false);
                         alertBuilder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
@@ -182,6 +181,11 @@ public class SplashScreen_Activity extends Activity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                if (session.isUserLoggedIn()) {
+                    startActivity(new Intent(context, MainDrawer_Activity.class).putExtra("startOrigin", 0));
+                } else {
+                    startActivity(new Intent(context, Login_Activity.class));
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -116,13 +117,13 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
 
     private void showImageDialog(final String offerUrl) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_image, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         alertDialogBuilder.setView(promptView);
 
         final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-        final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
-        final ImageButton imb_download = promptView.findViewById(R.id.imb_download);
+        final Button btn_download = promptView.findViewById(R.id.btn_download);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
 
         Picasso.with(context)
                 .load(offerUrl)
@@ -130,15 +131,14 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
 
         final AlertDialog dialog = alertDialogBuilder.create();
 
-        imb_close.setOnClickListener(new View.OnClickListener() {
+        btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
 
-
-        imb_download.setOnClickListener(new View.OnClickListener() {
+        btn_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Utilities.isNetworkAvailable(context))

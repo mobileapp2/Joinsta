@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -266,13 +265,13 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
         private void showImageDialog(final String offerUrl) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
-            View promptView = layoutInflater.inflate(R.layout.dialog_layout_offeriamge, null);
+            View promptView = layoutInflater.inflate(R.layout.dialog_layout_image, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
             alertDialogBuilder.setView(promptView);
 
             final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-            final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
-            final ImageButton imb_download = promptView.findViewById(R.id.imb_download);
+            final Button btn_download = promptView.findViewById(R.id.btn_download);
+            final Button btn_close = promptView.findViewById(R.id.btn_close);
 
             Picasso.with(context)
                     .load(offerUrl)
@@ -280,14 +279,14 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
             final AlertDialog dialog = alertDialogBuilder.create();
 
-            imb_close.setOnClickListener(new View.OnClickListener() {
+            btn_close.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialog.dismiss();
                 }
             });
 
-            imb_download.setOnClickListener(new View.OnClickListener() {
+            btn_download.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (Utilities.isNetworkAvailable(context))
