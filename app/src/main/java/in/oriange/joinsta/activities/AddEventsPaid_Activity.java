@@ -68,8 +68,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -95,7 +98,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
+    private MaterialEditText edt_name, edt_type, edt_description, edt_organizer_name, edt_organizer_mobile, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_early_bird_amount, edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date,
             edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paylink, edt_payment_account,
             edt_attach_doc_multi;
@@ -138,6 +141,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         edt_name = findViewById(R.id.edt_name);
         edt_type = findViewById(R.id.edt_type);
         edt_description = findViewById(R.id.edt_description);
+        edt_organizer_name = findViewById(R.id.edt_organizer_name);
+        edt_organizer_mobile = findViewById(R.id.edt_organizer_mobile);
         edt_date = findViewById(R.id.edt_date);
         edt_start_time = findViewById(R.id.edt_start_time);
         edt_end_time = findViewById(R.id.edt_end_time);
@@ -210,6 +215,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         ll_documents.addView(rowView, ll_documents.getChildCount());
 
         imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
         rv_images.setAdapter(new ImagesAdapter());
     }
 
@@ -237,14 +244,11 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         eventDate = yyyyMMddDate(dayOfMonth, month + 1, year);
                         edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDate));
-
-                        mYear = year;
-                        mMonth = month;
-                        mDay = dayOfMonth;
+                        edt_normal_due_date.setText("");
+                        edt_early_bird_due_date.setText("");
                     }
                 }, mYear, mMonth, mDay);
                 try {
-
                     dialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -324,22 +328,32 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
-        edt_early_bird_due_date.setOnClickListener(new View.OnClickListener() {
+        edt_normal_due_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        earlyBirdDueDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_early_bird_due_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", earlyBirdDueDate));
+                        try {
+                            Date event = new SimpleDateFormat("yyyy-MM-dd").parse(eventDate);
+                            Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
 
-                        mYear = year;
-                        mMonth = month;
-                        mDay = dayOfMonth;
+                            boolean isBefore = normal.after(event);
+
+                            if (isBefore) {
+                                Utilities.showMessage("Normal payment due date cannot be after event date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        normalDueDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_normal_due_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", normalDueDate));
+                        edt_early_bird_due_date.setText("");
                     }
                 }, mYear, mMonth, mDay);
                 try {
-
                     dialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -348,22 +362,31 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
-        edt_normal_due_date.setOnClickListener(new View.OnClickListener() {
+        edt_early_bird_due_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        normalDueDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_normal_due_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", normalDueDate));
+                        try {
+                            Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(normalDueDate);
+                            Date early = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
 
-                        mYear = year;
-                        mMonth = month;
-                        mDay = dayOfMonth;
+                            boolean isBefore = early.after(normal);
+
+                            if (isBefore) {
+                                Utilities.showMessage("Early bird payment due date cannot be after normal payment due date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        earlyBirdDueDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_early_bird_due_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", earlyBirdDueDate));
                     }
                 }, mYear, mMonth, mDay);
                 try {
-
                     dialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -533,6 +556,20 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             return;
         }
 
+        if (edt_organizer_name.getText().toString().trim().isEmpty()) {
+            edt_organizer_name.setError("Please enter organizer name");
+            edt_organizer_name.requestFocus();
+            edt_organizer_name.getParent().requestChildFocus(edt_organizer_name, edt_organizer_name);
+            return;
+        }
+
+        if (!Utilities.isValidMobileno(edt_organizer_mobile.getText().toString().trim())) {
+            edt_organizer_mobile.setError("Please enter valid mobile number");
+            edt_organizer_mobile.requestFocus();
+            edt_organizer_mobile.getParent().requestChildFocus(edt_organizer_mobile, edt_organizer_mobile);
+            return;
+        }
+
         if (edt_date.getText().toString().trim().isEmpty()) {
             edt_date.setError("Please select date");
             edt_date.requestFocus();
@@ -568,20 +605,6 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_early_bird_amount.getText().toString().trim().isEmpty()) {
-            edt_early_bird_amount.setError("Please enter amount");
-            edt_early_bird_amount.requestFocus();
-            edt_early_bird_amount.getParent().requestChildFocus(edt_early_bird_amount, edt_early_bird_amount);
-            return;
-        }
-
-        if (edt_early_bird_due_date.getText().toString().trim().isEmpty()) {
-            edt_early_bird_due_date.setError("Please select date");
-            edt_early_bird_due_date.requestFocus();
-            edt_early_bird_due_date.getParent().requestChildFocus(edt_early_bird_due_date, edt_early_bird_due_date);
-            return;
-        }
-
         if (edt_normal_amount.getText().toString().trim().isEmpty()) {
             edt_normal_amount.setError("Please enter amount");
             edt_normal_amount.requestFocus();
@@ -593,6 +616,34 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             edt_normal_due_date.setError("Please select date");
             edt_normal_due_date.requestFocus();
             edt_normal_due_date.getParent().requestChildFocus(edt_normal_due_date, edt_normal_due_date);
+            return;
+        }
+
+        if (edt_early_bird_amount.getText().toString().trim().isEmpty()) {
+            edt_early_bird_amount.setError("Please enter amount");
+            edt_early_bird_amount.requestFocus();
+            edt_early_bird_amount.getParent().requestChildFocus(edt_early_bird_amount, edt_early_bird_amount);
+            return;
+        }
+
+        try {
+            float normalAmount = Float.parseFloat(edt_normal_amount.getText().toString().trim());
+            float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount.getText().toString().trim());
+
+            if (earlyBirdAmount > normalAmount) {
+                Utilities.showMessage("Early bird discount amount cannot be greater than normal amount", context, 2);
+                return;
+            }
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+
+        if (edt_early_bird_due_date.getText().toString().trim().isEmpty()) {
+            edt_early_bird_due_date.setError("Please select date");
+            edt_early_bird_due_date.requestFocus();
+            edt_early_bird_due_date.getParent().requestChildFocus(edt_early_bird_due_date, edt_early_bird_due_date);
             return;
         }
 
@@ -645,6 +696,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("group_id", groupId);
         mainObj.addProperty("name", edt_name.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
+        mainObj.addProperty("organizer_name", edt_organizer_name.getText().toString().trim());
+        mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
         mainObj.addProperty("event_date", eventDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
@@ -669,6 +722,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("payment_link", edt_paylink.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
+        mainObj.addProperty("is_active", "1");
         mainObj.add("document_path", documentsArray);
         mainObj.add("payment_mode", selectedPaymentModes);
 
@@ -761,8 +815,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    imageList.remove(position);
-                    notifyDataSetChanged();
+                    imageList.set(position, new MasterModel("", ""));
+                    rv_images.setAdapter(new ImagesAdapter());
                 }
             });
         }
@@ -886,7 +940,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
             if (requestCode == DOCUMENT_REQUEST) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "1");
+                new UploadImageAndDocument().execute("uploadEventDoc", list.get(0).getPath(), "1");
             }
         }
 
@@ -928,10 +982,10 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+        new UploadImageAndDocument().execute("uploadEventImage", photoFileToUpload.getPath(), "0");
     }
 
-    private class UploadImage extends AsyncTask<String, Integer, String> {
+    private class UploadImageAndDocument extends AsyncTask<String, Integer, String> {
         private String TYPE = "";
 
         @Override
@@ -944,13 +998,13 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            TYPE = params[1];
+            TYPE = params[2];
             StringBuilder res = new StringBuilder();
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
                 multipart.addFormField("request_type", "uploadFeedFile");
-                multipart.addFilePart("document", new File(params[0]));
+                multipart.addFilePart("document", new File(params[1]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {

@@ -12,7 +12,7 @@ public class EventsPaidModel implements Serializable {
     /**
      * type : success
      * message : get paid event successfully!
-     * result : [{"id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]},{"id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]},{"id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]}]
+     * result : [{"paid_events_id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","paid_events_id":"53"},{"payment_mode":"offline","payment_link":"","paid_events_id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","paid_events_id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]},{"paid_events_id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","paid_events_id":"53"},{"payment_mode":"offline","payment_link":"","paid_events_id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","paid_events_id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]},{"paid_events_id":"34","event_code":"0034","event_type_id":"2","group_id":"47","name":"Jdjsjsj","description":"Kdskkala dNsks sks r ybrje djdn dNsks dNsks s snsns ekskd dNsks kd ejks","event_date":"0000-00-00","event_start_time":"12:00:00","event_end_time":"18:30:00","venue_address":"Vighnaharta Colony, Hadapsar Gaon, Hadapsar, Pune, Maharashtra 411028, India","venue_longitude":"73.9376396","venue_latitude":"18.497812300000003","message_for_paidmember":"Jdksnf jdksnf kygog. F ho and ixi fsgbwgb of besibd s snsns sks t fkdkdodkfj","message_for_unpaidmember":"Bdhbd ddkskskwn disnF wkdndbsNskna djfnr frkd d sks dNsks nrje jdksnf djfnr djdksmwndndj","is_offline_payments_allowed":"1","is_online_events":"1","is_confirmation_required":"0","is_displaytomembers":"1","event_city":"Pune","display_in_city":"1","payment_account_id":"4","remark":"Jdksnf dNsks s ng ejebee and DnsksnsNskvog ndf d dNsks DnsksnsNskvog snsns sb","earlybird_price":"100","normal_price":"1000","earlybird_price_duedate":"2020-02-05","normal_price_duedate":"2020-02-08","created_by":"271","updated_by":"271","created_at":"2020-02-04 04:19:28","updated_at":"2020-02-04 04:19:28","group_name":"Yuva Association Latur ","group_code":"0047","event_type_name":"Knowledge","paidevents_paymentoptions":[{"payment_mode":"online","payment_link":"","paid_events_id":"53"},{"payment_mode":"offline","payment_link":"","paid_events_id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","paid_events_id":"55"}],"documents":[{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]}]
      */
 
     private String type;
@@ -45,7 +45,7 @@ public class EventsPaidModel implements Serializable {
 
     public static class ResultBean implements Serializable {
         /**
-         * id : 34
+         * paid_events_id : 34
          * event_code : 0034
          * event_type_id : 2
          * group_id : 47
@@ -78,11 +78,11 @@ public class EventsPaidModel implements Serializable {
          * group_name : Yuva Association Latur
          * group_code : 0047
          * event_type_name : Knowledge
-         * paidevents_paymentoptions : [{"payment_mode":"online","payment_link":"","id":"53"},{"payment_mode":"offline","payment_link":"","id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","id":"55"}]
+         * paidevents_paymentoptions : [{"payment_mode":"online","payment_link":"","paid_events_id":"53"},{"payment_mode":"offline","payment_link":"","paid_events_id":"54"},{"payment_mode":"paymentlink","payment_link":"www.google.com","paid_events_id":"55"}]
          * documents : [{"document_type":"invitationdocument","document_path":"5-android-fundamentals-services-m5-slides-20200203104831.pdf"},{"document_type":"invitationimage","document_path":"uplimg-20200203104816.png"}]
          */
 
-        private String id;
+        private String paid_events_id;
         private String event_code;
         private String event_type_id;
         private String group_id;
@@ -115,16 +115,22 @@ public class EventsPaidModel implements Serializable {
         private String group_name;
         private String group_code;
         private String event_type_name;
+        private String mobile;
+        private String organizer_name;
+        private String payment_link;
+        private String alias_name;
+        private String is_early_payment_applicable;
+        private String is_normal_payment_applicable;
+        private String payment_status;
         private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
-
-        public String getId() {
-            return id;
+        public String getid() {
+            return paid_events_id;
         }
 
-        public void setId(String id) {
-            this.id = id;
+        public void setid(String paid_events_id) {
+            this.paid_events_id = paid_events_id;
         }
 
         public String getEvent_code() {
@@ -328,7 +334,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getCreated_by() {
-            return created_by;
+            if (created_by != null) {
+                return created_by;
+            } else {
+                return "";
+            }
         }
 
         public void setCreated_by(String created_by) {
@@ -395,8 +405,68 @@ public class EventsPaidModel implements Serializable {
             this.event_type_name = event_type_name;
         }
 
+        public String getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
+        }
+
+        public String getOrganizer_name() {
+            return organizer_name;
+        }
+
+        public void setOrganizer_name(String organizer_name) {
+            this.organizer_name = organizer_name;
+        }
+
+        public String getPayment_link() {
+            return payment_link;
+        }
+
+        public void setPayment_link(String payment_link) {
+            this.payment_link = payment_link;
+        }
+
+        public String getAlias_name() {
+            if (alias_name != null) {
+                return alias_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setAlias_name(String alias_name) {
+            this.alias_name = alias_name;
+        }
+
+        public String getIs_early_payment_applicable() {
+            return is_early_payment_applicable;
+        }
+
+        public void setIs_early_payment_applicable(String is_early_payment_applicable) {
+            this.is_early_payment_applicable = is_early_payment_applicable;
+        }
+
+        public String getIs_normal_payment_applicable() {
+            return is_normal_payment_applicable;
+        }
+
+        public void setIs_normal_payment_applicable(String is_normal_payment_applicable) {
+            this.is_normal_payment_applicable = is_normal_payment_applicable;
+        }
+
+        public String getPayment_status() {
+            return payment_status;
+        }
+
+        public void setPayment_status(String payment_status) {
+            this.payment_status = payment_status;
+        }
+
         public String getDateTime() {
-            return "Event is held on " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
+            return changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
                     " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
         }
 
@@ -420,12 +490,11 @@ public class EventsPaidModel implements Serializable {
             /**
              * payment_mode : online
              * payment_link :
-             * id : 53
+             * paid_events_id : 53
              */
 
             private String payment_mode;
-            private String payment_link;
-            private String id;
+            private String paid_events_id;
 
             public String getPayment_mode() {
                 return payment_mode;
@@ -435,20 +504,12 @@ public class EventsPaidModel implements Serializable {
                 this.payment_mode = payment_mode;
             }
 
-            public String getPayment_link() {
-                return payment_link;
-            }
-
-            public void setPayment_link(String payment_link) {
-                this.payment_link = payment_link;
-            }
-
             public String getId() {
-                return id;
+                return paid_events_id;
             }
 
-            public void setId(String id) {
-                this.id = id;
+            public void setId(String paid_events_id) {
+                this.paid_events_id = paid_events_id;
             }
         }
 
@@ -460,6 +521,16 @@ public class EventsPaidModel implements Serializable {
 
             private String document_type;
             private String document_path;
+            private String document_id;
+
+            public DocumentsBean(String document_type, String document_path, String document_id) {
+                this.document_type = document_type;
+                this.document_path = document_path;
+                this.document_id = document_id;
+            }
+
+            public DocumentsBean() {
+            }
 
             public String getDocument_type() {
                 return document_type;
@@ -475,6 +546,14 @@ public class EventsPaidModel implements Serializable {
 
             public void setDocument_path(String document_path) {
                 this.document_path = document_path;
+            }
+
+            public String getDocument_id() {
+                return document_id;
+            }
+
+            public void setDocument_id(String document_id) {
+                this.document_id = document_id;
             }
         }
     }

@@ -92,7 +92,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
+    private MaterialEditText edt_name, edt_type, edt_description, edt_organizer_name, edt_organizer_mobile, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_remark,
             edt_attach_doc_multi;
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city;
@@ -133,6 +133,8 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         edt_name = findViewById(R.id.edt_name);
         edt_type = findViewById(R.id.edt_type);
         edt_description = findViewById(R.id.edt_description);
+        edt_organizer_name = findViewById(R.id.edt_organizer_name);
+        edt_organizer_mobile = findViewById(R.id.edt_organizer_mobile);
         edt_date = findViewById(R.id.edt_date);
         edt_start_time = findViewById(R.id.edt_start_time);
         edt_end_time = findViewById(R.id.edt_end_time);
@@ -194,6 +196,8 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         edt_name.setText(eventDetails.getName());
         edt_type.setText(eventDetails.getEvent_type_name());
         edt_description.setText(eventDetails.getDescription());
+        edt_organizer_name.setText(eventDetails.getOrganizer_name());
+        edt_organizer_mobile.setText(eventDetails.getMobile());
         edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_date()));
         edt_start_time.setText(eventDetails.getEvent_start_time());
         edt_end_time.setText(eventDetails.getEvent_end_time());
@@ -217,7 +221,6 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         List<EventsFreeModel.ResultBean.DocumentsBean> documentList = eventDetails.getDocuments();
 
         for (int i = 0; i < documentList.size(); i++) {
-
             if (documentList.get(i).getDocument_type().equals("invitationdocument")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.layout_add_document, null);
@@ -228,6 +231,21 @@ public class EditEventsFree_Activity extends AppCompatActivity {
             } else if (documentList.get(i).getDocument_type().equals("invitationimage")) {
                 imageList.add(new MasterModel(documentList.get(i).getDocument_path(), IMAGE_LINK + "feed_doc/" + documentList.get(i).getDocument_path()));
             }
+        }
+
+        switch (imageList.size()) {
+            case 0:
+                imageList.add(new MasterModel("", ""));
+                imageList.add(new MasterModel("", ""));
+                imageList.add(new MasterModel("", ""));
+                break;
+            case 1:
+                imageList.add(new MasterModel("", ""));
+                imageList.add(new MasterModel("", ""));
+                break;
+            case 2:
+                imageList.add(new MasterModel("", ""));
+                break;
         }
 
         rv_images.setAdapter(new ImagesAdapter());
@@ -387,6 +405,20 @@ public class EditEventsFree_Activity extends AppCompatActivity {
             return;
         }
 
+        if (edt_organizer_name.getText().toString().trim().isEmpty()) {
+            edt_organizer_name.setError("Please enter organizer name");
+            edt_organizer_name.requestFocus();
+            edt_organizer_name.getParent().requestChildFocus(edt_organizer_name, edt_organizer_name);
+            return;
+        }
+
+        if (!Utilities.isValidMobileno(edt_organizer_mobile.getText().toString().trim())) {
+            edt_organizer_mobile.setError("Please enter valid mobile number");
+            edt_organizer_mobile.requestFocus();
+            edt_organizer_mobile.getParent().requestChildFocus(edt_organizer_mobile, edt_organizer_mobile);
+            return;
+        }
+
         if (edt_date.getText().toString().trim().isEmpty()) {
             edt_date.setError("Please select date");
             edt_date.requestFocus();
@@ -427,26 +459,36 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         String is_displaytomembers = cb_displayto_members.isChecked() ? "1" : "0";
         String display_in_city = cb_displayin_city.isChecked() ? "1" : "0";
 
+        ArrayList<EventsFreeModel.ResultBean.DocumentsBean> docList = new ArrayList<>();
+        ArrayList<EventsFreeModel.ResultBean.DocumentsBean> docList2 = new ArrayList<>();
         JsonArray documentsArray = new JsonArray();
 
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("id", "0");
-                jsonObject.addProperty("document_type", "invitationdocument");
-                jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
-                documentsArray.add(jsonObject);
+                docList.add(new EventsFreeModel.ResultBean.DocumentsBean("invitationdocument", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString(), "0"));
             }
         }
 
         for (int i = 0; i < imageList.size(); i++) {
             if (!imageList.get(i).getName().equals("")) {
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("id", "0");
-                jsonObject.addProperty("document_type", "invitationimage");
-                jsonObject.addProperty("document", imageList.get(i).getName());
-                documentsArray.add(jsonObject);
+                docList.add(new EventsFreeModel.ResultBean.DocumentsBean("invitationimage", imageList.get(i).getName(), "0"));
             }
+        }
+
+        for (int i = 0; i < docList.size(); i++) {
+            if (i <= eventDetails.getDocuments().size() - 1) {
+                docList2.add(new EventsFreeModel.ResultBean.DocumentsBean(docList.get(i).getDocument_type(), docList.get(i).getDocument_path(), eventDetails.getDocuments().get(i).getDocument_id()));
+            } else {
+                docList2.add(new EventsFreeModel.ResultBean.DocumentsBean(docList.get(i).getDocument_type(), docList.get(i).getDocument_path(), "0"));
+            }
+        }
+
+        for (int i = 0; i < docList2.size(); i++) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("id", docList2.get(i).getDocument_id());
+            jsonObject.addProperty("document_type", docList2.get(i).getDocument_type());
+            jsonObject.addProperty("document", docList2.get(i).getDocument_path());
+            documentsArray.add(jsonObject);
         }
 
         JsonObject mainObj = new JsonObject();
@@ -457,12 +499,14 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("event_type_id", eventTypeId);
         mainObj.addProperty("name", edt_name.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
+        mainObj.addProperty("organizer_name", edt_organizer_name.getText().toString().trim());
+        mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
         mainObj.addProperty("event_date", eventDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
-        mainObj.addProperty("venue_longitude", latitude);
-        mainObj.addProperty("venue_latitude", longitude);
+        mainObj.addProperty("venue_longitude", longitude);
+        mainObj.addProperty("venue_latitude", latitude);
         mainObj.addProperty("is_confirmation_required", is_confirmation_required);
         mainObj.addProperty("is_online_event", is_online_event);
         mainObj.addProperty("is_displaytomembers", is_displaytomembers);
@@ -471,6 +515,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("display_in_city", display_in_city);
         mainObj.addProperty("event_category_id", "1");
         mainObj.addProperty("updated_by", userId);
+        mainObj.addProperty("is_active", "1");
         mainObj.add("document_path", documentsArray);
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -562,8 +607,8 @@ public class EditEventsFree_Activity extends AppCompatActivity {
             holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    imageList.remove(position);
-                    notifyDataSetChanged();
+                    imageList.set(position, new MasterModel("", ""));
+                    rv_images.setAdapter(new ImagesAdapter());
                 }
             });
         }
@@ -624,7 +669,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
 
             if (requestCode == DOCUMENT_REQUEST) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "1");
+                new UploadImageAndDocument().execute("uploadEventDoc", list.get(0).getPath(), "1");
             }
         }
 
@@ -666,10 +711,10 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+        new UploadImageAndDocument().execute("uploadEventImage", photoFileToUpload.getPath(), "0");
     }
 
-    private class UploadImage extends AsyncTask<String, Integer, String> {
+    private class UploadImageAndDocument extends AsyncTask<String, Integer, String> {
         private String TYPE = "";
 
         @Override
@@ -682,13 +727,13 @@ public class EditEventsFree_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            TYPE = params[1];
+            TYPE = params[2];
             StringBuilder res = new StringBuilder();
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
                 multipart.addFormField("request_type", "uploadFeedFile");
-                multipart.addFilePart("document", new File(params[0]));
+                multipart.addFilePart("document", new File(params[1]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {
@@ -765,6 +810,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                         }
                     } else {
                         Utilities.showAlertDialog(context, message, false);
+
                     }
                 }
             } catch (Exception e) {

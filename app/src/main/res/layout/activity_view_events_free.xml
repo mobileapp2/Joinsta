@@ -88,7 +88,7 @@
                     android:paddingRight="20dp"
                     android:text="Diwali Sales Event"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -120,11 +120,132 @@
             android:layout_marginRight="5dp"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_description"
+            <com.example.library.banner.BannerLayout
+                android:id="@+id/rv_images"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                app:autoPlaying="true"
+                app:centerScale="1.3"
+                app:itemSpace="10"
+                app:moveSpeed="1"
+                app:showIndicator="false" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_venue"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/icon_location"
+                            android:drawableTint="@color/colorAccent"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Venue"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/tv_venue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:longClickable="false"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Renapur naka-nanded naka, Latur Ring Rd, Latur, Maharashtra 413512"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_date_time"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableLeft="@drawable/icon_time"
+                            android:drawableTint="@color/colorAccent"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Date and Time"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/tv_time_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:longClickable="false"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:paddingBottom="2dp"
+                            android:text="Event is held on 27-Oct-2019 from 12:30 pm to 06:30 pm"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
@@ -137,8 +258,85 @@
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/tv_description"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="Are You Attending?"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tv_confirmation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:longClickable="false"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="2dp"
+                        android:text="(Confirmation of the attendee is required)"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp">
+
+                        <Button
+                            android:id="@+id/btn_yes"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="2.5dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/holo_green_light"
+                            android:text="👍🏻 Of course !"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btn_maybe"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="2.5dp"
+                            android:layout_weight="1"
+                            android:background="@android:color/holo_orange_dark"
+                            android:text="🤔 May be"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <com.borjabravo.readmoretextview.ReadMoreTextView
+                        android:id="@+id/tv_description"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
@@ -148,7 +346,9 @@
                         android:paddingBottom="2dp"
                         android:text="Diwali, Diwali, Deepavali is the Hindu festival of lights, usually lasting five days and celebrated during the Hindu Lunisolar month Kartika. One of the most popular festivals of Hinduism"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        app:colorClickableText="@color/primaryVeryDark"
+                        app:trimCollapsedText="show more" />
 
                     <TextView
                         android:id="@+id/tv_type"
@@ -169,7 +369,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_date_time"
+                android:id="@+id/cv_organizer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
@@ -186,14 +386,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/icon_date"
-                        android:drawableTint="@color/colorAccent"
+                        android:gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Date and Time"
+                        android:text="Organized By"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -201,122 +400,128 @@
                         android:layout_marginBottom="4dp"
                         android:background="@color/colorPrimary" />
 
-                    <TextView
-                        android:id="@+id/tv_time_date"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Event is held on 27-Oct-2019 from 12:30 pm to 06:30 pm"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <TextView
+                            android:id="@+id/tv_organizer_name"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="2.5dp"
+                            android:layout_weight="9"
+                            android:gravity="center_vertical"
+                            android:text="Priyesh Pawar"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                        <ImageButton
+                            android:id="@+id/imv_message_organizer"
+                            android:layout_width="0dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="2.5dp"
+                            android:layout_weight="1"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/icon_color_message" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_venue"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
+                android:layout_height="50dp"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_get_direction"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/icon_current_location"
-                        android:drawableTint="@color/colorAccent"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Venue"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:orientation="horizontal"
+                        android:padding="5dp">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        <ImageButton
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="2.5dp"
+                            android:layout_weight="1.5"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/icon_color_location" />
 
-                    <TextView
-                        android:id="@+id/tv_venue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Renapur naka-nanded naka, Latur Ring Rd, Latur, Maharashtra 413512"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="2.5dp"
+                            android:layout_weight="8.5"
+                            android:gravity="center_vertical"
+                            android:text="Get Direction"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/tv_view_on_map"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:gravity="end"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="View On Map"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
+                    </LinearLayout>
 
-                </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
-            </androidx.cardview.widget.CardView>
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cv_add_calendar"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_confirmation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <TextView
-                        android:id="@+id/tv_confirmation"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Confirmation of the attendee is required"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:orientation="horizontal"
+                        android:padding="5dp">
 
-                </LinearLayout>
+                        <ImageButton
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginRight="2.5dp"
+                            android:layout_weight="1.5"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/icon_color_calendar" />
 
-            </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="2.5dp"
+                            android:layout_weight="9"
+                            android:gravity="center_vertical"
+                            android:text="Add to calendar"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_remark"
@@ -336,14 +541,13 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/icon_info"
-                        android:drawableTint="@color/colorAccent"
+                        android:gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
                         android:text="Remark"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <View
                         android:layout_width="match_parent"
@@ -370,43 +574,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_images"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Invitation Images"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
                 android:id="@+id/cv_documents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -427,7 +594,7 @@
                         android:padding="5dp"
                         android:text="Invitation Documents"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <View
                         android:layout_width="match_parent"

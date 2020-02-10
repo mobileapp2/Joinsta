@@ -62,7 +62,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private BannerLayout rv_offer_images;
     private TextView tv_business_name, tv_title, tv_description, tv_validity, tv_url, tv_promo_code;
-    private CardView cv_validity, cv_url, cv_promo_code;
+    private CardView cv_url, cv_promo_code;
     private ImageButton imb_share;
 
     private MyOffersListModel.ResultBean offerDetails;
@@ -100,7 +100,6 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         rv_offer_images = findViewById(R.id.rv_offer_images);
         imb_share = findViewById(R.id.imb_share);
 
-        cv_validity = findViewById(R.id.cv_validity);
         cv_url = findViewById(R.id.cv_url);
         cv_promo_code = findViewById(R.id.cv_promo_code);
 
@@ -143,7 +142,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
             tv_validity.setText("Offer valid from " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", offerDetails.getStart_date()) + " to " +
                     changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", offerDetails.getEnd_date()));
         } else {
-            cv_validity.setVisibility(View.GONE);
+            tv_validity.setVisibility(View.GONE);
         }
 
         if (!offerDetails.getUrl().equals("")) {

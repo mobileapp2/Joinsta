@@ -179,7 +179,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 break;
         }
 
-        cv_events.setVisibility(View.GONE);
+//        cv_events.setVisibility(View.GONE);
 
         int members = 0;
         if (leadsList != null) {

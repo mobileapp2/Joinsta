@@ -11,7 +11,6 @@ public class ApplicationConstants {
     public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
     public static final String NUMVERIFY_ACCESS_TOKEN = "66471b999885e2c244a615e17aae423f";
 
-
     //CC AVENUE CONSTANTS
 
     public static final String ACCESS_CODE = "AVHT83GB59BP46THPB";
@@ -21,7 +20,6 @@ public class ApplicationConstants {
     public static final String CANCEL_URL = "https://www.todojeeinsurance.in/includes/ccavResponseHandler.php";
     public static final String RSA_KEY_URL = "https://www.todojeeinsurance.in/includes/GetRSA.php";
     public static final String TRANS_URL = "https://secure.ccavenue.com/transaction/initTrans";
-
 
     //PATYM CONSTANTS
 
@@ -35,12 +33,12 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     // BETA API LINK V2
-//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
 
     //LIVE API LINK V11
-    private static final String API_LINK = "http://joinsta.in/Api_v11/";
-    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+//    private static final String API_LINK = "http://joinsta.in/Api_v11/";
+//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";
     public static final String LOGINAPI = API_LINK + "login.php";

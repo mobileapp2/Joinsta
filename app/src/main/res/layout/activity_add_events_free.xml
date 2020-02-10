@@ -131,6 +131,62 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
+                        android:text="Organizer Details"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@color/colorPrimary" />
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_organizer_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name"
+                        android:inputType="textCapWords|textNoSuggestions"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_organizer_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Mobile"
+                        android:inputType="number"
+                        android:maxLength="10"
+                        android:textColorHint="@color/colorAccent"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
                         android:text="Date and Time"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
@@ -312,7 +368,7 @@
                         android:id="@+id/cb_displayto_members"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Display to other members?"
+                        android:text="Display to group members?"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -377,7 +433,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:text="ADD" />
+                        android:text="ADD"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

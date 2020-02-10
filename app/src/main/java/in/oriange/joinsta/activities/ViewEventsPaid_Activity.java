@@ -2,6 +2,7 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,20 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.bumptech.glide.Glide;
+import com.borjabravo.readmoretextview.ReadMoreTextView;
+import com.example.library.banner.BannerLayout;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
@@ -44,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
 import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -52,7 +56,6 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
-import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 
 public class ViewEventsPaid_Activity extends AppCompatActivity {
 
@@ -60,13 +63,17 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private ImageButton imv_back, imv_share, imv_edit, imv_delete;
-    private TextView tv_name, tv_type, tv_is_online, tv_description, tv_time_date, tv_venue, tv_view_on_map,
+    private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer;
+    private BannerLayout rv_images;
+    private ReadMoreTextView tv_description;
+    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
             tv_earlybird_price, tv_earlybird_due_date, tv_normal_price, tv_normal_due_date, tv_message_paid,
-            tv_message_unpaid, tv_remark;
-    private RecyclerView rv_images, rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_message_unpaid, cv_message_paid,
-            cv_price, cv_remark, cv_images, cv_documents;
+            tv_message_unpaid, tv_organizer_name, tv_remark;
+    private LinearLayout ll_paid_msg, ll_unpaid_msg;
+    private Button btn_buy;
+    private RecyclerView rv_documents;
+    private CardView cv_description, cv_date_time, cv_venue, cv_get_direction, cv_add_calendar, cv_message,
+            cv_price, cv_remark, cv_documents;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId;
@@ -94,6 +101,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         imv_share = findViewById(R.id.imv_share);
         imv_edit = findViewById(R.id.imv_edit);
         imv_delete = findViewById(R.id.imv_delete);
+        imv_message_organizer = findViewById(R.id.imv_message_organizer);
 
         tv_name = findViewById(R.id.tv_name);
         tv_type = findViewById(R.id.tv_type);
@@ -101,7 +109,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_description = findViewById(R.id.tv_description);
         tv_time_date = findViewById(R.id.tv_time_date);
         tv_venue = findViewById(R.id.tv_venue);
-        tv_view_on_map = findViewById(R.id.tv_view_on_map);
         tv_remark = findViewById(R.id.tv_remark);
         tv_earlybird_price = findViewById(R.id.tv_earlybird_price);
         tv_earlybird_due_date = findViewById(R.id.tv_earlybird_due_date);
@@ -109,22 +116,26 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_normal_due_date = findViewById(R.id.tv_normal_due_date);
         tv_message_paid = findViewById(R.id.tv_message_paid);
         tv_message_unpaid = findViewById(R.id.tv_message_unpaid);
+        tv_organizer_name = findViewById(R.id.tv_organizer_name);
+
+        ll_paid_msg = findViewById(R.id.ll_paid_msg);
+        ll_unpaid_msg = findViewById(R.id.ll_unpaid_msg);
+
+        btn_buy = findViewById(R.id.btn_buy);
 
         rv_images = findViewById(R.id.rv_images);
         rv_documents = findViewById(R.id.rv_documents);
-
-        rv_images.setLayoutManager(new GridLayoutManager(context, 3));
         rv_documents.setLayoutManager(new LinearLayoutManager(context));
 
         cv_description = findViewById(R.id.cv_description);
         cv_date_time = findViewById(R.id.cv_date_time);
         cv_venue = findViewById(R.id.cv_venue);
         cv_remark = findViewById(R.id.cv_remark);
-        cv_images = findViewById(R.id.cv_images);
         cv_documents = findViewById(R.id.cv_documents);
-        cv_message_unpaid = findViewById(R.id.cv_message_unpaid);
-        cv_message_paid = findViewById(R.id.cv_message_paid);
+        cv_message = findViewById(R.id.cv_message);
         cv_price = findViewById(R.id.cv_price);
+        cv_get_direction = findViewById(R.id.cv_get_direction);
+        cv_add_calendar = findViewById(R.id.cv_add_calendar);
 
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
@@ -151,6 +162,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void setDefault() {
@@ -158,44 +170,43 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
 
-        tv_type.setText(eventDetails.getEvent_type_name() + " event");
-
         if (eventDetails.getIs_online_events().equals("1"))
             tv_is_online.setVisibility(View.VISIBLE);
         else
             tv_is_online.setVisibility(View.GONE);
+
+        tv_venue.setText(eventDetails.getVenue_address());
+
+        tv_time_date.setText(eventDetails.getDateTime());
 
         if (eventDetails.getDescription().equals(""))
             cv_description.setVisibility(View.GONE);
         else
             tv_description.setText(eventDetails.getDescription());
 
-        tv_time_date.setText(eventDetails.getDateTime());
+        tv_type.setText(eventDetails.getEvent_type_name() + " event");
 
-        if (eventDetails.getVenue_address().equals("") && (eventDetails.getVenue_latitude().equals("") || eventDetails.getVenue_longitude().equals("")))
-            cv_venue.setVisibility(View.GONE);
-        else {
-            tv_venue.setText(eventDetails.getVenue_address());
-            if (eventDetails.getVenue_latitude().equals("") || eventDetails.getVenue_longitude().equals(""))
-                tv_view_on_map.setVisibility(View.GONE);
-            else
-                tv_view_on_map.setVisibility(View.VISIBLE);
-        }
+        tv_organizer_name.setText(eventDetails.getOrganizer_name());
 
         if (eventDetails.getRemark().equals(""))
             cv_remark.setVisibility(View.GONE);
         else
             tv_remark.setText(eventDetails.getRemark());
 
-        if (eventDetails.getMessage_for_paidmember().equals(""))
-            cv_message_paid.setVisibility(View.GONE);
-        else
-            tv_message_paid.setText(eventDetails.getMessage_for_paidmember());
+        if (eventDetails.getMessage_for_paidmember().equals("") && eventDetails.getMessage_for_unpaidmember().equals("")) {
+            cv_message.setVisibility(View.GONE);
+        } else {
 
-        if (eventDetails.getMessage_for_unpaidmember().equals(""))
-            cv_message_unpaid.setVisibility(View.GONE);
-        else
-            tv_message_unpaid.setText(eventDetails.getMessage_for_unpaidmember());
+            if (!eventDetails.getMessage_for_paidmember().equals(""))
+                tv_message_paid.setText(eventDetails.getMessage_for_paidmember());
+            else
+                ll_paid_msg.setVisibility(View.GONE);
+
+            if (!eventDetails.getMessage_for_unpaidmember().equals(""))
+                tv_message_unpaid.setText(eventDetails.getMessage_for_unpaidmember());
+            else
+                ll_unpaid_msg.setVisibility(View.GONE);
+        }
 
         tv_earlybird_price.setText("₹ " + eventDetails.getEarlybird_price() + " off");
 
@@ -205,7 +216,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         tv_normal_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
 
-        if (!eventDetails.getCreated_by().equals(userId)) {
+        if (eventDetails.getCreated_by().equals(userId)) {
             imv_share.setVisibility(View.GONE);
             imv_edit.setVisibility(View.GONE);
             imv_delete.setVisibility(View.GONE);
@@ -214,7 +225,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         List<EventsPaidModel.ResultBean.DocumentsBean> docList = eventDetails.getDocuments();
 
         if (docList.size() == 0) {
-            cv_images.setVisibility(View.GONE);
+            rv_images.setVisibility(View.GONE);
             cv_documents.setVisibility(View.GONE);
         } else {
             for (EventsPaidModel.ResultBean.DocumentsBean documentsBean : docList) {
@@ -227,9 +238,17 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         }
 
         if (imagesList.size() == 0)
-            cv_images.setVisibility(View.GONE);
-        else
-            rv_images.setAdapter(new ImagesAdapter());
+            rv_images.setVisibility(View.GONE);
+        else {
+            OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, imagesList);
+            webBannerAdapter.setOnBannerItemClickListener(new BannerLayout.OnBannerItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    showImageDialog(imagesList.get(position));
+                }
+            });
+            rv_images.setAdapter(webBannerAdapter);
+        }
 
         if (documentsList.size() == 0)
             cv_documents.setVisibility(View.GONE);
@@ -237,91 +256,164 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             rv_documents.setAdapter(new DocumentsAdapter());
     }
 
-    private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+    private void setEventHandler() {
 
-        ImagesAdapter() {
-
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.grid_row_images, parent, false);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final MyViewHolder holder, int pos) {
-            final int position = holder.getAdapterPosition();
-
-            if (!imagesList.get(position).isEmpty()) {
-                Glide.with(context)
-                        .load(imagesList.get(position))
-                        .into(holder.imv_image);
-                setPaddingForView(context, holder.imv_image, 0);
-                holder.imv_image_delete.setVisibility(View.GONE);
+        imv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
+        });
 
-            holder.imv_image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showImageDialog(imagesList.get(position));
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return imagesList.size();
-        }
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            private ImageView imv_image, imv_image_delete;
-
-            private MyViewHolder(View view) {
-                super(view);
-                imv_image = view.findViewById(R.id.imv_image);
-                imv_image_delete = view.findViewById(R.id.imv_image_delete);
+        imv_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
-        }
+        });
 
-        private void showImageDialog(final String offerUrl) {
-            LayoutInflater layoutInflater = LayoutInflater.from(context);
-            View promptView = layoutInflater.inflate(R.layout.dialog_layout_image, null);
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-            alertDialogBuilder.setView(promptView);
+        imv_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, EditEventsPaid_Activity.class).putExtra("eventDetails", eventDetails));
+                finish();
+            }
+        });
 
-            final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-            final Button btn_download = promptView.findViewById(R.id.btn_download);
-            final Button btn_close = promptView.findViewById(R.id.btn_close);
+        imv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to delete this event?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_alertred);
+                builder.setCancelable(false);
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DeletePaidEvent().execute();
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        });
 
-            Picasso.with(context)
-                    .load(offerUrl)
-                    .into(imv_offer);
+        btn_buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-            final AlertDialog dialog = alertDialogBuilder.create();
+            }
+        });
 
-            btn_close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
+        imv_message_organizer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = LayoutInflater.from(context);
+                View promptView = layoutInflater.inflate(R.layout.dialog_layout_message, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertDialogBuilder.setView(promptView);
+
+                final EditText edt_text = promptView.findViewById(R.id.edt_text);
+
+                alertDialogBuilder.setPositiveButton("PROCEED", null);
+
+                alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                final AlertDialog dialog = alertDialogBuilder.create();
+                dialog.show();
+
+                Button positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positiveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (edt_text.getText().toString().trim().isEmpty()) {
+                            Utilities.showMessage("Please enter your message", context, 2);
+                            return;
+                        }
+
+                        Uri uri = Uri.parse("smsto:" + eventDetails.getMobile());
+                        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+                        intent.putExtra("sms_body", edt_text.getText().toString());
+                        startActivity(intent);
+
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+
+        cv_get_direction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (eventDetails.getVenue_latitude().trim().isEmpty() || eventDetails.getVenue_longitude().trim().isEmpty()) {
+                    Utilities.showMessage("Location not added", context, 2);
+                    return;
                 }
-            });
 
-            btn_download.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Utilities.isNetworkAvailable(context))
-                        new DownloadDocument().execute(offerUrl);
-                    else
-                        Utilities.showMessage("Please check your internet connection", context, 2);
-                }
-            });
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + eventDetails.getVenue_latitude() + "," + eventDetails.getVenue_longitude()));
+                startActivity(intent);
+            }
+        });
 
-            dialog.show();
-        }
+        cv_add_calendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilities.showMessage("Coming Soon", context, 2);
+            }
+        });
+
+    }
+
+    private void showImageDialog(final String offerUrl) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_image, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
+        final Button btn_download = promptView.findViewById(R.id.btn_download);
+        final Button btn_close = promptView.findViewById(R.id.btn_close);
+
+        Picasso.with(context)
+                .load(offerUrl)
+                .into(imv_offer);
+
+        final AlertDialog dialog = alertDialogBuilder.create();
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btn_download.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(offerUrl);
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+        dialog.show();
     }
 
     private class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.MyViewHolder> {
@@ -371,58 +463,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         }
     }
 
-    private void setEventHandler() {
-        tv_view_on_map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (eventDetails.getVenue_latitude().trim().isEmpty() || eventDetails.getVenue_longitude().trim().isEmpty()) {
-                    Utilities.showMessage("Location not added", context, 2);
-                    return;
-                }
-
-                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + eventDetails.getVenue_latitude() + "," + eventDetails.getVenue_longitude()));
-                startActivity(intent);
-            }
-        });
-
-        imv_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        imv_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        imv_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, EditEventsPaid_Activity.class)
-                        .putExtra("eventDetails", eventDetails));
-                finish();
-            }
-        });
-
-        imv_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new DeletePaidEvent().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-    }
-
     private class DeletePaidEvent extends AsyncTask<String, Void, String> {
 
         @Override
@@ -438,7 +478,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "DeletePaidEvent");
-            obj.addProperty("paid_event_id", eventDetails.getId());
+            obj.addProperty("paid_event_id", eventDetails.getid());
             res = APICall.JSONAPICall(ApplicationConstants.PAIDEVENTSAPI, obj.toString());
             return res.trim();
         }

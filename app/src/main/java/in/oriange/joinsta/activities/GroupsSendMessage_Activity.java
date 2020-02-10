@@ -578,7 +578,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 //
 //                for (GroupAdminsGroupsListModel.ResultBean grpDetails : groupsList) {
 //                    if (grpDetails.isChecked()) {
-//                        selectedGroups.add(grpDetails.getId());
+//                        selectedGroups.add(grpDetails.getid());
 //                        selectedGroupsName.append(grpDetails.getGroup_name()).append(", ");
 //                    }
 //                }

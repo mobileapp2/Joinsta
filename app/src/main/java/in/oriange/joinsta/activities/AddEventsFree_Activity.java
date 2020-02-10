@@ -90,7 +90,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_name, edt_type, edt_description, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
+    private MaterialEditText edt_name, edt_type, edt_description, edt_organizer_name, edt_organizer_mobile, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
             edt_address, edt_city, edt_remark,
             edt_attach_doc_multi;
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city;
@@ -129,6 +129,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         edt_name = findViewById(R.id.edt_name);
         edt_type = findViewById(R.id.edt_type);
         edt_description = findViewById(R.id.edt_description);
+        edt_organizer_name = findViewById(R.id.edt_organizer_name);
+        edt_organizer_mobile = findViewById(R.id.edt_organizer_mobile);
         edt_date = findViewById(R.id.edt_date);
         edt_start_time = findViewById(R.id.edt_start_time);
         edt_end_time = findViewById(R.id.edt_end_time);
@@ -187,7 +189,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         docsLayoutsList.add(ll);
         ll_documents.addView(rowView, ll_documents.getChildCount());
 
-
+        imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
         imageList.add(new MasterModel("", ""));
         rv_images.setAdapter(new ImagesAdapter());
     }
@@ -345,6 +348,20 @@ public class AddEventsFree_Activity extends AppCompatActivity {
             return;
         }
 
+        if (edt_organizer_name.getText().toString().trim().isEmpty()) {
+            edt_organizer_name.setError("Please enter organizer name");
+            edt_organizer_name.requestFocus();
+            edt_organizer_name.getParent().requestChildFocus(edt_organizer_name, edt_organizer_name);
+            return;
+        }
+
+        if (!Utilities.isValidMobileno(edt_organizer_mobile.getText().toString().trim())) {
+            edt_organizer_mobile.setError("Please enter valid mobile number");
+            edt_organizer_mobile.requestFocus();
+            edt_organizer_mobile.getParent().requestChildFocus(edt_organizer_mobile, edt_organizer_mobile);
+            return;
+        }
+
         if (edt_date.getText().toString().trim().isEmpty()) {
             edt_date.setError("Please select date");
             edt_date.requestFocus();
@@ -411,6 +428,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("event_type_id", eventTypeId);
         mainObj.addProperty("name", edt_name.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
+        mainObj.addProperty("organizer_name", edt_organizer_name.getText().toString().trim());
+        mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
         mainObj.addProperty("event_date", eventDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
@@ -427,6 +446,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
         mainObj.addProperty("group_id", groupId);
+        mainObj.addProperty("is_active", "1");
         mainObj.add("document_path", documentsArray);
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -468,7 +488,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(final MyViewHolder holder, int pos) {
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
 
             if (!imageList.get(position).getId().isEmpty()) {
@@ -518,8 +538,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
             holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    imageList.remove(position);
-                    notifyDataSetChanged();
+                    imageList.set(position, new MasterModel("", ""));
+                    rv_images.setAdapter(new ImagesAdapter());
                 }
             });
         }
@@ -580,7 +600,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
 
             if (requestCode == DOCUMENT_REQUEST) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "1");
+                new UploadImageAndDocument().execute("uploadEventDoc", list.get(0).getPath(), "1");
             }
         }
 
@@ -622,10 +642,10 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+        new UploadImageAndDocument().execute("uploadEventImage", photoFileToUpload.getPath(), "0");
     }
 
-    private class UploadImage extends AsyncTask<String, Integer, String> {
+    private class UploadImageAndDocument extends AsyncTask<String, Integer, String> {
         private String TYPE = "";
 
         @Override
@@ -638,13 +658,13 @@ public class AddEventsFree_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            TYPE = params[1];
+            TYPE = params[2];
             StringBuilder res = new StringBuilder();
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
                 multipart.addFormField("request_type", "uploadFeedFile");
-                multipart.addFilePart("document", new File(params[0]));
+                multipart.addFilePart("document", new File(params[1]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {

@@ -100,6 +100,8 @@ public class EventsFreeModel implements Serializable {
         private String group_name;
         private String group_code;
         private String event_type_name;
+        private String mobile;
+        private String organizer_name;
         private List<DocumentsBean> documents;
 
         public String getId() {
@@ -322,8 +324,24 @@ public class EventsFreeModel implements Serializable {
             this.event_type_name = event_type_name;
         }
 
+        public String getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
+        }
+
+        public String getOrganizer_name() {
+            return organizer_name;
+        }
+
+        public void setOrganizer_name(String organizer_name) {
+            this.organizer_name = organizer_name;
+        }
+
         public String getDateTime() {
-            return "Event is held on " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
+            return changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
                     " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
         }
 
@@ -343,6 +361,16 @@ public class EventsFreeModel implements Serializable {
 
             private String document_type;
             private String document_path;
+            private String document_id;
+
+            public DocumentsBean(String document_type, String document_path, String document_id) {
+                this.document_type = document_type;
+                this.document_path = document_path;
+                this.document_id = document_id;
+            }
+
+            public DocumentsBean() {
+            }
 
             public String getDocument_type() {
                 return document_type;
@@ -358,6 +386,14 @@ public class EventsFreeModel implements Serializable {
 
             public void setDocument_path(String document_path) {
                 this.document_path = document_path;
+            }
+
+            public String getDocument_id() {
+                return document_id;
+            }
+
+            public void setDocument_id(String document_id) {
+                this.document_id = document_id;
             }
         }
     }
