@@ -65,7 +65,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
     private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_confirmation, tv_organizer_name, tv_remark;
-    private Button btn_yes, btn_maybe;
+    private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
     private CardView cv_description, cv_date_time, cv_venue, cv_get_direction, cv_add_calendar, cv_remark, cv_documents;
 
@@ -108,6 +108,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
         btn_yes = findViewById(R.id.btn_yes);
         btn_maybe = findViewById(R.id.btn_maybe);
+        btn_no = findViewById(R.id.btn_no);
 
         rv_images = findViewById(R.id.rv_images);
         rv_documents = findViewById(R.id.rv_documents);
@@ -278,14 +279,33 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         btn_yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (Utilities.isNetworkAvailable(context)) {
+                    new ConfirmEvent().execute("accepted");
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
         btn_maybe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new ConfirmEvent().execute("maybe");
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
 
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new ConfirmEvent().execute("rejected");
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
             }
         });
 
@@ -481,6 +501,75 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
                         animation_view.playAnimation();
                         tv_title.setText("Event details deleted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("Failed to submit the details", context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class ConfirmEvent extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "ConfirmFreeEvent");
+            obj.addProperty("event_id", eventDetails.getId());
+            obj.addProperty("user_id", userId);
+            obj.addProperty("status", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.FREEEVENTSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsFree_Fragment"));
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Event confirmation submitted successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
