@@ -117,7 +117,6 @@ public class EventsPaidModel implements Serializable {
         private String event_type_name;
         private String mobile;
         private String organizer_name;
-        private String payment_link;
         private String alias_name;
         private String is_early_payment_applicable;
         private String is_normal_payment_applicable;
@@ -421,14 +420,6 @@ public class EventsPaidModel implements Serializable {
             this.organizer_name = organizer_name;
         }
 
-        public String getPayment_link() {
-            return payment_link;
-        }
-
-        public void setPayment_link(String payment_link) {
-            this.payment_link = payment_link;
-        }
-
         public String getAlias_name() {
             if (alias_name != null) {
                 return alias_name;
@@ -493,8 +484,39 @@ public class EventsPaidModel implements Serializable {
              * paid_events_id : 53
              */
 
+            private String payment_mode_name;
             private String payment_mode;
+            private String payment_link;
             private String paid_events_id;
+            private boolean isChecked;
+
+            public PaideventsPaymentoptionsBean(String payment_mode_name,String payment_mode, String payment_link, String paid_events_id, boolean isChecked) {
+                this.payment_mode_name = payment_mode_name;
+                this.payment_mode = payment_mode;
+                this.payment_link = payment_link;
+                this.paid_events_id = paid_events_id;
+                this.isChecked = isChecked;
+            }
+
+            public PaideventsPaymentoptionsBean() {
+
+            }
+
+            public String getPayment_mode_name() {
+                return payment_mode_name;
+            }
+
+            public void setPayment_mode_name(String payment_mode_name) {
+                this.payment_mode_name = payment_mode_name;
+            }
+
+            public boolean isChecked() {
+                return isChecked;
+            }
+
+            public void setChecked(boolean checked) {
+                isChecked = checked;
+            }
 
             public String getPayment_mode() {
                 return payment_mode;
@@ -504,11 +526,19 @@ public class EventsPaidModel implements Serializable {
                 this.payment_mode = payment_mode;
             }
 
-            public String getId() {
+            public String getPayment_link() {
+                return payment_link;
+            }
+
+            public void setPayment_link(String payment_link) {
+                this.payment_link = payment_link;
+            }
+
+            public String getPaid_events_id() {
                 return paid_events_id;
             }
 
-            public void setId(String paid_events_id) {
+            public void setPaid_events_id(String paid_events_id) {
                 this.paid_events_id = paid_events_id;
             }
         }

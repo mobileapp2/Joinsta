@@ -13,6 +13,7 @@ import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,7 +49,10 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
+import in.oriange.joinsta.ccavenue.ServiceUtility;
 import in.oriange.joinsta.models.EventsPaidModel;
+import in.oriange.joinsta.models.MasterModel;
+import in.oriange.joinsta.paytm.PaytmPayment_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -76,7 +80,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             cv_price, cv_remark, cv_documents;
 
     private ArrayList<String> imagesList, documentsList;
-    private String userId;
+    private String userId, randomNum;
     private File file, downloadedDocumentfolder;
     private EventsPaidModel.ResultBean eventDetails;
 
@@ -216,7 +220,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         tv_normal_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
 
-        if (eventDetails.getCreated_by().equals(userId)) {
+        if (!eventDetails.getCreated_by().equals(userId)) {
             imv_share.setVisibility(View.GONE);
             imv_edit.setVisibility(View.GONE);
             imv_delete.setVisibility(View.GONE);
@@ -311,7 +315,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showPaymentOptionsDialog();
             }
         });
 
@@ -377,6 +381,120 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 Utilities.showMessage("Coming Soon", context, 2);
             }
         });
+
+    }
+
+    private void showPaymentOptionsDialog() {
+        List<MasterModel> paymentModeList = new ArrayList<>();
+        paymentModeList.add(new MasterModel("Online", "online", false));
+        paymentModeList.add(new MasterModel("Offline", "offline", false));
+        paymentModeList.add(new MasterModel("Payment Link", "paymentlink", false));
+
+
+        for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean selectedModes : eventDetails.getPaidevents_paymentoptions()) {
+            for (int i = 0; i < paymentModeList.size(); i++) {
+                if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getId())) {
+                    paymentModeList.get(i).setChecked(true);
+                }
+            }
+        }
+
+        final List<MasterModel> selectedPaymentModeList = new ArrayList<>();
+        for (int i = 0; i < paymentModeList.size(); i++) {
+            if (paymentModeList.get(i).isChecked())
+                selectedPaymentModeList.add(paymentModeList.get(i));
+        }
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Payment Mode");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < selectedPaymentModeList.size(); i++) {
+            arrayAdapter.add(String.valueOf(selectedPaymentModeList.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (selectedPaymentModeList.get(which).getId().equals("online")) {
+                    showOnlinePaymentDialog();
+                } else if (selectedPaymentModeList.get(which).getId().equals("offline")) {
+                    showOfflinePaymentDialog();
+                } else if (selectedPaymentModeList.get(which).getId().equals("paymentlink")) {
+                    openPaylinkUrl();
+                }
+            }
+        });
+        builderSingle.show();
+
+
+    }
+
+    private void showOnlinePaymentDialog() {
+        final ArrayList<String> gatewayList = new ArrayList<>();
+        gatewayList.add("Paytm");
+        gatewayList.add("CC Avenue");
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Payment Gateway");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < gatewayList.size(); i++) {
+            arrayAdapter.add(String.valueOf(gatewayList.get(i)));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (gatewayList.get(which).equals("Paytm")) {
+//                    Intent intent = new Intent(context, PaytmPayment_Activity.class);
+//                    intent.putExtra("orderid", randomNum);
+//                    intent.putExtra("custid", "632541" + userId);
+//                    intent.putExtra("type", plansList.get(lastSelectedPosition).getPlan());
+//                    intent.putExtra("user_id", user_id);
+//                    intent.putExtra("plan_id", plansList.get(lastSelectedPosition).getId());
+//                    intent.putExtra("space", plansList.get(lastSelectedPosition).getSpace());
+//                    intent.putExtra("sms", plansList.get(lastSelectedPosition).getSms());
+//                    intent.putExtra("whatsApp_msg", plansList.get(lastSelectedPosition).getWhtasApp_msg());
+//                    intent.putExtra("expire_date", plansList.get(lastSelectedPosition).getEnd_date());
+//                    intent.putExtra("validity", plansList.get(lastSelectedPosition).getValidity());
+//                    intent.putExtra("clients", plansList.get(lastSelectedPosition).getCustomers());
+//                    intent.putExtra("policies", plansList.get(lastSelectedPosition).getPolicies());
+//                    intent.putExtra("amount", plansList.get(lastSelectedPosition).getAmount());
+//                    startActivity(intent);
+                } else if (gatewayList.get(which).equals("CC Avenue")) {
+
+                }
+            }
+        });
+        builderSingle.show();
+    }
+
+    private void showOfflinePaymentDialog() {
+
+    }
+
+    private void openPaylinkUrl() {
 
     }
 
@@ -659,4 +777,13 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         }
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //generating new order number for every transaction
+        randomNum = String.valueOf(ServiceUtility.randInt(0, 9999999));
+    }
+
 }

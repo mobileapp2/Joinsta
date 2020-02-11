@@ -33,8 +33,8 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     // BETA API LINK V2
-    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/Api/";
-    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated/images/";
+    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/images/";
 
     //LIVE API LINK V11
 //    private static final String API_LINK = "http://joinsta.in/Api_v11/";

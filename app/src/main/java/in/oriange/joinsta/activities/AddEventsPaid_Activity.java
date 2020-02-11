@@ -112,7 +112,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     private ArrayList<LinearLayout> docsLayoutsList;
     private List<MasterModel> paymentModeList;
     private ArrayList<MasterModel> imageList;
-    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, paymentAccountId = "0", latitude = "", longitude = "";
+    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, paymentAccountId = "0", latitude = "", longitude = "",
+            isOfflinePaymentsAllowed = "0";
     private File photoFileFolder;
     private Uri photoURI;
     private JsonArray selectedPaymentModes;
@@ -472,6 +473,14 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                     }
                 }
 
+                for (int i = 0; i < selectedPaymentModes.size(); i++) {
+                    JsonObject s = selectedPaymentModes.get(i).getAsJsonObject();
+                    if (s.get("mode").getAsString().equals("offline")) {
+                        isOfflinePaymentsAllowed = "1";
+                        break;
+                    }
+                }
+
                 if (isPaymentLinkSelected) edt_paylink.setVisibility(View.VISIBLE);
                 else edt_paylink.setVisibility(View.GONE);
 
@@ -712,7 +721,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("event_category_id", "2");
         mainObj.addProperty("message_for_paidmember", edt_msg_forpaid.getText().toString().trim());
         mainObj.addProperty("message_for_unpaidmember", edt_msg_forunpaid.getText().toString().trim());
-        mainObj.addProperty("is_offline_payments_allowed", "1");
+        mainObj.addProperty("is_offline_payments_allowed", isOfflinePaymentsAllowed);
         mainObj.addProperty("payment_account_id", paymentAccountId);
         mainObj.addProperty("earlybird_price", edt_early_bird_amount.getText().toString().trim());
         mainObj.addProperty("normal_price", edt_normal_amount.getText().toString().trim());
@@ -1003,7 +1012,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
-                multipart.addFormField("request_type", "uploadFeedFile");
+                multipart.addFormField("request_type", params[0]);
                 multipart.addFilePart("document", new File(params[1]));
 
                 List<String> response = multipart.finish();

@@ -112,9 +112,10 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
 
     private List<EventTypeModel.ResultBean> eventTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
-    private List<MasterModel> paymentModeList;
+    private List<EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean> paymentModeList;
     private ArrayList<MasterModel> imageList;
-    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, paymentAccountId = "0", latitude = "", longitude = "";
+    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, paymentAccountId = "0", latitude = "", longitude = "",
+            isOfflinePaymentsAllowed = "0";
     private File photoFileFolder;
     private Uri photoURI;
     private JsonArray selectedPaymentModes;
@@ -187,9 +188,9 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             builder.detectFileUriExposure();
         }
 
-        paymentModeList.add(new MasterModel("Online", "online", false));
-        paymentModeList.add(new MasterModel("Offline", "offline", false));
-        paymentModeList.add(new MasterModel("Payment Link", "paymentlink", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Online", "online", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Offline", "offline", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment Link", "paymentlink", "", "0", false));
     }
 
     private void getSessionDetails() {
@@ -240,12 +241,12 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         edt_remark.setText(eventDetails.getRemark());
         edt_msg_forpaid.setText(eventDetails.getMessage_for_paidmember());
         edt_msg_forunpaid.setText(eventDetails.getMessage_for_unpaidmember());
-        edt_paylink.setText(eventDetails.getPayment_link());
         edt_payment_account.setText(eventDetails.getAlias_name());
 
         for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean selectedModes : eventDetails.getPaidevents_paymentoptions()) {
             for (int i = 0; i < paymentModeList.size(); i++) {
-                if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getId())) {
+                paymentModeList.get(i).setPayment_link(selectedModes.getPayment_link());
+                if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getPayment_mode())) {
                     paymentModeList.get(i).setChecked(true);
                 }
             }
@@ -253,22 +254,30 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
 
         StringBuilder selectedModes = new StringBuilder();
 
-        for (MasterModel modes : paymentModeList) {
+        for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean  modes : paymentModeList) {
             if (modes.isChecked()) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("mode", modes.getId());
+                jsonObject.addProperty("mode", modes.getPayment_mode());
                 jsonObject.addProperty("id", "0");
                 selectedPaymentModes.add(jsonObject);
-                selectedModes.append(modes.getName()).append(", ");
+                selectedModes.append(modes.getPayment_mode_name()).append(", ");
             }
         }
 
         boolean isPaymentLinkSelected = false;
 
+        for (int i = 0; i < paymentModeList.size(); i++) {
+            if (paymentModeList.get(i).getPayment_mode().equals("paymentlink")) {
+                edt_paylink.setText(paymentModeList.get(i).getPayment_link());
+                isPaymentLinkSelected = true;
+                break;
+            }
+        }
+
         for (int i = 0; i < selectedPaymentModes.size(); i++) {
             JsonObject s = selectedPaymentModes.get(i).getAsJsonObject();
-            if (s.get("mode").getAsString().equals("paymentlink")) {
-                isPaymentLinkSelected = true;
+            if (s.get("mode").getAsString().equals("offline")) {
+                isOfflinePaymentsAllowed = "1";
                 break;
             }
         }
@@ -556,13 +565,13 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                 selectedPaymentModes = new JsonArray();
                 StringBuilder selectedGroupsName = new StringBuilder();
 
-                for (MasterModel grpDetails : paymentModeList) {
+                for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean grpDetails : paymentModeList) {
                     if (grpDetails.isChecked()) {
                         JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("mode", grpDetails.getId());
+                        jsonObject.addProperty("mode", grpDetails.getPayment_mode());
                         jsonObject.addProperty("id", "0");
                         selectedPaymentModes.add(jsonObject);
-                        selectedGroupsName.append(grpDetails.getName()).append(", ");
+                        selectedGroupsName.append(grpDetails.getPayment_mode_name()).append(", ");
                     }
                 }
 
@@ -572,6 +581,14 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                     JsonObject s = selectedPaymentModes.get(i).getAsJsonObject();
                     if (s.get("mode").getAsString().equals("paymentlink")) {
                         isPaymentLinkSelected = true;
+                        break;
+                    }
+                }
+
+                for (int i = 0; i < selectedPaymentModes.size(); i++) {
+                    JsonObject s = selectedPaymentModes.get(i).getAsJsonObject();
+                    if (s.get("mode").getAsString().equals("offline")) {
+                        isOfflinePaymentsAllowed = "1";
                         break;
                     }
                 }
@@ -603,7 +620,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
             final int position = holder.getAdapterPosition();
 
-            holder.cb_select.setText(paymentModeList.get(position).getName());
+            holder.cb_select.setText(paymentModeList.get(position).getPayment_mode_name());
 
             if (paymentModeList.get(position).isChecked()) {
                 holder.cb_select.setChecked(true);
@@ -829,7 +846,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("event_category_id", "2");
         mainObj.addProperty("message_for_paidmember", edt_msg_forpaid.getText().toString().trim());
         mainObj.addProperty("message_for_unpaidmember", edt_msg_forunpaid.getText().toString().trim());
-        mainObj.addProperty("is_offline_payments_allowed", "1");
+        mainObj.addProperty("is_offline_payments_allowed", isOfflinePaymentsAllowed);
         mainObj.addProperty("payment_account_id", paymentAccountId);
         mainObj.addProperty("earlybird_price", edt_early_bird_amount.getText().toString().trim());
         mainObj.addProperty("normal_price", edt_normal_amount.getText().toString().trim());
