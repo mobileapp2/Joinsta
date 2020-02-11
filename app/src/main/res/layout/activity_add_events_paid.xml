@@ -195,19 +195,32 @@
                         android:layout_height="0.5dp"
                         android:background="@color/colorPrimary" />
 
+
                     <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_date"
+                        android:id="@+id/edt_start_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawableRight="@drawable/icon_date"
                         android:focusable="false"
-                        android:hint="Date"
+                        android:hint="Start Date"
                         android:longClickable="false"
                         android:textSize="16sp"
                         app:met_floatingLabel="highlight"
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_end_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/icon_date"
+                        android:focusable="false"
+                        android:hint="End Date"
+                        android:longClickable="false"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -580,6 +593,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Display in cities?"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_isactive"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Is event active?"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 

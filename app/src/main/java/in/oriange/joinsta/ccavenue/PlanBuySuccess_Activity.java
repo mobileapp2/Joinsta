@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import in.oriange.joinsta.R;
@@ -67,22 +66,7 @@ public class PlanBuySuccess_Activity extends Activity {
     }
 
     private void setDefaults() {
-        JSONString = getIntent().getStringExtra("JSONString");
 
-        try {
-            JSONObject jsonObject = new JSONObject(JSONString);
-
-            tv_orderid.setText(jsonObject.getString("ORDERID"));
-            tv_validity.setText(getIntent().getStringExtra("validity"));
-            tv_space.setText(jsonObject.getString("space"));
-            tv_whatsapp.setText(jsonObject.getString("whatsApp_msg"));
-            tv_textsms.setText(jsonObject.getString("sms"));
-            tv_clients.setText(getIntent().getStringExtra("clients"));
-            tv_policies.setText(getIntent().getStringExtra("policies"));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void setEventHandler() {

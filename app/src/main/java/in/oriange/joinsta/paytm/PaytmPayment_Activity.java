@@ -26,7 +26,6 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.ccavenue.PlanBuySuccess_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -41,9 +40,7 @@ import static in.oriange.joinsta.utilities.ApplicationConstants.TRANSSTATUSURL;
 public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPaymentTransactionCallback {
 
     private Context context;
-    String custid = "", orderId = "";
-    private UserSessionManager session;
-
+    private String custid = "", orderId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +48,10 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
 //        setContentView(R.layout.activity_main);
         //initOrderId();
         context = PaytmPayment_Activity.this;
-        session = new UserSessionManager(context);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        Intent intent = getIntent();
-        orderId = intent.getExtras().getString("orderid");
-        custid = intent.getExtras().getString("custid");
+        orderId = getIntent().getStringExtra("orderid");
+        custid = getIntent().getStringExtra("custid");
 
         sendUserDetailTOServerdd dl = new sendUserDetailTOServerdd();
         dl.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -82,7 +77,7 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                     "MID=" + MID +
                             "&ORDER_ID=" + orderId +
                             "&CUST_ID=" + custid +
-                            "&CHANNEL_ID=WAP&TXN_AMOUNT=" + getIntent().getExtras().getString("amount") + "&WEBSITE=APPSTAGING" +
+                            "&CHANNEL_ID=WAP&TXN_AMOUNT=" + getIntent().getStringExtra("amount") + "&WEBSITE=APPSTAGING" +
                             "&CALLBACK_URL=" + PAYTMVERIFYURL + "&INDUSTRY_TYPE_ID=Retail";
 
             JSONObject jsonObject = jsonParser.makeHttpRequest(PAYTMURL, "POST", param);
@@ -121,7 +116,7 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
             paramMap.put("ORDER_ID", orderId);
             paramMap.put("CUST_ID", custid);
             paramMap.put("CHANNEL_ID", "WAP");
-            paramMap.put("TXN_AMOUNT", getIntent().getExtras().getString("amount"));
+            paramMap.put("TXN_AMOUNT", getIntent().getStringExtra("amount"));
             paramMap.put("WEBSITE", "APPSTAGING");
             paramMap.put("CALLBACK_URL", PAYTMVERIFYURL);
             //paramMap.put( "EMAIL" , "");   // no need
@@ -202,15 +197,23 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                 JSONObject object = new JSONObject(string);
                 JsonObject jsonObject = new JsonObject();
 
-                jsonObject.addProperty("type", "buyPlan");
+                jsonObject.addProperty("type", "addEventPaymentDetails");
+                jsonObject.addProperty("payment_mode", "online");
                 jsonObject.addProperty("order_gateway", "paytm");
                 jsonObject.addProperty("order_status", "Success");
-                jsonObject.addProperty("user_purchase_id", getIntent().getStringExtra("user_id"));
+                jsonObject.addProperty("gateway_configuration_id", getIntent().getStringExtra("gateway_configuration_id"));
+                jsonObject.addProperty("transaction_id", object.getString("TXNID"));
+                jsonObject.addProperty("transaction_date", object.getString("TXNDATE"));
+                jsonObject.addProperty("paid_to", "");
+                jsonObject.addProperty("event_id", getIntent().getStringExtra("event_id"));
+                jsonObject.addProperty("user_id", getIntent().getStringExtra("user_id"));
+                jsonObject.addProperty("created_by", getIntent().getStringExtra("created_by"));
+                jsonObject.addProperty("quantity", getIntent().getStringExtra("quantity"));
                 jsonObject.addProperty("transaction_status", object.getString("STATUS"));
+
                 jsonObject.addProperty("CHECKSUMHASH", object1.getString("CHECKSUMHASH"));
                 jsonObject.addProperty("BANKNAME", object.getString("BANKNAME"));
                 jsonObject.addProperty("ORDERID", object.getString("ORDERID"));
-                jsonObject.addProperty("transaction_date", object.getString("TXNDATE"));
                 jsonObject.addProperty("MID", object.getString("MID"));
                 jsonObject.addProperty("TXNID", object.getString("TXNID"));
                 jsonObject.addProperty("PAYMENTMODE", object.getString("PAYMENTMODE"));
@@ -218,14 +221,6 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                 jsonObject.addProperty("CURRENCY", "INR");
                 jsonObject.addProperty("GATEWAYNAME", object.getString("GATEWAYNAME"));
                 jsonObject.addProperty("RESPMSG", object.getString("RESPMSG"));
-                jsonObject.addProperty("user_id", getIntent().getStringExtra("user_id"));
-                jsonObject.addProperty("plan_id", getIntent().getStringExtra("plan_id"));
-                jsonObject.addProperty("space", getIntent().getStringExtra("space"));
-                jsonObject.addProperty("sms", getIntent().getStringExtra("sms"));
-                jsonObject.addProperty("whatsApp_msg", getIntent().getStringExtra("whatsApp_msg"));
-                jsonObject.addProperty("expire_date", getIntent().getStringExtra("expire_date"));
-                jsonObject.addProperty("customers", getIntent().getStringExtra("clients"));
-                jsonObject.addProperty("policies", getIntent().getStringExtra("policies"));
                 jsonObject.addProperty("amount", getIntent().getStringExtra("amount"));
                 new BuyPlan().execute(jsonObject.toString());
 
@@ -239,7 +234,6 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
 
     public class BuyPlan extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
-        private String JSONString = "";
 
         @Override
         protected void onPreExecute() {
@@ -253,9 +247,7 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-
-            JSONString = params[0];
-            res = APICall.JSONAPICall(ApplicationConstants.BUYPLANAPI, params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.PAYMENTTRACKAPI, params[0]);
             return res.trim();
         }
 
@@ -271,11 +263,7 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            startActivity(new Intent(context, PlanBuySuccess_Activity.class)
-                                    .putExtra("JSONString", JSONString)
-                                    .putExtra("validity", getIntent().getStringExtra("validity"))
-                                    .putExtra("clients", getIntent().getStringExtra("clients"))
-                                    .putExtra("policies", getIntent().getStringExtra("policies")));
+                            startActivity(new Intent(context, PlanBuySuccess_Activity.class));
                             finish();
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);

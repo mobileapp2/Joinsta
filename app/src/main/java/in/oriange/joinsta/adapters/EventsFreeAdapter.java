@@ -63,7 +63,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
 
             for (int i = 0; i < eventDetails.getDocuments().size(); i++) {
                 if (eventDetails.getDocuments().get(i).getDocument_type().equalsIgnoreCase("invitationimage")) {
-                    bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "feed_doc/" + eventDetails.getDocuments().get(i).getDocument_path()));
+                    bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "events/invitation_image/" + eventDetails.getDocuments().get(i).getDocument_path()));
                 }
             }
 

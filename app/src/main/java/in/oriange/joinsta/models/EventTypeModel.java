@@ -47,6 +47,7 @@ public class EventTypeModel {
 
         private String id;
         private String event_type;
+        private boolean isChecked;
 
         public String getId() {
             return id;
@@ -62,6 +63,14 @@ public class EventTypeModel {
 
         public void setEvent_type(String event_type) {
             this.event_type = event_type;
+        }
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 }

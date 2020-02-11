@@ -184,9 +184,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             tv_remark.setText(eventDetails.getRemark());
 
         if (!eventDetails.getCreated_by().equals(userId)) {
-            imv_share.setVisibility(View.GONE);
             imv_edit.setVisibility(View.GONE);
-            imv_delete.setVisibility(View.GONE);
         }
 
         List<EventsFreeModel.ResultBean.DocumentsBean> docList = eventDetails.getDocuments();
@@ -197,9 +195,9 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         } else {
             for (EventsFreeModel.ResultBean.DocumentsBean documentsBean : docList) {
                 if (documentsBean.getDocument_type().equalsIgnoreCase("invitationdocument")) {
-                    documentsList.add(IMAGE_LINK + "feed_doc/" + documentsBean.getDocument_path());
+                    documentsList.add(IMAGE_LINK + "events/invitation_doc/" + documentsBean.getDocument_path());
                 } else if (documentsBean.getDocument_type().equalsIgnoreCase("invitationimage")) {
-                    imagesList.add(IMAGE_LINK + "feed_doc/" + documentsBean.getDocument_path());
+                    imagesList.add(IMAGE_LINK + "events/invitation_image/" + documentsBean.getDocument_path());
                 }
             }
         }
@@ -258,7 +256,11 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            new DeleteFreeEvent().execute();
+                            if (!eventDetails.getCreated_by().equals(userId)) {
+                                new DeleteFreeEvent().execute();
+                            } else {
+                                new UserSpecificDeleteEvent().execute();
+                            }
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
@@ -474,6 +476,75 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             obj.addProperty("type", "DeleteFreeEvent");
             obj.addProperty("free_event_id", eventDetails.getId());
             res = APICall.JSONAPICall(ApplicationConstants.FREEEVENTSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsFree_Fragment"));
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Event details deleted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("Failed to submit the details", context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class UserSpecificDeleteEvent extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "UserSpecificEvent_Delete");
+            obj.addProperty("event_id", eventDetails.getId());
+            obj.addProperty("event_category_id", "1");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.USERSPECIFICDELETEAPI, obj.toString());
             return res.trim();
         }
 

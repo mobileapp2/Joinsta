@@ -1,10 +1,16 @@
 package in.oriange.joinsta.models;
 
+import android.annotation.SuppressLint;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.getAmPmFrom24Hour;
+import static in.oriange.joinsta.utilities.Utilities.ordinal;
 
 public class EventsFreeModel implements Serializable {
 
@@ -12,7 +18,7 @@ public class EventsFreeModel implements Serializable {
     /**
      * type : success
      * message : get free event successfully!
-     * result : [{"id":"12","event_code":"0012","event_type_id":"81","group_id":"88","name":"first event 1","description":"test 1","event_date":"2011-02-20","event_start_time":"04:00:00","event_end_time":"05:10:00","venue_address":"nanded","venue_longitude":"12.211","venue_latitude":"23.43","is_online_event":"1","is_displaytomembers":"1","is_confirmation_required":"1","event_city":"latur","display_in_city":"1","remark":"0","event_category_id":"1","created_by":"512","updated_by":"10","created_at":"2020-01-27 17:33:06","updated_at":"2020-01-27 18:12:54","group_name":null,"group_code":null,"event_type_name":null,"documents":[{"document_type":"invitationdocument","document_path":"password.jpg"},{"document_type":"invitationdocument","document_path":"username.jpg"},{"document_type":"invitationdocument","document_path":"abc.jpg"},{"document_type":"invitationdocument","document_path":"login.jpg"}]}]
+     * result : [{"id":"12","event_code":"0012","event_type_id":"81","group_id":"88","name":"first event 1","description":"test 1","event_start_date":"2011-02-20","event_start_time":"04:00:00","event_end_time":"05:10:00","venue_address":"nanded","venue_longitude":"12.211","venue_latitude":"23.43","is_online_event":"1","is_displaytomembers":"1","is_confirmation_required":"1","event_city":"latur","display_in_city":"1","remark":"0","event_category_id":"1","created_by":"512","updated_by":"10","created_at":"2020-01-27 17:33:06","updated_at":"2020-01-27 18:12:54","group_name":null,"group_code":null,"event_type_name":null,"documents":[{"document_type":"invitationdocument","document_path":"password.jpg"},{"document_type":"invitationdocument","document_path":"username.jpg"},{"document_type":"invitationdocument","document_path":"abc.jpg"},{"document_type":"invitationdocument","document_path":"login.jpg"}]}]
      */
 
     private String type;
@@ -51,7 +57,7 @@ public class EventsFreeModel implements Serializable {
          * group_id : 88
          * name : first event 1
          * description : test 1
-         * event_date : 2011-02-20
+         * event_start_date : 2011-02-20
          * event_start_time : 04:00:00
          * event_end_time : 05:10:00
          * venue_address : nanded
@@ -80,7 +86,8 @@ public class EventsFreeModel implements Serializable {
         private String group_id;
         private String name;
         private String description;
-        private String event_date;
+        private String event_start_date;
+        private String event_end_date;
         private String event_start_time;
         private String event_end_time;
         private String venue_address;
@@ -102,6 +109,7 @@ public class EventsFreeModel implements Serializable {
         private String event_type_name;
         private String mobile;
         private String organizer_name;
+        private String is_active;
         private List<DocumentsBean> documents;
 
         public String getId() {
@@ -153,11 +161,11 @@ public class EventsFreeModel implements Serializable {
         }
 
         public String getEvent_date() {
-            return event_date;
+            return event_start_date;
         }
 
-        public void setEvent_date(String event_date) {
-            this.event_date = event_date;
+        public void setEvent_date(String event_start_date) {
+            this.event_start_date = event_start_date;
         }
 
         public String getEvent_start_time() {
@@ -340,9 +348,53 @@ public class EventsFreeModel implements Serializable {
             this.organizer_name = organizer_name;
         }
 
+        public String getEvent_end_date() {
+            return event_end_date;
+        }
+
+        public void setEvent_end_date(String event_end_date) {
+            this.event_end_date = event_end_date;
+        }
+
+        public String getIs_active() {
+            return is_active;
+        }
+
+        public void setIs_active(String is_active) {
+            this.is_active = is_active;
+        }
+
+        @SuppressLint("SimpleDateFormat")
         public String getDateTime() {
-            return changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
-                    " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+
+            try {
+                Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(event_start_date);
+                Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(event_end_date);
+
+                String startDay = changeDateFormat("yyyy-MM-dd", "dd", event_start_date);
+                String startMonth = changeDateFormat("yyyy-MM-dd", "MMM", event_start_date);
+                String startYear = changeDateFormat("yyyy-MM-dd", "yyyy", event_start_date);
+                String endDay = changeDateFormat("yyyy-MM-dd", "dd", event_end_date);
+                String endMonth = changeDateFormat("yyyy-MM-dd", "MMM", event_end_date);
+                String endYear = changeDateFormat("yyyy-MM-dd", "yyyy", event_end_date);
+
+
+                String startDateStr = ordinal(Integer.parseInt(startDay)) + " " + startMonth + " " + startYear;
+                String endDateStr = ordinal(Integer.parseInt(endDay)) + " " + endMonth + " " + endYear;
+
+                boolean areDatesEqual = startDate.equals(endDate);
+
+                if (areDatesEqual)
+                    return "On " + startDateStr +
+                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+                else
+                    return "From " + startDateStr + " to " + endDateStr +
+                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "";
+            }
         }
 
         public List<DocumentsBean> getDocuments() {

@@ -79,6 +79,7 @@ import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
+import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.models.GroupPaymentAccountModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -98,11 +99,12 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_name, edt_type, edt_description, edt_organizer_name, edt_organizer_mobile, edt_date, edt_start_time, edt_end_time, edt_select_from_map,
-            edt_address, edt_city, edt_early_bird_amount, edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date,
-            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paylink, edt_payment_account,
+    private MaterialEditText edt_name, edt_type, edt_description, edt_organizer_name, edt_organizer_mobile, edt_start_date,
+            edt_end_date, edt_start_time, edt_end_time, edt_select_from_map, edt_address, edt_city, edt_early_bird_amount,
+            edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date, edt_remark, edt_msg_forpaid, edt_msg_forunpaid,
+            edt_payment_mode, edt_paylink, edt_payment_account,
             edt_attach_doc_multi;
-    private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city;
+    private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
     private Button btn_add_document, btn_add_image;
@@ -110,10 +112,10 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
     private List<EventTypeModel.ResultBean> eventTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
-    private List<MasterModel> paymentModeList;
+    private List<EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean> paymentModeList;
     private ArrayList<MasterModel> imageList;
-    private String userId, groupId, eventTypeId, eventDate, earlyBirdDueDate, normalDueDate, paymentAccountId = "0", latitude = "", longitude = "",
-            isOfflinePaymentsAllowed = "0";
+    private String userId, groupId, eventTypeId, eventStartDate, eventEndDate, earlyBirdDueDate, normalDueDate,
+            paymentAccountId = "0", latitude = "", longitude = "", isOfflinePaymentsAllowed = "0";
     private File photoFileFolder;
     private Uri photoURI;
     private JsonArray selectedPaymentModes;
@@ -144,7 +146,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         edt_description = findViewById(R.id.edt_description);
         edt_organizer_name = findViewById(R.id.edt_organizer_name);
         edt_organizer_mobile = findViewById(R.id.edt_organizer_mobile);
-        edt_date = findViewById(R.id.edt_date);
+        edt_start_date = findViewById(R.id.edt_start_date);
+        edt_end_date = findViewById(R.id.edt_end_date);
         edt_start_time = findViewById(R.id.edt_start_time);
         edt_end_time = findViewById(R.id.edt_end_time);
         edt_select_from_map = findViewById(R.id.edt_select_from_map);
@@ -166,6 +169,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
+        cb_isactive = findViewById(R.id.cb_isactive);
         rv_images = findViewById(R.id.rv_images);
         rv_images.setLayoutManager(new GridLayoutManager(context, 3));
 
@@ -184,9 +188,9 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             builder.detectFileUriExposure();
         }
 
-        paymentModeList.add(new MasterModel("Online", "online", false));
-        paymentModeList.add(new MasterModel("Offline", "offline", false));
-        paymentModeList.add(new MasterModel("Payment Link", "paymentlink", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Online", "online", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Offline", "offline", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment Link", "paymentlink", "", "0", false));
     }
 
     private void getSessionDetails() {
@@ -237,19 +241,68 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
-        edt_date.setOnClickListener(new View.OnClickListener() {
+        edt_start_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        eventDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDate));
+                        eventStartDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+
+                        eventEndDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+
                         edt_normal_due_date.setText("");
                         edt_early_bird_due_date.setText("");
                     }
                 }, mYear, mMonth, mDay);
                 try {
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.show();
+            }
+        });
+
+        edt_end_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        if (edt_start_date.getText().toString().trim().isEmpty()) {
+                            edt_start_date.setError("Please select start date");
+                            edt_start_date.requestFocus();
+                            edt_start_date.getParent().requestChildFocus(edt_start_date, edt_start_date);
+                            return;
+                        }
+
+                        try {
+                            Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(eventStartDate);
+                            Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
+
+                            boolean isBefore = endDate.before(startDate);
+
+                            if (isBefore) {
+                                Utilities.showMessage("Event end date cannot be before event start date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        eventEndDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+
+                        edt_normal_due_date.setText("");
+                        edt_early_bird_due_date.setText("");
+
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+
                     dialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -336,12 +389,12 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         try {
-                            Date event = new SimpleDateFormat("yyyy-MM-dd").parse(eventDate);
+                            Date event = new SimpleDateFormat("yyyy-MM-dd").parse(eventEndDate);
                             Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
 
-                            boolean isBefore = normal.after(event);
+                            boolean isAfter = normal.after(event);
 
-                            if (isBefore) {
+                            if (isAfter) {
                                 Utilities.showMessage("Normal payment due date cannot be after event date", context, 2);
                                 return;
                             }
@@ -373,9 +426,9 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                             Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(normalDueDate);
                             Date early = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
 
-                            boolean isBefore = early.after(normal);
+                            boolean isAfter = early.after(normal);
 
-                            if (isBefore) {
+                            if (isAfter) {
                                 Utilities.showMessage("Early bird payment due date cannot be after normal payment due date", context, 2);
                                 return;
                             }
@@ -452,14 +505,15 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 edt_payment_mode.setText("");
                 selectedPaymentModes = new JsonArray();
+                isOfflinePaymentsAllowed = "0";
                 StringBuilder selectedGroupsName = new StringBuilder();
 
-                for (MasterModel grpDetails : paymentModeList) {
+                for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean grpDetails : paymentModeList) {
                     if (grpDetails.isChecked()) {
                         JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("mode", grpDetails.getId());
+                        jsonObject.addProperty("mode", grpDetails.getPayment_mode());
                         selectedPaymentModes.add(jsonObject);
-                        selectedGroupsName.append(grpDetails.getName()).append(", ");
+                        selectedGroupsName.append(grpDetails.getPayment_mode_name()).append(", ");
                     }
                 }
 
@@ -508,7 +562,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
             final int position = holder.getAdapterPosition();
 
-            holder.cb_select.setText(paymentModeList.get(position).getName());
+            holder.cb_select.setText(paymentModeList.get(position).getPayment_mode_name());
 
             if (paymentModeList.get(position).isChecked()) {
                 holder.cb_select.setChecked(true);
@@ -579,10 +633,10 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_date.getText().toString().trim().isEmpty()) {
-            edt_date.setError("Please select date");
-            edt_date.requestFocus();
-            edt_date.getParent().requestChildFocus(edt_date, edt_date);
+        if (edt_start_date.getText().toString().trim().isEmpty()) {
+            edt_start_date.setError("Please select date");
+            edt_start_date.requestFocus();
+            edt_start_date.getParent().requestChildFocus(edt_start_date, edt_start_date);
             return;
         }
 
@@ -677,6 +731,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         String is_online_event = cb_online_event.isChecked() ? "1" : "0";
         String is_displaytomembers = cb_displayto_members.isChecked() ? "1" : "0";
         String display_in_city = cb_displayin_city.isChecked() ? "1" : "0";
+        String isActive = cb_isactive.isChecked() ? "1" : "0";
 
         JsonArray documentsArray = new JsonArray();
 
@@ -707,7 +762,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("description", edt_description.getText().toString().trim());
         mainObj.addProperty("organizer_name", edt_organizer_name.getText().toString().trim());
         mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
-        mainObj.addProperty("event_date", eventDate);
+        mainObj.addProperty("event_date", eventStartDate);
+        mainObj.addProperty("event_end_date", eventEndDate);
         mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
         mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
@@ -731,7 +787,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("payment_link", edt_paylink.getText().toString().trim());
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("updated_by", userId);
-        mainObj.addProperty("is_active", "1");
+        mainObj.addProperty("is_active", isActive);
         mainObj.add("document_path", documentsArray);
         mainObj.add("payment_mode", selectedPaymentModes);
 

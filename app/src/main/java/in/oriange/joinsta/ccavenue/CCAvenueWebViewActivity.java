@@ -25,7 +25,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,13 +34,13 @@ import org.jsoup.select.Elements;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
-import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 
@@ -49,32 +48,16 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
     Intent mainIntent;
     String encVal;
     String vResponse, user_id;
-    private UserSessionManager session;
     private int showWebview = 1;
-
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_ccavenue_webview);
         mainIntent = getIntent();
-        session = new UserSessionManager(CCAvenueWebViewActivity.this);
-
-        getSessionData();
-
+        user_id = mainIntent.getStringExtra("user_id");
 //get rsa key method
         get_RSA_key(mainIntent.getStringExtra(AvenuesParams.ACCESS_CODE), mainIntent.getStringExtra(AvenuesParams.ORDER_ID));
-    }
-
-    private void getSessionData() {
-        try {
-            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-                    ApplicationConstants.KEY_LOGIN_INFO));
-            JSONObject json = user_info.getJSONObject(0);
-            user_id = json.getString("id");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private class RenderView extends AsyncTask<Void, Void, Void> {
@@ -121,62 +104,79 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                         Elements tableRowElements = tableElements.select(":not(thead) tr");
                         ArrayList<HashMap<String, String>> arraylist = new ArrayList();
 
+                        Calendar calendar = Calendar.getInstance();
 
-                        HashMap<String, String> map1 = new HashMap<String, String>();
-                        HashMap<String, String> map2 = new HashMap<String, String>();
-                        HashMap<String, String> map3 = new HashMap<String, String>();
-                        HashMap<String, String> map4 = new HashMap<String, String>();
-                        HashMap<String, String> map5 = new HashMap<String, String>();
-                        HashMap<String, String> map6 = new HashMap<String, String>();
-                        HashMap<String, String> map7 = new HashMap<String, String>();
-                        HashMap<String, String> map8 = new HashMap<String, String>();
-                        HashMap<String, String> map9 = new HashMap<String, String>();
-                        HashMap<String, String> map10 = new HashMap<String, String>();
-                        HashMap<String, String> map11 = new HashMap<String, String>();
+
+                        HashMap<String, String> map1 = new HashMap<>();
+                        HashMap<String, String> map2 = new HashMap<>();
+                        HashMap<String, String> map3 = new HashMap<>();
+                        HashMap<String, String> map4 = new HashMap<>();
+                        HashMap<String, String> map5 = new HashMap<>();
+                        HashMap<String, String> map6 = new HashMap<>();
+                        HashMap<String, String> map7 = new HashMap<>();
+                        HashMap<String, String> map8 = new HashMap<>();
+                        HashMap<String, String> map9 = new HashMap<>();
+                        HashMap<String, String> map10 = new HashMap<>();
+                        HashMap<String, String> map11 = new HashMap<>();
+                        HashMap<String, String> map12 = new HashMap<>();
+                        HashMap<String, String> map13 = new HashMap<>();
+                        HashMap<String, String> map14 = new HashMap<>();
 
                         map1.put("key", "type");
-                        map1.put("value", "buyPlan");
+                        map1.put("value", "addEventPaymentDetails");
                         arraylist.add(map1);
 
-                        map2.put("key", "user_id");
-                        map2.put("value", mainIntent.getStringExtra("user_id"));
+                        map2.put("key", "payment_mode");
+                        map2.put("value", "online");
                         arraylist.add(map2);
 
-                        map3.put("key", "plan_id");
-                        map3.put("value", mainIntent.getStringExtra("plan_id"));
+                        map3.put("key", "order_gateway");
+                        map3.put("value", "ccavenue");
                         arraylist.add(map3);
 
-                        map4.put("key", "space");
-                        map4.put("value", mainIntent.getStringExtra("space"));
+                        map4.put("key", "gateway_configuration_id");
+                        map4.put("value", mainIntent.getStringExtra("gateway_configuration_id"));
                         arraylist.add(map4);
 
-                        map5.put("key", "sms");
-                        map5.put("value", mainIntent.getStringExtra("sms"));
+                        map5.put("key", "transaction_id");
+                        map5.put("value", "");
                         arraylist.add(map5);
 
-                        map6.put("key", "whatsApp_msg");
-                        map6.put("value", mainIntent.getStringExtra("whatsApp_msg"));
+                        map6.put("key", "transaction_date");
+                        map6.put("value", calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
                         arraylist.add(map6);
 
-                        map7.put("key", "expire_date");
-                        map7.put("value", mainIntent.getStringExtra("expire_date"));
+                        map7.put("key", "paid_to");
+                        map7.put("value", "");
                         arraylist.add(map7);
 
-                        map8.put("key", "cc_bank_ref_no");
-                        map8.put("value", "");
+                        map8.put("key", "event_id");
+                        map8.put("value", mainIntent.getStringExtra("event_id"));
                         arraylist.add(map8);
 
-                        map9.put("key", "record_status");
-                        map9.put("value", "");
+                        map9.put("key", "user_id");
+                        map9.put("value", mainIntent.getStringExtra("user_id"));
                         arraylist.add(map9);
 
-                        map10.put("key", "customers");
-                        map10.put("value", mainIntent.getStringExtra("clients"));
+                        map10.put("key", "created_by");
+                        map10.put("value", mainIntent.getStringExtra("created_by"));
                         arraylist.add(map10);
 
-                        map11.put("key", "policies");
-                        map11.put("value", mainIntent.getStringExtra("policies"));
+                        map11.put("key", "quantity");
+                        map11.put("value", mainIntent.getStringExtra("quantity"));
                         arraylist.add(map11);
+
+                        map12.put("key", "transaction_status");
+                        map12.put("value", "SUCCESS");
+                        arraylist.add(map12);
+
+                        map13.put("key", "cc_bank_ref_no");
+                        map13.put("value", "");
+                        arraylist.add(map13);
+
+                        map14.put("key", "record_status");
+                        map14.put("value", "");
+                        arraylist.add(map14);
 
                         for (int i = 0; i < tableRowElements.size(); i++) {
                             HashMap<String, String> map = new HashMap<String, String>();
@@ -263,8 +263,6 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                             } else {
                                 new RenderView().execute();   // Calling async task to get display content
                             }
-
-
                         } else {
                             show_alert("No response");
                         }
@@ -319,7 +317,6 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
 
     public class BuyPlan extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
-        private String JSONString = "";
 
         @Override
         protected void onPreExecute() {
@@ -332,10 +329,8 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            String res = "[]";
-
-            JSONString = params[0];
-            res = APICall.JSONAPICall(ApplicationConstants.BUYPLANAPI, params[0]);
+            String res = "";
+            res = APICall.JSONAPICall(ApplicationConstants.PAYMENTTRACKAPI, params[0]);
             return res.trim();
         }
 
@@ -350,25 +345,8 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
-//                        builder.setMessage("Plan buy successfully!");
-//                        builder.setIcon(R.drawable.ic_success_24dp);
-//                        builder.setTitle("Success");
-//                        builder.setCancelable(false);
-//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                finish();
-//                            }
-//                        });
-//                        AlertDialog alertD = builder.create();
-//                        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-//                        alertD.show();
-                        startActivity(new Intent(CCAvenueWebViewActivity.this, PlanBuySuccess_Activity.class)
-                                .putExtra("JSONString", JSONString)
-                                .putExtra("validity", getIntent().getStringExtra("validity"))
-                                .putExtra("clients", getIntent().getStringExtra("clients"))
-                                .putExtra("policies", getIntent().getStringExtra("policies")));
+                        startActivity(new Intent(CCAvenueWebViewActivity.this, PlanBuySuccess_Activity.class));
+                        finish();
                     }
                 }
             } catch (Exception e) {
@@ -379,19 +357,17 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
     }
 
     private void AlertDialog(String status) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
-//        builder.setMessage(status);
-//        builder.setIcon(R.drawable.ic_alert_red_24dp);
-//        builder.setTitle("Fail");
-//        builder.setCancelable(false);
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            public void onClick(DialogInterface dialog, int id) {
-//                finish();
-//            }
-//        });
-//        AlertDialog alertD = builder.create();
-//        alertD.getWindow().getAttributes().windowAnimations = R.style.DialogAnimationTheme;
-//        alertD.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
+        builder.setMessage(status);
+        builder.setTitle("Fail");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.show();
     }
 
 }

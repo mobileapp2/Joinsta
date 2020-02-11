@@ -431,6 +431,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+        <activity
+            android:name=".paytm.PaytmPayment_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+        <activity
+            android:name=".ccavenue.CCAvenueWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ccavenue.PlanBuySuccess_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

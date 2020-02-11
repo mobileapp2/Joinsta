@@ -1,10 +1,16 @@
 package in.oriange.joinsta.models;
 
+import android.annotation.SuppressLint;
+
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.getAmPmFrom24Hour;
+import static in.oriange.joinsta.utilities.Utilities.ordinal;
 
 public class EventsPaidModel implements Serializable {
 
@@ -89,6 +95,7 @@ public class EventsPaidModel implements Serializable {
         private String name;
         private String description;
         private String event_date;
+        private String event_end_date;
         private String event_start_time;
         private String event_end_time;
         private String venue_address;
@@ -121,6 +128,7 @@ public class EventsPaidModel implements Serializable {
         private String is_early_payment_applicable;
         private String is_normal_payment_applicable;
         private String payment_status;
+        private String is_active;
         private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
@@ -456,9 +464,53 @@ public class EventsPaidModel implements Serializable {
             this.payment_status = payment_status;
         }
 
+        public String getEvent_end_date() {
+            return event_end_date;
+        }
+
+        public void setEvent_end_date(String event_end_date) {
+            this.event_end_date = event_end_date;
+        }
+
+        public String getIs_active() {
+            return is_active;
+        }
+
+        public void setIs_active(String is_active) {
+            this.is_active = is_active;
+        }
+
+        @SuppressLint("SimpleDateFormat")
         public String getDateTime() {
-            return changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", event_date) +
-                    " from " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+
+            try {
+                Date startDate = new SimpleDateFormat("yyyy-MM-dd").parse(event_date);
+                Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(event_end_date);
+
+                String startDay = changeDateFormat("yyyy-MM-dd", "dd", event_date);
+                String startMonth = changeDateFormat("yyyy-MM-dd", "MMM", event_date);
+                String startYear = changeDateFormat("yyyy-MM-dd", "yyyy", event_date);
+                String endDay = changeDateFormat("yyyy-MM-dd", "dd", event_end_date);
+                String endMonth = changeDateFormat("yyyy-MM-dd", "MMM", event_end_date);
+                String endYear = changeDateFormat("yyyy-MM-dd", "yyyy", event_end_date);
+
+
+                String startDateStr = ordinal(Integer.parseInt(startDay)) + " " + startMonth + " " + startYear;
+                String endDateStr = ordinal(Integer.parseInt(endDay)) + " " + endMonth + " " + endYear;
+
+                boolean areDatesEqual = startDate.equals(endDate);
+
+                if (areDatesEqual)
+                    return "On " + startDateStr +
+                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+                else
+                    return "From " + startDateStr + " to " + endDateStr +
+                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "";
+            }
         }
 
         public List<PaideventsPaymentoptionsBean> getPaidevents_paymentoptions() {

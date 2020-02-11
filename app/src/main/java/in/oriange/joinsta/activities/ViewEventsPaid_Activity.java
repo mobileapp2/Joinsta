@@ -49,6 +49,8 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
+import in.oriange.joinsta.ccavenue.AvenuesParams;
+import in.oriange.joinsta.ccavenue.CCAvenueWebViewActivity;
 import in.oriange.joinsta.ccavenue.ServiceUtility;
 import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.models.MasterModel;
@@ -234,9 +236,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         } else {
             for (EventsPaidModel.ResultBean.DocumentsBean documentsBean : docList) {
                 if (documentsBean.getDocument_type().equalsIgnoreCase("invitationdocument")) {
-                    documentsList.add(IMAGE_LINK + "feed_doc/" + documentsBean.getDocument_path());
+                    documentsList.add(IMAGE_LINK + "events/invitation_doc/" + documentsBean.getDocument_path());
                 } else if (documentsBean.getDocument_type().equalsIgnoreCase("invitationimage")) {
-                    imagesList.add(IMAGE_LINK + "feed_doc/" + documentsBean.getDocument_path());
+                    imagesList.add(IMAGE_LINK + "events/invitation_image/" + documentsBean.getDocument_path());
                 }
             }
         }
@@ -467,23 +469,29 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (gatewayList.get(which).equals("Paytm")) {
-//                    Intent intent = new Intent(context, PaytmPayment_Activity.class);
-//                    intent.putExtra("orderid", randomNum);
-//                    intent.putExtra("custid", "632541" + userId);
-//                    intent.putExtra("type", plansList.get(lastSelectedPosition).getPlan());
-//                    intent.putExtra("user_id", user_id);
-//                    intent.putExtra("plan_id", plansList.get(lastSelectedPosition).getId());
-//                    intent.putExtra("space", plansList.get(lastSelectedPosition).getSpace());
-//                    intent.putExtra("sms", plansList.get(lastSelectedPosition).getSms());
-//                    intent.putExtra("whatsApp_msg", plansList.get(lastSelectedPosition).getWhtasApp_msg());
-//                    intent.putExtra("expire_date", plansList.get(lastSelectedPosition).getEnd_date());
-//                    intent.putExtra("validity", plansList.get(lastSelectedPosition).getValidity());
-//                    intent.putExtra("clients", plansList.get(lastSelectedPosition).getCustomers());
-//                    intent.putExtra("policies", plansList.get(lastSelectedPosition).getPolicies());
-//                    intent.putExtra("amount", plansList.get(lastSelectedPosition).getAmount());
-//                    startActivity(intent);
+                    Intent intent = new Intent(context, PaytmPayment_Activity.class);
+                    intent.putExtra("orderid", randomNum);
+                    intent.putExtra("custid", "632541" + userId);
+                    intent.putExtra("user_id", userId);
+                    intent.putExtra("amount", "1");
+                    intent.putExtra("quantity", "1");
+                    intent.putExtra("event_id", eventDetails.getid());
+                    intent.putExtra("gateway_configuration_id", "1");
+                    startActivity(intent);
                 } else if (gatewayList.get(which).equals("CC Avenue")) {
+                    Intent intent = new Intent(context, CCAvenueWebViewActivity.class);
+                    intent.putExtra(AvenuesParams.ACCESS_CODE, ApplicationConstants.ACCESS_CODE);
+                    intent.putExtra(AvenuesParams.MERCHANT_ID, ApplicationConstants.MERCHANT_ID);
+                    intent.putExtra(AvenuesParams.ORDER_ID, randomNum);
+                    intent.putExtra(AvenuesParams.CURRENCY, ApplicationConstants.CURRENCY);
+                    intent.putExtra(AvenuesParams.AMOUNT, "1");
+                    intent.putExtra(AvenuesParams.REDIRECT_URL, ApplicationConstants.REDIRECT_URL);
+                    intent.putExtra(AvenuesParams.CANCEL_URL, ApplicationConstants.CANCEL_URL);
+                    intent.putExtra(AvenuesParams.RSA_KEY_URL, ApplicationConstants.RSA_KEY_URL);
 
+                    intent.putExtra("user_id", userId);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
