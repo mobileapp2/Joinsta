@@ -143,7 +143,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                         arraylist.add(map5);
 
                         map6.put("key", "transaction_date");
-                        map6.put("value", calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+                        map6.put("value", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) +1)+ "-" + calendar.get(Calendar.DAY_OF_MONTH));
                         arraylist.add(map6);
 
                         map7.put("key", "paid_to");
@@ -159,7 +159,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                         arraylist.add(map9);
 
                         map10.put("key", "created_by");
-                        map10.put("value", mainIntent.getStringExtra("created_by"));
+                        map10.put("value", mainIntent.getStringExtra("user_id"));
                         arraylist.add(map10);
 
                         map11.put("key", "quantity");
@@ -191,11 +191,16 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
 
 
                         JsonObject mainObj = new JsonObject();
-                        for (HashMap<String, String> entry : arraylist) {
-                            String myID = entry.get("key").toString();
-                            String mySKU = entry.get("value").toString();
-                            mainObj.addProperty(myID, mySKU);
+                        try {
+                            for (HashMap<String, String> entry : arraylist) {
+                                String myID = entry.get("key");
+                                String mySKU = entry.get("value");
+                                mainObj.addProperty(myID, mySKU);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+
 
                         Log.i("CCAVENUE", mainObj.toString());
 
@@ -371,3 +376,5 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
     }
 
 }
+
+//{"type":"addEventPaymentDetails","payment_mode":"Debit Card","order_gateway":"ccavenue","gateway_configuration_id":"1","transaction_id":"","transaction_date":"2020-1-22","paid_to":"","event_id":"52","user_id":"271","created_by":"271","quantity":"1","transaction_status":"SUCCESS","cc_bank_ref_no":"","record_status":"","order_id":"8604557","tracking_id":"109770480541","bank_ref_no":"805710","order_status":"Success","failure_message":"","card_name":"Visa Debit Card","status_code":"null","status_message":"SUCCESS","currency":"INR","amount":"1.00","billing_name":"Jfjejekdek","billing_address":"Jrejjeiw","billing_city":"Pune","billing_state":"Maharashtra","billing_zip":"411028","billing_country":"India","billing_tel":"8149115089","billing_email":"Priyeshpwar07@email.com","delivery_name":"Jfjejekdek","delivery_address":"Jrejjeiw","delivery_city":"Pune","delivery_state":"Maharashtra","delivery_zip":"411028","delivery_country":"India","delivery_tel":"8149115089","merchant_param1":"","merchant_param2":"","merchant_param3":"","merchant_param4":"","merchant_param5":"","vault":"N","offer_type":"null","offer_code":"null","discount_value":"0.0","mer_amount":"1.00","eci_value":"null","retry":"N","response_code":"0","billing_notes":"","trans_date":"12/02/2020 12:20:25","bin_country":"INDIA"}

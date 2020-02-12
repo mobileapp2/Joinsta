@@ -488,6 +488,11 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                     intent.putExtra(AvenuesParams.REDIRECT_URL, ApplicationConstants.REDIRECT_URL);
                     intent.putExtra(AvenuesParams.CANCEL_URL, ApplicationConstants.CANCEL_URL);
                     intent.putExtra(AvenuesParams.RSA_KEY_URL, ApplicationConstants.RSA_KEY_URL);
+                    intent.putExtra("user_id", userId);
+                    intent.putExtra("amount", "1");
+                    intent.putExtra("quantity", "1");
+                    intent.putExtra("event_id", eventDetails.getid());
+                    intent.putExtra("gateway_configuration_id", "1");
 
                     intent.putExtra("user_id", userId);
                     startActivity(intent);

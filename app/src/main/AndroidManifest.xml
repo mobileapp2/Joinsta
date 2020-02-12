@@ -432,6 +432,11 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
+            android:name=".activities.MyEvents_Activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+        <activity
             android:name=".paytm.PaytmPayment_Activity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"

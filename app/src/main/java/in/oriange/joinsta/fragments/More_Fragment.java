@@ -32,6 +32,7 @@ import in.oriange.joinsta.activities.ContactUs_Activity;
 import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
 import in.oriange.joinsta.activities.HowToUse_Activity;
+import in.oriange.joinsta.activities.MyEvents_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.Policy_Activity;
 import in.oriange.joinsta.activities.ProfileDetails_Activity;
@@ -41,7 +42,7 @@ import in.oriange.joinsta.activities.Settings_Activity;
 public class More_Fragment extends Fragment {
 
     private Context context;
-    private CardView cv_profiledetails, cv_favourite, cv_notifications, cv_requirements,
+    private CardView cv_profiledetails, cv_myevents, cv_favourite, cv_notifications, cv_requirements,
             cv_settings, cv_enquires, cv_policies, cv_contactus, cv_howto;
 
     @Override
@@ -66,6 +67,7 @@ public class More_Fragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         cv_profiledetails = rootView.findViewById(R.id.cv_profiledetails);
+        cv_myevents = rootView.findViewById(R.id.cv_myevents);
         cv_favourite = rootView.findViewById(R.id.cv_favourite);
         cv_notifications = rootView.findViewById(R.id.cv_notifications);
         cv_requirements = rootView.findViewById(R.id.cv_requirements);
@@ -92,6 +94,13 @@ public class More_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, Favourites_Activity.class));
+            }
+        });
+
+        cv_myevents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, MyEvents_Activity.class));
             }
         });
 
