@@ -39,12 +39,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.PaymentSuccess_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;
 
 
-public class CCAvenueWebViewActivity extends AppCompatActivity {
+public class CCAvenueWebView_Activity extends AppCompatActivity {
     Intent mainIntent;
     String encVal;
     String vResponse, user_id;
@@ -65,7 +66,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             // Showing progress dialog
-            LoadingDialog.showLoadingDialog(CCAvenueWebViewActivity.this, "Loading...");
+            LoadingDialog.showLoadingDialog(CCAvenueWebView_Activity.this, "Loading...");
 
         }
 
@@ -204,10 +205,10 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
 
                         Log.i("CCAVENUE", mainObj.toString());
 
-                        if (Utilities.isNetworkAvailable(CCAvenueWebViewActivity.this)) {
+                        if (Utilities.isNetworkAvailable(CCAvenueWebView_Activity.this)) {
                             new BuyPlan().execute(mainObj.toString());
                         } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, CCAvenueWebViewActivity.this, 2);
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, CCAvenueWebView_Activity.this, 2);
                         }
 
                     } else if (html.indexOf("Aborted") != -1) {
@@ -236,7 +237,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                 @Override
                 public void onPageStarted(WebView view, String url, Bitmap favicon) {
                     super.onPageStarted(view, url, favicon);
-                    LoadingDialog.showLoadingDialog(CCAvenueWebViewActivity.this, "Loading...");
+                    LoadingDialog.showLoadingDialog(CCAvenueWebView_Activity.this, "Loading...");
                 }
             });
 
@@ -252,13 +253,13 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
     }
 
     public void get_RSA_key(final String ac, final String od) {
-        LoadingDialog.showLoadingDialog(CCAvenueWebViewActivity.this, "Loading...");
+        LoadingDialog.showLoadingDialog(CCAvenueWebView_Activity.this, "Loading...");
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, mainIntent.getStringExtra(AvenuesParams.RSA_KEY_URL),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(CCAvenueWebViewActivity.this,response,Toast.LENGTH_LONG).show();
+                        //Toast.makeText(CCAvenueWebView_Activity.this,response,Toast.LENGTH_LONG).show();
                         LoadingDialog.cancelLoading();
 
                         if (response != null && !response.equals("")) {
@@ -277,7 +278,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         LoadingDialog.cancelLoading();
-                        //Toast.makeText(CCAvenueWebViewActivity.this,error.toString(),Toast.LENGTH_LONG).show();
+                        //Toast.makeText(CCAvenueWebView_Activity.this,error.toString(),Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override
@@ -299,7 +300,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
 
     public void show_alert(String msg) {
         AlertDialog alertDialog = new AlertDialog.Builder(
-                CCAvenueWebViewActivity.this).create();
+                CCAvenueWebView_Activity.this).create();
 
         alertDialog.setTitle("Error!!!");
         if (msg.contains("\n"))
@@ -326,7 +327,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
+            pd = new ProgressDialog(CCAvenueWebView_Activity.this, R.style.CustomDialogTheme);
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
             pd.show();
@@ -350,7 +351,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        startActivity(new Intent(CCAvenueWebViewActivity.this, PlanBuySuccess_Activity.class));
+                        startActivity(new Intent(CCAvenueWebView_Activity.this, PaymentSuccess_Activity.class));
                         finish();
                     }
                 }
@@ -362,7 +363,7 @@ public class CCAvenueWebViewActivity extends AppCompatActivity {
     }
 
     private void AlertDialog(String status) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebViewActivity.this, R.style.CustomDialogTheme);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CCAvenueWebView_Activity.this, R.style.CustomDialogTheme);
         builder.setMessage(status);
         builder.setTitle("Fail");
         builder.setCancelable(false);

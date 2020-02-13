@@ -110,6 +110,7 @@ public class EventsFreeModel implements Serializable {
         private String mobile;
         private String organizer_name;
         private String is_active;
+        private String status;
         private List<DocumentsBean> documents;
 
         public String getId() {
@@ -362,6 +363,26 @@ public class EventsFreeModel implements Serializable {
 
         public void setIs_active(String is_active) {
             this.is_active = is_active;
+        }
+
+        public String getEvent_start_date() {
+            return event_start_date;
+        }
+
+        public void setEvent_start_date(String event_start_date) {
+            this.event_start_date = event_start_date;
+        }
+
+        public String getStatus() {
+            if (status != null) {
+                return status;
+            } else {
+                return "";
+            }
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
         }
 
         @SuppressLint("SimpleDateFormat")

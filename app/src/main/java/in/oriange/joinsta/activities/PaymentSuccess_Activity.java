@@ -1,4 +1,4 @@
-package in.oriange.joinsta.ccavenue;
+package in.oriange.joinsta.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,7 +16,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 
-public class PlanBuySuccess_Activity extends Activity {
+public class PaymentSuccess_Activity extends Activity {
 
     private Context context;
     private Button btn_done;
@@ -28,7 +28,7 @@ public class PlanBuySuccess_Activity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_planbuy_success);
+        setContentView(R.layout.activity_payment_success);
 
         init();
         getSessionData();
@@ -37,7 +37,7 @@ public class PlanBuySuccess_Activity extends Activity {
     }
 
     private void init() {
-        context = PlanBuySuccess_Activity.this;
+        context = PaymentSuccess_Activity.this;
         session = new UserSessionManager(context);
         animationView = findViewById(R.id.animation_view);
         animationView.playAnimation();

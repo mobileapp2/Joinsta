@@ -32,11 +32,13 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
     private Context context;
     private List<EventsPaidModel.ResultBean> eventList;
     private String groupId;
+    private boolean isMyEvent;
 
-    public EventsPaidAdapter(Context context, List<EventsPaidModel.ResultBean> eventList, String groupId) {
+    public EventsPaidAdapter(Context context, List<EventsPaidModel.ResultBean> eventList, String groupId, boolean isMyEvent) {
         this.context = context;
         this.eventList = eventList;
         this.groupId = groupId;
+        this.isMyEvent = isMyEvent;
     }
 
     @NonNull
@@ -83,6 +85,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewEventsPaid_Activity.class)
+                        .putExtra("isMyEvent", isMyEvent)
                         .putExtra("eventDetails", eventDetails));
             }
         });

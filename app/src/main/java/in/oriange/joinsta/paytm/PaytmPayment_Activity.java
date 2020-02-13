@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.ccavenue.PlanBuySuccess_Activity;
+import in.oriange.joinsta.activities.PaymentSuccess_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;
@@ -263,7 +263,7 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            startActivity(new Intent(context, PlanBuySuccess_Activity.class));
+                            startActivity(new Intent(context, PaymentSuccess_Activity.class));
                             finish();
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);

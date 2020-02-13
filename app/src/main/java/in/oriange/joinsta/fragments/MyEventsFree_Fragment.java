@@ -203,7 +203,7 @@ public class MyEventsFree_Fragment extends Fragment {
                         if (eventList.size() > 0) {
                             rv_event.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsFreeAdapter(context, eventList, groupId));
+                            rv_event.setAdapter(new EventsFreeAdapter(context, eventList, groupId, true));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_event.setVisibility(View.GONE);
@@ -303,11 +303,11 @@ public class MyEventsFree_Fragment extends Fragment {
 
                 if (selectedTypeCount == 0) {
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, groupId));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, groupId,true));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsFreeAdapter(context, filteredEventList, groupId));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, filteredEventList, groupId, true));
                 }
 
 

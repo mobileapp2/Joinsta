@@ -67,12 +67,14 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_get_direction, cv_add_calendar, cv_remark, cv_documents;
+    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_get_direction, cv_add_calendar, cv_remark, cv_documents;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId;
     private File file, downloadedDocumentfolder;
     private EventsFreeModel.ResultBean eventDetails;
+
+    private boolean isMyEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +117,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         rv_documents.setLayoutManager(new LinearLayoutManager(context));
 
         cv_description = findViewById(R.id.cv_description);
+        cv_confirmation = findViewById(R.id.cv_confirmation);
         cv_date_time = findViewById(R.id.cv_date_time);
         cv_venue = findViewById(R.id.cv_venue);
         cv_remark = findViewById(R.id.cv_remark);
@@ -152,6 +155,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
     private void setDefault() {
         eventDetails = (EventsFreeModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
+        isMyEvent = getIntent().getBooleanExtra("isMyEvent", false);
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
 
@@ -219,6 +223,12 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             cv_documents.setVisibility(View.GONE);
         else
             rv_documents.setAdapter(new DocumentsAdapter());
+
+
+        if (isMyEvent || !eventDetails.getStatus().equals("")) {
+            cv_confirmation.setVisibility(View.GONE);
+        }
+
     }
 
     private void setEventHandler() {

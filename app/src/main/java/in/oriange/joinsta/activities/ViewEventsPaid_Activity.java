@@ -50,7 +50,7 @@ import java.util.List;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
 import in.oriange.joinsta.ccavenue.AvenuesParams;
-import in.oriange.joinsta.ccavenue.CCAvenueWebViewActivity;
+import in.oriange.joinsta.ccavenue.CCAvenueWebView_Activity;
 import in.oriange.joinsta.ccavenue.ServiceUtility;
 import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.models.MasterModel;
@@ -85,6 +85,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private String userId, randomNum;
     private File file, downloadedDocumentfolder;
     private EventsPaidModel.ResultBean eventDetails;
+    private boolean isMyEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +174,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
     private void setDefault() {
         eventDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
+        isMyEvent = getIntent().getBooleanExtra("isMyEvent", false);
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
 
@@ -260,6 +262,11 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             cv_documents.setVisibility(View.GONE);
         else
             rv_documents.setAdapter(new DocumentsAdapter());
+
+
+        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("unpaid")) {
+            btn_buy.setVisibility(View.GONE);
+        }
     }
 
     private void setEventHandler() {
@@ -479,7 +486,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                     intent.putExtra("gateway_configuration_id", "1");
                     startActivity(intent);
                 } else if (gatewayList.get(which).equals("CC Avenue")) {
-                    Intent intent = new Intent(context, CCAvenueWebViewActivity.class);
+                    Intent intent = new Intent(context, CCAvenueWebView_Activity.class);
                     intent.putExtra(AvenuesParams.ACCESS_CODE, ApplicationConstants.ACCESS_CODE);
                     intent.putExtra(AvenuesParams.MERCHANT_ID, ApplicationConstants.MERCHANT_ID);
                     intent.putExtra(AvenuesParams.ORDER_ID, randomNum);
