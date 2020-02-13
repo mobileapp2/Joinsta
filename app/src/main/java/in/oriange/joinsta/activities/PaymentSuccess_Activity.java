@@ -2,10 +2,13 @@ package in.oriange.joinsta.activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 
@@ -51,6 +54,7 @@ public class PaymentSuccess_Activity extends Activity {
 
         btn_done = findViewById(R.id.btn_done);
 
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsPaid_Fragment"));
     }
 
     private void getSessionData() {

@@ -790,6 +790,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("is_active", isActive);
         mainObj.add("document_path", documentsArray);
         mainObj.add("payment_mode", selectedPaymentModes);
+        mainObj.add("gateway_configuration_id", new JsonArray());
 
         if (Utilities.isNetworkAvailable(context)) {
             new AddPaidEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));

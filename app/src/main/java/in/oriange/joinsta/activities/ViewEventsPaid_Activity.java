@@ -49,12 +49,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
-import in.oriange.joinsta.ccavenue.AvenuesParams;
-import in.oriange.joinsta.ccavenue.CCAvenueWebView_Activity;
-import in.oriange.joinsta.ccavenue.ServiceUtility;
 import in.oriange.joinsta.models.EventsPaidModel;
-import in.oriange.joinsta.models.MasterModel;
-import in.oriange.joinsta.paytm.PaytmPayment_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -82,7 +77,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             cv_price, cv_remark, cv_documents;
 
     private ArrayList<String> imagesList, documentsList;
-    private String userId, randomNum;
+    private String userId, randomNum, paymentLink;
     private File file, downloadedDocumentfolder;
     private EventsPaidModel.ResultBean eventDetails;
     private boolean isMyEvent;
@@ -263,10 +258,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         else
             rv_documents.setAdapter(new DocumentsAdapter());
 
-
-        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("unpaid")) {
-            btn_buy.setVisibility(View.GONE);
-        }
+//        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")) {
+//            btn_buy.setVisibility(View.GONE);
+//        }
     }
 
     private void setEventHandler() {
@@ -394,25 +388,33 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     }
 
     private void showPaymentOptionsDialog() {
-        List<MasterModel> paymentModeList = new ArrayList<>();
-        paymentModeList.add(new MasterModel("Online", "online", false));
-        paymentModeList.add(new MasterModel("Offline", "offline", false));
-        paymentModeList.add(new MasterModel("Payment Link", "paymentlink", false));
+        List<EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean> paymentModeList = new ArrayList<>();
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Online", "online", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Offline", "offline", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment Link", "paymentlink", "", "0", false));
 
 
         for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean selectedModes : eventDetails.getPaidevents_paymentoptions()) {
             for (int i = 0; i < paymentModeList.size(); i++) {
-                if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getId())) {
+                if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getPayment_mode())) {
                     paymentModeList.get(i).setChecked(true);
                 }
             }
         }
 
-        final List<MasterModel> selectedPaymentModeList = new ArrayList<>();
+        final List<EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean> selectedPaymentModeList = new ArrayList<>();
         for (int i = 0; i < paymentModeList.size(); i++) {
             if (paymentModeList.get(i).isChecked())
                 selectedPaymentModeList.add(paymentModeList.get(i));
         }
+
+        for (int i = 0; i < paymentModeList.size(); i++) {
+            if (paymentModeList.get(i).getPayment_mode().equals("paymentlink")) {
+                paymentLink = paymentModeList.get(i).getPayment_link();
+                break;
+            }
+        }
+
 
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select Payment Mode");
@@ -421,7 +423,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
         for (int i = 0; i < selectedPaymentModeList.size(); i++) {
-            arrayAdapter.add(String.valueOf(selectedPaymentModeList.get(i).getName()));
+            arrayAdapter.add(String.valueOf(selectedPaymentModeList.get(i).getPayment_mode_name()));
         }
 
         builderSingle.setNegativeButton(
@@ -435,86 +437,28 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (selectedPaymentModeList.get(which).getId().equals("online")) {
-                    showOnlinePaymentDialog();
-                } else if (selectedPaymentModeList.get(which).getId().equals("offline")) {
-                    showOfflinePaymentDialog();
-                } else if (selectedPaymentModeList.get(which).getId().equals("paymentlink")) {
-                    openPaylinkUrl();
-                }
-            }
-        });
-        builderSingle.show();
-
-
-    }
-
-    private void showOnlinePaymentDialog() {
-        final ArrayList<String> gatewayList = new ArrayList<>();
-        gatewayList.add("Paytm");
-        gatewayList.add("CC Avenue");
-
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Payment Gateway");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
-
-        for (int i = 0; i < gatewayList.size(); i++) {
-            arrayAdapter.add(String.valueOf(gatewayList.get(i)));
-        }
-
-        builderSingle.setNegativeButton(
-                "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (gatewayList.get(which).equals("Paytm")) {
-                    Intent intent = new Intent(context, PaytmPayment_Activity.class);
-                    intent.putExtra("orderid", randomNum);
-                    intent.putExtra("custid", "632541" + userId);
-                    intent.putExtra("user_id", userId);
-                    intent.putExtra("amount", "1");
-                    intent.putExtra("quantity", "1");
-                    intent.putExtra("event_id", eventDetails.getid());
-                    intent.putExtra("gateway_configuration_id", "1");
-                    startActivity(intent);
-                } else if (gatewayList.get(which).equals("CC Avenue")) {
-                    Intent intent = new Intent(context, CCAvenueWebView_Activity.class);
-                    intent.putExtra(AvenuesParams.ACCESS_CODE, ApplicationConstants.ACCESS_CODE);
-                    intent.putExtra(AvenuesParams.MERCHANT_ID, ApplicationConstants.MERCHANT_ID);
-                    intent.putExtra(AvenuesParams.ORDER_ID, randomNum);
-                    intent.putExtra(AvenuesParams.CURRENCY, ApplicationConstants.CURRENCY);
-                    intent.putExtra(AvenuesParams.AMOUNT, "1");
-                    intent.putExtra(AvenuesParams.REDIRECT_URL, ApplicationConstants.REDIRECT_URL);
-                    intent.putExtra(AvenuesParams.CANCEL_URL, ApplicationConstants.CANCEL_URL);
-                    intent.putExtra(AvenuesParams.RSA_KEY_URL, ApplicationConstants.RSA_KEY_URL);
-                    intent.putExtra("user_id", userId);
-                    intent.putExtra("amount", "1");
-                    intent.putExtra("quantity", "1");
-                    intent.putExtra("event_id", eventDetails.getid());
-                    intent.putExtra("gateway_configuration_id", "1");
-
-                    intent.putExtra("user_id", userId);
-                    startActivity(intent);
+                if (selectedPaymentModeList.get(which).getPayment_mode().equals("online")) {
+                    startActivity(new Intent(context, PaymentSummary_Activity.class)
+                            .putExtra("eventDetails", eventDetails));
                     finish();
+                } else if (selectedPaymentModeList.get(which).getPayment_mode().equals("offline")) {
+                    startActivity(new Intent(context, OfflinePayment_Activity.class)
+                            .putExtra("eventId", eventDetails.getid()));
+                    finish();
+                } else if (selectedPaymentModeList.get(which).getPayment_mode().equals("paymentlink")) {
+                    String url = paymentLink;
+
+                    if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                        url = "http://" + url;
+                    }
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
                 }
             }
         });
         builderSingle.show();
-    }
 
-    private void showOfflinePaymentDialog() {
-
-    }
-
-    private void openPaylinkUrl() {
 
     }
 
@@ -796,14 +740,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
             }
         }
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //generating new order number for every transaction
-        randomNum = String.valueOf(ServiceUtility.randInt(0, 9999999));
     }
 
 }

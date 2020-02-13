@@ -918,6 +918,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("add_payment_link", edt_paylink.getText().toString().trim());
         mainObj.add("document_path", documentsArray);
         mainObj.add("payment_mode", selectedPaymentModes);
+        mainObj.add("gateway_configuration_id", new JsonArray());
 
         if (Utilities.isNetworkAvailable(context)) {
             new EditPaidEvent().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));

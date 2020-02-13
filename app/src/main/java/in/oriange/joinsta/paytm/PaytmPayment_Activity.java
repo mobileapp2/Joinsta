@@ -1,15 +1,22 @@
 package in.oriange.joinsta.paytm;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.JsonObject;
 import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
@@ -23,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.PaymentSuccess_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;
@@ -263,8 +269,31 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            startActivity(new Intent(context, PaymentSuccess_Activity.class));
-                            finish();
+
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsPaid_Fragment"));
+                            LayoutInflater layoutInflater = LayoutInflater.from(context);
+                            View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                            alertDialogBuilder.setView(promptView);
+
+                            LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                            TextView tv_title = promptView.findViewById(R.id.tv_title);
+                            Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                            animation_view.playAnimation();
+                            tv_title.setText("Payment done successfully");
+                            alertDialogBuilder.setCancelable(false);
+                            final AlertDialog alertD = alertDialogBuilder.create();
+
+                            btn_ok.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alertD.dismiss();
+                                    finish();
+                                }
+                            });
+
+                            alertD.show();
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
