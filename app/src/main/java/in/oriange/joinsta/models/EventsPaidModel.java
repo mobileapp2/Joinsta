@@ -542,7 +542,7 @@ public class EventsPaidModel implements Serializable {
             private String paid_events_id;
             private boolean isChecked;
 
-            public PaideventsPaymentoptionsBean(String payment_mode_name,String payment_mode, String payment_link, String paid_events_id, boolean isChecked) {
+            public PaideventsPaymentoptionsBean(String payment_mode_name, String payment_mode, String payment_link, String paid_events_id, boolean isChecked) {
                 this.payment_mode_name = payment_mode_name;
                 this.payment_mode = payment_mode;
                 this.payment_link = payment_link;

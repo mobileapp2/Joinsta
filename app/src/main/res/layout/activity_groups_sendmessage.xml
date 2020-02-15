@@ -342,7 +342,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:checked="true"
-                        android:text="Allow members to share this message"/>
+                        android:text="Allow members to share this message" />
 
                     <android.widget.Button
                         android:id="@+id/btn_save"

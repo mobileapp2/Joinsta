@@ -34,7 +34,7 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class  GroupsMembersRequests_Activity extends AppCompatActivity {
+public class GroupsMembersRequests_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;

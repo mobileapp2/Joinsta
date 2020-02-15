@@ -454,7 +454,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:text="ADD"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

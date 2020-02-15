@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.PaymentSuccess_Activity;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;
@@ -149,7 +148,7 @@ public class CCAvenueWebView_Activity extends AppCompatActivity {
                         arraylist.add(map5);
 
                         map6.put("key", "transaction_date");
-                        map6.put("value", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) +1)+ "-" + calendar.get(Calendar.DAY_OF_MONTH));
+                        map6.put("value", calendar.get(Calendar.YEAR) + "-" + (calendar.get(Calendar.MONTH) + 1) + "-" + calendar.get(Calendar.DAY_OF_MONTH));
                         arraylist.add(map6);
 
                         map7.put("key", "paid_to");

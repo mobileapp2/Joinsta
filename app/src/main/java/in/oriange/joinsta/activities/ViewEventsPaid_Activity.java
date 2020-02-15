@@ -258,9 +258,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         else
             rv_documents.setAdapter(new DocumentsAdapter());
 
-//        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")) {
-//            btn_buy.setVisibility(View.GONE);
-//        }
+        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")) {
+            btn_buy.setVisibility(View.GONE);
+        }
     }
 
     private void setEventHandler() {

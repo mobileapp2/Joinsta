@@ -125,7 +125,7 @@ public class MyEventsFree_Fragment extends Fragment {
         IntentFilter intentFilter = new IntentFilter("EventsFree_Fragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
 
-            btn_add.setVisibility(View.GONE);
+        btn_add.setVisibility(View.GONE);
     }
 
     private void setEventHandler() {
@@ -303,7 +303,7 @@ public class MyEventsFree_Fragment extends Fragment {
 
                 if (selectedTypeCount == 0) {
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, groupId,true));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, groupId, true));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));

@@ -121,7 +121,7 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
         }
 
         holder.tv_comment.setText(commentsDetails.getMessage());
-        Linkify.addLinks( holder.tv_comment, Linkify.ALL);
+        Linkify.addLinks(holder.tv_comment, Linkify.ALL);
 
         if (commentsDetails.getComment_reply().size() != 0) {
             holder.tv_replies.setVisibility(View.VISIBLE);

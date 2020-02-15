@@ -31,7 +31,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
 
     private Context context;
     private List<EventsFreeModel.ResultBean> eventList;
-    private String groupId ;
+    private String groupId;
     private boolean isMyEvent;
 
     public EventsFreeAdapter(Context context, List<EventsFreeModel.ResultBean> eventList, String groupId, boolean isMyEvent) {

@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.fragments.EventsFree_Fragment;
-import in.oriange.joinsta.fragments.EventsPaid_Fragment;
 import in.oriange.joinsta.fragments.MyEventsFree_Fragment;
 import in.oriange.joinsta.fragments.MyEventsPaid_Fragment;
 import in.oriange.joinsta.utilities.NonSwipeableViewPager;
