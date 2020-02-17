@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.fragments.Home_Fragment;
 import in.oriange.joinsta.fragments.More_Fragment;
+import in.oriange.joinsta.fragments.OffersEvents_fragment;
 import in.oriange.joinsta.fragments.Offers_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 
@@ -26,7 +27,7 @@ public class BotNavViewPagerAdapter extends FragmentPagerAdapter {
         fragments.add(new Home_Fragment());
         fragments.add(new Search_Fragment());
         fragments.add(new Groups_Fragment());
-        fragments.add(new Offers_Fragment());
+        fragments.add(new OffersEvents_fragment());
         fragments.add(new More_Fragment());
     }
 

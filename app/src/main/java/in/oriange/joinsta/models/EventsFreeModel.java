@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -378,6 +379,23 @@ public class EventsFreeModel implements Serializable {
                 return status;
             } else {
                 return "";
+            }
+        }
+
+        public boolean isEndDatePassed() {
+            try {
+
+                String currentDateStr = Calendar.getInstance().get(Calendar.YEAR) + "-" +
+                        Calendar.getInstance().get(Calendar.MONTH) + "-" +
+                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+                Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(currentDateStr);
+                Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(event_end_date);
+
+                return currentDate.after(endDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
             }
         }
 

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +68,7 @@ public class EventsPaid_Fragment extends Fragment {
 
     private List<EventTypeModel.ResultBean> eventTypeList;
     private List<EventsPaidModel.ResultBean> eventList;
-    private String groupId, userId;
+    private String groupId, userId, isAdmin;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -114,7 +116,7 @@ public class EventsPaid_Fragment extends Fragment {
     @SuppressLint("RestrictedApi")
     private void setDefault() {
         groupId = this.getArguments().getString("groupId");
-        String isAdmin = this.getArguments().getString("isAdmin");
+        isAdmin = this.getArguments().getString("isAdmin");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetPaidEvents().execute();
@@ -167,6 +169,50 @@ public class EventsPaid_Fragment extends Fragment {
             }
         });
 
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                    return;
+                }
+
+                if (eventList.size() == 0) {
+                    rv_event.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<EventsPaidModel.ResultBean> eventsSearchedList = new ArrayList<>();
+                    for (EventsPaidModel.ResultBean eventDetails : eventList) {
+
+                        String eventsToBeSearched = eventDetails.getName().toLowerCase() +
+                                eventDetails.getDescription().toLowerCase() +
+                                eventDetails.getEvent_code().toLowerCase();
+
+                        if (eventsToBeSearched.contains(query.toString().toLowerCase())) {
+                            eventsSearchedList.add(eventDetails);
+                        }
+                    }
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventsSearchedList, isAdmin, false));
+                } else {
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private class GetPaidEvents extends AsyncTask<String, Void, String> {
@@ -210,21 +256,23 @@ public class EventsPaid_Fragment extends Fragment {
                             List<EventsPaidModel.ResultBean> filteredEventList = new ArrayList<>();
 
                             for (EventsPaidModel.ResultBean eventsDetails : eventList) {
-                                if ((eventsDetails.getIs_displaytomembers().equals("0") || eventsDetails.getIs_active().equals("0") && eventsDetails.getCreated_by().equals(userId))) {
+
+                                if (eventsDetails.getCreated_by().equals(userId)) {
                                     filteredEventList.add(eventsDetails);
                                 } else {
-                                    filteredEventList.add(eventsDetails);
+                                    if (!eventsDetails.getIs_displaytomembers().equals("0") && !eventsDetails.getIs_active().equals("0") && !eventsDetails.isEndDatePassed()) {
+                                        filteredEventList.add(eventsDetails);
+                                    }
                                 }
                             }
 
                             eventList.clear();
                             eventList.addAll(filteredEventList);
 
-
                             if (eventList.size() > 0) {
                                 rv_event.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);
-                                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, groupId, false));
+                                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
                             } else {
                                 ll_nopreview.setVisibility(View.VISIBLE);
                                 rv_event.setVisibility(View.GONE);
@@ -312,7 +360,7 @@ public class EventsPaid_Fragment extends Fragment {
         rv_groups.setLayoutManager(new LinearLayoutManager(context));
         rv_groups.setAdapter(new EventTypeListAdapter());
 
-        builder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 List<EventsPaidModel.ResultBean> filteredEventList = new ArrayList<>();
@@ -328,15 +376,28 @@ public class EventsPaid_Fragment extends Fragment {
 
                 if (selectedTypeCount == 0) {
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, groupId, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, groupId, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, isAdmin, false));
                 }
 
             }
         });
+
+        builder.setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                for (int i = 0; i < eventTypeList.size(); i++) {
+                    eventTypeList.get(i).setChecked(false);
+                }
+
+                tv_filter_count.setVisibility(View.GONE);
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+            }
+        });
+
 
         builder.create().show();
     }

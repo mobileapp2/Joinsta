@@ -28,16 +28,15 @@ import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.MyViewHolder> {
 
-
     private Context context;
     private List<EventsPaidModel.ResultBean> eventList;
-    private String groupId;
+    private String isAdmin;
     private boolean isMyEvent;
 
-    public EventsPaidAdapter(Context context, List<EventsPaidModel.ResultBean> eventList, String groupId, boolean isMyEvent) {
+    public EventsPaidAdapter(Context context, List<EventsPaidModel.ResultBean> eventList, String isAdmin, boolean isMyEvent) {
         this.context = context;
         this.eventList = eventList;
-        this.groupId = groupId;
+        this.isAdmin = isAdmin;
         this.isMyEvent = isMyEvent;
     }
 
@@ -86,7 +85,8 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewEventsPaid_Activity.class)
                         .putExtra("isMyEvent", isMyEvent)
-                        .putExtra("eventDetails", eventDetails));
+                        .putExtra("eventDetails", eventDetails)
+                        .putExtra("isAdmin", isAdmin));
             }
         });
     }

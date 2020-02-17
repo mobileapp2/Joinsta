@@ -67,14 +67,18 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_get_direction, cv_add_calendar, cv_remark, cv_documents;
+    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_get_direction, cv_add_calendar, cv_remark,
+            cv_documents, cv_members_status;
 
     private ArrayList<String> imagesList, documentsList;
-    private String userId;
+    private String userId, isAdmin;
     private File file, downloadedDocumentfolder;
     private EventsFreeModel.ResultBean eventDetails;
-
     private boolean isMyEvent;
+    private String shareMessage;
+    private ArrayList<Uri> downloadedImagesUriList;
+    private int numOfDocuments = 0;
+    private int numOfFilesDownloaded = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +128,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         cv_documents = findViewById(R.id.cv_documents);
         cv_get_direction = findViewById(R.id.cv_get_direction);
         cv_add_calendar = findViewById(R.id.cv_add_calendar);
+        cv_members_status = findViewById(R.id.cv_members_status);
 
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
@@ -156,6 +161,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private void setDefault() {
         eventDetails = (EventsFreeModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
         isMyEvent = getIntent().getBooleanExtra("isMyEvent", false);
+        isAdmin = getIntent().getStringExtra("isAdmin");
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
 
@@ -173,7 +179,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         else
             tv_description.setText(eventDetails.getDescription());
 
-        tv_type.setText(eventDetails.getEvent_type_name() + " event");
+        tv_type.setText("This is " + eventDetails.getEvent_type_name() + " event");
 
         if (eventDetails.getIs_confirmation_required().equals("1"))
             tv_confirmation.setVisibility(View.VISIBLE);
@@ -224,11 +230,13 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         else
             rv_documents.setAdapter(new DocumentsAdapter());
 
-
         if (isMyEvent || !eventDetails.getStatus().equals("")) {
             cv_confirmation.setVisibility(View.GONE);
         }
 
+        if (isAdmin.equals("0")) {
+            cv_members_status.setVisibility(View.GONE);
+        }
     }
 
     private void setEventHandler() {
@@ -243,7 +251,25 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         imv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (imagesList.size() != 0) {
+                    numOfDocuments = imagesList.size();
+                    shareMessage = getShareMessage();
+                    downloadedImagesUriList = new ArrayList<>();
+                    numOfFilesDownloaded = 0;
+                    for (int i = 0; i < imagesList.size(); i++) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DownloadDocumentForShare().execute(imagesList.get(i));
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    }
+                } else {
+                    String shareMessage = getShareMessage();
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/html");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                }
             }
         });
 
@@ -266,7 +292,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            if (!eventDetails.getCreated_by().equals(userId)) {
+                            if (eventDetails.getCreated_by().equals(userId)) {
                                 new DeleteFreeEvent().execute();
                             } else {
                                 new UserSpecificDeleteEvent().execute();
@@ -381,6 +407,14 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Utilities.showMessage("Coming Soon", context, 2);
+            }
+        });
+
+        cv_members_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, EventFreeMemberStatus_Activity.class)
+                        .putExtra("eventId", eventDetails.getId()));
             }
         });
 
@@ -802,5 +836,138 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        ProgressDialog pd;
+        File file;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocumentfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            Uri uri = Uri.parse("file:///" + file);
+            downloadedImagesUriList.add(uri);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            numOfFilesDownloaded = numOfFilesDownloaded + 1;
+
+            if (numOfFilesDownloaded == numOfDocuments) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
+        }
+    }
+
+    private String getShareMessage() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(eventDetails.getEvent_code() + " - " + eventDetails.getName() + "\n");
+
+        if (eventDetails.getIs_online_event().equals("1"))
+            sb.append("This is an online event" + "\n");
+
+        sb.append("Venue - " + eventDetails.getVenue_address() + "\n");
+
+        sb.append("Date and Time - " + eventDetails.getDateTime() + "\n");
+
+        if (!eventDetails.getDescription().equals(""))
+            sb.append("Description - " + eventDetails.getDescription() + "\n");
+
+        sb.append("This is " + eventDetails.getEvent_type_name() + " event" + "\n");
+
+        if (eventDetails.getIs_confirmation_required().equals("1"))
+            sb.append("(Confirmation of the attendee is required)" + "\n");
+
+        sb.append("Organizer - " + eventDetails.getOrganizer_name() + " (" + eventDetails.getMobile() + ")" + "\n");
+
+        if (!eventDetails.getRemark().equals(""))
+            sb.append("Remark - " + eventDetails.getRemark() + "\n");
+
+        if (!eventDetails.getVenue_latitude().trim().isEmpty() && !eventDetails.getVenue_longitude().trim().isEmpty()) {
+            sb.append("http://maps.google.com/maps?saddr=&daddr=" + eventDetails.getVenue_latitude() + "," + eventDetails.getVenue_longitude());
+        }
+
+        return sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
     }
 }

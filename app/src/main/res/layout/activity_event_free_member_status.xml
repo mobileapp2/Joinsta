@@ -6,41 +6,35 @@
     android:background="@color/lightGray"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardElevation="2dp"
-        app:cardUseCompatPadding="true">
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme.NoActionBar">
 
-        <LinearLayout
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <EditText
-                android:id="@+id/edt_search"
-                android:layout_width="0dp"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:hint="Search"
-                android:padding="10dp"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="0.1"
-                android:src="@drawable/icon_search"
-                android:tint="@color/mediumGray" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="Event Status"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white" />
 
-        </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -53,7 +47,7 @@
             android:layout_marginTop="5dp">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_offerslist"
+                android:id="@+id/rv_status"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -89,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="There are no offers available"
+                android:text="Event status not available"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

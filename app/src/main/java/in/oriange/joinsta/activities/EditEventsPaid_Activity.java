@@ -17,9 +17,6 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -108,7 +105,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
     private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
-    private Button btn_add_document, btn_add_image;
+    private Button btn_add_document, btn_add_image, btn_save;
     private int latestPosition;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
@@ -168,6 +165,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         btn_add_image = findViewById(R.id.btn_add_image);
+        btn_save = findViewById(R.id.btn_save);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
@@ -250,9 +248,10 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
 
         for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean selectedModes : eventDetails.getPaidevents_paymentoptions()) {
             for (int i = 0; i < paymentModeList.size(); i++) {
-                paymentModeList.get(i).setPayment_link(selectedModes.getPayment_link());
                 if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getPayment_mode())) {
                     paymentModeList.get(i).setChecked(true);
+                    paymentModeList.get(i).setPaid_events_id(selectedModes.getPaid_events_id());
+                    paymentModeList.get(i).setPayment_link(selectedModes.getPayment_link());
                 }
             }
         }
@@ -263,7 +262,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             if (modes.isChecked()) {
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("mode", modes.getPayment_mode());
-                jsonObject.addProperty("id", "0");
+                jsonObject.addProperty("id", modes.getPaid_events_id());
                 selectedPaymentModes.add(jsonObject);
                 selectedModes.append(modes.getPayment_mode_name()).append(", ");
             }
@@ -272,7 +271,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         boolean isPaymentLinkSelected = false;
 
         for (int i = 0; i < paymentModeList.size(); i++) {
-            if (paymentModeList.get(i).getPayment_mode().equals("paymentlink")) {
+            if (paymentModeList.get(i).getPayment_mode().equals("paymentlink") && paymentModeList.get(i).isChecked()) {
                 edt_paylink.setText(paymentModeList.get(i).getPayment_link());
                 isPaymentLinkSelected = true;
                 break;
@@ -303,6 +302,9 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
 
         if (eventDetails.getDisplay_in_city().equals("1"))
             cb_displayin_city.setChecked(true);
+
+        if (eventDetails.getIs_active().equals("1"))
+            cb_isactive.setChecked(true);
 
         List<EventsPaidModel.ResultBean.DocumentsBean> documentList = eventDetails.getDocuments();
 
@@ -363,7 +365,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                         edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
 
                         eventEndDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventEndDate));
 
                         edt_normal_due_date.setText("");
                         edt_early_bird_due_date.setText("");
@@ -597,6 +599,13 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                 rv_images.setAdapter(new ImagesAdapter());
             }
         });
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitData();
+            }
+        });
     }
 
     private void showPaymentModelListDialog() {
@@ -620,13 +629,13 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                 isOfflinePaymentsAllowed = "0";
                 StringBuilder selectedGroupsName = new StringBuilder();
 
-                for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean grpDetails : paymentModeList) {
-                    if (grpDetails.isChecked()) {
+                for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean mode : paymentModeList) {
+                    if (mode.isChecked()) {
                         JsonObject jsonObject = new JsonObject();
-                        jsonObject.addProperty("mode", grpDetails.getPayment_mode());
-                        jsonObject.addProperty("id", "0");
+                        jsonObject.addProperty("mode", mode.getPayment_mode());
+                        jsonObject.addProperty("id", mode.getPaid_events_id());
                         selectedPaymentModes.add(jsonObject);
-                        selectedGroupsName.append(grpDetails.getPayment_mode_name()).append(", ");
+                        selectedGroupsName.append(mode.getPayment_mode_name()).append(", ");
                     }
                 }
 
@@ -655,6 +664,15 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                     String selectedGroupsNameStr = selectedGroupsName.substring(0, selectedGroupsName.toString().length() - 2);
                     edt_payment_mode.setText(selectedGroupsNameStr);
                 }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedPaymentModes = new JsonArray();
+                edt_payment_mode.setText("");
+                edt_paylink.setText("");
             }
         });
 
@@ -1454,21 +1472,21 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menus_save, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.action_save) {
-            submitData();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menus_save, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if (item.getItemId() == R.id.action_save) {
+//            submitData();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

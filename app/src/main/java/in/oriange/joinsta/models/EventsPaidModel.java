@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -129,6 +130,7 @@ public class EventsPaidModel implements Serializable {
         private String is_normal_payment_applicable;
         private String payment_status;
         private String is_active;
+        private String is_atleast_one_paymentdone;
         private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
@@ -480,6 +482,14 @@ public class EventsPaidModel implements Serializable {
             this.is_active = is_active;
         }
 
+        public String getIs_atleast_one_paymentdone() {
+            return is_atleast_one_paymentdone;
+        }
+
+        public void setIs_atleast_one_paymentdone(String is_atleast_one_paymentdone) {
+            this.is_atleast_one_paymentdone = is_atleast_one_paymentdone;
+        }
+
         @SuppressLint("SimpleDateFormat")
         public String getDateTime() {
 
@@ -513,6 +523,23 @@ public class EventsPaidModel implements Serializable {
             }
         }
 
+        public boolean isEndDatePassed() {
+            try {
+
+                String currentDateStr = Calendar.getInstance().get(Calendar.YEAR) + "-" +
+                        Calendar.getInstance().get(Calendar.MONTH) + "-" +
+                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+                Date currentDate = new SimpleDateFormat("yyyy-MM-dd").parse(currentDateStr);
+                Date endDate = new SimpleDateFormat("yyyy-MM-dd").parse(event_end_date);
+
+                return currentDate.after(endDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
         public List<PaideventsPaymentoptionsBean> getPaidevents_paymentoptions() {
             return paidevents_paymentoptions;
         }
@@ -539,14 +566,14 @@ public class EventsPaidModel implements Serializable {
             private String payment_mode_name;
             private String payment_mode;
             private String payment_link;
-            private String paid_events_id;
+            private String id;
             private boolean isChecked;
 
-            public PaideventsPaymentoptionsBean(String payment_mode_name, String payment_mode, String payment_link, String paid_events_id, boolean isChecked) {
+            public PaideventsPaymentoptionsBean(String payment_mode_name, String payment_mode, String payment_link, String id, boolean isChecked) {
                 this.payment_mode_name = payment_mode_name;
                 this.payment_mode = payment_mode;
                 this.payment_link = payment_link;
-                this.paid_events_id = paid_events_id;
+                this.id = id;
                 this.isChecked = isChecked;
             }
 
@@ -587,11 +614,11 @@ public class EventsPaidModel implements Serializable {
             }
 
             public String getPaid_events_id() {
-                return paid_events_id;
+                return id;
             }
 
             public void setPaid_events_id(String paid_events_id) {
-                this.paid_events_id = paid_events_id;
+                this.id = paid_events_id;
             }
         }
 

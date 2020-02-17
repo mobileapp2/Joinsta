@@ -1,6 +1,5 @@
 package in.oriange.joinsta.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,10 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.AddEventsFree_Activity;
 import in.oriange.joinsta.adapters.EventsFreeAdapter;
+import in.oriange.joinsta.adapters.EventsPaidAdapter;
 import in.oriange.joinsta.models.EventTypeModel;
 import in.oriange.joinsta.models.EventsFreeModel;
+import in.oriange.joinsta.models.EventsModel;
+import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -53,10 +54,11 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class EventsFree_Fragment extends Fragment {
+public class Events_Fragment extends Fragment {
 
     private Context context;
     private UserSessionManager session;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private EditText edt_search;
     private ImageButton imb_filter;
@@ -67,19 +69,19 @@ public class EventsFree_Fragment extends Fragment {
     private LinearLayout ll_nopreview;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
-    private List<EventsFreeModel.ResultBean> eventList;
-    private String groupId, userId, isAdmin;
+    private List<EventsFreeModel.ResultBean> eventFreeList;
+    private List<EventsPaidModel.ResultBean> eventPaidList;
+    private String userId, eventCategoryId = "1";           // 1 for free events 2 for paid events
 
     private LocalBroadcastManager localBroadcastManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_events_free, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         context = getActivity();
-
         init(rootView);
-        getSessionDetails();
         setDefault();
+        getSessionDetails();
         setEventHandler();
         return rootView;
     }
@@ -96,7 +98,8 @@ public class EventsFree_Fragment extends Fragment {
         progressBar = rootView.findViewById(R.id.progressBar);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
 
-        eventList = new ArrayList<>();
+        eventFreeList = new ArrayList<>();
+        eventPaidList = new ArrayList<>();
         eventTypeList = new ArrayList<>();
     }
 
@@ -113,25 +116,14 @@ public class EventsFree_Fragment extends Fragment {
         }
     }
 
-    @SuppressLint("RestrictedApi")
     private void setDefault() {
-        groupId = this.getArguments().getString("groupId");
-        isAdmin = this.getArguments().getString("isAdmin");
-
         if (Utilities.isNetworkAvailable(context)) {
-            new GetFreeEvents().execute();
-        } else {
-            Utilities.showMessage("Please check your internet connection", context, 2);
+            new GetEventsList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("EventsFree_Fragment");
+        IntentFilter intentFilter = new IntentFilter("Events_Fragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
-
-        if (isAdmin.equals("1"))
-            btn_add.setVisibility(View.VISIBLE);
-        else
-            btn_add.setVisibility(View.GONE);
     }
 
     private void setEventHandler() {
@@ -139,18 +131,16 @@ public class EventsFree_Fragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetFreeEvents().execute();
-                } else {
-                    Utilities.showMessage("Please check your internet connection", context, 2);
-                }
-            }
-        });
+                    tv_filter_count.setVisibility(View.GONE);
 
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, AddEventsFree_Activity.class)
-                        .putExtra("groupId", groupId));
+                    for (int i = 0; i < eventTypeList.size(); i++) {
+                        eventTypeList.get(i).setChecked(false);
+                    }
+                    new GetEventsList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
         });
 
@@ -169,6 +159,7 @@ public class EventsFree_Fragment extends Fragment {
             }
         });
 
+
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -176,35 +167,8 @@ public class EventsFree_Fragment extends Fragment {
             }
 
             @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-
-                if (query.toString().isEmpty()) {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
-                    return;
-                }
-
-                if (eventList.size() == 0) {
-                    rv_event.setVisibility(View.GONE);
-                    return;
-                }
-
-                if (!query.toString().equals("")) {
-                    ArrayList<EventsFreeModel.ResultBean> eventsSearchedList = new ArrayList<>();
-                    for (EventsFreeModel.ResultBean eventDetails : eventList) {
-
-                        String eventsToBeSearched = eventDetails.getName().toLowerCase() +
-                                eventDetails.getDescription().toLowerCase() +
-                                eventDetails.getEvent_code().toLowerCase();
-
-                        if (eventsToBeSearched.contains(query.toString().toLowerCase())) {
-                            eventsSearchedList.add(eventDetails);
-                        }
-                    }
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventsSearchedList, isAdmin, false));
-                } else {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
-                }
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                searchDetails(s.toString());
             }
 
             @Override
@@ -212,87 +176,6 @@ public class EventsFree_Fragment extends Fragment {
 
             }
         });
-
-    }
-
-    private class GetFreeEvents extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            ll_nopreview.setVisibility(View.GONE);
-            rv_event.setVisibility(View.GONE);
-            swipeRefreshLayout.setRefreshing(false);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getAllFreeEvent");
-            obj.addProperty("user_id", userId);
-            obj.addProperty("group_id", groupId);
-            res = APICall.JSONAPICall(ApplicationConstants.FREEEVENTSAPI, obj.toString());
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            rv_event.setVisibility(View.VISIBLE);
-            String type = "", message = "";
-            try {
-                if (!result.equals("")) {
-                    eventList = new ArrayList<>();
-                    EventsFreeModel pojoDetails = new Gson().fromJson(result, EventsFreeModel.class);
-                    type = pojoDetails.getType();
-
-                    if (type.equalsIgnoreCase("success")) {
-                        eventList = pojoDetails.getResult();
-
-                        if (eventList.size() > 0) {
-                            List<EventsFreeModel.ResultBean> filteredEventList = new ArrayList<>();
-
-                            for (EventsFreeModel.ResultBean eventsDetails : eventList) {
-                                if (eventsDetails.getCreated_by().equals(userId)) {
-                                    filteredEventList.add(eventsDetails);
-                                } else {
-                                    if (!eventsDetails.getIs_displaytomembers().equals("0") && !eventsDetails.getIs_active().equals("0") && !eventsDetails.isEndDatePassed()) {
-                                        filteredEventList.add(eventsDetails);
-                                    }
-                                }
-                            }
-
-                            eventList.clear();
-                            eventList.addAll(filteredEventList);
-
-                            if (eventList.size() > 0) {
-                                rv_event.setVisibility(View.VISIBLE);
-                                ll_nopreview.setVisibility(View.GONE);
-                                rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
-                            } else {
-                                ll_nopreview.setVisibility(View.VISIBLE);
-                                rv_event.setVisibility(View.GONE);
-                            }
-                        } else {
-                            ll_nopreview.setVisibility(View.VISIBLE);
-                            rv_event.setVisibility(View.GONE);
-                        }
-
-                    } else {
-                        ll_nopreview.setVisibility(View.VISIBLE);
-                        rv_event.setVisibility(View.GONE);
-
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                ll_nopreview.setVisibility(View.VISIBLE);
-                rv_event.setVisibility(View.GONE);
-            }
-        }
     }
 
     private class GetEventTypeList extends AsyncTask<String, Void, String> {
@@ -362,26 +245,53 @@ public class EventsFree_Fragment extends Fragment {
         builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                List<EventsFreeModel.ResultBean> filteredEventList = new ArrayList<>();
-                int selectedTypeCount = 0;
 
-                for (EventTypeModel.ResultBean eventType : eventTypeList)
-                    if (eventType.isChecked()) {
-                        selectedTypeCount = selectedTypeCount + 1;
-                        for (EventsFreeModel.ResultBean eventsDetails : eventList)
-                            if (eventType.getId().equals(eventsDetails.getEvent_type_id()))
-                                filteredEventList.add(eventsDetails);
-                    }
+                switch (eventCategoryId) {
+                    case "1":
+                        List<EventsFreeModel.ResultBean> filteredFreeEventList = new ArrayList<>();
+                        int selectedFreeTypeCount = 0;
 
-                if (selectedTypeCount == 0) {
-                    tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
-                } else {
-                    tv_filter_count.setVisibility(View.VISIBLE);
-                    tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsFreeAdapter(context, filteredEventList, isAdmin, false));
+                        for (EventTypeModel.ResultBean eventType : eventTypeList)
+                            if (eventType.isChecked()) {
+                                selectedFreeTypeCount = selectedFreeTypeCount + 1;
+                                for (EventsFreeModel.ResultBean eventsDetails : eventFreeList)
+                                    if (eventType.getId().equals(eventsDetails.getEvent_type_id()))
+                                        filteredFreeEventList.add(eventsDetails);
+                            }
+
+                        if (selectedFreeTypeCount == 0) {
+                            tv_filter_count.setVisibility(View.GONE);
+                            rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0",false));
+                        } else {
+                            tv_filter_count.setVisibility(View.VISIBLE);
+                            tv_filter_count.setText(String.valueOf(selectedFreeTypeCount));
+                            rv_event.setAdapter(new EventsFreeAdapter(context, filteredFreeEventList, "0",false));
+                        }
+
+                        break;
+                    case "2":
+                        List<EventsPaidModel.ResultBean> filteredPaidEventList = new ArrayList<>();
+                        int selectedPaidTypeCount = 0;
+
+                        for (EventTypeModel.ResultBean eventType : eventTypeList)
+                            if (eventType.isChecked()) {
+                                selectedPaidTypeCount = selectedPaidTypeCount + 1;
+                                for (EventsPaidModel.ResultBean eventsDetails : eventPaidList)
+                                    if (eventType.getId().equals(eventsDetails.getEvent_type_id()))
+                                        filteredPaidEventList.add(eventsDetails);
+                            }
+
+                        if (selectedPaidTypeCount == 0) {
+                            tv_filter_count.setVisibility(View.GONE);
+                            rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList,"0", false));
+                        } else {
+                            tv_filter_count.setVisibility(View.VISIBLE);
+                            tv_filter_count.setText(String.valueOf(selectedPaidTypeCount));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, filteredPaidEventList, "0",false));
+                        }
+
+                        break;
                 }
-
 
             }
         });
@@ -394,7 +304,7 @@ public class EventsFree_Fragment extends Fragment {
                 }
 
                 tv_filter_count.setVisibility(View.GONE);
-                rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
+                setDataToRecyclerView();
             }
         });
 
@@ -450,14 +360,153 @@ public class EventsFree_Fragment extends Fragment {
         }
     }
 
+    private void searchDetails(String query) {
+        switch (eventCategoryId) {
+            case "1":
+                if (query.isEmpty()) {
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0",false));
+                    return;
+                }
+
+                if (eventFreeList.size() == 0) {
+                    rv_event.setVisibility(View.GONE);
+                    return;
+                }
+
+
+                ArrayList<EventsFreeModel.ResultBean> eventsFreeSearchedList = new ArrayList<>();
+                for (EventsFreeModel.ResultBean eventDetails : eventFreeList) {
+
+                    String eventsToBeSearched = eventDetails.getName().toLowerCase() +
+                            eventDetails.getDescription().toLowerCase() +
+                            eventDetails.getEvent_code().toLowerCase();
+
+                    if (eventsToBeSearched.contains(query.toLowerCase())) {
+                        eventsFreeSearchedList.add(eventDetails);
+                    }
+                }
+                rv_event.setAdapter(new EventsFreeAdapter(context, eventsFreeSearchedList, "0",false));
+
+                break;
+            case "2":
+                if (query.isEmpty()) {
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0",false));
+                    return;
+                }
+
+                if (eventPaidList.size() == 0) {
+                    rv_event.setVisibility(View.GONE);
+                    return;
+                }
+
+
+                ArrayList<EventsPaidModel.ResultBean> eventsPaidSearchedList = new ArrayList<>();
+                for (EventsPaidModel.ResultBean eventDetails : eventPaidList) {
+
+                    String eventsToBeSearched = eventDetails.getName().toLowerCase() +
+                            eventDetails.getDescription().toLowerCase() +
+                            eventDetails.getEvent_code().toLowerCase();
+
+                    if (eventsToBeSearched.contains(query.toLowerCase())) {
+                        eventsPaidSearchedList.add(eventDetails);
+                    }
+                }
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventsPaidSearchedList, "0",false));
+
+                break;
+        }
+    }
+
+    public class GetEventsList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            rv_event.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getEventsbyLocation");
+            obj.addProperty("user_id", userId);
+            obj.addProperty("location", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            edt_search.setText("");
+            progressBar.setVisibility(View.GONE);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    eventFreeList = new ArrayList<>();
+                    eventPaidList = new ArrayList<>();
+                    EventsModel pojoDetails = new Gson().fromJson(result, EventsModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        eventFreeList = pojoDetails.getResult().getFree_events();
+                        eventPaidList = pojoDetails.getResult().getPaid_events();
+
+                        setDataToRecyclerView();
+                    } else {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_event.setVisibility(View.GONE);
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ll_nopreview.setVisibility(View.VISIBLE);
+                rv_event.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setDataToRecyclerView() {
+        edt_search.setText("");
+        switch (eventCategoryId) {
+            case "1":
+                if (eventFreeList.size() > 0) {
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0",true));
+                    ll_nopreview.setVisibility(View.GONE);
+                    rv_event.setVisibility(View.VISIBLE);
+                } else {
+                    rv_event.setVisibility(View.GONE);
+                    ll_nopreview.setVisibility(View.VISIBLE);
+                }
+                break;
+            case "2":
+                if (eventPaidList.size() > 0) {
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0",true));
+                    ll_nopreview.setVisibility(View.GONE);
+                    rv_event.setVisibility(View.VISIBLE);
+                } else {
+                    rv_event.setVisibility(View.GONE);
+                    ll_nopreview.setVisibility(View.VISIBLE);
+                }
+                break;
+        }
+    }
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (Utilities.isNetworkAvailable(context)) {
-                new GetFreeEvents().execute();
-            } else {
-                Utilities.showMessage("Please check your internet connection", context, 2);
+            eventCategoryId = intent.getStringExtra("eventCategoryId");
+            tv_filter_count.setVisibility(View.GONE);
+
+            for (int i = 0; i < eventTypeList.size(); i++) {
+                eventTypeList.get(i).setChecked(false);
             }
+            setDataToRecyclerView();
         }
     };
 

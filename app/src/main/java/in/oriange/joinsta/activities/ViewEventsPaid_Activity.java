@@ -74,13 +74,17 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private Button btn_buy;
     private RecyclerView rv_documents;
     private CardView cv_description, cv_date_time, cv_venue, cv_get_direction, cv_add_calendar, cv_message,
-            cv_price, cv_remark, cv_documents;
+            cv_price, cv_remark, cv_documents, cv_members_status;
 
     private ArrayList<String> imagesList, documentsList;
-    private String userId, randomNum, paymentLink;
+    private String userId, paymentLink, isAdmin;
     private File file, downloadedDocumentfolder;
     private EventsPaidModel.ResultBean eventDetails;
     private boolean isMyEvent;
+    private String shareMessage;
+    private ArrayList<Uri> downloadedImagesUriList;
+    private int numOfDocuments = 0;
+    private int numOfFilesDownloaded = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +142,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_price = findViewById(R.id.cv_price);
         cv_get_direction = findViewById(R.id.cv_get_direction);
         cv_add_calendar = findViewById(R.id.cv_add_calendar);
+        cv_members_status = findViewById(R.id.cv_members_status);
 
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
@@ -170,6 +175,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private void setDefault() {
         eventDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
         isMyEvent = getIntent().getBooleanExtra("isMyEvent", false);
+        isAdmin = getIntent().getStringExtra("isAdmin");
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
 
@@ -187,7 +193,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         else
             tv_description.setText(eventDetails.getDescription());
 
-        tv_type.setText(eventDetails.getEvent_type_name() + " event");
+        tv_type.setText("This is " + eventDetails.getEvent_type_name() + " event");
 
         tv_organizer_name.setText(eventDetails.getOrganizer_name());
 
@@ -220,9 +226,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_normal_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
 
         if (!eventDetails.getCreated_by().equals(userId)) {
-            imv_share.setVisibility(View.GONE);
             imv_edit.setVisibility(View.GONE);
-            imv_delete.setVisibility(View.GONE);
         }
 
         List<EventsPaidModel.ResultBean.DocumentsBean> docList = eventDetails.getDocuments();
@@ -261,6 +265,10 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")) {
             btn_buy.setVisibility(View.GONE);
         }
+
+        if (isAdmin.equals("0")) {
+            cv_members_status.setVisibility(View.GONE);
+        }
     }
 
     private void setEventHandler() {
@@ -275,15 +283,37 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         imv_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (imagesList.size() != 0) {
+                    numOfDocuments = imagesList.size();
+                    shareMessage = getShareMessage();
+                    downloadedImagesUriList = new ArrayList<>();
+                    numOfFilesDownloaded = 0;
+                    for (int i = 0; i < imagesList.size(); i++) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DownloadDocumentForShare().execute(imagesList.get(i));
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    }
+                } else {
+                    String shareMessage = getShareMessage();
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/html");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                }
             }
         });
 
         imv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditEventsPaid_Activity.class).putExtra("eventDetails", eventDetails));
-                finish();
+                if (eventDetails.getIs_atleast_one_paymentdone().equals("0")) {
+                    context.startActivity(new Intent(context, EditEventsPaid_Activity.class).putExtra("eventDetails", eventDetails));
+                    finish();
+                } else if (eventDetails.getIs_atleast_one_paymentdone().equals("1")) {
+                    Utilities.showMessage("You cannot edit this event details", context, 2);
+                }
             }
         });
 
@@ -298,7 +328,11 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            new DeletePaidEvent().execute();
+                            if (eventDetails.getCreated_by().equals(userId)) {
+                                new DeletePaidEvent().execute();
+                            } else {
+                                new UserSpecificDeleteEvent().execute();
+                            }
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
@@ -384,6 +418,15 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 Utilities.showMessage("Coming Soon", context, 2);
             }
         });
+
+        cv_members_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, EventPaidMemberStatus_Activity.class)
+                        .putExtra("eventId", eventDetails.getid()));
+            }
+        });
+
 
     }
 
@@ -612,6 +655,75 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         }
     }
 
+    private class UserSpecificDeleteEvent extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "UserSpecificEvent_Delete");
+            obj.addProperty("event_id", eventDetails.getid());
+            obj.addProperty("event_category_id", "2");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.USERSPECIFICDELETEAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsPaid_Fragment"));
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Event details deleted successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("Failed to submit the details", context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
         int lenghtOfFile = -1;
         int count = 0;
@@ -740,6 +852,148 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        ProgressDialog pd;
+        File file;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocumentfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            Uri uri = Uri.parse("file:///" + file);
+            downloadedImagesUriList.add(uri);
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            numOfFilesDownloaded = numOfFilesDownloaded + 1;
+
+            if (numOfFilesDownloaded == numOfDocuments) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+                sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
+        }
+    }
+
+    private String getShareMessage() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(eventDetails.getEvent_code() + " - " + eventDetails.getName() + "\n");
+
+        if (eventDetails.getIs_online_events().equals("1"))
+            sb.append("This is an online event" + "\n");
+
+        sb.append("Venue - " + eventDetails.getVenue_address() + "\n");
+
+        sb.append("Date and Time - " + eventDetails.getDateTime() + "\n");
+
+        if (!eventDetails.getDescription().equals(""))
+            sb.append("Description - " + eventDetails.getDescription() + "\n");
+
+        sb.append("This is " + eventDetails.getEvent_type_name() + " event" + "\n");
+
+        sb.append("Price - ₹ " + eventDetails.getNormal_price() + " (₹ " + eventDetails.getEarlybird_price() + " off for early birds)" + "\n");
+
+        sb.append("Early birds off due date - " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()) + "\n");
+
+        sb.append("Organizer - " + eventDetails.getOrganizer_name() + " (" + eventDetails.getMobile() + ")" + "\n");
+
+        if (!eventDetails.getMessage_for_paidmember().equals("") || !eventDetails.getMessage_for_unpaidmember().equals("")) {
+
+            if (!eventDetails.getMessage_for_paidmember().equals(""))
+                sb.append("Message for Paid Members - " + eventDetails.getMessage_for_paidmember() + "\n");
+
+            if (!eventDetails.getMessage_for_unpaidmember().equals(""))
+                sb.append("Message for Unpaid Members - " + eventDetails.getMessage_for_unpaidmember() + "\n");
+        }
+
+        if (!eventDetails.getRemark().equals(""))
+            sb.append("Remark - " + eventDetails.getRemark() + "\n");
+
+        if (!eventDetails.getVenue_latitude().trim().isEmpty() && !eventDetails.getVenue_longitude().trim().isEmpty())
+            sb.append("http://maps.google.com/maps?saddr=&daddr=" + eventDetails.getVenue_latitude() + "," + eventDetails.getVenue_longitude());
+
+        return sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
     }
 
 }

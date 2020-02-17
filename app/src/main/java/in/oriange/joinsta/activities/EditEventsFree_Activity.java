@@ -101,7 +101,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
-    private Button btn_add_document, btn_add_image;
+    private Button btn_add_document, btn_add_image, btn_save;
     private int latestPosition;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
@@ -149,6 +149,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         btn_add_image = findViewById(R.id.btn_add_image);
+        btn_save = findViewById(R.id.btn_save);
         cb_confirmation_required = findViewById(R.id.cb_confirmation_required);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
@@ -329,7 +330,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                         }
 
                         eventEndDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventEndDate));
 
                     }
                 }, mYear, mMonth, mDay);
@@ -431,6 +432,13 @@ public class EditEventsFree_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 imageList.add(new MasterModel("", ""));
                 rv_images.setAdapter(new ImagesAdapter());
+            }
+        });
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitData();
             }
         });
     }
@@ -968,21 +976,21 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menus_save, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.action_save) {
-            submitData();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menus_save, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if (item.getItemId() == R.id.action_save) {
+//            submitData();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

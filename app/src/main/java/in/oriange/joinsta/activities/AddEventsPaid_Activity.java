@@ -17,9 +17,6 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -107,7 +104,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
-    private Button btn_add_document, btn_add_image;
+    private Button btn_add_document, btn_add_image, btn_save;
     private int latestPosition;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
@@ -166,6 +163,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         btn_add_image = findViewById(R.id.btn_add_image);
+        btn_save = findViewById(R.id.btn_save);
         cb_online_event = findViewById(R.id.cb_online_event);
         cb_displayto_members = findViewById(R.id.cb_displayto_members);
         cb_displayin_city = findViewById(R.id.cb_displayin_city);
@@ -294,7 +292,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                         }
 
                         eventEndDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventEndDate));
 
                         edt_normal_due_date.setText("");
                         edt_early_bird_due_date.setText("");
@@ -485,6 +483,13 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 rv_images.setAdapter(new ImagesAdapter());
             }
         });
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitData();
+            }
+        });
     }
 
     private void showPaymentModelListDialog() {
@@ -542,6 +547,15 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                     String selectedGroupsNameStr = selectedGroupsName.substring(0, selectedGroupsName.toString().length() - 2);
                     edt_payment_mode.setText(selectedGroupsNameStr);
                 }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedPaymentModes = new JsonArray();
+                edt_payment_mode.setText("");
+                edt_paylink.setText("");
             }
         });
 
@@ -1326,21 +1340,21 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menus_save, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.action_save) {
-            submitData();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menus_save, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if (item.getItemId() == R.id.action_save) {
+//            submitData();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

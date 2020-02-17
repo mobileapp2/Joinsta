@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,6 +165,51 @@ public class MyEventsPaid_Fragment extends Fragment {
             }
         });
 
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",false));
+                    return;
+                }
+
+
+                if (eventList.size() == 0) {
+                    rv_event.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<EventsPaidModel.ResultBean> eventsSearchedList = new ArrayList<>();
+                    for (EventsPaidModel.ResultBean eventDetails : eventList) {
+
+                        String eventsToBeSearched = eventDetails.getName().toLowerCase() +
+                                eventDetails.getDescription().toLowerCase() +
+                                eventDetails.getEvent_code().toLowerCase();
+
+                        if (eventsToBeSearched.contains(query.toString().toLowerCase())) {
+                            eventsSearchedList.add(eventDetails);
+                        }
+                    }
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventsSearchedList, "0",false));
+                } else {
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",false));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private class GetPaidEvents extends AsyncTask<String, Void, String> {
@@ -204,7 +251,7 @@ public class MyEventsPaid_Fragment extends Fragment {
                         if (eventList.size() > 0) {
                             rv_event.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsPaidAdapter(context, eventList, groupId, true));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",true));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_event.setVisibility(View.GONE);
@@ -304,11 +351,11 @@ public class MyEventsPaid_Fragment extends Fragment {
 
                 if (selectedTypeCount == 0) {
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, groupId, true));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",true));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, groupId, true));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, "0",true));
                 }
 
             }
