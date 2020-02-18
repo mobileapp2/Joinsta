@@ -135,6 +135,12 @@ public class MyEventsPaid_Fragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
+                    edt_search.setText("");
+                    tv_filter_count.setVisibility(View.GONE);
+
+                    for (int i = 0; i < eventTypeList.size(); i++) {
+                        eventTypeList.get(i).setChecked(false);
+                    }
                     new GetPaidEvents().execute();
                 } else {
                     Utilities.showMessage("Please check your internet connection", context, 2);
@@ -175,7 +181,7 @@ public class MyEventsPaid_Fragment extends Fragment {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", false));
                     return;
                 }
 
@@ -197,9 +203,9 @@ public class MyEventsPaid_Fragment extends Fragment {
                             eventsSearchedList.add(eventDetails);
                         }
                     }
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventsSearchedList, "0",false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventsSearchedList, "0", false));
                 } else {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", false));
                 }
 
             }
@@ -251,7 +257,7 @@ public class MyEventsPaid_Fragment extends Fragment {
                         if (eventList.size() > 0) {
                             rv_event.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",true));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", true));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_event.setVisibility(View.GONE);
@@ -351,11 +357,11 @@ public class MyEventsPaid_Fragment extends Fragment {
 
                 if (selectedTypeCount == 0) {
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0",true));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", true));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, "0",true));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, "0", true));
                 }
 
             }

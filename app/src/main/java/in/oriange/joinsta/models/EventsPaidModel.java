@@ -175,7 +175,7 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getDescription() {
-            return description;
+            return description+" ";
         }
 
         public void setDescription(String description) {

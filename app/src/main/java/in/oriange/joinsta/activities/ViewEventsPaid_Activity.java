@@ -266,6 +266,10 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             btn_buy.setVisibility(View.GONE);
         }
 
+        if (isMyEvent){
+            imv_edit.setVisibility(View.GONE);
+        }
+
         if (isAdmin.equals("0")) {
             cv_members_status.setVisibility(View.GONE);
         }
@@ -620,6 +624,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsPaid_Fragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("Events_Fragment")
+                                .putExtra("eventCategoryId", "2"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
@@ -689,6 +695,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsPaid_Fragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("Events_Fragment")
+                                .putExtra("eventCategoryId", "2"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

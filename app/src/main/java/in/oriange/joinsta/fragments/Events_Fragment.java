@@ -261,11 +261,11 @@ public class Events_Fragment extends Fragment {
 
                         if (selectedFreeTypeCount == 0) {
                             tv_filter_count.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0",false));
+                            rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", false));
                         } else {
                             tv_filter_count.setVisibility(View.VISIBLE);
                             tv_filter_count.setText(String.valueOf(selectedFreeTypeCount));
-                            rv_event.setAdapter(new EventsFreeAdapter(context, filteredFreeEventList, "0",false));
+                            rv_event.setAdapter(new EventsFreeAdapter(context, filteredFreeEventList, "0", false));
                         }
 
                         break;
@@ -283,11 +283,11 @@ public class Events_Fragment extends Fragment {
 
                         if (selectedPaidTypeCount == 0) {
                             tv_filter_count.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList,"0", false));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", false));
                         } else {
                             tv_filter_count.setVisibility(View.VISIBLE);
                             tv_filter_count.setText(String.valueOf(selectedPaidTypeCount));
-                            rv_event.setAdapter(new EventsPaidAdapter(context, filteredPaidEventList, "0",false));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, filteredPaidEventList, "0", false));
                         }
 
                         break;
@@ -364,7 +364,7 @@ public class Events_Fragment extends Fragment {
         switch (eventCategoryId) {
             case "1":
                 if (query.isEmpty()) {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0",false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", false));
                     return;
                 }
 
@@ -385,12 +385,12 @@ public class Events_Fragment extends Fragment {
                         eventsFreeSearchedList.add(eventDetails);
                     }
                 }
-                rv_event.setAdapter(new EventsFreeAdapter(context, eventsFreeSearchedList, "0",false));
+                rv_event.setAdapter(new EventsFreeAdapter(context, eventsFreeSearchedList, "0", false));
 
                 break;
             case "2":
                 if (query.isEmpty()) {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0",false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", false));
                     return;
                 }
 
@@ -411,7 +411,7 @@ public class Events_Fragment extends Fragment {
                         eventsPaidSearchedList.add(eventDetails);
                     }
                 }
-                rv_event.setAdapter(new EventsPaidAdapter(context, eventsPaidSearchedList, "0",false));
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventsPaidSearchedList, "0", false));
 
                 break;
         }
@@ -476,7 +476,7 @@ public class Events_Fragment extends Fragment {
         switch (eventCategoryId) {
             case "1":
                 if (eventFreeList.size() > 0) {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0",true));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", true));
                     ll_nopreview.setVisibility(View.GONE);
                     rv_event.setVisibility(View.VISIBLE);
                 } else {
@@ -486,7 +486,7 @@ public class Events_Fragment extends Fragment {
                 break;
             case "2":
                 if (eventPaidList.size() > 0) {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0",true));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", true));
                     ll_nopreview.setVisibility(View.GONE);
                     rv_event.setVisibility(View.VISIBLE);
                 } else {
@@ -506,7 +506,7 @@ public class Events_Fragment extends Fragment {
             for (int i = 0; i < eventTypeList.size(); i++) {
                 eventTypeList.get(i).setChecked(false);
             }
-            setDataToRecyclerView();
+            new GetEventsList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
         }
     };
 

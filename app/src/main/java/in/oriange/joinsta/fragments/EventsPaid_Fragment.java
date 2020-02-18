@@ -139,6 +139,12 @@ public class EventsPaid_Fragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
+                    edt_search.setText("");
+                    tv_filter_count.setVisibility(View.GONE);
+
+                    for (int i = 0; i < eventTypeList.size(); i++) {
+                        eventTypeList.get(i).setChecked(false);
+                    }
                     new GetPaidEvents().execute();
                 } else {
                     Utilities.showMessage("Please check your internet connection", context, 2);

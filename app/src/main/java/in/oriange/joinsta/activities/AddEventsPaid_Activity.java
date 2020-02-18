@@ -249,7 +249,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                         edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
 
                         eventEndDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventStartDate));
+                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventEndDate));
 
                         edt_normal_due_date.setText("");
                         edt_early_bird_due_date.setText("");
@@ -337,6 +337,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                     edt_start_time.setError("Please select start date");
                     edt_start_time.requestFocus();
                     edt_start_time.getParent().requestChildFocus(edt_start_time, edt_start_time);
+                    return;
                 }
 
                 Calendar mcurrentTime = Calendar.getInstance();
