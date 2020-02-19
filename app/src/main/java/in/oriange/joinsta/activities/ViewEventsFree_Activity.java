@@ -64,11 +64,10 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer;
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
-    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_confirmation, tv_organizer_name, tv_remark;
+    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_get_direction, cv_add_calendar, cv_remark,
-            cv_documents, cv_members_status;
+    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_remark, cv_documents, cv_members_status;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId, isAdmin;
@@ -108,6 +107,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         tv_description = findViewById(R.id.tv_description);
         tv_time_date = findViewById(R.id.tv_time_date);
         tv_venue = findViewById(R.id.tv_venue);
+        tv_view_on_map = findViewById(R.id.tv_view_on_map);
         tv_confirmation = findViewById(R.id.tv_confirmation);
         tv_remark = findViewById(R.id.tv_remark);
         tv_organizer_name = findViewById(R.id.tv_organizer_name);
@@ -126,8 +126,6 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         cv_venue = findViewById(R.id.cv_venue);
         cv_remark = findViewById(R.id.cv_remark);
         cv_documents = findViewById(R.id.cv_documents);
-        cv_get_direction = findViewById(R.id.cv_get_direction);
-        cv_add_calendar = findViewById(R.id.cv_add_calendar);
         cv_members_status = findViewById(R.id.cv_members_status);
 
         imagesList = new ArrayList<>();
@@ -234,8 +232,9 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             cv_confirmation.setVisibility(View.GONE);
         }
 
-        if (isMyEvent){
+        if (isMyEvent) {
             imv_edit.setVisibility(View.GONE);
+            imv_delete.setVisibility(View.GONE);
         }
 
         if (isAdmin.equals("0")) {
@@ -393,7 +392,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             }
         });
 
-        cv_get_direction.setOnClickListener(new View.OnClickListener() {
+        tv_view_on_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (eventDetails.getVenue_latitude().trim().isEmpty() || eventDetails.getVenue_longitude().trim().isEmpty()) {
@@ -404,13 +403,6 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + eventDetails.getVenue_latitude() + "," + eventDetails.getVenue_longitude()));
                 startActivity(intent);
-            }
-        });
-
-        cv_add_calendar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utilities.showMessage("Coming Soon", context, 2);
             }
         });
 

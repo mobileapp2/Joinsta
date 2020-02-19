@@ -73,8 +73,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private LinearLayout ll_paid_msg, ll_unpaid_msg;
     private Button btn_buy;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_get_direction, cv_add_calendar, cv_message,
-            cv_price, cv_remark, cv_documents, cv_members_status;
+    private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_documents, cv_members_status;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId, paymentLink, isAdmin;
@@ -115,6 +114,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_description = findViewById(R.id.tv_description);
         tv_time_date = findViewById(R.id.tv_time_date);
         tv_venue = findViewById(R.id.tv_venue);
+        tv_view_on_map = findViewById(R.id.tv_view_on_map);
         tv_remark = findViewById(R.id.tv_remark);
         tv_earlybird_price = findViewById(R.id.tv_earlybird_price);
         tv_earlybird_due_date = findViewById(R.id.tv_earlybird_due_date);
@@ -140,8 +140,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_documents = findViewById(R.id.cv_documents);
         cv_message = findViewById(R.id.cv_message);
         cv_price = findViewById(R.id.cv_price);
-        cv_get_direction = findViewById(R.id.cv_get_direction);
-        cv_add_calendar = findViewById(R.id.cv_add_calendar);
         cv_members_status = findViewById(R.id.cv_members_status);
 
         imagesList = new ArrayList<>();
@@ -266,8 +264,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             btn_buy.setVisibility(View.GONE);
         }
 
-        if (isMyEvent){
+        if (isMyEvent) {
             imv_edit.setVisibility(View.GONE);
+            imv_delete.setVisibility(View.GONE);
         }
 
         if (isAdmin.equals("0")) {
@@ -402,7 +401,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
-        cv_get_direction.setOnClickListener(new View.OnClickListener() {
+        tv_view_on_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (eventDetails.getVenue_latitude().trim().isEmpty() || eventDetails.getVenue_longitude().trim().isEmpty()) {
@@ -413,13 +412,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + eventDetails.getVenue_latitude() + "," + eventDetails.getVenue_longitude()));
                 startActivity(intent);
-            }
-        });
-
-        cv_add_calendar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utilities.showMessage("Coming Soon", context, 2);
             }
         });
 

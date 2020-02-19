@@ -51,6 +51,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupBannerSliderAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.GroupBannerListModel;
+import in.oriange.joinsta.models.GroupsEventPaymentDoneModel;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -308,58 +309,13 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         btn_delete_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                alertBuilder.setMessage("Once you delete the group, all members, messages, posts will be deleted. Are you sure, you want to delete the group?");
-                alertBuilder.setCancelable(false);
-                alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
 
-                        String[] mode = {"SMS", "Email"};
+                if (Utilities.isNetworkAvailable(context)) {
+                    new CanDeleteGroup().execute(groupDetails.getId());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
 
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                        builder.setTitle("OTP verification is required to delete group");
-                        builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                if (Utilities.isNetworkAvailable(context)) {
-                                    if (item == 0) {
-                                        new GetOtpToDelete().execute(
-                                                userId,
-                                                "otp"
-                                        );
-                                    } else if (item == 1) {
-                                        new GetOtpToDelete().execute(
-                                                userId,
-                                                "email"
-                                        );
-                                    }
-                                } else {
-                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                                }
-
-                                dialog.dismiss();
-
-                            }
-                        });
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                    }
-                });
-                alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = alertBuilder.create();
-                alertDialog.show();
             }
         });
 
@@ -968,6 +924,114 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private class CanDeleteGroup extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "checkGroupEvents");
+            obj.addProperty("group_id", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.GRPADMINMEMBERSSUPERVISORSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                if (!result.equals("")) {
+                    List<List<GroupsEventPaymentDoneModel.ResultBean>> eventList = new ArrayList<>();
+                    GroupsEventPaymentDoneModel pojoDetails = new Gson().fromJson(result, GroupsEventPaymentDoneModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        eventList = pojoDetails.getResult();
+                        if (eventList.size() > 0) {
+                            Utilities.showMessage("You cannot delete this group", context, 2);
+                        } else {
+                            deleteGroupConfirmation();
+                        }
+
+                    } else {
+                        deleteGroupConfirmation();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                cv_banner.setVisibility(View.GONE);
+
+            }
+        }
+    }
+
+    private void deleteGroupConfirmation() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertBuilder.setMessage("Once you delete the group, all members, messages, posts will be deleted. Are you sure, you want to delete the group?");
+        alertBuilder.setCancelable(false);
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                String[] mode = {"SMS", "Email"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("OTP verification is required to delete group");
+                builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            if (item == 0) {
+                                new GetOtpToDelete().execute(
+                                        userId,
+                                        "otp"
+                                );
+                            } else if (item == 1) {
+                                new GetOtpToDelete().execute(
+                                        userId,
+                                        "email"
+                                );
+                            }
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+
+                        dialog.dismiss();
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
     }
 
     private void createDialogForOTP(final String otp) {
