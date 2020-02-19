@@ -437,6 +437,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             for (int i = 0; i < paymentModeList.size(); i++) {
                 if (selectedModes.getPayment_mode().equals(paymentModeList.get(i).getPayment_mode())) {
                     paymentModeList.get(i).setChecked(true);
+                    paymentModeList.get(i).setPayment_link(selectedModes.getPayment_link());
                 }
             }
         }

@@ -952,6 +952,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            pd.dismiss();
             String type;
             try {
                 if (!result.equals("")) {
@@ -966,15 +967,13 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         } else {
                             deleteGroupConfirmation();
                         }
-
                     } else {
                         deleteGroupConfirmation();
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                cv_banner.setVisibility(View.GONE);
-
+                deleteGroupConfirmation();
             }
         }
     }

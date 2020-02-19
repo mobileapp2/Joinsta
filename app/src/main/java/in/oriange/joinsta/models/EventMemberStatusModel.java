@@ -54,7 +54,11 @@ public class EventMemberStatusModel {
         private String status;
 
         public String getFirst_name() {
-            return first_name;
+            if (first_name != null) {
+                return first_name;
+            } else {
+                return "";
+            }
         }
 
         public void setFirst_name(String first_name) {
@@ -62,7 +66,11 @@ public class EventMemberStatusModel {
         }
 
         public String getMobile() {
-            return mobile;
+            if (mobile != null) {
+                return mobile;
+            } else {
+                return "";
+            }
         }
 
         public void setMobile(String mobile) {
@@ -82,7 +90,11 @@ public class EventMemberStatusModel {
         }
 
         public String getUser_id() {
-            return user_id;
+            if (user_id != null) {
+                return user_id;
+            } else {
+                return "";
+            }
         }
 
         public void setUser_id(String user_id) {

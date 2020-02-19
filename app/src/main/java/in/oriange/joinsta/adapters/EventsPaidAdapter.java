@@ -68,14 +68,18 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
                 }
             }
 
-            OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, bannerList);
-            holder.imageSlider.setSliderAdapter(adapter);
-            holder.imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-            holder.imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
-            holder.imageSlider.setIndicatorSelectedColor(Color.WHITE);
-            holder.imageSlider.setIndicatorUnselectedColor(Color.GRAY);
-            holder.imageSlider.setAutoCycle(true);
-            holder.imageSlider.setScrollTimeInSec(10);
+            if (bannerList.size() != 0) {
+                OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, bannerList);
+                holder.imageSlider.setSliderAdapter(adapter);
+                holder.imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+                holder.imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+                holder.imageSlider.setIndicatorSelectedColor(Color.WHITE);
+                holder.imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+                holder.imageSlider.setAutoCycle(true);
+                holder.imageSlider.setScrollTimeInSec(10);
+            } else {
+                holder.imageSlider.setVisibility(View.GONE);
+            }
         } else {
             holder.imageSlider.setVisibility(View.GONE);
         }
