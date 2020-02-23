@@ -510,20 +510,18 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         builderSingle.setTitle("Document List");
         builderSingle.setCancelable(false);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row_ellipsize);
 
         for (int i = 0; i < documentList.size(); i++) {
-            arrayAdapter.add("View document " + (i + 1));
+            arrayAdapter.add(documentList.get(i).getDocuments());
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override

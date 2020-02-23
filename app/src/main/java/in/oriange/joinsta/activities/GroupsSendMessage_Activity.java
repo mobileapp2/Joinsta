@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -85,12 +84,11 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private TextView tv_sms_count, tv_email_count, tv_notifications_count;
-    private MaterialEditText edt_groups, edt_subject, edt_attach_doc, edt_attach_multidoc;
+    private MaterialEditText edt_groups, edt_subject, edt_attach_multidoc;
     private EditText edt_message;
     private ImageView imv_photo1, imv_photo2;
     private RadioButton rb_supervisor, rb_all;
-    private ImageButton ib_add_doc;
-    private Button btn_save, btn_sms, btn_email, btn_notification;
+    private Button btn_save, btn_sms, btn_email, btn_notification, btn_add_document;
     private CheckBox cb_canshare;
     private LinearLayout ll_attach_docs;
 
@@ -136,8 +134,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         btn_notification = findViewById(R.id.btn_notification);
         imv_photo1 = findViewById(R.id.imv_photo1);
         imv_photo2 = findViewById(R.id.imv_photo2);
-        ib_add_doc = findViewById(R.id.ib_add_doc);
-        edt_attach_doc = findViewById(R.id.edt_attach_doc);
+        btn_add_document = findViewById(R.id.btn_add_document);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
         rb_supervisor = findViewById(R.id.rb_supervisor);
         rb_all = findViewById(R.id.rb_all);
@@ -178,6 +175,12 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
 
         edt_groups.setText(groupName);
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        docsLayoutsList.add(ll);
+        ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
 
 //        if (Utilities.isNetworkAvailable(context)) {
 //            new GetMessageCount().execute();
@@ -321,7 +324,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             }
         });
 
-        ib_add_doc.setOnClickListener(new View.OnClickListener() {
+        btn_add_document.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -331,21 +334,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
             }
         });
-
-        edt_attach_doc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, NormalFilePickActivity.class);
-                    intent.putExtra(Constant.MAX_NUMBER, 1);
-                    intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
-                    startActivityForResult(intent, 1024);
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
     }
 
     private void selectImage() {
@@ -409,14 +397,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(GroupsSendMessage_Activity.this);
             }
 
-            if (requestCode == 1024) {
-                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "1");
-            }
-
             if (requestCode == 1025) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "2");
+                new UploadImage().execute(list.get(0).getPath(), "1");
             }
 
             if (requestCode == MESSAGE_REQUEST) {
@@ -727,12 +710,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 
         JsonArray messageDocArray = new JsonArray();
 
-        if (!edt_attach_doc.getText().toString().trim().isEmpty()) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("document", edt_attach_doc.getText().toString().trim());
-            messageDocArray.add(jsonObject);
-        }
-
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
@@ -898,8 +875,6 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                                 imv_photo1.setVisibility(View.VISIBLE);
                             }
                         } else if (TYPE.equals("1")) {
-                            edt_attach_doc.setText(jsonObject.getString("name"));
-                        } else if (TYPE.equals("2")) {
                             edt_attach_multidoc.setText(jsonObject.getString("name"));
                         }
                     } else {

@@ -21,7 +21,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -83,10 +82,9 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_feed_type;
     private EditText edt_description;
-    private MaterialEditText edt_attach_doc, edt_attach_multidoc;
+    private MaterialEditText edt_attach_multidoc;
     private ImageView imv_photo1, imv_photo2;
-    private Button btn_save;
-    private ImageButton ib_add_doc;
+    private Button btn_save, btn_add_document;
     private LinearLayout ll_attach_docs;
     private CheckBox cb_canshare;
 
@@ -123,9 +121,8 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         edt_description = findViewById(R.id.edt_description);
         imv_photo1 = findViewById(R.id.imv_photo1);
         imv_photo2 = findViewById(R.id.imv_photo2);
-        ib_add_doc = findViewById(R.id.ib_add_doc);
+        btn_add_document = findViewById(R.id.btn_add_document);
         cb_canshare = findViewById(R.id.cb_canshare);
-        edt_attach_doc = findViewById(R.id.edt_attach_doc);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
         btn_save = findViewById(R.id.btn_save);
 
@@ -192,16 +189,12 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         List<GroupFeedsModel.ResultBean.FeedDocumentsBean> feedDocumentsList = feedDetails.getFeed_documents();
 
         for (int i = 0; i < feedDocumentsList.size(); i++) {
-            if (i == (feedDocumentsList.size() - 1)) {
-                edt_attach_doc.setText(feedDocumentsList.get(i).getDocuments());
-            } else {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                docsLayoutsList.add(ll);
-                ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount() - 1);
-                ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(feedDocumentsList.get(i).getDocuments());
-            }
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+            LinearLayout ll = (LinearLayout) rowView;
+            docsLayoutsList.add(ll);
+            ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount() - 1);
+            ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).setText(feedDocumentsList.get(i).getDocuments());
         }
     }
 
@@ -247,21 +240,7 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
             }
         });
 
-        edt_attach_doc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    Intent intent = new Intent(context, NormalFilePickActivity.class);
-                    intent.putExtra(Constant.MAX_NUMBER, 1);
-                    intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
-                    startActivityForResult(intent, 1024);
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        ib_add_doc.setOnClickListener(new View.OnClickListener() {
+        btn_add_document.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -425,20 +404,12 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
-                if (i < feedDetails.getFeed_documents().size() - 1) {
+                if (i <= feedDetails.getFeed_documents().size() - 1) {
                     docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean((((TextView) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString()), feedDetails.getFeed_documents().get(i).getId()));
                 } else {
                     docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean((((TextView) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString()), "0"));
                 }
             }
-        }
-
-        if (feedDetails.getFeed_documents().size() != 0) {
-            if (!edt_attach_doc.getText().toString().trim().isEmpty())
-                docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean(edt_attach_doc.getText().toString(), feedDetails.getFeed_documents().get(feedDetails.getFeed_documents().size() - 1).getId()));
-        } else {
-            if (!edt_attach_doc.getText().toString().trim().isEmpty())
-                docList.add(new GroupFeedsModel.ResultBean.FeedDocumentsBean(edt_attach_doc.getText().toString(), "0"));
         }
 
         for (GroupFeedsModel.ResultBean.FeedDocumentsBean feedDocuments : docList) {
@@ -546,14 +517,9 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
                 CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditGroupFeeds_Activity.this);
             }
 
-            if (requestCode == 1024) {
-                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "1");
-            }
-
             if (requestCode == 1025) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "2");
+                new UploadImage().execute(list.get(0).getPath(), "1");
             }
         }
 
@@ -654,8 +620,6 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
                                 imv_photo1.setVisibility(View.VISIBLE);
                             }
                         } else if (TYPE.equals("1")) {
-                            edt_attach_doc.setText(jsonObject.getString("name"));
-                        } else if (TYPE.equals("2")) {
                             edt_attach_multidoc.setText(jsonObject.getString("name"));
                         }
                     } else {

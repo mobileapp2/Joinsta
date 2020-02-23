@@ -173,7 +173,7 @@
                         <TextView
                             android:id="@+id/tv_venue"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:clickable="false"
                             android:focusable="false"
                             android:longClickable="false"
@@ -190,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:clickable="false"
                             android:focusable="false"
-                            android:gravity="end"
+                            android:gravity="end|bottom"
                             android:longClickable="false"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -198,7 +198,6 @@
                             android:text="Get Direction"
                             android:textColor="@color/colorPrimary"
                             android:textSize="16sp" />
-
 
                     </LinearLayout>
 
@@ -345,6 +344,7 @@
                         android:padding="5dp">
 
                         <LinearLayout
+                            android:id="@+id/ll_early_bird"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -380,6 +380,7 @@
                         </LinearLayout>
 
                         <View
+                            android:id="@+id/v_early_normal"
                             android:layout_width="0.5dp"
                             android:layout_height="match_parent"
                             android:background="@color/colorPrimary" />
@@ -391,6 +392,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/tv_normal"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -427,11 +429,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="end"
-                        android:text="Get My Tickets"
+                        android:text="Pay"
                         android:textStyle="bold" />
 
                 </LinearLayout>
-
 
             </androidx.cardview.widget.CardView>
 
@@ -717,8 +718,8 @@
 
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"

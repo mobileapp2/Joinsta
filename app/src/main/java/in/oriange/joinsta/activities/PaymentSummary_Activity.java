@@ -79,9 +79,6 @@ public class PaymentSummary_Activity extends AppCompatActivity {
         isEarlyPaymentApplicable = eventDetails.getIs_early_payment_applicable();
         isNormalPaymentApplicable = eventDetails.getIs_normal_payment_applicable();
 
-        isEarlyPaymentApplicable = "1";
-        isNormalPaymentApplicable = "0";
-
         tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
 
         if (isEarlyPaymentApplicable.equals("1")) {

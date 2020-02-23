@@ -469,7 +469,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
             numOfFilesDownloaded = numOfFilesDownloaded + 1;
 
             if (numOfFilesDownloaded == numOfDocuments) {
-                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/html");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
                 sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);

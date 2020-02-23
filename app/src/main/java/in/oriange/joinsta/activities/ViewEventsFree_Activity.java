@@ -469,7 +469,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
 
-            holder.tv_name.setText("View Document " + (position + 1));
+            holder.tv_name.setText(documentsList.get(position).substring(documentsList.get(position).lastIndexOf('/') + 1));
 
             holder.tv_name.setOnClickListener(new View.OnClickListener() {
                 @Override

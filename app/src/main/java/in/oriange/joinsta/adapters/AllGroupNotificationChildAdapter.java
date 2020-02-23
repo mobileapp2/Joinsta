@@ -391,10 +391,10 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
         builderSingle.setTitle("Document List");
         builderSingle.setCancelable(false);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row_ellipsize);
 
         for (int i = 0; i < documentList.size(); i++) {
-            arrayAdapter.add("View document " + (i + 1));
+            arrayAdapter.add(documentList.get(i).getDocuments());
         }
 
         builderSingle.setNegativeButton(

@@ -55,6 +55,7 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static android.view.View.GONE;
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
@@ -69,8 +70,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private ReadMoreTextView tv_description;
     private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
             tv_earlybird_price, tv_earlybird_due_date, tv_normal_price, tv_normal_due_date, tv_message_paid,
-            tv_message_unpaid, tv_organizer_name, tv_remark;
-    private LinearLayout ll_paid_msg, ll_unpaid_msg;
+            tv_message_unpaid, tv_organizer_name, tv_remark, tv_normal;
+    private LinearLayout ll_paid_msg, ll_unpaid_msg, ll_early_bird;
+    private View v_early_normal;
     private Button btn_buy;
     private RecyclerView rv_documents;
     private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_documents, cv_members_status;
@@ -123,9 +125,11 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_message_paid = findViewById(R.id.tv_message_paid);
         tv_message_unpaid = findViewById(R.id.tv_message_unpaid);
         tv_organizer_name = findViewById(R.id.tv_organizer_name);
+        tv_normal = findViewById(R.id.tv_normal);
 
         ll_paid_msg = findViewById(R.id.ll_paid_msg);
         ll_unpaid_msg = findViewById(R.id.ll_unpaid_msg);
+        ll_early_bird = findViewById(R.id.ll_early_bird);
 
         btn_buy = findViewById(R.id.btn_buy);
 
@@ -141,6 +145,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_message = findViewById(R.id.cv_message);
         cv_price = findViewById(R.id.cv_price);
         cv_members_status = findViewById(R.id.cv_members_status);
+
+        v_early_normal = findViewById(R.id.v_early_normal);
 
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
@@ -180,14 +186,14 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         if (eventDetails.getIs_online_events().equals("1"))
             tv_is_online.setVisibility(View.VISIBLE);
         else
-            tv_is_online.setVisibility(View.GONE);
+            tv_is_online.setVisibility(GONE);
 
         tv_venue.setText(eventDetails.getVenue_address());
 
         tv_time_date.setText(eventDetails.getDateTime());
 
         if (eventDetails.getDescription().equals(""))
-            cv_description.setVisibility(View.GONE);
+            cv_description.setVisibility(GONE);
         else
             tv_description.setText(eventDetails.getDescription());
 
@@ -196,42 +202,52 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_organizer_name.setText(eventDetails.getOrganizer_name());
 
         if (eventDetails.getRemark().equals(""))
-            cv_remark.setVisibility(View.GONE);
+            cv_remark.setVisibility(GONE);
         else
             tv_remark.setText(eventDetails.getRemark());
 
-        if (eventDetails.getMessage_for_paidmember().equals("") && eventDetails.getMessage_for_unpaidmember().equals("")) {
-            cv_message.setVisibility(View.GONE);
+        if (isAdmin.equals("1")) {
+            if (eventDetails.getMessage_for_paidmember().equals("") && eventDetails.getMessage_for_unpaidmember().equals("")) {
+                cv_message.setVisibility(GONE);
+            } else {
+
+                if (!eventDetails.getMessage_for_paidmember().equals(""))
+                    tv_message_paid.setText(eventDetails.getMessage_for_paidmember());
+                else
+                    ll_paid_msg.setVisibility(GONE);
+
+                if (!eventDetails.getMessage_for_unpaidmember().equals(""))
+                    tv_message_unpaid.setText(eventDetails.getMessage_for_unpaidmember());
+                else
+                    ll_unpaid_msg.setVisibility(GONE);
+            }
         } else {
-
-            if (!eventDetails.getMessage_for_paidmember().equals(""))
-                tv_message_paid.setText(eventDetails.getMessage_for_paidmember());
-            else
-                ll_paid_msg.setVisibility(View.GONE);
-
-            if (!eventDetails.getMessage_for_unpaidmember().equals(""))
-                tv_message_unpaid.setText(eventDetails.getMessage_for_unpaidmember());
-            else
-                ll_unpaid_msg.setVisibility(View.GONE);
+            cv_message.setVisibility(GONE);
         }
 
         tv_earlybird_price.setText("₹ " + eventDetails.getEarlybird_price() + " off");
 
-        tv_earlybird_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
+        tv_earlybird_due_date.setText(eventDetails.getEarlyBirdDueDate());
 
         tv_normal_price.setText("₹ " + eventDetails.getNormal_price());
 
         tv_normal_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
 
+        if (eventDetails.getEarlybird_price().equals("0") || eventDetails.getEarlybird_price().equals("")) {
+            ll_early_bird.setVisibility(GONE);
+            v_early_normal.setVisibility(GONE);
+            tv_normal.setVisibility(GONE);
+        }
+
         if (!eventDetails.getCreated_by().equals(userId)) {
-            imv_edit.setVisibility(View.GONE);
+            imv_edit.setVisibility(GONE);
         }
 
         List<EventsPaidModel.ResultBean.DocumentsBean> docList = eventDetails.getDocuments();
 
         if (docList.size() == 0) {
-            rv_images.setVisibility(View.GONE);
-            cv_documents.setVisibility(View.GONE);
+            rv_images.setVisibility(GONE);
+            cv_documents.setVisibility(GONE);
         } else {
             for (EventsPaidModel.ResultBean.DocumentsBean documentsBean : docList) {
                 if (documentsBean.getDocument_type().equalsIgnoreCase("invitationdocument")) {
@@ -243,7 +259,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         }
 
         if (imagesList.size() == 0)
-            rv_images.setVisibility(View.GONE);
+            rv_images.setVisibility(GONE);
         else {
             OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, imagesList);
             webBannerAdapter.setOnBannerItemClickListener(new BannerLayout.OnBannerItemClickListener() {
@@ -256,21 +272,21 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         }
 
         if (documentsList.size() == 0)
-            cv_documents.setVisibility(View.GONE);
+            cv_documents.setVisibility(GONE);
         else
             rv_documents.setAdapter(new DocumentsAdapter());
 
         if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")) {
-            btn_buy.setVisibility(View.GONE);
+            btn_buy.setVisibility(GONE);
         }
 
         if (isMyEvent) {
-            imv_edit.setVisibility(View.GONE);
-            imv_delete.setVisibility(View.GONE);
+            imv_edit.setVisibility(GONE);
+            imv_delete.setVisibility(GONE);
         }
 
         if (isAdmin.equals("0")) {
-            cv_members_status.setVisibility(View.GONE);
+            cv_members_status.setVisibility(GONE);
         }
     }
 
@@ -555,7 +571,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
 
-            holder.tv_name.setText("View Document " + (position + 1));
+            holder.tv_name.setText(documentsList.get(position).substring(documentsList.get(position).lastIndexOf('/') + 1));
 
             holder.tv_name.setOnClickListener(new View.OnClickListener() {
                 @Override

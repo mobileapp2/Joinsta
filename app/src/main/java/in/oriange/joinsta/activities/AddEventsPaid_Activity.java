@@ -411,6 +411,13 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        normalDueDate = "";
+                        edt_normal_due_date.setText("");
+                    }
+                });
                 dialog.show();
             }
         });
@@ -444,6 +451,13 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        earlyBirdDueDate = "";
+                        edt_early_bird_due_date.setText("");
+                    }
+                });
                 dialog.show();
             }
         });
@@ -697,32 +711,35 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_early_bird_amount.getText().toString().trim().isEmpty()) {
-            edt_early_bird_amount.setError("Please enter amount");
-            edt_early_bird_amount.requestFocus();
-            edt_early_bird_amount.getParent().requestChildFocus(edt_early_bird_amount, edt_early_bird_amount);
-            return;
-        }
+        if (!edt_early_bird_amount.getText().toString().trim().isEmpty()) {
+            try {
+                float normalAmount = Float.parseFloat(edt_normal_amount.getText().toString().trim());
+                float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount.getText().toString().trim());
 
-        try {
-            float normalAmount = Float.parseFloat(edt_normal_amount.getText().toString().trim());
-            float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount.getText().toString().trim());
+                if (earlyBirdAmount > normalAmount) {
+                    Utilities.showMessage("Early bird discount amount cannot be greater than normal amount", context, 2);
+                    return;
+                }
 
-            if (earlyBirdAmount > normalAmount) {
-                Utilities.showMessage("Early bird discount amount cannot be greater than normal amount", context, 2);
-                return;
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
 
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+            if (edt_early_bird_due_date.getText().toString().trim().isEmpty()) {
+                edt_early_bird_due_date.setError("Please select date");
+                edt_early_bird_due_date.requestFocus();
+                edt_early_bird_due_date.getParent().requestChildFocus(edt_early_bird_due_date, edt_early_bird_due_date);
+                return;
+            }
         }
 
-
-        if (edt_early_bird_due_date.getText().toString().trim().isEmpty()) {
-            edt_early_bird_due_date.setError("Please select date");
-            edt_early_bird_due_date.requestFocus();
-            edt_early_bird_due_date.getParent().requestChildFocus(edt_early_bird_due_date, edt_early_bird_due_date);
-            return;
+        if (!edt_early_bird_due_date.getText().toString().trim().isEmpty()) {
+            if (edt_early_bird_amount.getText().toString().trim().isEmpty()) {
+                edt_early_bird_amount.setError("Please enter amount");
+                edt_early_bird_amount.requestFocus();
+                edt_early_bird_amount.getParent().requestChildFocus(edt_early_bird_amount, edt_early_bird_amount);
+                return;
+            }
         }
 
         if (edt_payment_mode.getText().toString().trim().isEmpty()) {

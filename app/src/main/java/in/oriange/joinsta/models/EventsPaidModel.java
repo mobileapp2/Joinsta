@@ -175,7 +175,7 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getDescription() {
-            return description+" ";
+            return description + " ";
         }
 
         public void setDescription(String description) {
@@ -311,7 +311,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getEarlybird_price() {
-            return earlybird_price;
+            if (!earlybird_price.equals("0")) {
+                return earlybird_price;
+            } else {
+                return "";
+            }
         }
 
         public void setEarlybird_price(String earlybird_price) {
@@ -327,7 +331,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getEarlybird_price_duedate() {
-            return earlybird_price_duedate;
+            if (!earlybird_price_duedate.equals("0000-00-00")) {
+                return earlybird_price_duedate;
+            } else {
+                return "";
+            }
         }
 
         public void setEarlybird_price_duedate(String earlybird_price_duedate) {
@@ -537,6 +545,14 @@ public class EventsPaidModel implements Serializable {
             } catch (ParseException e) {
                 e.printStackTrace();
                 return false;
+            }
+        }
+
+        public String getEarlyBirdDueDate() {
+            if (!earlybird_price_duedate.equals("0000-00-00")) {
+                return "Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", earlybird_price_duedate);
+            } else {
+                return "";
             }
         }
 
