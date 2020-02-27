@@ -427,7 +427,7 @@ public class EventsFreeModel implements Serializable {
                     return "On " + startDateStr +
                             " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
                 else
-                    return "From " + startDateStr + " to " + endDateStr +
+                    return startDateStr + " to " + endDateStr +
                             " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
 
             } catch (ParseException e) {

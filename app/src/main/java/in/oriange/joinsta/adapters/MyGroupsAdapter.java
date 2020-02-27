@@ -26,6 +26,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AllGroups_Activity;
+import in.oriange.joinsta.activities.Events_Activity;
 import in.oriange.joinsta.activities.GroupFeeds_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.MyGroupDetails_Activity;
@@ -215,6 +216,16 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             }
         });
 
+        holder.ll_events.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, Events_Activity.class)
+                        .putExtra("groupId", groupDetails.getId())
+                        .putExtra("groupName", groupDetails.getGroup_name())
+                        .putExtra("isAdmin", groupDetails.getIs_admin()));
+            }
+        });
+
         holder.btn_rejoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -244,7 +255,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
 
         private CardView cv_mainlayout;
         private TextView tv_heading, tv_role, tv_notifications_count;
-        private LinearLayout ll_group_utilities, ll_posts, ll_notifications, ll_settings;
+        private LinearLayout ll_group_utilities, ll_posts, ll_notifications, ll_settings, ll_events;
         private TextView tv_status;
         private View view_divider;
         private Button btn_rejoin;
@@ -259,6 +270,7 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             ll_posts = view.findViewById(R.id.ll_posts);
             ll_notifications = view.findViewById(R.id.ll_notifications);
             ll_settings = view.findViewById(R.id.ll_settings);
+            ll_events = view.findViewById(R.id.ll_events);
             tv_status = view.findViewById(R.id.tv_status);
             view_divider = view.findViewById(R.id.view_divider);
             btn_rejoin = view.findViewById(R.id.btn_rejoin);

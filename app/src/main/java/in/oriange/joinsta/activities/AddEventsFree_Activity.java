@@ -102,7 +102,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
     private List<EventTypeModel.ResultBean> eventTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
     private ArrayList<MasterModel> imageList;
-    private String userId, groupId, eventTypeId, eventStartDate, eventEndDate, latitude = "", longitude = "";
+    private String userId, groupId, eventTypeId, eventStartDate, eventEndDate, eventStartTime, eventEndTime, latitude = "", longitude = "";
     private File photoFileFolder;
     private Uri photoURI;
     private int mYear, mMonth, mDay, startHour, startMinutes;
@@ -292,7 +292,9 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                         edt_end_time.setText("");
                         startMinutes = selectedMinute;
                         startHour = selectedHour;
-                        edt_start_time.setText(selectedHour + ":" + selectedMinute + ":00");
+
+                        eventStartTime = selectedHour + ":" + selectedMinute + ":00";
+                        edt_start_time.setText(changeDateFormat("HH:mm:ss", "HH:mm", eventStartTime));
                     }
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Event Start Time");
@@ -328,7 +330,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                             }
                         }
 
-                        edt_end_time.setText(selectedHour + ":" + selectedMinute + ":00");
+                        eventEndTime = selectedHour + ":" + selectedMinute + ":00";
+                        edt_end_time.setText(changeDateFormat("HH:mm:ss", "HH:mm", eventEndTime));
                     }
                 }, hour, minute, true);
                 mTimePicker.setTitle("Select Event End Time");
@@ -400,18 +403,20 @@ public class AddEventsFree_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_organizer_name.getText().toString().trim().isEmpty()) {
-            edt_organizer_name.setError("Please enter organizer name");
-            edt_organizer_name.requestFocus();
-            edt_organizer_name.getParent().requestChildFocus(edt_organizer_name, edt_organizer_name);
-            return;
-        }
+//        if (edt_organizer_name.getText().toString().trim().isEmpty()) {
+//            edt_organizer_name.setError("Please enter organizer name");
+//            edt_organizer_name.requestFocus();
+//            edt_organizer_name.getParent().requestChildFocus(edt_organizer_name, edt_organizer_name);
+//            return;
+//        }
 
-        if (!Utilities.isValidMobileno(edt_organizer_mobile.getText().toString().trim())) {
-            edt_organizer_mobile.setError("Please enter valid mobile number");
-            edt_organizer_mobile.requestFocus();
-            edt_organizer_mobile.getParent().requestChildFocus(edt_organizer_mobile, edt_organizer_mobile);
-            return;
+        if (!edt_organizer_mobile.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isValidMobileno(edt_organizer_mobile.getText().toString().trim())) {
+                edt_organizer_mobile.setError("Please enter valid mobile number");
+                edt_organizer_mobile.requestFocus();
+                edt_organizer_mobile.getParent().requestChildFocus(edt_organizer_mobile, edt_organizer_mobile);
+                return;
+            }
         }
 
         if (edt_start_date.getText().toString().trim().isEmpty()) {
@@ -485,8 +490,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
         mainObj.addProperty("event_date", eventStartDate);
         mainObj.addProperty("event_end_date", eventEndDate);
-        mainObj.addProperty("event_start_time", edt_start_time.getText().toString().trim());
-        mainObj.addProperty("event_end_time", edt_end_time.getText().toString().trim());
+        mainObj.addProperty("event_start_time", eventStartTime);
+        mainObj.addProperty("event_end_time", eventEndTime);
         mainObj.addProperty("venue_address", edt_address.getText().toString().trim());
         mainObj.addProperty("venue_longitude", longitude);
         mainObj.addProperty("venue_latitude", latitude);

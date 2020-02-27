@@ -122,6 +122,31 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_events"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:src="@drawable/icon_event"
+                    android:tint="@color/darkGray" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:text="Events"
+                    android:textColor="@color/darkGray"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/ll_notifications"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

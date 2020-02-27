@@ -75,7 +75,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private View v_early_normal;
     private Button btn_buy;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_documents, cv_members_status;
+    private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_organizer, cv_documents, cv_members_status;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId, paymentLink, isAdmin;
@@ -141,6 +141,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_date_time = findViewById(R.id.cv_date_time);
         cv_venue = findViewById(R.id.cv_venue);
         cv_remark = findViewById(R.id.cv_remark);
+        cv_organizer = findViewById(R.id.cv_organizer);
         cv_documents = findViewById(R.id.cv_documents);
         cv_message = findViewById(R.id.cv_message);
         cv_price = findViewById(R.id.cv_price);
@@ -199,7 +200,16 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         tv_type.setText("This is " + eventDetails.getEvent_type_name() + " event");
 
-        tv_organizer_name.setText(eventDetails.getOrganizer_name());
+        if (!eventDetails.getOrganizer_name().isEmpty() && !eventDetails.getMobile().isEmpty()) {
+            tv_organizer_name.setText(eventDetails.getOrganizer_name());
+        } else if (!eventDetails.getOrganizer_name().isEmpty() && eventDetails.getMobile().isEmpty()) {
+            tv_organizer_name.setText(eventDetails.getOrganizer_name());
+            imv_message_organizer.setVisibility(View.GONE);
+        } else if (eventDetails.getOrganizer_name().isEmpty() && !eventDetails.getMobile().isEmpty()) {
+            tv_organizer_name.setText(eventDetails.getMobile());
+        } else if (eventDetails.getOrganizer_name().isEmpty() && eventDetails.getMobile().isEmpty()) {
+            cv_organizer.setVisibility(View.GONE);
+        }
 
         if (eventDetails.getRemark().equals(""))
             cv_remark.setVisibility(GONE);

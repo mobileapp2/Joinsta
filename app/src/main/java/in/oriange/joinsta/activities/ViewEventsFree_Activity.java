@@ -67,7 +67,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_remark, cv_documents, cv_members_status;
+    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_remark, cv_organizer, cv_documents, cv_members_status;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId, isAdmin;
@@ -124,6 +124,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         cv_confirmation = findViewById(R.id.cv_confirmation);
         cv_date_time = findViewById(R.id.cv_date_time);
         cv_venue = findViewById(R.id.cv_venue);
+        cv_organizer = findViewById(R.id.cv_organizer);
         cv_remark = findViewById(R.id.cv_remark);
         cv_documents = findViewById(R.id.cv_documents);
         cv_members_status = findViewById(R.id.cv_members_status);
@@ -184,7 +185,16 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         else
             tv_confirmation.setVisibility(View.GONE);
 
-        tv_organizer_name.setText(eventDetails.getOrganizer_name());
+        if (!eventDetails.getOrganizer_name().isEmpty() && !eventDetails.getMobile().isEmpty()) {
+            tv_organizer_name.setText(eventDetails.getOrganizer_name());
+        } else if (!eventDetails.getOrganizer_name().isEmpty() && eventDetails.getMobile().isEmpty()) {
+            tv_organizer_name.setText(eventDetails.getOrganizer_name());
+            imv_message_organizer.setVisibility(View.GONE);
+        } else if (eventDetails.getOrganizer_name().isEmpty() && !eventDetails.getMobile().isEmpty()) {
+            tv_organizer_name.setText(eventDetails.getMobile());
+        } else if (eventDetails.getOrganizer_name().isEmpty() && eventDetails.getMobile().isEmpty()) {
+            cv_organizer.setVisibility(View.GONE);
+        }
 
         if (eventDetails.getRemark().equals(""))
             cv_remark.setVisibility(View.GONE);
@@ -469,9 +479,9 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
 
-            holder.tv_name.setText(documentsList.get(position).substring(documentsList.get(position).lastIndexOf('/') + 1));
+            tv_name.setText(documentsList.get(position).substring(documentsList.get(position).lastIndexOf('/') + 1));
 
-            holder.tv_name.setOnClickListener(new View.OnClickListener() {
+            tv_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (Utilities.isNetworkAvailable(context))
