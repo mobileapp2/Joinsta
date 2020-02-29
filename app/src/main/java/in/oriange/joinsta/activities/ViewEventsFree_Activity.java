@@ -67,7 +67,8 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_remark, cv_organizer, cv_documents, cv_members_status;
+    private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_remark, cv_organizer,
+            cv_documents, cv_members_status, cv_report_issue;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId, isAdmin;
@@ -128,6 +129,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         cv_remark = findViewById(R.id.cv_remark);
         cv_documents = findViewById(R.id.cv_documents);
         cv_members_status = findViewById(R.id.cv_members_status);
+        cv_report_issue = findViewById(R.id.cv_report_issue);
 
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
@@ -421,6 +423,15 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(context, EventFreeMemberStatus_Activity.class)
                         .putExtra("eventId", eventDetails.getId()));
+            }
+        });
+
+        cv_report_issue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddEventReportIssue_Activity.class)
+                        .putExtra("eventId", eventDetails.getId())
+                        .putExtra("eventCategoryId", "1"));  // Free Event Category Id
             }
         });
 

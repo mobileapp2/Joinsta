@@ -75,7 +75,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private View v_early_normal;
     private Button btn_buy;
     private RecyclerView rv_documents;
-    private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_organizer, cv_documents, cv_members_status;
+    private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_organizer,
+            cv_documents, cv_members_status, cv_report_issue;
 
     private ArrayList<String> imagesList, documentsList;
     private String userId, paymentLink, isAdmin;
@@ -146,6 +147,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_message = findViewById(R.id.cv_message);
         cv_price = findViewById(R.id.cv_price);
         cv_members_status = findViewById(R.id.cv_members_status);
+        cv_report_issue = findViewById(R.id.cv_report_issue);
 
         v_early_normal = findViewById(R.id.v_early_normal);
 
@@ -449,6 +451,14 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
+        cv_report_issue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddEventReportIssue_Activity.class)
+                        .putExtra("eventId", eventDetails.getid())
+                        .putExtra("eventCategoryId", "2"));  // Paid Event Category Id
+            }
+        });
 
     }
 

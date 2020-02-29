@@ -27,7 +27,6 @@ public class ApplicationConstants {
     public static final String PAYTMURL = "https://meravahan.in/paytm/generateChecksum.php";
     public static final String TRANSSTATUSURL = "https://meravahan.in/paytm/transaction_status.php";
 
-
     // BETA API LINK
 //    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
@@ -83,6 +82,7 @@ public class ApplicationConstants {
     public static final String PAYMENTACCOUNTAPI = API_LINK + "payment_account.php";
     public static final String USERSPECIFICDELETEAPI = API_LINK + "userspecificevent_delete.php";
     public static final String PAYMENTTRACKAPI = API_LINK + "payment_track.php";
+    public static final String EVENTS = API_LINK + "events.php";
 
 
     public static final String VERSIONAPI = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/version.php";

@@ -67,13 +67,13 @@
                             android:layout_width="14dp"
                             android:layout_height="14dp"
                             android:layout_gravity="right|top"
+                            android:layout_marginLeft="15dp"
                             android:background="@drawable/bg_circularview_red"
                             android:gravity="center"
-                            android:visibility="gone"
-                            android:layout_marginLeft="15dp"
                             android:textColor="@color/white"
                             android:textSize="7sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
                     </FrameLayout>
 
@@ -140,7 +140,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_groups"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="80dp" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -183,5 +185,16 @@
         </FrameLayout>
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/icon_add"
+        android:tint="@color/white" />
 
 </RelativeLayout>
