@@ -95,6 +95,17 @@
                 android:background="@color/colorPrimary" />
 
             <TextView
+                android:id="@+id/tv_feed_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:textColor="@color/mediumGray"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/tv_feed_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +113,7 @@
                 android:maxLines="2"
                 android:padding="5dp"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_feed_image"

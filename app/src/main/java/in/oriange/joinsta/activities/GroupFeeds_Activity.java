@@ -322,7 +322,6 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();

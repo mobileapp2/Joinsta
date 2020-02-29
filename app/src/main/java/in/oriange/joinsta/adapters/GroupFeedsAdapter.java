@@ -147,6 +147,12 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             e.printStackTrace();
         }
 
+        if (!feedDetails.getFeed_title().trim().isEmpty())
+            holder.tv_feed_title.setText(feedDetails.getFeed_title());
+        else
+            holder.tv_feed_title.setVisibility(View.GONE);
+
+
         holder.tv_feed_text.setText(feedDetails.getFeed_text());
 
         if (!feedDetails.getFeed_doc().equals("")) {
@@ -278,7 +284,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CircleImageView imv_user;
-        private TextView tv_name, tv_time, tv_feed_text;
+        private TextView tv_name, tv_time, tv_feed_title, tv_feed_text;
         private CardView cv_mainlayout, cv_feed_image;
         private ImageView imv_feed_image;
         private Button btn_comment, btn_share;
@@ -292,6 +298,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             ib_ishidden = view.findViewById(R.id.ib_ishidden);
             imv_user = view.findViewById(R.id.imv_user);
             tv_name = view.findViewById(R.id.tv_name);
+            tv_feed_title = view.findViewById(R.id.tv_feed_title);
             tv_feed_text = view.findViewById(R.id.tv_feed_text);
             tv_time = view.findViewById(R.id.tv_time);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);

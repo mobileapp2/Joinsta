@@ -80,13 +80,12 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_feed_type;
+    private MaterialEditText edt_feed_type, edt_title, edt_attach_multidoc;
     private EditText edt_description;
-    private MaterialEditText edt_attach_multidoc;
     private ImageView imv_photo1, imv_photo2;
     private Button btn_save, btn_add_document;
     private LinearLayout ll_attach_docs;
-    private CheckBox cb_canshare;
+    private CheckBox cb_canshare, cb_disclaimer;
 
     private String userId, isAdmin, typeId, imageName = "";
     private List<GetFeedTypesListModel.ResultBean> feedTypeList;
@@ -117,12 +116,14 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        edt_title = findViewById(R.id.edt_title);
         edt_feed_type = findViewById(R.id.edt_feed_type);
         edt_description = findViewById(R.id.edt_description);
         imv_photo1 = findViewById(R.id.imv_photo1);
         imv_photo2 = findViewById(R.id.imv_photo2);
         btn_add_document = findViewById(R.id.btn_add_document);
         cb_canshare = findViewById(R.id.cb_canshare);
+        cb_disclaimer = findViewById(R.id.cb_disclaimer);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
         btn_save = findViewById(R.id.btn_save);
 
@@ -157,6 +158,7 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 
         typeId = feedDetails.getType_id();
 //        edt_feed_type.setText(feedDetails.getType());
+        edt_title.setText(feedDetails.getFeed_title());
         edt_description.setText(feedDetails.getFeed_text());
         imageName = feedDetails.getFeed_doc();
         isAdmin = feedDetails.getIs_admin();
@@ -185,6 +187,9 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 
         if (feedDetails.getCan_share().equals("1")) cb_canshare.setChecked(true);
         else cb_canshare.setChecked(false);
+
+        if (feedDetails.getShow_disclaimer().equals("1")) cb_disclaimer.setChecked(true);
+        else cb_disclaimer.setChecked(false);
 
         List<GroupFeedsModel.ResultBean.FeedDocumentsBean> feedDocumentsList = feedDetails.getFeed_documents();
 
@@ -365,14 +370,12 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
             arrayAdapter.add(String.valueOf(feedTypeList.get(i).getType()));
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
@@ -393,8 +396,14 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
 //            return;
 //        }
 
+        if (edt_title.getText().toString().trim().isEmpty()) {
+            edt_title.setError("Please enter title");
+            edt_title.requestFocus();
+            return;
+        }
+
         if (edt_description.getText().toString().trim().isEmpty()) {
-            edt_description.setError("Please enter banner Description");
+            edt_description.setError("Please enter Description");
             edt_description.requestFocus();
             return;
         }
@@ -420,16 +429,19 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         }
 
         String canShare = cb_canshare.isChecked() ? "1" : "0";
+        String showDisclaimer = cb_disclaimer.isChecked() ? "1" : "0";
 
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "updateFeedDetails");
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("feed_id", feedDetails.getId());
         mainObj.addProperty("edit_type_id", typeId);
+        mainObj.addProperty("edit_feed_title", edt_title.getText().toString().trim());
         mainObj.addProperty("edit_feed_text", edt_description.getText().toString().trim());
         mainObj.addProperty("edit_image", imageName);
         mainObj.addProperty("is_admin", isAdmin);
         mainObj.addProperty("can_share", canShare);
+        mainObj.addProperty("showDisclaimer", showDisclaimer);
         mainObj.add("edit_document", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {

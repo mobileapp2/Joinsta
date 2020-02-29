@@ -77,13 +77,12 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_feed_type;
+    private MaterialEditText edt_feed_type, edt_title, edt_attach_multidoc;
     private EditText edt_description;
-    private MaterialEditText edt_attach_multidoc;
     private ImageView imv_photo1, imv_photo2;
     private Button btn_save, btn_add_document;
     private LinearLayout ll_attach_docs;
-    private CheckBox cb_canshare;
+    private CheckBox cb_canshare, cb_disclaimer;
 
     private String userId, groupId, isAdmin, typeId = "1", imageName = "";
     private List<GetFeedTypesListModel.ResultBean> feedTypeList;
@@ -112,12 +111,14 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        edt_title = findViewById(R.id.edt_title);
         edt_feed_type = findViewById(R.id.edt_feed_type);
         edt_description = findViewById(R.id.edt_description);
         imv_photo1 = findViewById(R.id.imv_photo1);
         imv_photo2 = findViewById(R.id.imv_photo2);
         btn_add_document = findViewById(R.id.btn_add_document);
         cb_canshare = findViewById(R.id.cb_canshare);
+        cb_disclaimer = findViewById(R.id.cb_disclaimer);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
         btn_save = findViewById(R.id.btn_save);
 
@@ -354,8 +355,14 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
 //            return;
 //        }
 
+        if (edt_title.getText().toString().trim().isEmpty()) {
+            edt_title.setError("Please enter title");
+            edt_title.requestFocus();
+            return;
+        }
+
         if (edt_description.getText().toString().trim().isEmpty()) {
-            edt_description.setError("Please enter banner Description");
+            edt_description.setError("Please enter Description");
             edt_description.requestFocus();
             return;
         }
@@ -371,16 +378,19 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         }
 
         String canShare = cb_canshare.isChecked() ? "1" : "0";
+        String showDisclaimer = cb_disclaimer.isChecked() ? "1" : "0";
 
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "addFeedDetails");
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("group_id", groupId);
         mainObj.addProperty("type_id", typeId);
+        mainObj.addProperty("feed_title", edt_title.getText().toString().trim());
         mainObj.addProperty("feed_text", edt_description.getText().toString().trim());
         mainObj.addProperty("image", imageName);
         mainObj.addProperty("is_admin", isAdmin);
         mainObj.addProperty("can_share", canShare);
+        mainObj.addProperty("showDisclaimer", showDisclaimer);
         mainObj.add("document", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {

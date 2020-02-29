@@ -84,6 +84,8 @@ public class GroupFeedsModel implements Serializable {
         private String type;
         private String first_name;
         private String image_url;
+        private String feed_title;
+        private String show_disclaimer;
         private int is_favourite;
         private List<FeedDocumentsBean> feed_documents;
         private List<FeedCommentsBean> feed_comments;
@@ -222,6 +224,22 @@ public class GroupFeedsModel implements Serializable {
 
         public void setImage_url(String image_url) {
             this.image_url = image_url;
+        }
+
+        public String getFeed_title() {
+            return feed_title;
+        }
+
+        public void setFeed_title(String feed_title) {
+            this.feed_title = feed_title;
+        }
+
+        public String getShow_disclaimer() {
+            return show_disclaimer;
+        }
+
+        public void setShow_disclaimer(String show_disclaimer) {
+            this.show_disclaimer = show_disclaimer;
         }
 
         public int getIs_favourite() {

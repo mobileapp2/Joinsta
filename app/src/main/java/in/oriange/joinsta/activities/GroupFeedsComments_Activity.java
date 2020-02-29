@@ -76,7 +76,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private CircleImageView imv_user, imv_current_user;
-    private TextView tv_name, tv_time, tv_feed_text, tv_viewdocs;
+    private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_viewdocs, tv_disclaimer;
     private CardView cv_feed_image;
     private ImageView imv_feed_image;
     private Button btn_comment, btn_share;
@@ -116,8 +116,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         imv_current_user = findViewById(R.id.imv_current_user);
         tv_name = findViewById(R.id.tv_name);
         tv_time = findViewById(R.id.tv_time);
+        tv_feed_title = findViewById(R.id.tv_feed_title);
         tv_feed_text = findViewById(R.id.tv_feed_text);
         tv_viewdocs = findViewById(R.id.tv_viewdocs);
+        tv_disclaimer = findViewById(R.id.tv_disclaimer);
         cv_feed_image = findViewById(R.id.cv_feed_image);
         imv_feed_image = findViewById(R.id.imv_feed_image);
         btn_comment = findViewById(R.id.btn_comment);
@@ -192,8 +194,15 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
+        if (!feedDetails.getFeed_title().trim().isEmpty())
+            tv_feed_title.setText(feedDetails.getFeed_title());
+        else
+            tv_feed_title.setVisibility(View.GONE);
+
         tv_feed_text.setText(feedDetails.getFeed_text());
         Linkify.addLinks(tv_feed_text, Linkify.ALL);
+        Linkify.addLinks(tv_feed_title, Linkify.ALL);
 
         if (!feedDetails.getFeed_doc().equals("")) {
             String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
@@ -236,6 +245,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         }
 
+        if (feedDetails.getShow_disclaimer().equals("1")) {
+            tv_disclaimer.setVisibility(View.VISIBLE);
+            tv_disclaimer.setPaintFlags(tv_disclaimer.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
 
         feedCommentsList = feedDetails.getFeed_comments();
         groupFeedsCommentsAdapter = new GroupFeedsCommentsAdapter(context, feedCommentsList);
@@ -327,6 +340,13 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showDocumentsList(feedDetails.getFeed_documents());
+            }
+        });
+
+        tv_disclaimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, FeedsDisclaimer_Activity.class));
             }
         });
 

@@ -72,6 +72,17 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Title"
+                        android:inputType="textCapSentences"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
                     <EditText
                         android:id="@+id/edt_description"
                         android:layout_width="match_parent"
@@ -151,6 +162,12 @@
                         android:layout_height="wrap_content"
                         android:checked="true"
                         android:text="Allow members to share this post" />
+
+                    <CheckBox
+                        android:id="@+id/cb_disclaimer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Add disclaimer" />
 
                 </LinearLayout>
 
