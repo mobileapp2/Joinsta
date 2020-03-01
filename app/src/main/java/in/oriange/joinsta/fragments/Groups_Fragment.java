@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.AddGroupCreateRequest_Activity;
 import in.oriange.joinsta.activities.AllGroupNotifications_Activity;
 import in.oriange.joinsta.activities.AllGroups_Activity;
 import in.oriange.joinsta.activities.GroupRequests_Activity;
@@ -50,6 +52,7 @@ public class Groups_Fragment extends Fragment {
     private static RecyclerView rv_groups;
     private static LinearLayout ll_nopreview;
     private static SpinKitView progressBar;
+    private FloatingActionButton btn_group_request;
     private ImageButton ib_notifications, ib_requests;
     private static TextView tv_group_request_count;
 
@@ -78,6 +81,7 @@ public class Groups_Fragment extends Fragment {
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         progressBar = rootView.findViewById(R.id.progressBar);
         ib_notifications = rootView.findViewById(R.id.ib_notifications);
+        btn_group_request = rootView.findViewById(R.id.btn_group_request);
         ib_requests = rootView.findViewById(R.id.ib_requests);
         tv_group_request_count = rootView.findViewById(R.id.tv_group_request_count);
 
@@ -134,6 +138,13 @@ public class Groups_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, GroupRequests_Activity.class));
+            }
+        });
+
+        btn_group_request.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddGroupCreateRequest_Activity.class));
             }
         });
     }

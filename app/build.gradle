@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "in.oriange.joinsta"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 28
         versionCode 17
         versionName "2.6"
@@ -84,8 +84,11 @@ dependencies {
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
     implementation 'com.github.shts:TriangleLabelView:1.1.2'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.veinhorn.scrollgalleryview:glide-loader:1.2.8'
+    implementation 'com.veinhorn.scrollgalleryview:picasso-loader:1.2.8'
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'com.veinhorn.scrollgalleryview:library:1.2.8'
     implementation project(':RecyclerBanner')
     implementation('com.paytm:pgplussdk:1.2.3') {
         transitive = true;

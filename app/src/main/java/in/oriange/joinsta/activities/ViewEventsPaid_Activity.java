@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,7 +31,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.example.library.banner.BannerLayout;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -274,12 +272,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             rv_images.setVisibility(GONE);
         else {
             OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, imagesList);
-            webBannerAdapter.setOnBannerItemClickListener(new BannerLayout.OnBannerItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    showImageDialog(imagesList.get(position));
-                }
-            });
             rv_images.setAdapter(webBannerAdapter);
         }
 
@@ -534,44 +526,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         });
         builderSingle.show();
-
-
-    }
-
-    private void showImageDialog(final String offerUrl) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_image, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setView(promptView);
-
-        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-        final Button btn_download = promptView.findViewById(R.id.btn_download);
-        final Button btn_close = promptView.findViewById(R.id.btn_close);
-
-        Picasso.with(context)
-                .load(offerUrl)
-                .into(imv_offer);
-
-        final AlertDialog dialog = alertDialogBuilder.create();
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btn_download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context))
-                    new DownloadDocument().execute(offerUrl);
-                else
-                    Utilities.showMessage("Please check your internet connection", context, 2);
-            }
-        });
-
-        dialog.show();
     }
 
     private class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.MyViewHolder> {

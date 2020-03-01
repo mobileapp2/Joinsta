@@ -226,12 +226,6 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             rv_images.setVisibility(View.GONE);
         else {
             OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, imagesList);
-            webBannerAdapter.setOnBannerItemClickListener(new BannerLayout.OnBannerItemClickListener() {
-                @Override
-                public void onItemClick(int position) {
-                    showImageDialog(imagesList.get(position));
-                }
-            });
             rv_images.setAdapter(webBannerAdapter);
         }
 
@@ -435,42 +429,6 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void showImageDialog(final String offerUrl) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_image, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setView(promptView);
-
-        final ImageView imv_offer = promptView.findViewById(R.id.imv_offer);
-        final Button btn_download = promptView.findViewById(R.id.btn_download);
-        final Button btn_close = promptView.findViewById(R.id.btn_close);
-
-        Picasso.with(context)
-                .load(offerUrl)
-                .into(imv_offer);
-
-        final AlertDialog dialog = alertDialogBuilder.create();
-
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        btn_download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context))
-                    new DownloadDocument().execute(offerUrl);
-                else
-                    Utilities.showMessage("Please check your internet connection", context, 2);
-            }
-        });
-
-        dialog.show();
     }
 
     private class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.MyViewHolder> {

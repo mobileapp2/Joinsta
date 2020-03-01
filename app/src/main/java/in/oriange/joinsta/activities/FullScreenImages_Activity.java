@@ -1,4 +1,4 @@
-package in.oriange.joinsta.adapters;
+package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,43 +6,65 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.smarteist.autoimageslider.SliderViewAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.veinhorn.scrollgalleryview.MediaInfo;
+import com.veinhorn.scrollgalleryview.ScrollGalleryView;
+import com.veinhorn.scrollgalleryview.loader.picasso.PicassoImageLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.FullScreenImages_Activity;
-import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderAdapter.SliderAdapterVH> {
+public class FullScreenImages_Activity extends AppCompatActivity {
 
     private Context context;
-    private List<BannerListModel.ResultBean> bannerList;
-    private File downloadedDocsfolder, file;
-    private String subject, description;
 
-    public OfferImageSliderAdapter(Context context, List<BannerListModel.ResultBean> bannerList) {
-        this.context = context;
-        this.bannerList = bannerList;
+    @BindView(R.id.btn_download)
+    FloatingActionButton btnDownload;
+    @BindView(R.id.imv_back)
+    ImageButton imvBack;
+    @BindView(R.id.scroll_gallery_view)
+    ScrollGalleryView scrollGalleryView;
+
+    private List<String> imageUrlList;
+    private int position;
+
+    private File downloadedDocsfolder, file;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_full_screen_images);
+        ButterKnife.bind(this);
+
+        init();
+        setDefault();
+        setEventListners();
+    }
+
+    private void init() {
+        context = FullScreenImages_Activity.this;
+        imageUrlList = new ArrayList<>();
 
         downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Offer Images");
         if (!downloadedDocsfolder.exists())
@@ -55,73 +77,59 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         }
     }
 
-    @Override
-    public SliderAdapterVH onCreateViewHolder(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.slider_offer, null);
-        return new SliderAdapterVH(inflate);
-    }
+    private void setDefault() {
+        imageUrlList = (List<String>) getIntent().getSerializableExtra("imageUrlList");
+        position = getIntent().getIntExtra("position", 0);
 
-    @Override
-    public void onBindViewHolder(final SliderAdapterVH holder, int position) {
-        final BannerListModel.ResultBean bannerDetails = bannerList.get(position);
+        scrollGalleryView
+                .setThumbnailSize(100)
+                .setZoom(true)
+                .setFragmentManager(getSupportFragmentManager())
+                .setCurrentItem(position);
 
-//        Picasso.with(context)
-//                .load(bannerDetails.getBanners_image())
-//                .into(holder.imageViewBackground);
-
-        Glide.with(context)
-                .load(bannerDetails.getBanners_image())
-                .into(holder.imageViewBackground);
-
-
-        holder.ib_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subject = bannerDetails.getBanner_name();
-                description = bannerDetails.getBanner_description();
-                if (Utilities.isNetworkAvailable(context)) {
-                    new DownloadDocumentForShare().execute(bannerDetails.getBanners_image());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        holder.ib_share.setVisibility(View.GONE);
-
-        holder.imageViewBackground.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> imageUrlList = new ArrayList<>();
-
-                for (BannerListModel.ResultBean resultBean : bannerList)
-                    imageUrlList.add(resultBean.getBanners_image());
-
-                context.startActivity(new Intent(context, FullScreenImages_Activity.class)
-                        .putExtra("imageUrlList", (Serializable) imageUrlList)
-                        .putExtra("position", position));
-            }
-        });
-    }
-
-    @Override
-    public int getCount() {
-        return bannerList.size();
-    }
-
-    class SliderAdapterVH extends SliderViewAdapter.ViewHolder {
-
-        private ImageView imageViewBackground;
-        private ImageButton ib_share;
-
-        public SliderAdapterVH(View itemView) {
-            super(itemView);
-            imageViewBackground = itemView.findViewById(R.id.iv_auto_image_slider);
-            ib_share = itemView.findViewById(R.id.ib_share);
+        for (String imageUrl : imageUrlList) {
+            scrollGalleryView.addMedia(MediaInfo.mediaLoader(new PicassoImageLoader(imageUrl)));
         }
     }
 
-    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
+    private void setEventListners() {
+        imvBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(imageUrlList.get(position));
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+        scrollGalleryView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int pos) {
+                position = pos;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+    }
+
+    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
         int lenghtOfFile = -1;
         int count = 0;
         int content = -1;
@@ -152,7 +160,6 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
             byte[] buffer = new byte[1024];
             FileOutputStream fileOutputStream = null;
             long total = 0;
-
 
             try {
                 downloadurl = new URL(params[0]);
@@ -206,12 +213,15 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         protected void onPostExecute(Boolean aBoolean) {
             pd.dismiss();
             super.onPostExecute(aBoolean);
-            Uri uri = Uri.parse("file:///" + file);
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType("text/html");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, subject + "\n" + description);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            context.startActivity(Intent.createChooser(shareIntent, "Share Deal"));
+            if (aBoolean) {
+                Utilities.showMessage("Image successfully downloaded", context, 1);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("file://" + file);
+                intent.setDataAndType(uri, "image/jpeg");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
         }
     }
 
