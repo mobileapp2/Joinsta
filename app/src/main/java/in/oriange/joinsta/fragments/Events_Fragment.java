@@ -261,11 +261,11 @@ public class Events_Fragment extends Fragment {
 
                         if (selectedFreeTypeCount == 0) {
                             tv_filter_count.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", false));
+                            rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", 2));
                         } else {
                             tv_filter_count.setVisibility(View.VISIBLE);
                             tv_filter_count.setText(String.valueOf(selectedFreeTypeCount));
-                            rv_event.setAdapter(new EventsFreeAdapter(context, filteredFreeEventList, "0", false));
+                            rv_event.setAdapter(new EventsFreeAdapter(context, filteredFreeEventList, "0", 2));
                         }
 
                         break;
@@ -364,7 +364,7 @@ public class Events_Fragment extends Fragment {
         switch (eventCategoryId) {
             case "1":
                 if (query.isEmpty()) {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", 2));
                     return;
                 }
 
@@ -385,7 +385,7 @@ public class Events_Fragment extends Fragment {
                         eventsFreeSearchedList.add(eventDetails);
                     }
                 }
-                rv_event.setAdapter(new EventsFreeAdapter(context, eventsFreeSearchedList, "0", false));
+                rv_event.setAdapter(new EventsFreeAdapter(context, eventsFreeSearchedList, "0", 2));
 
                 break;
             case "2":
@@ -476,7 +476,7 @@ public class Events_Fragment extends Fragment {
         switch (eventCategoryId) {
             case "1":
                 if (eventFreeList.size() > 0) {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", true));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventFreeList, "0", 2));
                     ll_nopreview.setVisibility(View.GONE);
                     rv_event.setVisibility(View.VISIBLE);
                 } else {

@@ -185,7 +185,7 @@ public class EventsFree_Fragment extends Fragment {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, 1));
                     return;
                 }
 
@@ -206,9 +206,9 @@ public class EventsFree_Fragment extends Fragment {
                             eventsSearchedList.add(eventDetails);
                         }
                     }
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventsSearchedList, isAdmin, false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventsSearchedList, isAdmin,  1));
                 } else {
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, 1));
                 }
 
             }
@@ -277,7 +277,7 @@ public class EventsFree_Fragment extends Fragment {
                             if (eventList.size() > 0) {
                                 rv_event.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);
-                                rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
+                                rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, 1));
                             } else {
                                 ll_nopreview.setVisibility(View.VISIBLE);
                                 rv_event.setVisibility(View.GONE);
@@ -381,11 +381,11 @@ public class EventsFree_Fragment extends Fragment {
 
                 if (selectedTypeCount == 0) {
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, 1));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsFreeAdapter(context, filteredEventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsFreeAdapter(context, filteredEventList, isAdmin, 1));
                 }
 
 
@@ -400,7 +400,7 @@ public class EventsFree_Fragment extends Fragment {
                 }
 
                 tv_filter_count.setVisibility(View.GONE);
-                rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, false));
+                rv_event.setAdapter(new EventsFreeAdapter(context, eventList, isAdmin, 1));
             }
         });
 

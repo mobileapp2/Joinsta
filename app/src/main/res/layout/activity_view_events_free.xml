@@ -274,6 +274,20 @@
                         android:textSize="18sp" />
 
                     <TextView
+                        android:id="@+id/tv_confirmation_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:longClickable="false"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:paddingBottom="2dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone"/>
+
+                    <TextView
                         android:id="@+id/tv_confirmation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

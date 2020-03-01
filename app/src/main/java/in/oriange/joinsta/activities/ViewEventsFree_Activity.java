@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -30,7 +29,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.example.library.banner.BannerLayout;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -64,7 +62,8 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer;
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
-    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation, tv_organizer_name, tv_remark;
+    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation_status,
+            tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
     private CardView cv_description, cv_date_time, cv_venue, cv_confirmation, cv_remark, cv_organizer,
@@ -74,7 +73,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private String userId, isAdmin;
     private File file, downloadedDocumentfolder;
     private EventsFreeModel.ResultBean eventDetails;
-    private boolean isMyEvent;
+    private int callType;     //1 = Group Events,  2 = Offer section events  3 = My Events
     private String shareMessage;
     private ArrayList<Uri> downloadedImagesUriList;
     private int numOfDocuments = 0;
@@ -110,6 +109,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         tv_venue = findViewById(R.id.tv_venue);
         tv_view_on_map = findViewById(R.id.tv_view_on_map);
         tv_confirmation = findViewById(R.id.tv_confirmation);
+        tv_confirmation_status = findViewById(R.id.tv_confirmation_status);
         tv_remark = findViewById(R.id.tv_remark);
         tv_organizer_name = findViewById(R.id.tv_organizer_name);
 
@@ -161,7 +161,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
     private void setDefault() {
         eventDetails = (EventsFreeModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
-        isMyEvent = getIntent().getBooleanExtra("isMyEvent", false);
+        callType = getIntent().getIntExtra("callType", 1);
         isAdmin = getIntent().getStringExtra("isAdmin");
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
@@ -234,17 +234,43 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         else
             rv_documents.setAdapter(new DocumentsAdapter());
 
-        if (isMyEvent || !eventDetails.getStatus().equals("")) {
-            cv_confirmation.setVisibility(View.GONE);
-        }
-
-        if (isMyEvent) {
-            imv_edit.setVisibility(View.GONE);
-            imv_delete.setVisibility(View.GONE);
+        switch (callType) {          //1 = Group Events,  2 = Offer section events  3 = My Events
+            case 1:
+                setConfirmationStatus();
+                break;
+            case 2:
+                cv_confirmation.setVisibility(View.GONE);
+                imv_edit.setVisibility(View.GONE);
+                imv_delete.setVisibility(View.GONE);
+                break;
+            case 3:
+                setConfirmationStatus();
+                imv_edit.setVisibility(View.GONE);
+                break;
         }
 
         if (isAdmin.equals("0")) {
             cv_members_status.setVisibility(View.GONE);
+        }
+    }
+
+    private void setConfirmationStatus() {
+        switch (eventDetails.getStatus()) {
+            case "accepted":
+                tv_confirmation.setVisibility(View.VISIBLE);
+                tv_confirmation_status.setText("You accepted the invitation");
+                break;
+            case "maybe":
+                tv_confirmation.setVisibility(View.VISIBLE);
+                tv_confirmation_status.setText("You said you maybe would attend the event");
+                break;
+            case "rejected":
+                tv_confirmation.setVisibility(View.VISIBLE);
+                tv_confirmation_status.setText("You rejected the invitation");
+                break;
+            case "":
+                tv_confirmation.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -300,14 +326,23 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
                 builder.setCancelable(false);
                 builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            if (eventDetails.getCreated_by().equals(userId)) {
-                                new DeleteFreeEvent().execute();
-                            } else {
-                                new UserSpecificDeleteEvent().execute();
-                            }
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        switch (callType) {          //1 = Group Events,  2 = Offer section events  3 = My Events
+                            case 1:
+                                if (Utilities.isNetworkAvailable(context))
+                                    if (eventDetails.getCreated_by().equals(userId)) {
+                                        new DeleteFreeEvent().execute();
+                                    } else {
+                                        new UserSpecificDeleteEvent().execute();
+                                    }
+                                else
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                break;
+                            case 3:
+                                if (Utilities.isNetworkAvailable(context))
+                                    new ConfirmEvent().execute("", "2");
+                                else
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                break;
                         }
                     }
                 });
@@ -327,7 +362,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new ConfirmEvent().execute("accepted");
+                    new ConfirmEvent().execute("accepted", "1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -338,7 +373,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new ConfirmEvent().execute("maybe");
+                    new ConfirmEvent().execute("maybe", "1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -349,7 +384,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new ConfirmEvent().execute("rejected");
+                    new ConfirmEvent().execute("rejected", "1");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -620,6 +655,8 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
     private class ConfirmEvent extends AsyncTask<String, Void, String> {
 
+        private String TYPE;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -631,6 +668,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
+            TYPE = params[1];
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "ConfirmFreeEvent");
             obj.addProperty("event_id", eventDetails.getId());
@@ -663,7 +701,11 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Event confirmation submitted successfully");
+                        if (TYPE.equals("1"))
+                            tv_title.setText("Event confirmation submitted successfully");
+                        else if (TYPE.equals("2"))
+                            tv_title.setText("Event details deleted successfully");
+
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

@@ -376,7 +376,7 @@ public class EventsFreeModel implements Serializable {
 
         public String getStatus() {
             if (status != null) {
-                return status;
+                return status.trim();
             } else {
                 return "";
             }

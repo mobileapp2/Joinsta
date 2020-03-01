@@ -32,13 +32,13 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
     private Context context;
     private List<EventsFreeModel.ResultBean> eventList;
     private String isAdmin;
-    private boolean isMyEvent;
+    private int callType;
 
-    public EventsFreeAdapter(Context context, List<EventsFreeModel.ResultBean> eventList, String isAdmin, boolean isMyEvent) {
+    public EventsFreeAdapter(Context context, List<EventsFreeModel.ResultBean> eventList, String isAdmin, int callType) {
         this.context = context;
         this.eventList = eventList;
         this.isAdmin = isAdmin;
-        this.isMyEvent = isMyEvent;
+        this.callType = callType;
     }
 
     @NonNull
@@ -88,7 +88,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewEventsFree_Activity.class)
-                        .putExtra("isMyEvent", isMyEvent)
+                        .putExtra("callType", callType)
                         .putExtra("eventDetails", eventDetails)
                         .putExtra("isAdmin", isAdmin));
             }
