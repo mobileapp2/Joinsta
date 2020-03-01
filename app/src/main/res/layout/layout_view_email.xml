@@ -18,6 +18,19 @@
         app:met_underlineColor="@color/mediumGray" />
 
     <TextView
+        android:id="@+id/tv_verify"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.15"
+        android:gravity="center"
+        android:onClick="verifyEmail"
+        android:padding="2dp"
+        android:text="Verify"
+        android:textColor="@color/colorPrimary"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/tv_verified"
         android:layout_width="0dp"
         android:layout_height="match_parent"

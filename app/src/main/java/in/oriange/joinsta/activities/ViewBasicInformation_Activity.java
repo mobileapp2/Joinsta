@@ -45,7 +45,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
     private CircleImageView imv_user;
     private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
             edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about, edt_referral_code;
-    private TextView tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
+    private TextView tv_verify, tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton imv_share;
@@ -89,6 +89,7 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
         edt_referral_code = findViewById(R.id.edt_referral_code);
         imv_share = findViewById(R.id.imv_share);
 
+        tv_verify = findViewById(R.id.tv_verify);
         tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
         tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
         tv_verified = findViewById(R.id.tv_verified);
@@ -291,9 +292,11 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
                         if (i == (emailJsonArray.length() - 1)) {
                             edt_email.setText(emailJsonArray.getJSONObject(i).getString("email"));
                             if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
+                                tv_verify.setVisibility(View.VISIBLE);
                                 tv_verified.setVisibility(View.GONE);
                             } else {
                                 tv_verified.setVisibility(View.VISIBLE);
+                                tv_verify.setVisibility(View.GONE);
                             }
                         } else {
                             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -302,9 +305,11 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
                             ll_email.addView(rowView, ll_email.getChildCount());
                             ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
                             if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
+                                (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
                                 (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.GONE);
                             } else {
                                 (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
+                                (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.GONE);
                             }
                         }
 
@@ -335,6 +340,80 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
                 }
             }
         });
+
+
+        tv_verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("type", "SendVerificationLink");
+                obj.addProperty("email_id", edt_email.getText().toString().trim());
+                obj.addProperty("user_id", userId);
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SendVerificationLink().execute(obj.toString());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+    }
+
+    public void verifyEmail(View view) {
+        LinearLayout ll_email = (LinearLayout) view.getParent();
+        MaterialEditText edt_email = ll_email.findViewById(R.id.edt_email);
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "SendVerificationLink");
+        obj.addProperty("email_id", edt_email.getText().toString().trim());
+        obj.addProperty("user_id", userId);
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new SendVerificationLink().execute(obj.toString());
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    private class SendVerificationLink extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.EMAILVERIFYAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showAlertDialog(context, "Verification link is sent on your email, " +
+                                "when you have successfully verified your email through that link please kindly swipe down " +
+                                "to refresh your email verification status", true);
+                    } else {
+                        Utilities.showMessage("User details failed to update", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private class RefreshSession extends AsyncTask<String, Void, String> {
