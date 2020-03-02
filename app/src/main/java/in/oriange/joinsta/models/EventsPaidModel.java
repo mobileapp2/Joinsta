@@ -131,6 +131,7 @@ public class EventsPaidModel implements Serializable {
         private String payment_status;
         private String is_active;
         private String is_atleast_one_paymentdone;
+        private String created_by_name;
         private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
@@ -496,6 +497,18 @@ public class EventsPaidModel implements Serializable {
 
         public void setIs_atleast_one_paymentdone(String is_atleast_one_paymentdone) {
             this.is_atleast_one_paymentdone = is_atleast_one_paymentdone;
+        }
+
+        public String getCreated_by_name() {
+            if (created_by_name != null) {
+                return created_by_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setCreated_by_name(String created_by_name) {
+            this.created_by_name = created_by_name;
         }
 
         @SuppressLint("SimpleDateFormat")

@@ -62,7 +62,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer;
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
-    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation_status,
+    private TextView tv_name, tv_type, tv_created_by_name, tv_is_online, tv_time_date, tv_venue, tv_view_on_map, tv_confirmation_status,
             tv_confirmation, tv_organizer_name, tv_remark;
     private Button btn_yes, btn_maybe, btn_no;
     private RecyclerView rv_documents;
@@ -103,6 +103,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
 
         tv_name = findViewById(R.id.tv_name);
         tv_type = findViewById(R.id.tv_type);
+        tv_created_by_name = findViewById(R.id.tv_created_by_name);
         tv_is_online = findViewById(R.id.tv_is_online);
         tv_description = findViewById(R.id.tv_description);
         tv_time_date = findViewById(R.id.tv_time_date);
@@ -171,6 +172,11 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
         else
             tv_is_online.setVisibility(View.GONE);
 
+        if (eventDetails.getCreated_by_name().equals(""))
+            tv_created_by_name.setVisibility(View.GONE);
+        else
+            tv_created_by_name.setText("Created by - " + eventDetails.getCreated_by_name());
+
         tv_venue.setText(eventDetails.getVenue_address());
 
         tv_time_date.setText(eventDetails.getDateTime());
@@ -179,6 +185,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
             cv_description.setVisibility(View.GONE);
         else
             tv_description.setText(eventDetails.getDescription());
+
 
         tv_type.setText("This is " + eventDetails.getEvent_type_name() + " event");
 

@@ -66,7 +66,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer;
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
-    private TextView tv_name, tv_type, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
+    private TextView tv_name, tv_type, tv_created_by_name, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
             tv_earlybird_price, tv_earlybird_due_date, tv_normal_price, tv_normal_due_date, tv_message_paid,
             tv_message_unpaid, tv_organizer_name, tv_remark, tv_normal;
     private LinearLayout ll_paid_msg, ll_unpaid_msg, ll_early_bird;
@@ -111,6 +111,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         tv_name = findViewById(R.id.tv_name);
         tv_type = findViewById(R.id.tv_type);
+        tv_created_by_name = findViewById(R.id.tv_created_by_name);
         tv_is_online = findViewById(R.id.tv_is_online);
         tv_description = findViewById(R.id.tv_description);
         tv_time_date = findViewById(R.id.tv_time_date);
@@ -188,6 +189,11 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             tv_is_online.setVisibility(View.VISIBLE);
         else
             tv_is_online.setVisibility(GONE);
+
+        if (eventDetails.getCreated_by_name().equals(""))
+            tv_created_by_name.setVisibility(View.GONE);
+        else
+            tv_created_by_name.setText("Created by - " + eventDetails.getCreated_by_name());
 
         tv_venue.setText(eventDetails.getVenue_address());
 
@@ -331,12 +337,12 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         imv_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (eventDetails.getIs_atleast_one_paymentdone().equals("0")) {
-                    context.startActivity(new Intent(context, EditEventsPaid_Activity.class).putExtra("eventDetails", eventDetails));
-                    finish();
-                } else if (eventDetails.getIs_atleast_one_paymentdone().equals("1")) {
-                    Utilities.showMessage("You cannot edit this event details", context, 2);
-                }
+//                if (eventDetails.getIs_atleast_one_paymentdone().equals("0")) {
+                context.startActivity(new Intent(context, EditEventsPaid_Activity.class).putExtra("eventDetails", eventDetails));
+                finish();
+//                } else if (eventDetails.getIs_atleast_one_paymentdone().equals("1")) {
+//                    Utilities.showMessage("You cannot edit this event details", context, 2);
+//                }
             }
         });
 
