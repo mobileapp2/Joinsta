@@ -1,6 +1,7 @@
 package in.oriange.joinsta.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -38,7 +40,11 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import in.oriange.joinsta.R;
@@ -59,18 +65,20 @@ public class MyEventsPaid_Fragment extends Fragment {
     private UserSessionManager session;
     private SwipeRefreshLayout swipeRefreshLayout;
     private EditText edt_search;
-    private ImageButton imb_filter;
-    private TextView tv_filter_count;
+    private ImageButton imb_filter, imb_calendar;
+    private TextView tv_is_calendar_applied, tv_filter_count;
     private RecyclerView rv_event;
     private FloatingActionButton btn_add;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
 
     private List<EventTypeModel.ResultBean> eventTypeList;
-    private List<EventsPaidModel.ResultBean> eventList;
+    private List<EventsPaidModel.ResultBean> eventList, mFilteredEventList;
     private String groupId, userId;
 
     private LocalBroadcastManager localBroadcastManager;
+
+    private int mYear, mMonth, mDay;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -88,7 +96,9 @@ public class MyEventsPaid_Fragment extends Fragment {
         session = new UserSessionManager(context);
         edt_search = rootView.findViewById(R.id.edt_search);
         imb_filter = rootView.findViewById(R.id.imb_filter);
+        imb_calendar = rootView.findViewById(R.id.imb_calendar);
         tv_filter_count = rootView.findViewById(R.id.tv_filter_count);
+        tv_is_calendar_applied = rootView.findViewById(R.id.tv_is_calendar_applied);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         rv_event = rootView.findViewById(R.id.rv_event);
         rv_event.setLayoutManager(new LinearLayoutManager(context));
@@ -128,6 +138,11 @@ public class MyEventsPaid_Fragment extends Fragment {
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
 
         btn_add.setVisibility(View.GONE);
+
+        Calendar calendar = Calendar.getInstance();
+        mYear = calendar.get(Calendar.YEAR);
+        mMonth = calendar.get(Calendar.MONTH);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     private void setEventHandler() {
@@ -171,6 +186,13 @@ public class MyEventsPaid_Fragment extends Fragment {
             }
         });
 
+        imb_calendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCalendarFilterDialog();
+            }
+        });
+
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -184,7 +206,6 @@ public class MyEventsPaid_Fragment extends Fragment {
                     rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", false));
                     return;
                 }
-
 
                 if (eventList.size() == 0) {
                     rv_event.setVisibility(View.GONE);
@@ -207,7 +228,6 @@ public class MyEventsPaid_Fragment extends Fragment {
                 } else {
                     rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", false));
                 }
-
             }
 
             @Override
@@ -215,7 +235,6 @@ public class MyEventsPaid_Fragment extends Fragment {
 
             }
         });
-
     }
 
     private class GetPaidEvents extends AsyncTask<String, Void, String> {
@@ -253,7 +272,7 @@ public class MyEventsPaid_Fragment extends Fragment {
 
                     if (type.equalsIgnoreCase("success")) {
                         eventList = pojoDetails.getResult();
-
+                        mFilteredEventList = eventList;
                         if (eventList.size() > 0) {
                             rv_event.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
@@ -341,7 +360,7 @@ public class MyEventsPaid_Fragment extends Fragment {
         rv_groups.setLayoutManager(new LinearLayoutManager(context));
         rv_groups.setAdapter(new EventTypeListAdapter());
 
-        builder.setPositiveButton("Select", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 List<EventsPaidModel.ResultBean> filteredEventList = new ArrayList<>();
@@ -356,18 +375,113 @@ public class MyEventsPaid_Fragment extends Fragment {
                     }
 
                 if (selectedTypeCount == 0) {
+                    mFilteredEventList = eventList;
                     tv_filter_count.setVisibility(View.GONE);
                     rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", true));
                 } else {
+                    mFilteredEventList = filteredEventList;
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
                     rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, "0", true));
                 }
+            }
+        });
 
+        builder.setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                for (int i = 0; i < eventTypeList.size(); i++) {
+                    eventTypeList.get(i).setChecked(false);
+                }
+
+                tv_filter_count.setVisibility(View.GONE);
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", false));
             }
         });
 
         builder.create().show();
+    }
+
+    private void showCalendarFilterDialog() {
+        List<String> calOptions = new ArrayList<>();
+        calOptions.add("Today");
+        calOptions.add("Tomorrow");
+        calOptions.add("Custom");
+
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Calendar Filter");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < calOptions.size(); i++) {
+            arrayAdapter.add(calOptions.get(i));
+        }
+
+        builderSingle.setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                tv_is_calendar_applied.setVisibility(View.GONE);
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, "0", false));
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (calOptions.get(which)) {
+                    case "Today":
+                        Date todayDate = Calendar.getInstance().getTime();
+                        filterEventsAccordingToDate(todayDate);
+                        break;
+                    case "Tomorrow":
+                        Calendar tomoCal = Calendar.getInstance();
+                        tomoCal.add(Calendar.DATE, +1);
+                        Date tommorowDate = Calendar.getInstance().getTime();
+                        filterEventsAccordingToDate(tommorowDate);
+                        break;
+                    case "Custom":
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
+                            try {
+                                Date customDate = new SimpleDateFormat("dd/MM/yyyy").parse(dayOfMonth + "/" + month + "/" + year);
+                                filterEventsAccordingToDate(customDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            mYear = year;
+                            mMonth = month;
+                            mDay = dayOfMonth;
+                        }, mYear, mMonth, mDay);
+                        try {
+                            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        datePickerDialog.show();
+                        break;
+                }
+            }
+        });
+        builderSingle.show();
+    }
+
+    private void filterEventsAccordingToDate(Date date) {
+        tv_is_calendar_applied.setVisibility(View.VISIBLE);
+        List<EventsPaidModel.ResultBean> filteredEventList = new ArrayList<>();
+
+        for (EventsPaidModel.ResultBean event : mFilteredEventList)
+            if (date.after(event.getEventStartDate()) && date.before(event.getEventEndDate()))
+                filteredEventList.add(event);
+
+        if (filteredEventList.size() == 0) {
+            Utilities.showAlertDialog(context, "Events not found for applied filter", false);
+            tv_is_calendar_applied.setVisibility(View.GONE);
+            return;
+        }
+
+        rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, "0", false));
     }
 
     private class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdapter.MyViewHolder> {

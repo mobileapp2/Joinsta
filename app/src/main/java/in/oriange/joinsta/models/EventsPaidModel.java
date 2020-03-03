@@ -511,6 +511,23 @@ public class EventsPaidModel implements Serializable {
             this.created_by_name = created_by_name;
         }
 
+        public Date getEventStartDate() {
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd").parse(event_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        public Date getEventEndDate() {
+            try {
+                return new SimpleDateFormat("yyyy-MM-dd").parse(event_end_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
         @SuppressLint("SimpleDateFormat")
         public String getDateTime() {
 
