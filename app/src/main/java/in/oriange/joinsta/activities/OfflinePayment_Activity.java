@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -42,7 +43,8 @@ public class OfflinePayment_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_transaction_id, edt_date, edt_mobile, edt_quantity;
+    private MaterialEditText edt_transaction_id, edt_date, edt_mobile, edt_quantity, edt_amount;
+    private CheckBox cb_is_early_bird_availed;
     private Button btn_save;
 
     private String userId, date, eventId;
@@ -70,6 +72,8 @@ public class OfflinePayment_Activity extends AppCompatActivity {
         edt_date = findViewById(R.id.edt_date);
         edt_mobile = findViewById(R.id.edt_mobile);
         edt_quantity = findViewById(R.id.edt_quantity);
+        edt_amount = findViewById(R.id.edt_amount);
+        cb_is_early_bird_availed = findViewById(R.id.cb_is_early_bird_availed);
         btn_save = findViewById(R.id.btn_save);
     }
 
@@ -150,11 +154,20 @@ public class OfflinePayment_Activity extends AppCompatActivity {
 
         if (edt_quantity.getText().toString().trim().isEmpty() ||
                 (Integer.parseInt(edt_quantity.getText().toString().trim()) == 0)) {
-            edt_quantity.setError("Please enter Quantity");
+            edt_quantity.setError("Please enter quantity");
             edt_quantity.requestFocus();
             return;
         }
 
+
+        if (edt_amount.getText().toString().trim().isEmpty() ||
+                (Integer.parseInt(edt_amount.getText().toString().trim()) == 0)) {
+            edt_amount.setError("Please enter amount");
+            edt_amount.requestFocus();
+            return;
+        }
+
+        String isEarlyBirdAvailed = cb_is_early_bird_availed.isChecked() ? "1" : "0";
 
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "addEventPaymentDetails");
@@ -169,6 +182,8 @@ public class OfflinePayment_Activity extends AppCompatActivity {
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("created_by", userId);
         mainObj.addProperty("quantity", edt_quantity.getText().toString().trim());
+        mainObj.addProperty("amount", edt_amount.getText().toString().trim());
+        mainObj.addProperty("is_early_bird_availed", isEarlyBirdAvailed);
 
         if (Utilities.isNetworkAvailable(context)) {
             new AddEventPaymentDetails().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
