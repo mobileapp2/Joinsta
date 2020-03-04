@@ -215,6 +215,7 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                 jsonObject.addProperty("user_id", getIntent().getStringExtra("user_id"));
                 jsonObject.addProperty("created_by", getIntent().getStringExtra("created_by"));
                 jsonObject.addProperty("quantity", getIntent().getStringExtra("quantity"));
+                jsonObject.addProperty("is_early_bird_availed", getIntent().getStringExtra("is_early_bird_availed"));
                 jsonObject.addProperty("transaction_status", object.getString("STATUS"));
 
                 jsonObject.addProperty("CHECKSUMHASH", object1.getString("CHECKSUMHASH"));

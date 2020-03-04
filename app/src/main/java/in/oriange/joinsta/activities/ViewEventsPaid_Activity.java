@@ -548,6 +548,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                         mainObj.addProperty("user_id", userId);
                         mainObj.addProperty("created_by", userId);
                         mainObj.addProperty("quantity", "");
+                        mainObj.addProperty("is_early_bird_availed", "0");
 
                         if (Utilities.isNetworkAvailable(context)) {
                             new AddEventPaymentDetails().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));

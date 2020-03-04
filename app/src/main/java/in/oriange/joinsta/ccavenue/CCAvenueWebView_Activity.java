@@ -126,6 +126,7 @@ public class CCAvenueWebView_Activity extends AppCompatActivity {
                         HashMap<String, String> map12 = new HashMap<>();
                         HashMap<String, String> map13 = new HashMap<>();
                         HashMap<String, String> map14 = new HashMap<>();
+                        HashMap<String, String> map15 = new HashMap<>();
 
                         map1.put("key", "type");
                         map1.put("value", "addEventPaymentDetails");
@@ -182,6 +183,10 @@ public class CCAvenueWebView_Activity extends AppCompatActivity {
                         map14.put("key", "record_status");
                         map14.put("value", "");
                         arraylist.add(map14);
+
+                        map15.put("key", "is_early_bird_availed");
+                        map15.put("value",  mainIntent.getStringExtra("is_early_bird_availed"));
+                        arraylist.add(map15);
 
                         for (int i = 0; i < tableRowElements.size(); i++) {
                             HashMap<String, String> map = new HashMap<String, String>();

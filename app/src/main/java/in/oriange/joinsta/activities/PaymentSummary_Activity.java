@@ -177,6 +177,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
                 intent.putExtra("event_id", eventDetails.getid());
                 intent.putExtra("gateway_configuration_id", "0");
                 intent.putExtra("user_id", userId);
+                intent.putExtra("is_early_bird_availed", eventDetails.getIs_early_payment_applicable());
                 startActivity(intent);
                 finish();
             }
@@ -193,6 +194,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
                 intent.putExtra("quantity", String.valueOf(quantity));
                 intent.putExtra("event_id", eventDetails.getid());
                 intent.putExtra("gateway_configuration_id", "0");
+                intent.putExtra("is_early_bird_availed", eventDetails.getIs_early_payment_applicable());
                 startActivity(intent);
                 finish();
             }
