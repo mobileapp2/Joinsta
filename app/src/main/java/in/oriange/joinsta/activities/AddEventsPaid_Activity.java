@@ -188,7 +188,8 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Online", "online", "", "0", false));
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Offline", "offline", "", "0", false));
-        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment Link", "paymentlink", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment link", "paymentlink", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Pay at counter ", "pay_at_counter", "", "0", false));
     }
 
     private void getSessionDetails() {

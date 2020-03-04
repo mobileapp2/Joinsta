@@ -177,7 +177,6 @@ public class OfflinePayment_Activity extends AppCompatActivity {
         }
     }
 
-
     private class AddEventPaymentDetails extends AsyncTask<String, Void, String> {
 
         @Override
@@ -240,7 +239,6 @@ public class OfflinePayment_Activity extends AppCompatActivity {
             }
         }
     }
-
 
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);

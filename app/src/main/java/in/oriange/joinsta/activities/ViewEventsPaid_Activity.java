@@ -44,6 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
@@ -286,7 +287,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         else
             rv_documents.setAdapter(new DocumentsAdapter());
 
-        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")) {
+        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")
+                || eventDetails.getPayment_status().equalsIgnoreCase("pay_at_counter")) {
             btn_buy.setVisibility(GONE);
         }
 
@@ -464,8 +466,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         List<EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean> paymentModeList = new ArrayList<>();
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Online", "online", "", "0", false));
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Offline", "offline", "", "0", false));
-        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment Link", "paymentlink", "", "0", false));
-
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment link", "paymentlink", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Pay at counter", "pay_at_counter", "", "0", false));
 
         for (EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean selectedModes : eventDetails.getPaidevents_paymentoptions()) {
             for (int i = 0; i < paymentModeList.size(); i++) {
@@ -511,23 +513,48 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (selectedPaymentModeList.get(which).getPayment_mode().equals("online")) {
-                    startActivity(new Intent(context, PaymentSummary_Activity.class)
-                            .putExtra("eventDetails", eventDetails));
-                    finish();
-                } else if (selectedPaymentModeList.get(which).getPayment_mode().equals("offline")) {
-                    startActivity(new Intent(context, OfflinePayment_Activity.class)
-                            .putExtra("eventId", eventDetails.getid()));
-                    finish();
-                } else if (selectedPaymentModeList.get(which).getPayment_mode().equals("paymentlink")) {
-                    String url = paymentLink;
+                switch (selectedPaymentModeList.get(which).getPayment_mode()) {
+                    case "online":
+                        startActivity(new Intent(context, PaymentSummary_Activity.class)
+                                .putExtra("eventDetails", eventDetails));
+                        finish();
+                        break;
+                    case "offline":
+                        startActivity(new Intent(context, OfflinePayment_Activity.class)
+                                .putExtra("eventId", eventDetails.getid()));
+                        finish();
+                        break;
+                    case "paymentlink":
+                        String url = paymentLink;
 
-                    if (!url.startsWith("https://") || !url.startsWith("http://")) {
-                        url = "http://" + url;
-                    }
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
+                        if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                            url = "http://" + url;
+                        }
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                        break;
+                    case "pay_at_counter":
+                        JsonObject mainObj = new JsonObject();
+                        mainObj.addProperty("type", "addEventPaymentDetails");
+                        mainObj.addProperty("payment_mode", "pay_at_counter");
+                        mainObj.addProperty("order_status", "success");
+                        mainObj.addProperty("order_gateway", "");
+                        mainObj.addProperty("gateway_configuration_id", "0");
+                        mainObj.addProperty("transaction_id", "");
+                        mainObj.addProperty("transaction_date", "");
+                        mainObj.addProperty("paid_to", "");
+                        mainObj.addProperty("event_id", eventDetails.getid());
+                        mainObj.addProperty("user_id", userId);
+                        mainObj.addProperty("created_by", userId);
+                        mainObj.addProperty("quantity", "");
+
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new AddEventPaymentDetails().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                        break;
                 }
             }
         });
@@ -948,6 +975,68 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
                 sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
                 context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
+        }
+    }
+
+    private class AddEventPaymentDetails extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.PAYMENTTRACKAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EventsPaid_Fragment"));
+
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Payment status saved successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+                        alertD.show();
+                    } else {
+                        Utilities.showMessage("Failed to submit the details", context, 3);
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
