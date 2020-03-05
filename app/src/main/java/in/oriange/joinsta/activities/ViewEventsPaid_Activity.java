@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,10 +69,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
     private TextView tv_name, tv_type, tv_created_by_name, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
-            tv_earlybird_price, tv_earlybird_due_date, tv_normal_price, tv_normal_due_date, tv_message_paid,
-            tv_message_unpaid, tv_organizer_name, tv_remark, tv_normal;
-    private LinearLayout ll_paid_msg, ll_unpaid_msg, ll_early_bird;
-    private View v_early_normal;
+            tv_message_paid, tv_message_unpaid, tv_organizer_name, tv_remark, tv_total_price, tv_saved, tv_due_date;
+    private LinearLayout ll_paid_msg, ll_unpaid_msg;
     private Button btn_buy;
     private RecyclerView rv_documents;
     private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_organizer,
@@ -119,18 +118,15 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_venue = findViewById(R.id.tv_venue);
         tv_view_on_map = findViewById(R.id.tv_view_on_map);
         tv_remark = findViewById(R.id.tv_remark);
-        tv_earlybird_price = findViewById(R.id.tv_earlybird_price);
-        tv_earlybird_due_date = findViewById(R.id.tv_earlybird_due_date);
-        tv_normal_price = findViewById(R.id.tv_normal_price);
-        tv_normal_due_date = findViewById(R.id.tv_normal_due_date);
+        tv_total_price = findViewById(R.id.tv_total_price);
+        tv_saved = findViewById(R.id.tv_saved);
+        tv_due_date = findViewById(R.id.tv_due_date);
         tv_message_paid = findViewById(R.id.tv_message_paid);
         tv_message_unpaid = findViewById(R.id.tv_message_unpaid);
         tv_organizer_name = findViewById(R.id.tv_organizer_name);
-        tv_normal = findViewById(R.id.tv_normal);
 
         ll_paid_msg = findViewById(R.id.ll_paid_msg);
         ll_unpaid_msg = findViewById(R.id.ll_unpaid_msg);
-        ll_early_bird = findViewById(R.id.ll_early_bird);
 
         btn_buy = findViewById(R.id.btn_buy);
 
@@ -148,8 +144,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_price = findViewById(R.id.cv_price);
         cv_members_status = findViewById(R.id.cv_members_status);
         cv_report_issue = findViewById(R.id.cv_report_issue);
-
-        v_early_normal = findViewById(R.id.v_early_normal);
 
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
@@ -242,18 +236,23 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             cv_message.setVisibility(GONE);
         }
 
-        tv_earlybird_price.setText("₹ " + eventDetails.getEarlybird_price() + " off");
+        if (eventDetails.getIs_early_payment_applicable().equals("1")) {
+            tv_saved.setVisibility(View.VISIBLE);
 
-        tv_earlybird_due_date.setText(eventDetails.getEarlyBirdDueDate());
+            int actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
+            int actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
 
-        tv_normal_price.setText("₹ " + eventDetails.getNormal_price());
+            int savedAmount = actualNormalPrice - actualEarlybirdPrice;
 
-        tv_normal_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
+            tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+            tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+            tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
 
-        if (eventDetails.getEarlybird_price().equals("0") || eventDetails.getEarlybird_price().equals("")) {
-            ll_early_bird.setVisibility(GONE);
-            v_early_normal.setVisibility(GONE);
-            tv_normal.setVisibility(GONE);
+        } else {
+            tv_saved.setVisibility(View.GONE);
+
+            tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
+            tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
         }
 
         if (!eventDetails.getCreated_by().equals(userId)) {
@@ -1059,9 +1058,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         sb.append("This is " + eventDetails.getEvent_type_name() + " event" + "\n");
 
-        sb.append("Price - ₹ " + eventDetails.getNormal_price() + " (₹ " + eventDetails.getEarlybird_price() + " off for early birds)" + "\n");
+        sb.append("Price - ₹ " + eventDetails.getNormal_price() + " (₹ " + eventDetails.getEarlybird_price() + " for early birds)" + "\n");
 
-        sb.append("Early birds off due date - " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()) + "\n");
+        sb.append("Early birds due date - " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()) + "\n");
 
         sb.append("Organizer - " + eventDetails.getOrganizer_name() + " (" + eventDetails.getMobile() + ")" + "\n");
 

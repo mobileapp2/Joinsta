@@ -87,7 +87,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
             actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
             actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
 
-            applicablePrice = actualNormalPrice - actualEarlybirdPrice;
+            applicablePrice = actualEarlybirdPrice;
             int savedAmount = actualNormalPrice - applicablePrice;
 
             tv_saved.setText(Html.fromHtml("<strike>₹ " + actualEarlybirdPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
@@ -124,7 +124,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
                 if (isEarlyPaymentApplicable.equals("1")) {
                     int earlybirdPrice = actualEarlybirdPrice * quantity;
                     int actualPrice = actualNormalPrice * quantity;
-                    applicablePrice = actualPrice - earlybirdPrice;
+                    applicablePrice = earlybirdPrice;
                     int savedAmount = actualPrice - applicablePrice;
 
                     tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
@@ -146,7 +146,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
                 if (isEarlyPaymentApplicable.equals("1")) {
                     int earlybirdPrice = actualEarlybirdPrice * quantity;
                     int actualPrice = actualNormalPrice * quantity;
-                    applicablePrice = actualPrice - earlybirdPrice;
+                    applicablePrice = earlybirdPrice;
                     int savedAmount = actualPrice - applicablePrice;
 
                     tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));

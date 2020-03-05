@@ -441,7 +441,7 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
         mainObj.addProperty("edit_image", imageName);
         mainObj.addProperty("is_admin", isAdmin);
         mainObj.addProperty("can_share", canShare);
-        mainObj.addProperty("showDisclaimer", showDisclaimer);
+        mainObj.addProperty("show_disclaimer", showDisclaimer);
         mainObj.add("edit_document", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {

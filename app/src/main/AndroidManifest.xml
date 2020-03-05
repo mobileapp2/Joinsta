@@ -494,7 +494,10 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDhtPVZM4-TPRF4KxU0SHp7pvqnAYmO7J8" />
+            android:value="AIzaSyAx9auDkOrb9vzA76Np8rclvZ9vyVIA8nc" />
+<!--        <meta-data-->
+<!--            android:name="com.google.android.geo.API_KEY"-->
+<!--            android:value="AIzaSyCRq84J8T2Y5MxWltW_LuNW0aDsX7T7eko" />-->
 
         <service android:name=".services.FirebaseTokenIdService">
             <intent-filter>

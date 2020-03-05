@@ -390,7 +390,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         mainObj.addProperty("image", imageName);
         mainObj.addProperty("is_admin", isAdmin);
         mainObj.addProperty("can_share", canShare);
-        mainObj.addProperty("showDisclaimer", showDisclaimer);
+        mainObj.addProperty("show_disclaimer", showDisclaimer);
         mainObj.add("document", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {

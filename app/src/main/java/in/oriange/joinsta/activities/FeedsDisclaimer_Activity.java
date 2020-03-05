@@ -26,6 +26,7 @@ import in.oriange.joinsta.models.DisclaimerModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.ParamsPojo;
+import in.oriange.joinsta.utilities.Utilities;
 
 public class FeedsDisclaimer_Activity extends AppCompatActivity {
 
@@ -57,6 +58,11 @@ public class FeedsDisclaimer_Activity extends AppCompatActivity {
 
     private void setDefault() {
         rvDisclaimer.setLayoutManager(new LinearLayoutManager(context));
+
+        if (Utilities.isNetworkAvailable(context))
+            new GetDisclaimer().execute();
+        else
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
     }
 
     private class GetDisclaimer extends AsyncTask<String, Void, String> {

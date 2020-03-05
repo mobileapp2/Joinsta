@@ -106,10 +106,10 @@
                     android:id="@+id/tv_created_by_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="end"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:paddingBottom="5dp"
-                    android:gravity="end"
                     android:text="Created By - Priyesh Pawar"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
@@ -340,91 +340,29 @@
                         android:layout_marginBottom="4dp"
                         android:background="@color/colorPrimary" />
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tv_total_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/Clover_Green"
+                        android:textSize="25sp" />
 
-                        <LinearLayout
-                            android:id="@+id/ll_early_bird"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_saved"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="16sp" />
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Early Birds"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/tv_earlybird_price"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="₹ 200 off"
-                                android:textColor="@android:color/holo_green_dark"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_earlybird_due_date"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Due Date: 21-Oct-2019"
-                                android:textColor="@color/black"
-                                android:textSize="14sp" />
-
-                        </LinearLayout>
-
-                        <View
-                            android:id="@+id/v_early_normal"
-                            android:layout_width="0.5dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/colorPrimary" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_normal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Normal"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/tv_normal_price"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="₹ 400"
-                                android:textColor="@android:color/holo_orange_dark"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_normal_due_date"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="Due Date: 27-Oct-2019"
-                                android:textColor="@color/black"
-                                android:textSize="14sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_due_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
 
                     <Button
                         android:id="@+id/btn_buy"

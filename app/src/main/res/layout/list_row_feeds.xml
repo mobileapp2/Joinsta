@@ -100,8 +100,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:padding="5dp"
-                android:textColor="@color/mediumGray"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -111,7 +112,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:padding="5dp"
+                android:paddingRight="5dp"
+                android:paddingLeft="5dp"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 

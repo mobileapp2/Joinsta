@@ -419,7 +419,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="5dp"
-                        android:text="Early Bird Off"
+                        android:text="Early Bird"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
