@@ -26,7 +26,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -300,15 +299,15 @@ public class Request_Fragment extends Fragment {
 //                startActivity(new Intent(context, SelectLocation_Activity.class)
 //                        .putExtra("startOrigin", 2));
 
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                try {
-                    startActivityForResult(builder.build(getActivity()), 0);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    startActivityForResult(builder.build(getActivity()), 0);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }

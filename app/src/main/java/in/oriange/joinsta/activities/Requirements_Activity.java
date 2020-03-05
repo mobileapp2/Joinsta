@@ -29,8 +29,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -309,15 +307,15 @@ public class Requirements_Activity extends AppCompatActivity {
         edt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                try {
-                    startActivityForResult(builder.build(Requirements_Activity.this), 0);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    startActivityForResult(builder.build(Requirements_Activity.this), 0);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
     }
@@ -410,66 +408,66 @@ public class Requirements_Activity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK) {
-            try {
-                Place place = PlacePicker.getPlace(this, data);
-                Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-
-                if (addresses.size() != 0) {
-                    edt_location.setText(addresses.get(0).getLocality());
-
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new GetRequirementList().execute();
-                    } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    }
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setTitle("Alert");
-                    builder.setMessage("City not found, please try again");
-                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                            try {
-                                startActivityForResult(builder.build(Requirements_Activity.this), 0);
-                            } catch (GooglePlayServicesRepairableException e) {
-                                e.printStackTrace();
-                            } catch (GooglePlayServicesNotAvailableException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    builder.create();
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setTitle("Alert");
-                builder.setMessage("City not found, please try again");
-                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                        try {
-                            startActivityForResult(builder.build(Requirements_Activity.this), 0);
-                        } catch (GooglePlayServicesRepairableException e) {
-                            e.printStackTrace();
-                        } catch (GooglePlayServicesNotAvailableException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                builder.create();
-                AlertDialog alertD = builder.create();
-                alertD.show();
-            }
-        }
+//        if (resultCode == RESULT_OK) {
+//            try {
+//                Place place = PlacePicker.getPlace(this, data);
+//                Geocoder gcd = new Geocoder(context, Locale.getDefault());
+//                List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+//
+//                if (addresses.size() != 0) {
+//                    edt_location.setText(addresses.get(0).getLocality());
+//
+//                    if (Utilities.isNetworkAvailable(context)) {
+//                        new GetRequirementList().execute();
+//                    } else {
+//                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//                    }
+//                } else {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+//                    builder.setTitle("Alert");
+//                    builder.setMessage("City not found, please try again");
+//                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            dialog.dismiss();
+//                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                            try {
+//                                startActivityForResult(builder.build(Requirements_Activity.this), 0);
+//                            } catch (GooglePlayServicesRepairableException e) {
+//                                e.printStackTrace();
+//                            } catch (GooglePlayServicesNotAvailableException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//                    builder.create();
+//                    AlertDialog alertD = builder.create();
+//                    alertD.show();
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+//                builder.setTitle("Alert");
+//                builder.setMessage("City not found, please try again");
+//                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.dismiss();
+//                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                        try {
+//                            startActivityForResult(builder.build(Requirements_Activity.this), 0);
+//                        } catch (GooglePlayServicesRepairableException e) {
+//                            e.printStackTrace();
+//                        } catch (GooglePlayServicesNotAvailableException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                });
+//                builder.create();
+//                AlertDialog alertD = builder.create();
+//                alertD.show();
+//            }
+//        }
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

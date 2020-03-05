@@ -6,8 +6,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -17,9 +15,6 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -41,10 +36,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -70,12 +61,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.EventTypeModel;
 import in.oriange.joinsta.models.EventsFreeModel;
+import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -409,15 +400,17 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         edt_select_from_map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    startActivityForResult(builder.build(EditEventsFree_Activity.this), 10001);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
 
-                try {
-                    startActivityForResult(builder.build(EditEventsFree_Activity.this), 10001);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+                startActivityForResult(new Intent(context, PickMapLoaction_Activity.class), 10001);
             }
         });
 
@@ -706,26 +699,17 @@ public class EditEventsFree_Activity extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
             if (requestCode == 10001) {
-                try {
-                    Place place = PlacePicker.getPlace(context, data);
-                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                    List<Address> addresses;
-                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    place.getAddress();
-                    if (addresses.size() != 0) {
-
-                        latitude = String.valueOf(place.getLatLng().latitude);
-                        longitude = String.valueOf(place.getLatLng().longitude);
-                        edt_address.setText(place.getAddress());
-                        edt_city.setText(addresses.get(0).getLocality());
-                    } else {
-                        Utilities.showMessage("Address not found, please try again", context, 3);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
+                if (addressList != null) {
+                    latitude = addressList.getMap_location_lattitude();
+                    longitude = addressList.getMap_location_logitude();
+                    edt_address.setText(addressList.getAddress_line_one());
+                    edt_city.setText(addressList.getDistrict());
+                } else {
                     Utilities.showMessage("Address not found, please try again", context, 3);
                 }
             }
+
 
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();

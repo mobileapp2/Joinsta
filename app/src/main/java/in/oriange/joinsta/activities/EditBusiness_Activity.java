@@ -49,8 +49,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -82,6 +80,7 @@ import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.GetBusinessModel;
 import in.oriange.joinsta.models.GetTagsListModel;
+import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.models.SubCategotyListModel;
 import in.oriange.joinsta.models.TagsListModel;
 import in.oriange.joinsta.pojos.CategotyListPojo;
@@ -536,16 +535,17 @@ public class EditBusiness_Activity extends AppCompatActivity {
 //                Intent intent = new Intent(context, PickMapLoaction_Activity.class);
 //                startActivityForResult(intent, 10001);
 
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//
+//                try {
+//                    startActivityForResult(builder.build(EditBusiness_Activity.this), 10001);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
 
-                try {
-                    startActivityForResult(builder.build(EditBusiness_Activity.this), 10001);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
-
+                startActivityForResult(new Intent(context, PickMapLoaction_Activity.class), 10001);
             }
         });
 
@@ -1345,31 +1345,22 @@ public class EditBusiness_Activity extends AppCompatActivity {
             }
 
             if (requestCode == 10001) {
-                try {
-                    Place place = PlacePicker.getPlace(context, data);
-                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                    List<Address> addresses = null;
-                    addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-                    place.getAddress();
-                    if (addresses.size() != 0) {
-
-                        latitude = String.valueOf(place.getLatLng().latitude);
-                        longitude = String.valueOf(place.getLatLng().longitude);
-                        edt_address.setText(place.getAddress());
-                        edt_country.setText(addresses.get(0).getCountryName());
-                        edt_state.setText(addresses.get(0).getAdminArea());
-                        edt_district.setText(addresses.get(0).getSubAdminArea());
-                        edt_pincode.setText(addresses.get(0).getPostalCode());
-                        edt_select_area.setText(place.getName());
-                        edt_city.setText(addresses.get(0).getLocality());
-                    } else {
-                        Utilities.showMessage("Address not found, please try again", context, 3);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
+                if (addressList != null) {
+                    latitude = addressList.getMap_location_lattitude();
+                    longitude = addressList.getAddress_line_one();
+                    edt_address.setText(addressList.getAddress_line_one());
+                    edt_country.setText(addressList.getCountry());
+                    edt_state.setText(addressList.getState());
+                    edt_district.setText(addressList.getDistrict());
+                    edt_pincode.setText(addressList.getPincode());
+                    edt_select_area.setText(addressList.getName());
+                    edt_city.setText(addressList.getDistrict());
+                } else {
                     Utilities.showMessage("Address not found, please try again", context, 3);
                 }
             }
+
 
         }
 

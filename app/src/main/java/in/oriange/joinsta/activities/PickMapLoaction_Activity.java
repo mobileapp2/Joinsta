@@ -13,21 +13,21 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,6 +35,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,7 +47,7 @@ import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.MapAddressListModel;
-import in.oriange.joinsta.utilities.AutoCompleteLocation;
+import in.oriange.joinsta.utilities.FieldSelector;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -52,32 +57,35 @@ import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
 
-public class PickMapLoaction_Activity extends FragmentActivity
-        implements OnMapReadyCallback, AutoCompleteLocation.AutoCompleteLocationListener {
+public class PickMapLoaction_Activity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int REQUEST_LOCATION_CODE = 99;
-    private MapAddressListModel addressList;
-    private AutoCompleteLocation autoCompleteLocation;
     private LatLng latLng1;
     private Context context;
     private GoogleMap mMap;
-    private Button btn_save;
-    private ImageButton btn_pick;
+    private CardView cv_search;
+    private FloatingActionButton btn_pick;
+    private FieldSelector fieldSelector;
+    private Button btn_select_location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_map_loaction);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         context = PickMapLoaction_Activity.this;
-        btn_save = findViewById(R.id.btn_save);
         btn_pick = findViewById(R.id.btn_pick);
+        cv_search = findViewById(R.id.cv_search);
+        btn_select_location = findViewById(R.id.btn_select_location);
 
-        autoCompleteLocation = findViewById(R.id.autocomplete_location);
-        autoCompleteLocation.setAutoCompleteTextListener(this);
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.places_api_key), Locale.US);
+        }
+
+        fieldSelector = new FieldSelector(findViewById(R.id.use_custom_fields), findViewById(R.id.custom_fields_list), savedInstanceState);
+        setupAutocompleteSupportFragment();
     }
 
     @Override
@@ -95,6 +103,52 @@ public class PickMapLoaction_Activity extends FragmentActivity
         startLocationUpdates();
     }
 
+    private void setupAutocompleteSupportFragment() {
+        final AutocompleteSupportFragment autocompleteSupportFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_support_fragment);
+        autocompleteSupportFragment.setPlaceFields(getPlaceFields());
+        autocompleteSupportFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
+    }
+
+    private List<Place.Field> getPlaceFields() {
+        return fieldSelector.getAllFields();
+    }
+
+    @NonNull
+    private PlaceSelectionListener getPlaceSelectionListener() {
+        return new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                MapAddressListModel addressList = new MapAddressListModel();
+
+                try {
+                    Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                    List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+                    addressList.setAddress_line_one(place.getAddress());
+                    addressList.setDistrict(addresses.get(0).getLocality());
+                    addressList.setCountry(addresses.get(0).getCountryName());
+                    addressList.setState(addresses.get(0).getAdminArea());
+                    addressList.setPincode(addresses.get(0).getPostalCode());
+                    addressList.setMap_location_lattitude(String.valueOf(addresses.get(0).getLatitude()));
+                    addressList.setMap_location_logitude(String.valueOf(addresses.get(0).getLongitude()));
+
+                    Intent intent = getIntent();
+                    intent.putExtra("addressList", addressList);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+
+            }
+        };
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -106,20 +160,20 @@ public class PickMapLoaction_Activity extends FragmentActivity
                 mMap.setMyLocationEnabled(true);
             }
         }
-
+        latLng = new LatLng(0.0, 0.0);
+        addMapMarker(latLng);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_LOCATION_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        mMap.setMyLocationEnabled(true);
-                    }
-                } else {
-                    Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+        if (requestCode == REQUEST_LOCATION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
                 }
+            } else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -142,14 +196,13 @@ public class PickMapLoaction_Activity extends FragmentActivity
                     return;
                 }
 
-
                 addMapMarker(latLng);
             }
         });
-        btn_save.setOnClickListener(new View.OnClickListener() {
+
+        btn_select_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (latLng1 != null) {
                     try {
                         getAllAddress();
@@ -169,60 +222,28 @@ public class PickMapLoaction_Activity extends FragmentActivity
                 addMapMarker(latLng);
             }
         });
-
     }
 
     public void getAllAddress() throws IOException {
-        Geocoder geocoder;
-        List<Address> addresses;
+        MapAddressListModel addressList = new MapAddressListModel();
 
-        geocoder = new Geocoder(this, Locale.getDefault());
-        addressList = new MapAddressListModel();
-        addresses = geocoder.getFromLocation(latLng1.latitude, latLng1.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = geocoder.getFromLocation(latLng1.latitude, latLng1.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
         addressList.setAddress_line_one(addresses.get(0).getAddressLine(0));
         addressList.setDistrict(addresses.get(0).getLocality());
         addressList.setCountry(addresses.get(0).getCountryName());
         addressList.setState(addresses.get(0).getAdminArea());
         addressList.setPincode(addresses.get(0).getPostalCode());
-
-//        constantData.setAddressListPojo(addressList);
+        addressList.setMap_location_lattitude(addresses.get(0).getPostalCode());
+        addressList.setMap_location_logitude(addresses.get(0).getPostalCode());
 
         Intent intent = getIntent();
-        intent.putExtra("latitude", String.format("%.6f", latLng1.latitude));
-        intent.putExtra("longitude", String.format("%.6f", latLng1.longitude));
-        intent.putExtra("mapAddressDetails", addressList);
+        intent.putExtra("addressList", addressList);
         setResult(RESULT_OK, intent);
-
-    }
-
-    @Override
-    public void onTextClear() {
-        mMap.clear();
-    }
-
-    @Override
-    public void onItemSelected(Place selectedPlace) {
-        addMapMarker(selectedPlace.getLatLng());
     }
 
     private void addMapMarker(LatLng latLng) {
         latLng1 = latLng;
-        Geocoder geocoder;
-        List<Address> addresses;
-
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        try {
-            if (latLng != null) {
-                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                if (addresses.size() > 0) {
-                    autoCompleteLocation.setHint(addresses.get(0).getAddressLine(0));
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         mMap.clear();
         if (latLng != null) {
             mMap.addMarker(new MarkerOptions().position(latLng));

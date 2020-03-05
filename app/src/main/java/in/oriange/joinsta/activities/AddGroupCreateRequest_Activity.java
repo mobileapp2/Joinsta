@@ -139,7 +139,7 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res;
-            res = APICall.JSONAPICall(ApplicationConstants.GRPADMINMEMBERSSUPERVISORSAPI, params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPREQUESTAPI, params[0]);
             return res.trim();
         }
 

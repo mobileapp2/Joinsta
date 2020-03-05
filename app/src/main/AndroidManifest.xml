@@ -494,16 +494,16 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAx9auDkOrb9vzA76Np8rclvZ9vyVIA8nc" />
+            android:value="AIzaSyCRq84J8T2Y5MxWltW_LuNW0aDsX7T7eko" />
 <!--        <meta-data-->
 <!--            android:name="com.google.android.geo.API_KEY"-->
 <!--            android:value="AIzaSyCRq84J8T2Y5MxWltW_LuNW0aDsX7T7eko" />-->
 
-        <service android:name=".services.FirebaseTokenIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
+<!--        <service android:name=".services.FirebaseTokenIdService">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
         <service android:name=".services.FirebaseMessageService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -20,6 +20,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -36,6 +37,7 @@ import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.SplashScreen_Activity;
+import in.oriange.joinsta.utilities.UserSessionManager;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
 
@@ -48,6 +50,19 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     private static Uri notificationSound;
     private static Bitmap iconBitmap;
     private static Random random;
+
+    @Override
+    public void onNewToken(String s) {
+        Log.e("NEW_TOKEN", s);
+        UserSessionManager session = new UserSessionManager(FirebaseMessageService.this);
+
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d("TokenID", "" + token);
+
+        if (token != null) {
+            session.createAndroidToken(token);
+        }
+    }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {

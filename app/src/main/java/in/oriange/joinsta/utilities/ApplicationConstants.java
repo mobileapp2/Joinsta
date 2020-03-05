@@ -72,6 +72,7 @@ public class ApplicationConstants {
     public static final String GRPADMINMEMISACTIVEAPI = API_LINK + "group_members_active.php";
     public static final String GRPADMINSETMEMBERVISIBILITYAPI = API_LINK + "groupmembersvisiblity.php";
     public static final String GRPADMINSETGROUPVISIBILITYAPI = API_LINK + "set_group_visiblity.php";
+    public static final String GROUPREQUESTAPI = API_LINK + "grp_request.php";
     public static final String OFFERSAPI = API_LINK + "offer.php";
     public static final String FEEDSAPI = API_LINK + "feed.php";
     public static final String REFERRALCODEAPI = API_LINK + "referral_code.php";

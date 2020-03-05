@@ -27,7 +27,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -35,7 +34,6 @@ import java.util.List;
 import java.util.Locale;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.utilities.AutoCompleteLocation;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -46,11 +44,9 @@ import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
-public class SelectLocation_Activity extends AppCompatActivity
-        implements AutoCompleteLocation.AutoCompleteLocationListener {
+public class SelectLocation_Activity extends AppCompatActivity{
 
     private Context context;
-    private AutoCompleteLocation autoCompleteLocation;
     private CardView cv_locationdetails;
     private TextView tv_locality, tv_city, tv_state, tv_pincode;
     private Button btn_current_location, btn_select;
@@ -84,11 +80,6 @@ public class SelectLocation_Activity extends AppCompatActivity
 
     private void init() {
         context = SelectLocation_Activity.this;
-
-        autoCompleteLocation = findViewById(R.id.autocomplete_location);
-        autoCompleteLocation.setAutoCompleteTextListener(this);
-
-
         animationView = findViewById(R.id.animation_view);
 
         cv_locationdetails = findViewById(R.id.cv_locationdetails);
@@ -163,25 +154,6 @@ public class SelectLocation_Activity extends AppCompatActivity
                 finish();
             }
         });
-    }
-
-    @Override
-    public void onTextClear() {
-
-    }
-
-    @Override
-    public void onItemSelected(Place selectedPlace) {
-        autoCompleteLocation.setText("");
-        if (Utilities.isNetworkAvailable(context)) {
-            LatLng latLng = selectedPlace.getLatLng();
-
-            new GetAddress().execute(
-                    String.valueOf(latLng.latitude),
-                    String.valueOf(latLng.longitude));
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-        }
     }
 
     private class GetAddress extends AsyncTask<String, Void, List<Address>> {

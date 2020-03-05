@@ -3,9 +3,11 @@ package in.oriange.joinsta.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.EventsPaidModel;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 
 public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.MyViewHolder> {
 
@@ -58,8 +61,27 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
         holder.tv_venue.setText(eventDetails.getVenue_address());
         holder.tv_time.setText(eventDetails.getDateTime());
 
-        if (eventDetails.getDocuments().size() != 0) {
+        if (!isMyEvent)
+            if (eventDetails.getIs_early_payment_applicable().equals("1")) {
+                holder.tv_saved.setVisibility(View.VISIBLE);
 
+                int actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
+                int actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
+                int savedAmount = actualNormalPrice - actualEarlybirdPrice;
+
+                holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+                holder.tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+                holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
+
+            } else {
+                holder.tv_saved.setVisibility(View.GONE);
+                holder.tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
+                holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
+            }
+        else
+            holder.ll_prices.setVisibility(View.GONE);
+
+        if (eventDetails.getDocuments().size() != 0) {
             List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
 
             for (int i = 0; i < eventDetails.getDocuments().size(); i++) {
@@ -104,7 +126,8 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
 
         private CardView cv_mainlayout;
         private SliderView imageSlider;
-        private TextView tv_title, tv_venue, tv_time;
+        private LinearLayout ll_prices;
+        private TextView tv_title, tv_venue, tv_time, tv_saved, tv_total_price, tv_due_date;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,6 +136,10 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_venue = itemView.findViewById(R.id.tv_venue);
             tv_time = itemView.findViewById(R.id.tv_time);
+            tv_saved = itemView.findViewById(R.id.tv_saved);
+            tv_total_price = itemView.findViewById(R.id.tv_total_price);
+            tv_due_date = itemView.findViewById(R.id.tv_due_date);
+            ll_prices = itemView.findViewById(R.id.ll_prices);
         }
     }
 

@@ -3,12 +3,9 @@ package in.oriange.joinsta.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,29 +25,22 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BotNavViewPagerAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
+import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -232,65 +222,17 @@ public class MainDrawer_Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == 0 || requestCode == 1 || requestCode == 3)
-                try {
-                    Place place = PlacePicker.getPlace(this, data);
-//                    Place place = Autocomplete.getPlaceFromIntent(data);
-                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                    List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-
-                    if (addresses.size() != 0) {
-                        session.setLocation(addresses.get(0).getLocality());
-                        finishAffinity();
-                        startActivity(new Intent(context, MainDrawer_Activity.class)
-                                .putExtra("startOrigin", requestCode));
-
-
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                        builder.setTitle("Alert");
-                        builder.setMessage("City not found, please try again");
-                        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                                try {
-                                    startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
-                                } catch (GooglePlayServicesRepairableException e) {
-                                    e.printStackTrace();
-                                } catch (GooglePlayServicesNotAvailableException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        builder.create();
-                        AlertDialog alertD = builder.create();
-                        alertD.show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setTitle("Alert");
-                    builder.setMessage("City not found, please try again");
-                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                            try {
-                                startActivityForResult(builder.build(MainDrawer_Activity.this), 0);
-                            } catch (GooglePlayServicesRepairableException e) {
-                                e.printStackTrace();
-                            } catch (GooglePlayServicesNotAvailableException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    builder.create();
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
+            if (requestCode == 0 || requestCode == 1 || requestCode == 3) {
+                MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
+                if (addressList != null) {
+                    session.setLocation(addressList.getDistrict());
+                    finishAffinity();
+                    startActivity(new Intent(context, MainDrawer_Activity.class)
+                            .putExtra("startOrigin", requestCode));
+                } else {
+                    Utilities.showMessage("Address not found, please try again", context, 3);
                 }
+            }
         }
     }
 

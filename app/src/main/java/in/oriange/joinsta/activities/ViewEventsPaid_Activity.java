@@ -236,24 +236,27 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             cv_message.setVisibility(GONE);
         }
 
-        if (eventDetails.getIs_early_payment_applicable().equals("1")) {
-            tv_saved.setVisibility(View.VISIBLE);
+        if (!isMyEvent)
+            if (eventDetails.getIs_early_payment_applicable().equals("1")) {
+                tv_saved.setVisibility(View.VISIBLE);
 
-            int actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
-            int actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
+                int actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
+                int actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
 
-            int savedAmount = actualNormalPrice - actualEarlybirdPrice;
+                int savedAmount = actualNormalPrice - actualEarlybirdPrice;
 
-            tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
-            tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
-            tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
+                tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+                tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+                tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
 
-        } else {
-            tv_saved.setVisibility(View.GONE);
+            } else {
+                tv_saved.setVisibility(View.GONE);
 
-            tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
-            tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
-        }
+                tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
+                tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
+            }
+        else
+            cv_price.setVisibility(View.GONE);
 
         if (!eventDetails.getCreated_by().equals(userId)) {
             imv_edit.setVisibility(GONE);

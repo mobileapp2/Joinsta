@@ -2,10 +2,7 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -16,30 +13,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.CityAdapter;
 import in.oriange.joinsta.models.GetCityListModel;
+import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -102,7 +92,7 @@ public class SelectCity_Activity extends AppCompatActivity {
         }
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetCityList().execute();
+//            new GetCityList().execute();
         }
 
         requestCode = getIntent().getIntExtra("requestCode", 0);
@@ -144,14 +134,15 @@ public class SelectCity_Activity extends AppCompatActivity {
         ll_user_current_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(SelectCity_Activity.this), requestCode);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+//                try {
+//                    startActivityForResult(builder.build(SelectCity_Activity.this), requestCode);
+//                } catch (GooglePlayServicesRepairableException e) {
+//                    e.printStackTrace();
+//                } catch (GooglePlayServicesNotAvailableException e) {
+//                    e.printStackTrace();
+//                }
+                startActivityForResult(new Intent(context, PickMapLoaction_Activity.class), requestCode);
             }
         });
 
@@ -199,64 +190,13 @@ public class SelectCity_Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == 0 || requestCode == 1 || requestCode == 3)
-                try {
-                    Place place = PlacePicker.getPlace(this, data);
-//                    Place place = Autocomplete.getPlaceFromIntent(data);
-                    Geocoder gcd = new Geocoder(context, Locale.getDefault());
-                    List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-
-                    if (addresses.size() != 0) {
-                        session.setLocation(addresses.get(0).getLocality());
-                        finishAffinity();
-                        startActivity(new Intent(context, MainDrawer_Activity.class)
-                                .putExtra("startOrigin", requestCode));
-
-
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                        builder.setTitle("Alert");
-                        builder.setMessage("City not found, please try again");
-                        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
-                                try {
-                                    startActivityForResult(builder.build(SelectCity_Activity.this), 0);
-                                } catch (GooglePlayServicesRepairableException e) {
-                                    e.printStackTrace();
-                                } catch (GooglePlayServicesNotAvailableException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        builder.create();
-                        AlertDialog alertD = builder.create();
-                        alertD.show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setTitle("Alert");
-                    builder.setMessage("City not found, please try again");
-                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                            try {
-                                startActivityForResult(builder.build(SelectCity_Activity.this), 0);
-                            } catch (GooglePlayServicesRepairableException e) {
-                                e.printStackTrace();
-                            } catch (GooglePlayServicesNotAvailableException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    builder.create();
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
+            if (requestCode == 0 || requestCode == 1 || requestCode == 3) {
+                MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
+                session.setLocation(addressList.getDistrict());
+                finishAffinity();
+                startActivity(new Intent(context, MainDrawer_Activity.class)
+                        .putExtra("startOrigin", requestCode));
+            }
         }
     }
 
