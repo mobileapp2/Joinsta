@@ -180,7 +180,7 @@ public class AddGroupMemberSupervisor_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (edt_state.getText().toString().trim().isEmpty()) {
-                    edt_state.setText("Please select atleast one state");
+                    edt_state.setText("Please select at least one state");
                     return;
                 }
 

@@ -242,7 +242,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (edt_groups.getText().toString().trim().isEmpty()) {
-                    edt_groups.setError("Please select atleast one group");
+                    edt_groups.setError("Please select at least one group");
                     edt_groups.requestFocus();
                     return;
                 }
@@ -264,7 +264,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (edt_groups.getText().toString().trim().isEmpty()) {
-                    edt_groups.setError("Please select atleast one group");
+                    edt_groups.setError("Please select at least one group");
                     edt_groups.requestFocus();
                     return;
                 }
@@ -662,7 +662,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         JsonArray messageTypes = new JsonArray();
 
         if (edt_groups.getText().toString().trim().isEmpty()) {
-            edt_groups.setError("Please select atleast one group");
+            edt_groups.setError("Please select at least one group");
             edt_groups.requestFocus();
             return;
         }

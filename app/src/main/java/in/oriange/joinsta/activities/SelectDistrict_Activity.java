@@ -134,7 +134,7 @@ public class SelectDistrict_Activity extends AppCompatActivity {
                     setResult(RESULT_OK, intent);
                     finish();
                 } else {
-                    Utilities.showMessage("Please select atleast one district", context, 2);
+                    Utilities.showMessage("Please select at least one district", context, 2);
                 }
 
             }
