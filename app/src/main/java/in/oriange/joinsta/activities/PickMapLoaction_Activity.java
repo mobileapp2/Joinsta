@@ -52,6 +52,7 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
@@ -160,8 +161,6 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
                 mMap.setMyLocationEnabled(true);
             }
         }
-        latLng = new LatLng(0.0, 0.0);
-        addMapMarker(latLng);
     }
 
     @Override
@@ -191,8 +190,8 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
                     return;
                 }
 
-                if (MainDrawer_Activity.latLng == null) {
-                    Utilities.showAlertDialog(context, "Unable to get address from this location. Please try again or search manually", false);
+                if (latLng == null) {
+                    Utilities.showAlertDialog(context, "Unable to get address from current location. Please try again or search manually", false);
                     return;
                 }
 
@@ -209,7 +208,6 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    finish();
                 } else {
                     Utilities.showAlertDialog(context, "Please search and pick a location", false);
                 }
@@ -229,6 +227,12 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
 
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = geocoder.getFromLocation(latLng1.latitude, latLng1.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+        if (addresses.get(0).getLocality() == null) {
+            Utilities.showAlertDialog(context, "Unable to get address from this location. Please try again or search manually", false);
+            return;
+        }
+
         addressList.setAddress_line_one(addresses.get(0).getAddressLine(0));
         addressList.setDistrict(addresses.get(0).getLocality());
         addressList.setCountry(addresses.get(0).getCountryName());
@@ -240,9 +244,11 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
         Intent intent = getIntent();
         intent.putExtra("addressList", addressList);
         setResult(RESULT_OK, intent);
+        finish();
     }
 
     private void addMapMarker(LatLng latLng) {
+        btn_select_location.setVisibility(View.VISIBLE);
         latLng1 = latLng;
         mMap.clear();
         if (latLng != null) {
@@ -292,4 +298,9 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideSoftKeyboard(PickMapLoaction_Activity.this);
+    }
 }

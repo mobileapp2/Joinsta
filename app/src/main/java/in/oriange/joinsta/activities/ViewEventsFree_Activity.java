@@ -264,19 +264,19 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
     private void setConfirmationStatus() {
         switch (eventDetails.getStatus()) {
             case "accepted":
-                tv_confirmation.setVisibility(View.VISIBLE);
+                tv_confirmation_status.setVisibility(View.VISIBLE);
                 tv_confirmation_status.setText("You accepted the invitation");
                 break;
             case "maybe":
-                tv_confirmation.setVisibility(View.VISIBLE);
-                tv_confirmation_status.setText("You said you maybe would attend the event");
+                tv_confirmation_status.setVisibility(View.VISIBLE);
+                tv_confirmation_status.setText("Maybe be you would attend the event");
                 break;
             case "rejected":
-                tv_confirmation.setVisibility(View.VISIBLE);
+                tv_confirmation_status.setVisibility(View.VISIBLE);
                 tv_confirmation_status.setText("You rejected the invitation");
                 break;
             case "":
-                tv_confirmation.setVisibility(View.GONE);
+                tv_confirmation_status.setVisibility(View.GONE);
                 break;
         }
     }

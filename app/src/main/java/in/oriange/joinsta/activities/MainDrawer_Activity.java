@@ -118,6 +118,7 @@ public class MainDrawer_Activity extends AppCompatActivity {
 //            }
             startActivity(new Intent(context, SelectCity_Activity.class)
                     .putExtra("requestCode", 0));
+//            finish();
         }
     }
 

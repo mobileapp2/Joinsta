@@ -267,4 +267,9 @@ public class SelectCity_Activity extends AppCompatActivity {
         hideSoftKeyboard(SelectCity_Activity.this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 }
