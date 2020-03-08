@@ -200,8 +200,8 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         edt_organizer_mobile.setText(eventDetails.getMobile());
         edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_date()));
         edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_end_date()));
-        edt_start_time.setText(eventDetails.getEvent_start_time());
-        edt_end_time.setText(eventDetails.getEvent_end_time());
+        edt_start_time.setText(changeDateFormat("HH:mm:ss", "HH:mm", eventStartTime));
+        edt_end_time.setText(changeDateFormat("HH:mm:ss", "HH:mm", eventEndTime));
 //        edt_select_from_map.setText(eventDetails);
         edt_address.setText(eventDetails.getVenue_address());
         edt_city.setText(eventDetails.getEvent_city());

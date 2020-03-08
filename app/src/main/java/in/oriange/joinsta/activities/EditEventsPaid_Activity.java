@@ -6,8 +6,6 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,8 +40,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -69,7 +65,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
@@ -234,8 +229,8 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         edt_organizer_mobile.setText(eventDetails.getMobile());
         edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_date()));
         edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEvent_end_date()));
-        edt_start_time.setText(eventDetails.getEvent_start_time());
-        edt_end_time.setText(eventDetails.getEvent_end_time());
+        edt_start_time.setText(changeDateFormat("HH:mm:ss", "HH:mm", eventStartTime));
+        edt_end_time.setText(changeDateFormat("HH:mm:ss", "HH:mm", eventEndTime));
 //        edt_select_from_map.setText(eventDetails);
         edt_address.setText(eventDetails.getVenue_address());
         edt_city.setText(eventDetails.getEvent_city());

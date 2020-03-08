@@ -2,6 +2,7 @@ package in.oriange.joinsta.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -136,6 +138,10 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
                     Intent intent = getIntent();
                     intent.putExtra("addressList", addressList);
                     setResult(RESULT_OK, intent);
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
                     finish();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -298,9 +304,9 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        hideSoftKeyboard(PickMapLoaction_Activity.this);
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        hideSoftKeyboard(PickMapLoaction_Activity.this);
+//    }
 }

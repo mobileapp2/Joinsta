@@ -92,7 +92,7 @@ public class SelectCity_Activity extends AppCompatActivity {
         }
 
         if (Utilities.isNetworkAvailable(context)) {
-//            new GetCityList().execute();
+            new GetCityList().execute();
         }
 
         requestCode = getIntent().getIntExtra("requestCode", 0);
