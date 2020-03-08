@@ -245,7 +245,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
                 int savedAmount = actualNormalPrice - actualEarlybirdPrice;
 
-                tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+                tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
                 tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
                 tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
 
@@ -448,7 +448,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         cv_members_status.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, EventPaidMemberStatus_Activity.class)
+                startActivity(new Intent(context, EventPaidMemberStatus_Activity_v2.class)
                         .putExtra("eventId", eventDetails.getid()));
             }
         });

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EventPaidMemberStatus_Activity_v2;
 import in.oriange.joinsta.activities.ViewEventsPaid_Activity;
 import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.EventsPaidModel;
@@ -61,6 +62,12 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
         holder.tv_venue.setText(eventDetails.getVenue_address());
         holder.tv_time.setText(eventDetails.getDateTime());
 
+        if (isAdmin.equals("1"))
+            holder.tv_payment_status.setVisibility(View.VISIBLE);
+        else
+            holder.tv_payment_status.setVisibility(View.GONE);
+
+
         if (!isMyEvent)
             if (eventDetails.getIs_early_payment_applicable().equals("1")) {
                 holder.tv_saved.setVisibility(View.VISIBLE);
@@ -69,7 +76,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
                 int actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
                 int savedAmount = actualNormalPrice - actualEarlybirdPrice;
 
-                holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+                holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
                 holder.tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
                 holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
 
@@ -115,6 +122,15 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
                         .putExtra("isAdmin", isAdmin));
             }
         });
+
+        holder.tv_payment_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, EventPaidMemberStatus_Activity_v2.class)
+                        .putExtra("eventId", eventDetails.getid()));
+            }
+        });
+
     }
 
     @Override
@@ -127,7 +143,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
         private CardView cv_mainlayout;
         private SliderView imageSlider;
         private LinearLayout ll_prices;
-        private TextView tv_title, tv_venue, tv_time, tv_saved, tv_total_price, tv_due_date;
+        private TextView tv_title, tv_venue, tv_time, tv_saved, tv_total_price, tv_due_date, tv_payment_status;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -140,6 +156,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             tv_total_price = itemView.findViewById(R.id.tv_total_price);
             tv_due_date = itemView.findViewById(R.id.tv_due_date);
             ll_prices = itemView.findViewById(R.id.ll_prices);
+            tv_payment_status = itemView.findViewById(R.id.tv_payment_status);
         }
     }
 

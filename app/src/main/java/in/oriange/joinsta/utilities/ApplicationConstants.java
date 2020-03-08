@@ -83,7 +83,8 @@ public class ApplicationConstants {
     public static final String PAYMENTACCOUNTAPI = API_LINK + "payment_account.php";
     public static final String USERSPECIFICDELETEAPI = API_LINK + "userspecificevent_delete.php";
     public static final String PAYMENTTRACKAPI = API_LINK + "payment_track.php";
-    public static final String EVENTS = API_LINK + "events.php";
+    public static final String EVENTSAPI = API_LINK + "events.php";
+    public static final String MEMBERSCATEGORYAPI = API_LINK + "member_category.php";
 
 
     public static final String VERSIONAPI = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/version.php";

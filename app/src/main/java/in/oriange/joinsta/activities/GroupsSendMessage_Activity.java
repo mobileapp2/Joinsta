@@ -87,7 +87,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private MaterialEditText edt_groups, edt_subject, edt_attach_multidoc;
     private EditText edt_message;
     private ImageView imv_photo1, imv_photo2;
-    private RadioButton rb_supervisor, rb_all;
+    private RadioButton rb_all, rb_app_members, rb_non_app_members;
     private Button btn_save, btn_sms, btn_email, btn_notification, btn_add_document;
     private CheckBox cb_canshare;
     private LinearLayout ll_attach_docs;
@@ -98,7 +98,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     private JsonArray selectedGroups;
     private String userId, imageName = "", groupId, groupName;
 
-    private boolean isSmsPressed, isEmailPressed, isNotificationPressed = true;
+    private boolean isSmsPressed, isEmailPressed, isNotificationPressed;
 
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200, MESSAGE_REQUEST = 300;
@@ -136,8 +136,9 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         imv_photo2 = findViewById(R.id.imv_photo2);
         btn_add_document = findViewById(R.id.btn_add_document);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
-        rb_supervisor = findViewById(R.id.rb_supervisor);
         rb_all = findViewById(R.id.rb_all);
+        rb_app_members = findViewById(R.id.rb_app_members);
+        rb_non_app_members = findViewById(R.id.rb_non_app_members);
         cb_canshare = findViewById(R.id.cb_canshare);
         btn_save = findViewById(R.id.btn_save);
 
@@ -172,7 +173,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         groupId = getIntent().getStringExtra("groupId");
         groupName = getIntent().getStringExtra("groupName");
 
-        btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
+//        btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
 
         edt_groups.setText(groupName);
 
@@ -205,6 +206,29 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 //                }
 //            }
 //        });
+        rb_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearSelections();
+                btn_notification.setVisibility(View.GONE);
+            }
+        });
+
+        rb_app_members.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearSelections();
+                btn_notification.setVisibility(View.VISIBLE);
+            }
+        });
+
+        rb_non_app_members.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearSelections();
+                btn_notification.setVisibility(View.GONE);
+            }
+        });
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -334,6 +358,15 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                 ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
             }
         });
+    }
+
+    public void clearSelections() {
+        isSmsPressed = false;
+        isEmailPressed = false;
+        isNotificationPressed = false;
+        btn_sms.setBackgroundResource(isSmsPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
+        btn_email.setBackgroundResource(isEmailPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
+        btn_notification.setBackgroundResource(isNotificationPressed ? R.drawable.bbg_pressed : R.drawable.bg_button_selectable);
     }
 
     private void selectImage() {
@@ -658,7 +691,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
-        String receiverType = "";
+        String receiverType = "all", userType = "";
         JsonArray messageTypes = new JsonArray();
 
         if (edt_groups.getText().toString().trim().isEmpty()) {
@@ -667,12 +700,14 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
             return;
         }
 
-        if (rb_supervisor.isChecked()) {
-            receiverType = "group_supervisors";
-        } else if (rb_all.isChecked()) {
-            receiverType = "all";
+        if (rb_all.isChecked()) {
+            userType = "group_supervisors";
+        } else if (rb_app_members.isChecked()) {
+            userType = "all";
+        } else if (rb_non_app_members.isChecked()) {
+            userType = "all";
         } else {
-            Utilities.showMessage("Please select receiver type", context, 2);
+            Utilities.showMessage("Please select user type", context, 2);
             return;
         }
 
@@ -728,6 +763,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         mainObject.add("groups", selectedGroups);
         mainObject.addProperty("document", imageName);
         mainObject.addProperty("receiver_type", receiverType);
+        mainObject.addProperty("user_type", userType);
         mainObject.addProperty("can_share", canShare);
         mainObject.add("message_types", messageTypes);
         mainObject.add("message_doc", messageDocArray);

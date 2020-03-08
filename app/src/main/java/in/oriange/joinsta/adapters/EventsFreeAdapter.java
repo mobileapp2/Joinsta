@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.EventFreeMemberStatus_Activity;
 import in.oriange.joinsta.activities.ViewEventsFree_Activity;
 import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.EventsFreeModel;
@@ -59,6 +60,11 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
         holder.tv_venue.setText(eventDetails.getVenue_address());
         holder.tv_time.setText(eventDetails.getDateTime());
 
+        if (isAdmin.equals("1"))
+            holder.tv_confirmation_status.setVisibility(View.VISIBLE);
+        else
+            holder.tv_confirmation_status.setVisibility(View.GONE);
+
         if (eventDetails.getDocuments().size() != 0) {
 
             List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
@@ -93,6 +99,14 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
                         .putExtra("isAdmin", isAdmin));
             }
         });
+
+        holder.tv_confirmation_status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, EventFreeMemberStatus_Activity.class)
+                        .putExtra("eventId", eventDetails.getId()));
+            }
+        });
     }
 
     @Override
@@ -104,7 +118,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
 
         private CardView cv_mainlayout;
         private SliderView imageSlider;
-        private TextView tv_title, tv_venue, tv_time;
+        private TextView tv_title, tv_venue, tv_time, tv_confirmation_status;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -113,6 +127,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_venue = itemView.findViewById(R.id.tv_venue);
             tv_time = itemView.findViewById(R.id.tv_time);
+            tv_confirmation_status = itemView.findViewById(R.id.tv_confirmation_status);
         }
     }
 

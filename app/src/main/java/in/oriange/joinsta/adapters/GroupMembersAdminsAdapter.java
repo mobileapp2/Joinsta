@@ -26,32 +26,47 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.EditGroupMemberSupervisor_Activity;
-import in.oriange.joinsta.models.GroupSupervisorsListModel;
+import in.oriange.joinsta.activities.EditGroupMembersAdmin_Activity;
+import in.oriange.joinsta.models.GroupMembersAdminsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.ParamsPojo;
+import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
-public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
+public class GroupMembersAdminsAdapter extends RecyclerView.Adapter<GroupMembersAdminsAdapter.MyViewHolder> {
 
     private Context context;
-    private List<GroupSupervisorsListModel.ResultBean> groupmembers;
-    private String groupId;
+    private List<GroupMembersAdminsListModel.ResultBean> participantsList;
+    private String groupId, userId;
 
-    public GroupMembersAdapter(Context context, List<GroupSupervisorsListModel.ResultBean> groupmembers, String groupId) {
+    public GroupMembersAdminsAdapter(Context context, List<GroupMembersAdminsListModel.ResultBean> participantsList, String groupId) {
         this.context = context;
-        this.groupmembers = groupmembers;
+        this.participantsList = participantsList;
         this.groupId = groupId;
+
+        UserSessionManager session = new UserSessionManager(context);
+
+        try {
+            JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                    ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull
@@ -63,9 +78,8 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, int pos) {
-        int position = holder.getAdapterPosition();
-        final GroupSupervisorsListModel.ResultBean memberDetails = groupmembers.get(position);
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        final GroupMembersAdminsListModel.ResultBean memberDetails = participantsList.get(position);
 
         holder.tv_name.setText(memberDetails.getFirst_name());
 
@@ -79,12 +93,17 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             holder.tv_mobile_email.setVisibility(View.GONE);
         }
 
+        if (memberDetails.getRole().equals("group_admin"))
+            holder.tv_role.setText("Group Admin");
+        else if (memberDetails.getRole().equals("group_member"))
+            holder.tv_role.setText("Group Member");
+
         if (memberDetails.getIs_active().equals("1"))
             holder.sw_active.setChecked(true);
         else
             holder.sw_active.setChecked(false);
 
-        if (memberDetails.getCan_post().equals("1"))
+        if (memberDetails.getCan_pos().equals("1"))
             holder.sw_can_post.setChecked(true);
         else
             holder.sw_can_post.setChecked(false);
@@ -93,6 +112,11 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             holder.ib_ishidden.setVisibility(View.VISIBLE);
         else
             holder.ib_ishidden.setVisibility(View.GONE);
+
+        if (memberDetails.getIs_joinsta_member().equals("1"))
+            holder.btn_invite.setVisibility(View.GONE);
+        else
+            holder.btn_invite.setVisibility(View.VISIBLE);
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,10 +142,9 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         holder.btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, EditGroupMemberSupervisor_Activity.class)
+                context.startActivity(new Intent(context, EditGroupMembersAdmin_Activity.class)
                         .putExtra("memberDetails", memberDetails)
-                        .putExtra("groupId", groupId)
-                        .putExtra("role", "group_member"));
+                        .putExtra("groupId", groupId));
             }
         });
 
@@ -215,11 +238,41 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             }
         });
 
+        holder.btn_invite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to send an invitation?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_alertred);
+                builder.setCancelable(false);
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new SendInviteSMS().execute(groupId, userId, memberDetails.getId());
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        });
+
+
     }
 
     @Override
     public int getItemCount() {
-        return groupmembers.size();
+        return participantsList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -227,10 +280,11 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         private CardView cv_mainlayout;
         private LinearLayout ll_buttons;
         private View view_divider;
-        private TextView tv_name, tv_mobile_email;
+        private TextView tv_name, tv_mobile_email, tv_role;
         private Button btn_edit, btn_delete;
         private Switch sw_active, sw_can_post;
         private ImageButton ib_call, ib_ishidden;
+        private Button btn_invite;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -239,12 +293,14 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             view_divider = view.findViewById(R.id.view_divider);
             tv_name = view.findViewById(R.id.tv_name);
             tv_mobile_email = view.findViewById(R.id.tv_mobile_email);
+            tv_role = view.findViewById(R.id.tv_role);
             btn_edit = view.findViewById(R.id.btn_edit);
             btn_delete = view.findViewById(R.id.btn_delete);
             sw_active = view.findViewById(R.id.sw_active);
             sw_can_post = view.findViewById(R.id.sw_can_post);
             ib_call = view.findViewById(R.id.ib_call);
             ib_ishidden = view.findViewById(R.id.ib_ishidden);
+            btn_invite = view.findViewById(R.id.btn_invite);
         }
     }
 
@@ -286,7 +342,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupMembers_Fragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupMembersAdmins_Activity"));
                         Utilities.showMessage("Group member deleted successfully", context, 1);
                     }
                 }
@@ -382,4 +438,47 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         }
     }
 
+    public class SendInviteSMS extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res;
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "sendInviteSMS");
+            obj.addProperty("group_id", params[0]);
+            obj.addProperty("sender_id", params[1]);
+            obj.addProperty("receiver_id", params[2]);
+            res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type;
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Invitation sent successfully", context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

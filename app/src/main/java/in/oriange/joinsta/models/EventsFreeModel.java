@@ -387,6 +387,10 @@ public class EventsFreeModel implements Serializable {
             }
         }
 
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         public boolean isEndDatePassed() {
             try {
 
@@ -402,10 +406,6 @@ public class EventsFreeModel implements Serializable {
                 e.printStackTrace();
                 return false;
             }
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
         }
 
         public Date getEventStartDate() {

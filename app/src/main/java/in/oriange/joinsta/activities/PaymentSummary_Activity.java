@@ -1,6 +1,7 @@
 package in.oriange.joinsta.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -103,6 +105,28 @@ public class PaymentSummary_Activity extends AppCompatActivity {
             tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
         }
 
+        showDisclaimerDialog();
+
+    }
+
+    private void showDisclaimerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false)
+                .setTitle("Disclaimer")
+                .setMessage(R.string.online_payment_disclaimer)
+                .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .create().show();
     }
 
     private void setEventHandler() {

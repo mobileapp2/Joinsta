@@ -13,25 +13,26 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.models.EventMemberStatusModel;
+import in.oriange.joinsta.models.EventPaidMemberStatusModel;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
-public class EventMemberStatusAdapter extends RecyclerView.Adapter<EventMemberStatusAdapter.MyViewHolder> {
+public class PaidEventsMembersAllAdapter extends RecyclerView.Adapter<PaidEventsMembersAllAdapter.MyViewHolder> {
 
     private Context context;
-    private List<EventMemberStatusModel.ResultBean> statusList;
+    private List<EventPaidMemberStatusModel.ResultBean> membersList;
 
-    public EventMemberStatusAdapter(Context context, List<EventMemberStatusModel.ResultBean> statusList) {
+    public PaidEventsMembersAllAdapter(Context context, List<EventPaidMemberStatusModel.ResultBean> membersList) {
         this.context = context;
-        this.statusList = statusList;
+        this.membersList = membersList;
     }
 
     @NonNull
@@ -44,22 +45,11 @@ public class EventMemberStatusAdapter extends RecyclerView.Adapter<EventMemberSt
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
-
         final int position = holder.getAdapterPosition();
-        final EventMemberStatusModel.ResultBean memberDetails = statusList.get(position);
-
+        final EventPaidMemberStatusModel.ResultBean memberDetails = membersList.get(position);
 
         holder.tv_name.setText(memberDetails.getFirst_name());
-
-        if (!memberDetails.getMobile().isEmpty() && !memberDetails.getEmail().isEmpty()) {
-            holder.tv_mobile_email.setText(memberDetails.getMobile() + " | " + memberDetails.getEmail());
-        } else if (!memberDetails.getMobile().isEmpty() && memberDetails.getEmail().isEmpty()) {
-            holder.tv_mobile_email.setText(memberDetails.getMobile());
-        } else if (memberDetails.getMobile().isEmpty() && !memberDetails.getEmail().isEmpty()) {
-            holder.tv_mobile_email.setText(memberDetails.getEmail());
-        } else if (memberDetails.getMobile().isEmpty() && memberDetails.getEmail().isEmpty()) {
-            holder.tv_mobile_email.setVisibility(View.GONE);
-        }
+        holder.tv_mobile_email.setText(memberDetails.getMobile());
 
         holder.ib_call.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,54 +81,47 @@ public class EventMemberStatusAdapter extends RecyclerView.Adapter<EventMemberSt
         });
 
         switch (memberDetails.getStatus()) {
-            case "accepted":
-                holder.tv_status.setText("Accepted");
-                break;
-            case "maybe":
-                holder.tv_status.setText("May Be");
-                break;
-            case "rejected":
-                holder.tv_status.setText("Rejected");
-                break;
             case "paid":
                 holder.tv_status.setText("Paid");
+                holder.cv_main_layout.setCardBackgroundColor(context.getResources().getColor(R.color.lightgreen));
                 break;
             case "unpaid":
+                holder.cv_main_layout.setCardBackgroundColor(context.getResources().getColor(R.color.lightred));
                 holder.tv_status.setText("Unpaid");
                 break;
             case "deleted":
+                holder.cv_main_layout.setCardBackgroundColor(context.getResources().getColor(R.color.lightblue));
                 holder.tv_status.setText("Deleted");
                 break;
             case "":
                 holder.tv_status.setText("Pending");
                 break;
         }
-
     }
 
     @Override
     public int getItemCount() {
-        return statusList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
+        return membersList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
+        private CardView cv_main_layout;
         private TextView tv_name, tv_mobile_email, tv_status;
         private ImageButton ib_call;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
+            cv_main_layout = view.findViewById(R.id.cv_main_layout);
             tv_name = view.findViewById(R.id.tv_name);
             tv_mobile_email = view.findViewById(R.id.tv_mobile_email);
             tv_status = view.findViewById(R.id.tv_status);
             ib_call = view.findViewById(R.id.ib_call);
-
-
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

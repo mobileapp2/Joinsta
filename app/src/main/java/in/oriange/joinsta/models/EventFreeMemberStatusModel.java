@@ -2,7 +2,7 @@ package in.oriange.joinsta.models;
 
 import java.util.List;
 
-public class EventMemberStatusModel {
+public class EventFreeMemberStatusModel {
 
     /**
      * type : success

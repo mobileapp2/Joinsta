@@ -1,12 +1,17 @@
 package in.oriange.joinsta.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -20,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -27,6 +33,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,8 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.EventMemberStatusAdapter;
-import in.oriange.joinsta.models.EventMemberStatusModel;
+import in.oriange.joinsta.adapters.EventFreeMemberConfirmationStatusAdapter;
+import in.oriange.joinsta.models.EventFreeMemberStatusModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -58,7 +65,7 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
     private String userId, eventId;
 
     private List<MasterModel> statusTypeList;
-    private List<EventMemberStatusModel.ResultBean> membersList, filteredMembersList;
+    private List<EventFreeMemberStatusModel.ResultBean> membersList, filteredMembersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +166,7 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                     return;
                 }
 
@@ -169,8 +176,8 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
                 }
 
                 if (!query.toString().equals("")) {
-                    ArrayList<EventMemberStatusModel.ResultBean> membersSearchedList = new ArrayList<>();
-                    for (EventMemberStatusModel.ResultBean memberDetails : filteredMembersList) {
+                    ArrayList<EventFreeMemberStatusModel.ResultBean> membersSearchedList = new ArrayList<>();
+                    for (EventFreeMemberStatusModel.ResultBean memberDetails : filteredMembersList) {
 
                         String memberToBeSearched = memberDetails.getFirst_name().toLowerCase() +
                                 memberDetails.getMobile().toLowerCase() +
@@ -180,9 +187,9 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
                             membersSearchedList.add(memberDetails);
                         }
                     }
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, membersSearchedList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, membersSearchedList));
                 } else {
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                 }
 
             }
@@ -217,7 +224,7 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
                 for (MasterModel statusType : statusTypeList) {
                     if (statusType.isChecked()) {
                         selectedTypeCount = selectedTypeCount + 1;
-                        for (EventMemberStatusModel.ResultBean memberDetails : membersList)
+                        for (EventFreeMemberStatusModel.ResultBean memberDetails : membersList)
                             if (statusType.getId().equals(memberDetails.getStatus()))
                                 filteredMembersList.add(memberDetails);
                     }
@@ -226,11 +233,11 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
                 if (selectedTypeCount == 0) {
                     filteredMembersList = membersList;
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                 }
             }
         });
@@ -245,7 +252,7 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
 
                 filteredMembersList = membersList;
                 tv_filter_count.setVisibility(View.GONE);
-                rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
             }
         });
 
@@ -332,7 +339,7 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
                 if (!result.equals("")) {
                     membersList = new ArrayList<>();
                     filteredMembersList = new ArrayList<>();
-                    EventMemberStatusModel pojoDetails = new Gson().fromJson(result, EventMemberStatusModel.class);
+                    EventFreeMemberStatusModel pojoDetails = new Gson().fromJson(result, EventFreeMemberStatusModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
@@ -342,7 +349,7 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
                         if (membersList.size() > 0) {
                             rv_status.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_status.setAdapter(new EventMemberStatusAdapter(context, membersList));
+                            rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, membersList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_status.setVisibility(View.GONE);
@@ -372,4 +379,160 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_export, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_export) {
+            showExportDialog();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showExportDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_export, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setTitle("Select Export Type");
+        alertDialogBuilder.setView(promptView);
+
+        final CardView cv_pdf = promptView.findViewById(R.id.cv_pdf);
+        final CardView cv_excel = promptView.findViewById(R.id.cv_excel);
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        cv_pdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEnterEmailDialog("pdf");
+                alertD.dismiss();
+            }
+        });
+
+        cv_excel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEnterEmailDialog("excel");
+                alertD.dismiss();
+            }
+        });
+        alertD.show();
+
+    }
+
+    private void showEnterEmailDialog(String exportType) {
+        final MaterialEditText edt_entermobile = new MaterialEditText(context);
+        edt_entermobile.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        edt_entermobile.setHighlightColor(getResources().getColor(R.color.colorPrimary));
+        float dpi = context.getResources().getDisplayMetrics().density;
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setTitle("Enter Email");
+
+        alertDialogBuilder.setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (!Utilities.isEmailValid(edt_entermobile.getText().toString().trim())) {
+                    Utilities.showMessage("Please enter valid email", context, 2);
+                    dialog.dismiss();
+                    return;
+                }
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new SendFreeEventMemberStatus().execute(eventId, exportType, edt_entermobile.getText().toString().trim());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog alertD = alertDialogBuilder.create();
+        alertD.setView(edt_entermobile, (int) (19 * dpi), (int) (5 * dpi), (int) (14 * dpi), (int) (5 * dpi));
+        alertD.show();
+        alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        edt_entermobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!Utilities.isEmailValid(edt_entermobile.getText().toString().trim())) {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    alertD.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private class SendFreeEventMemberStatus extends AsyncTask<String, Void, String> {
+
+        ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "sendFreeEventMemberStatus");
+            obj.addProperty("event_id", params[0]);
+            obj.addProperty("report_type", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.EVENTSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage(message, context, 1);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

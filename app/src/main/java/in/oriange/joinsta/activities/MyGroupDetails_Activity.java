@@ -403,7 +403,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_add_member.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, GroupMembersSupervisors_Activity.class)
+                startActivity(new Intent(context, GroupMembersAdmins_Activity.class)
                         .putExtra("groupId", groupDetails.getId()));
             }
         });

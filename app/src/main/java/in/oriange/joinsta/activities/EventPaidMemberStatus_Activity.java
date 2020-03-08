@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.EventMemberStatusAdapter;
-import in.oriange.joinsta.models.EventMemberStatusModel;
+import in.oriange.joinsta.adapters.EventFreeMemberConfirmationStatusAdapter;
+import in.oriange.joinsta.models.EventFreeMemberStatusModel;
 import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -58,7 +58,7 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
     private String userId, eventId;
 
     private List<MasterModel> statusTypeList;
-    private List<EventMemberStatusModel.ResultBean> membersList, filteredMembersList;
+    private List<EventFreeMemberStatusModel.ResultBean> membersList, filteredMembersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +157,7 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                     return;
                 }
 
@@ -167,8 +167,8 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
                 }
 
                 if (!query.toString().equals("")) {
-                    ArrayList<EventMemberStatusModel.ResultBean> membersSearchedList = new ArrayList<>();
-                    for (EventMemberStatusModel.ResultBean memberDetails : filteredMembersList) {
+                    ArrayList<EventFreeMemberStatusModel.ResultBean> membersSearchedList = new ArrayList<>();
+                    for (EventFreeMemberStatusModel.ResultBean memberDetails : filteredMembersList) {
 
                         String memberToBeSearched = memberDetails.getFirst_name().toLowerCase() +
                                 memberDetails.getMobile().toLowerCase() +
@@ -178,9 +178,9 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
                             membersSearchedList.add(memberDetails);
                         }
                     }
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, membersSearchedList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, membersSearchedList));
                 } else {
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                 }
 
             }
@@ -215,7 +215,7 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
                 for (MasterModel statusType : statusTypeList) {
                     if (statusType.isChecked()) {
                         selectedTypeCount = selectedTypeCount + 1;
-                        for (EventMemberStatusModel.ResultBean memberDetails : membersList)
+                        for (EventFreeMemberStatusModel.ResultBean memberDetails : membersList)
                             if (statusType.getId().equals(memberDetails.getStatus()))
                                 filteredMembersList.add(memberDetails);
                     }
@@ -224,11 +224,11 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
                 if (selectedTypeCount == 0) {
                     filteredMembersList = membersList;
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                 } else {
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                    rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
                 }
             }
         });
@@ -243,7 +243,7 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
 
                 filteredMembersList = membersList;
                 tv_filter_count.setVisibility(View.GONE);
-                rv_status.setAdapter(new EventMemberStatusAdapter(context, filteredMembersList));
+                rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, filteredMembersList));
             }
         });
 
@@ -330,7 +330,7 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
                 if (!result.equals("")) {
                     membersList = new ArrayList<>();
                     filteredMembersList = new ArrayList<>();
-                    EventMemberStatusModel pojoDetails = new Gson().fromJson(result, EventMemberStatusModel.class);
+                    EventFreeMemberStatusModel pojoDetails = new Gson().fromJson(result, EventFreeMemberStatusModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
@@ -340,7 +340,7 @@ public class EventPaidMemberStatus_Activity extends AppCompatActivity {
                         if (membersList.size() > 0) {
                             rv_status.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_status.setAdapter(new EventMemberStatusAdapter(context, membersList));
+                            rv_status.setAdapter(new EventFreeMemberConfirmationStatusAdapter(context, membersList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_status.setVisibility(View.GONE);

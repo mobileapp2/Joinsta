@@ -63,13 +63,60 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
         dl.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    @Override
+    public void onTransactionResponse(Bundle bundle) {
+        Log.e("PaytmPayment_Activity ", " respon true " + bundle.toString());
+        String response = bundle.toString();
+        response = response.replace("Bundle", "");
+
+        if (response.contains("TXN_SUCCESS")) {
+            new TransactionStatusAPI().execute(MID, orderId);
+        } else {
+            Utilities.showMessage("Paytm payment failed, please try again", context, 3);
+            finish();
+        }
+
+    }
+
+    @Override
+    public void networkNotAvailable() {
+
+    }
+
+    @Override
+    public void clientAuthenticationFailed(String s) {
+
+    }
+
+    @Override
+    public void someUIErrorOccurred(String s) {
+        Log.e("PaytmPayment_Activity ", " ui fail respon  " + s);
+        finish();
+    }
+
+    @Override
+    public void onErrorLoadingWebPage(int i, String s, String s1) {
+        Log.e("PaytmPayment_Activity ", " error loading pagerespon true " + s + "  s1 " + s1);
+        finish();
+    }
+
+    @Override
+    public void onBackPressedCancelTransaction() {
+        Log.e("PaytmPayment_Activity ", " cancel call back respon  ");
+        finish();
+    }
+
+    @Override
+    public void onTransactionCancel(String s, Bundle bundle) {
+        Log.e("PaytmPayment_Activity ", "  transaction cancel ");
+        finish();
+    }
+
     private class sendUserDetailTOServerdd extends AsyncTask<ArrayList<String>, Void, String> {
-
-        private ProgressDialog dialog = new ProgressDialog(PaytmPayment_Activity.this);
-
 
         String PAYTMVERIFYURL = "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID" + orderId;
         String CHECKSUMHASH = "";
+        private ProgressDialog dialog = new ProgressDialog(PaytmPayment_Activity.this);
 
         @Override
         protected void onPreExecute() {
@@ -137,21 +184,6 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
             // start payment service call here
             Service.startPaymentTransaction(PaytmPayment_Activity.this, true, true,
                     PaytmPayment_Activity.this);
-        }
-
-    }
-
-    @Override
-    public void onTransactionResponse(Bundle bundle) {
-        Log.e("PaytmPayment_Activity ", " respon true " + bundle.toString());
-        String response = bundle.toString();
-        response = response.replace("Bundle", "");
-
-        if (response.contains("TXN_SUCCESS")) {
-            new TransactionStatusAPI().execute(MID, orderId);
-        } else {
-            Utilities.showMessage("Paytm payment failed, please try again", context, 3);
-            finish();
         }
 
     }
@@ -308,40 +340,6 @@ public class PaytmPayment_Activity extends AppCompatActivity implements PaytmPay
                 finish();
             }
         }
-    }
-
-    @Override
-    public void networkNotAvailable() {
-
-    }
-
-    @Override
-    public void clientAuthenticationFailed(String s) {
-
-    }
-
-    @Override
-    public void someUIErrorOccurred(String s) {
-        Log.e("PaytmPayment_Activity ", " ui fail respon  " + s);
-        finish();
-    }
-
-    @Override
-    public void onErrorLoadingWebPage(int i, String s, String s1) {
-        Log.e("PaytmPayment_Activity ", " error loading pagerespon true " + s + "  s1 " + s1);
-        finish();
-    }
-
-    @Override
-    public void onBackPressedCancelTransaction() {
-        Log.e("PaytmPayment_Activity ", " cancel call back respon  ");
-        finish();
-    }
-
-    @Override
-    public void onTransactionCancel(String s, Bundle bundle) {
-        Log.e("PaytmPayment_Activity ", "  transaction cancel ");
-        finish();
     }
 
 }

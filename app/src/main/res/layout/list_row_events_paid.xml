@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:layout_marginBottom="5dp"
+    android:layout_marginBottom="7dp"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="5dp">
@@ -98,7 +98,7 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textColor="@color/Clover_Green"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/tv_saved"
@@ -115,9 +115,20 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_payment_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingLeft="5dp"
+            android:paddingTop="2dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="2dp"
+            android:text="Members Payment Status"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

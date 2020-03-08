@@ -156,49 +156,41 @@
                         app:met_textColorHint="@color/darkGray"
                         app:met_underlineColor="@color/mediumGray" />
 
-                    <LinearLayout
+                    <RadioGroup
+                        android:id="@+id/rg_to"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:gravity="center_vertical"
-                            android:text="To"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <RadioGroup
-                            android:id="@+id/rg_to"
+                        <RadioButton
+                            android:id="@+id/rb_all"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.7"
-                            android:orientation="horizontal"
-                            android:weightSum="0.6">
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.15"
+                            android:checked="true"
+                            android:text="All"
+                            android:textSize="16sp" />
 
-                            <RadioButton
-                                android:id="@+id/rb_supervisor"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.35"
-                                android:text="Supervisors"
-                                android:textSize="16sp" />
+                        <RadioButton
+                            android:id="@+id/rb_app_members"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.35"
+                            android:text="App Members"
+                            android:textSize="16sp" />
 
-                            <RadioButton
-                                android:id="@+id/rb_all"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.25"
-                                android:checked="true"
-                                android:text="All"
-                                android:textSize="16sp" />
+                        <RadioButton
+                            android:id="@+id/rb_non_app_members"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="0.45"
+                            android:text="Non App Members"
+                            android:textSize="16sp" />
 
-                        </RadioGroup>
-
-                    </LinearLayout>
+                    </RadioGroup>
 
                     <com.rengwuxian.materialedittext.MaterialEditText
                         android:id="@+id/edt_subject"
@@ -291,7 +283,8 @@
                                 android:text="Notification"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
-                                android:textSize="14sp" />
+                                android:textSize="14sp"
+                                android:visibility="gone" />
 
                             <Button
                                 android:id="@+id/btn_sms"

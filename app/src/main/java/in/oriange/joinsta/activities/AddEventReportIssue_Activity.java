@@ -152,7 +152,7 @@ public class AddEventReportIssue_Activity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res;
-            res = APICall.JSONAPICall(ApplicationConstants.EVENTS, params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.EVENTSAPI, params[0]);
             return res.trim();
         }
 
