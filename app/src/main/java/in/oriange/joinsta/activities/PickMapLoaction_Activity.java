@@ -54,7 +54,6 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;

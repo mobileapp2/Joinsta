@@ -12,7 +12,6 @@ import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.fragments.Home_Fragment;
 import in.oriange.joinsta.fragments.More_Fragment;
 import in.oriange.joinsta.fragments.OffersEvents_fragment;
-import in.oriange.joinsta.fragments.Offers_Fragment;
 import in.oriange.joinsta.fragments.Search_Fragment;
 
 public class BotNavViewPagerAdapter extends FragmentPagerAdapter {

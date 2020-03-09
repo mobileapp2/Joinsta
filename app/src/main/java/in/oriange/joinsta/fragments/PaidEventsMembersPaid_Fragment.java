@@ -21,7 +21,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.PaidEventsMembersPaidAdapter;
 import in.oriange.joinsta.models.EventPaidMemberStatusModel;
 
-public class PaidEventsMembersPaid_Fragment  extends Fragment {
+public class PaidEventsMembersPaid_Fragment extends Fragment {
 
     private Context context;
     private EditText edt_search;

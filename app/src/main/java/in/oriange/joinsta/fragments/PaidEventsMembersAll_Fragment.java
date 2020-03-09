@@ -98,5 +98,5 @@ public class PaidEventsMembersAll_Fragment extends Fragment {
         });
 
     }
-    
+
 }

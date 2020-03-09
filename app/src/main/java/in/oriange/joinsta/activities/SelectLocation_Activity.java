@@ -44,7 +44,7 @@ import static in.oriange.joinsta.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinsta.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinsta.utilities.Utilities.turnOnLocation;
 
-public class SelectLocation_Activity extends AppCompatActivity{
+public class SelectLocation_Activity extends AppCompatActivity {
 
     private Context context;
     private CardView cv_locationdetails;

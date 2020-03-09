@@ -297,7 +297,7 @@
                         android:paddingBottom="2dp"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_confirmation"

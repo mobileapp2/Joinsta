@@ -185,7 +185,7 @@ public class CCAvenueWebView_Activity extends AppCompatActivity {
                         arraylist.add(map14);
 
                         map15.put("key", "is_early_bird_availed");
-                        map15.put("value",  mainIntent.getStringExtra("is_early_bird_availed"));
+                        map15.put("value", mainIntent.getStringExtra("is_early_bird_availed"));
                         arraylist.add(map15);
 
                         for (int i = 0; i < tableRowElements.size(); i++) {
