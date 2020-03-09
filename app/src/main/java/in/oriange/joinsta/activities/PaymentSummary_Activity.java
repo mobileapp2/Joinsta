@@ -110,7 +110,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
     }
 
     private void showDisclaimerDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builder.setCancelable(false)
                 .setTitle("Disclaimer")
                 .setMessage(R.string.online_payment_disclaimer)

@@ -554,7 +554,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setCancelable(true);
             pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pd.setMessage("Downloading Image");
@@ -645,7 +645,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setCancelable(true);
             pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pd.setMessage("Downloading Document");
@@ -775,7 +775,7 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setCancelable(true);
             pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pd.setMessage("Downloading Document");

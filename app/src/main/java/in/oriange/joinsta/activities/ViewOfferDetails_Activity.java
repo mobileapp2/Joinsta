@@ -344,7 +344,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(context);
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
             pd.setCancelable(true);
             pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pd.setMessage("Downloading Document");

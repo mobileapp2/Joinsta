@@ -139,7 +139,7 @@ public class AddEventReportIssue_Activity extends AppCompatActivity {
 
     private class EventReportIssue extends AsyncTask<String, Void, String> {
 
-        private ProgressDialog pd = new ProgressDialog(context);
+        private ProgressDialog pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         @Override
         protected void onPreExecute() {

@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import in.oriange.joinsta.R;
+
 /**
  * Helper class for selecting {@link Field} values.
  */
@@ -120,7 +122,7 @@ public final class FieldSelector {
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(adapter);
 
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(context, R.style.CustomDialogTheme)
                 .setTitle("Select Place Fields")
                 .setPositiveButton(
                         "Done",
