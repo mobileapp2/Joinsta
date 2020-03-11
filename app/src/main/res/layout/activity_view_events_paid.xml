@@ -625,17 +625,20 @@
                         android:padding="5dp"
                         android:text="Invitation Documents"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:background="@color/colorPrimary" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_documents"
+                    <TextView
+                        android:id="@+id/tv_viewdocs"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -666,7 +669,7 @@
                         android:paddingBottom="2dp"
                         android:text="Group Members Payment Status"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="25dp"
@@ -705,7 +708,7 @@
                         android:paddingBottom="2dp"
                         android:text="Report Issue"
                         android:textColor="@android:color/holo_red_dark"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="25dp"

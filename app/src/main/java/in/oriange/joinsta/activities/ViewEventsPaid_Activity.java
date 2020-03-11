@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,7 +14,6 @@ import android.os.StrictMode;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +25,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.borjabravo.readmoretextview.ReadMoreTextView;
@@ -69,10 +67,9 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
     private TextView tv_name, tv_type, tv_created_by_name, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
-            tv_message_paid, tv_message_unpaid, tv_organizer_name, tv_remark, tv_total_price, tv_saved, tv_due_date;
+            tv_message_paid, tv_message_unpaid, tv_organizer_name, tv_remark, tv_total_price, tv_saved, tv_due_date, tv_viewdocs;
     private LinearLayout ll_paid_msg, ll_unpaid_msg;
     private Button btn_buy;
-    private RecyclerView rv_documents;
     private CardView cv_description, cv_date_time, cv_venue, cv_message, cv_price, cv_remark, cv_organizer,
             cv_documents, cv_members_status, cv_report_issue;
 
@@ -98,7 +95,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     }
 
     private void init() {
-
         context = ViewEventsPaid_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
@@ -124,6 +120,8 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_message_paid = findViewById(R.id.tv_message_paid);
         tv_message_unpaid = findViewById(R.id.tv_message_unpaid);
         tv_organizer_name = findViewById(R.id.tv_organizer_name);
+        tv_viewdocs = findViewById(R.id.tv_viewdocs);
+
 
         ll_paid_msg = findViewById(R.id.ll_paid_msg);
         ll_unpaid_msg = findViewById(R.id.ll_unpaid_msg);
@@ -131,8 +129,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         btn_buy = findViewById(R.id.btn_buy);
 
         rv_images = findViewById(R.id.rv_images);
-        rv_documents = findViewById(R.id.rv_documents);
-        rv_documents.setLayoutManager(new LinearLayoutManager(context));
 
         cv_description = findViewById(R.id.cv_description);
         cv_date_time = findViewById(R.id.cv_date_time);
@@ -180,10 +176,10 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
 
-        if (eventDetails.getIs_online_events().equals("1"))
-            tv_is_online.setVisibility(View.VISIBLE);
-        else
-            tv_is_online.setVisibility(GONE);
+//        if (eventDetails.getIs_online_events().equals("1"))
+//            tv_is_online.setVisibility(View.VISIBLE);
+//        else
+        tv_is_online.setVisibility(GONE);
 
         if (eventDetails.getCreated_by_name().equals(""))
             tv_created_by_name.setVisibility(View.GONE);
@@ -285,9 +281,15 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         }
 
         if (documentsList.size() == 0)
-            cv_documents.setVisibility(GONE);
-        else
-            rv_documents.setAdapter(new DocumentsAdapter());
+            cv_documents.setVisibility(View.GONE);
+        else {
+            if (documentsList.size() == 1) {
+                tv_viewdocs.setText(documentsList.size() + " Document Attached");
+            } else {
+                tv_viewdocs.setText(documentsList.size() + " Documents Attached");
+            }
+            tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
 
         if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")
                 || eventDetails.getPayment_status().equalsIgnoreCase("pay_at_counter")) {
@@ -353,6 +355,13 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         imv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (eventDetails.getCreated_by().equals(userId)) {
+                    if (eventDetails.getIs_atleast_one_paymentdone().equals("1")) {
+                        Utilities.showMessage("You cannot delete this event as payments for the events are started", context, 2);
+                        return;
+                    }
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setMessage("Are you sure you want to delete this event?");
                 builder.setTitle("Alert");
@@ -362,7 +371,11 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Utilities.isNetworkAvailable(context)) {
                             if (eventDetails.getCreated_by().equals(userId)) {
-                                new DeletePaidEvent().execute();
+                                if (eventDetails.getIs_atleast_one_paymentdone().equals("0")) {
+                                    new DeletePaidEvent().execute();
+                                } else if (eventDetails.getIs_atleast_one_paymentdone().equals("1")) {
+                                    Utilities.showMessage("You cannot delete this event as payments for the events are started", context, 2);
+                                }
                             } else {
                                 new UserSpecificDeleteEvent().execute();
                             }
@@ -462,6 +475,43 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
+        tv_viewdocs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDocumentsList();
+            }
+        });
+
+    }
+
+    private void showDocumentsList() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Document List");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row_ellipsize);
+
+        for (int i = 0; i < documentsList.size(); i++) {
+            arrayAdapter.add(documentsList.get(i).substring(documentsList.get(i).lastIndexOf('/') + 1));
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(documentsList.get(which));
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+        builderSingle.show();
     }
 
     private void showPaymentOptionsDialog() {
@@ -562,53 +612,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             }
         });
         builderSingle.show();
-    }
-
-    private class DocumentsAdapter extends RecyclerView.Adapter<DocumentsAdapter.MyViewHolder> {
-
-        DocumentsAdapter() {
-
-        }
-
-        @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_1, parent, false);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
-            final int position = holder.getAdapterPosition();
-
-            holder.tv_name.setText(documentsList.get(position).substring(documentsList.get(position).lastIndexOf('/') + 1));
-
-            holder.tv_name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Utilities.isNetworkAvailable(context))
-                        new DownloadDocument().execute(documentsList.get(position));
-                    else
-                        Utilities.showMessage("Please check your internet connection", context, 2);
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return documentsList.size();
-        }
-
-        class MyViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView tv_name;
-
-            private MyViewHolder(View view) {
-                super(view);
-                tv_name = view.findViewById(R.id.tv_name);
-
-            }
-        }
     }
 
     private class DeletePaidEvent extends AsyncTask<String, Void, String> {
