@@ -128,7 +128,7 @@
             android:paddingBottom="2dp"
             android:text="Members Payment Status"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 

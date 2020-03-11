@@ -72,7 +72,11 @@ public class GroupMembersAdminsListModel implements Serializable {
         private List<MemberCategoriesBean> member_categories;
 
         public String getRole() {
-            return role;
+            if (role != null) {
+                return role;
+            } else {
+                return "";
+            }
         }
 
         public void setRole(String role) {
@@ -80,7 +84,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getCan_members_post() {
-            return can_members_post;
+
+            if (can_members_post != null) {
+                return can_members_post;
+            } else {
+                return "";
+            }
         }
 
         public void setCan_members_post(String can_members_post) {
@@ -88,7 +97,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getFirst_name() {
-            return first_name;
+
+            if (first_name != null) {
+                return first_name;
+            } else {
+                return "";
+            }
         }
 
         public void setFirst_name(String first_name) {
@@ -96,7 +110,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getPassword() {
-            return password;
+
+            if (password != null) {
+                return password;
+            } else {
+                return "";
+            }
         }
 
         public void setPassword(String password) {
@@ -104,7 +123,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getCountry_code() {
-            return country_code;
+
+            if (country_code != null) {
+                return "+" + country_code;
+            } else {
+                return "";
+            }
         }
 
         public void setCountry_code(String country_code) {
@@ -112,7 +136,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getMobile() {
-            return mobile;
+
+            if (mobile != null) {
+                return mobile;
+            } else {
+                return "";
+            }
         }
 
         public void setMobile(String mobile) {
@@ -120,7 +149,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getEmail() {
-            return email;
+
+            if (email != null) {
+                return email;
+            } else {
+                return "";
+            }
         }
 
         public void setEmail(String email) {
@@ -128,7 +162,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getIs_active() {
-            return is_active;
+
+            if (is_active != null) {
+                return is_active;
+            } else {
+                return "";
+            }
         }
 
         public void setIs_active(String is_active) {
@@ -136,7 +175,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getIs_hidden() {
-            return is_hidden;
+
+            if (is_hidden != null) {
+                return is_hidden;
+            } else {
+                return "";
+            }
         }
 
         public void setIs_hidden(String is_hidden) {
@@ -144,7 +188,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getId() {
-            return id;
+
+            if (id != null) {
+                return id;
+            } else {
+                return "";
+            }
         }
 
         public void setId(String id) {
@@ -152,7 +201,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getCan_pos() {
-            return can_pos;
+
+            if (can_pos != null) {
+                return can_pos;
+            } else {
+                return "";
+            }
         }
 
         public void setCan_pos(String can_pos) {
@@ -160,7 +214,12 @@ public class GroupMembersAdminsListModel implements Serializable {
         }
 
         public String getIs_joinsta_member() {
-            return is_joinsta_member;
+
+            if (is_joinsta_member != null) {
+                return is_joinsta_member;
+            } else {
+                return "";
+            }
         }
 
         public void setIs_joinsta_member(String is_joinsta_member) {
@@ -189,7 +248,12 @@ public class GroupMembersAdminsListModel implements Serializable {
             private String member_category;
 
             public String getId() {
-                return id;
+
+                if (id != null) {
+                    return id;
+                } else {
+                    return "";
+                }
             }
 
             public void setId(String id) {
@@ -197,7 +261,12 @@ public class GroupMembersAdminsListModel implements Serializable {
             }
 
             public String getGroup_member_id() {
-                return group_member_id;
+
+                if (group_member_id != null) {
+                    return group_member_id;
+                } else {
+                    return "";
+                }
             }
 
             public void setGroup_member_id(String group_member_id) {
@@ -205,7 +274,12 @@ public class GroupMembersAdminsListModel implements Serializable {
             }
 
             public String getMember_category_id() {
-                return member_category_id;
+
+                if (member_category_id != null) {
+                    return member_category_id;
+                } else {
+                    return "";
+                }
             }
 
             public void setMember_category_id(String member_category_id) {
@@ -213,7 +287,12 @@ public class GroupMembersAdminsListModel implements Serializable {
             }
 
             public String getMember_category() {
-                return member_category;
+
+                if (member_category != null) {
+                    return member_category;
+                } else {
+                    return "";
+                }
             }
 
             public void setMember_category(String member_category) {

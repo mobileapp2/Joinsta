@@ -106,10 +106,10 @@
                     android:id="@+id/tv_created_by_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="end"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:paddingBottom="5dp"
-                    android:gravity="end"
                     android:text="Created By - Priyesh Pawar"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
@@ -297,7 +297,7 @@
                         android:paddingBottom="2dp"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_confirmation"
@@ -558,10 +558,13 @@
                         android:layout_height="0.5dp"
                         android:background="@color/colorPrimary" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_documents"
+                    <TextView
+                        android:id="@+id/tv_viewdocs"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -591,7 +594,7 @@
                         android:paddingRight="5dp"
                         android:text="Group Members Confirmation Status"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="25dp"
@@ -629,7 +632,7 @@
                         android:paddingRight="5dp"
                         android:text="Report Issue"
                         android:textColor="@android:color/holo_red_dark"
-                        android:textSize="16sp" />
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="25dp"

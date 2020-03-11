@@ -35,6 +35,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -60,6 +61,7 @@ import java.util.regex.Matcher;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupFeedsCommentsAdapter;
+import in.oriange.joinsta.models.DisclaimerModel;
 import in.oriange.joinsta.models.GroupFeedsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -346,7 +348,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         tv_disclaimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, FeedsDisclaimer_Activity.class));
+                if (Utilities.isNetworkAvailable(context))
+                    new GetDisclaimer().execute();
+                else
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
 
@@ -839,6 +844,62 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private class GetDisclaimer extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please Wait");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
+            param.add(new ParamsPojo("type", "getDisclaimerString"));
+            res = APICall.FORMDATAAPICall(ApplicationConstants.FEEDSAPI, param);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    List<DisclaimerModel.ResultBean> disclaimerList = new ArrayList<>();
+                    DisclaimerModel pojoDetails = new Gson().fromJson(result, DisclaimerModel.class);
+                    type = pojoDetails.getType();
+                    if (type.equalsIgnoreCase("success")) {
+                        disclaimerList = pojoDetails.getResult();
+                        if (disclaimerList.size() > 0) {
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            builder.setCancelable(false)
+                                    .setTitle("Disclaimer")
+                                    .setMessage(disclaimerList.get(0).getString())
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .create().show();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
