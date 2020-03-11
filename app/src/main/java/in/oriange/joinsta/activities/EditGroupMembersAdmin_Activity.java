@@ -130,6 +130,7 @@ public class EditGroupMembersAdmin_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        groupId = getIntent().getStringExtra("groupId");
         memberDetails = (GroupMembersAdminsListModel.ResultBean) getIntent().getSerializableExtra("memberDetails");
         role = memberDetails.getRole();
 
@@ -183,12 +184,12 @@ public class EditGroupMembersAdmin_Activity extends AppCompatActivity {
             }
         });
 
-        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showCountryCodesListDialog();
-            }
-        });
+//        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showCountryCodesListDialog();
+//            }
+//        });
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -452,6 +453,17 @@ public class EditGroupMembersAdmin_Activity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         categotyList = pojoDetails.getResult();
                         if (categotyList.size() > 0) {
+
+
+                            for (int j = 0; j < memberDetails.getMember_categories().size(); j++) {
+                                for (int i = 0; i < categotyList.size(); i++) {
+                                    if (memberDetails.getMember_categories().get(j).getMember_category_id().equals(categotyList.get(i).getId())) {
+                                        categotyList.get(i).setChecked(true);
+                                        break;
+                                    }
+                                }
+                            }
+
                             showMemberCategoryListDialog();
                         }
                     } else {

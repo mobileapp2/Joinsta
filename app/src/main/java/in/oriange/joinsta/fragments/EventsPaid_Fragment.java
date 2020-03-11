@@ -108,6 +108,7 @@ public class EventsPaid_Fragment extends Fragment {
 
         eventList = new ArrayList<>();
         eventTypeList = new ArrayList<>();
+        mFilteredEventList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -458,19 +459,28 @@ public class EventsPaid_Fragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 switch (calOptions.get(which)) {
                     case "Today":
-                        Date todayDate = Calendar.getInstance().getTime();
-                        filterEventsAccordingToDate(todayDate);
+                        try {
+                            Calendar calendar = Calendar.getInstance();
+                            Date todayDate = new SimpleDateFormat("dd/MM/yyyy").parse(calendar.get(Calendar.DAY_OF_MONTH) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.YEAR));
+                            filterEventsAccordingToDate(todayDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case "Tomorrow":
-                        Calendar tomoCal = Calendar.getInstance();
-                        tomoCal.add(Calendar.DATE, +1);
-                        Date tommorowDate = Calendar.getInstance().getTime();
-                        filterEventsAccordingToDate(tommorowDate);
+                        try {
+                            Calendar tomoCal = Calendar.getInstance();
+                            tomoCal.set(Calendar.DATE, +1);
+                            Date tommorowDate = new SimpleDateFormat("dd/MM/yyyy").parse(tomoCal.get(Calendar.DAY_OF_MONTH) + "/" + (tomoCal.get(Calendar.MONTH) + 1) + "/" + tomoCal.get(Calendar.YEAR));
+                            filterEventsAccordingToDate(tommorowDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         break;
                     case "Custom":
                         DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
                             try {
-                                Date customDate = new SimpleDateFormat("dd/MM/yyyy").parse(dayOfMonth + "/" + month + "/" + year);
+                                Date customDate = new SimpleDateFormat("dd/MM/yyyy").parse(dayOfMonth + "/" + (month + 1) + "/" + year);
                                 filterEventsAccordingToDate(customDate);
                             } catch (ParseException e) {
                                 e.printStackTrace();

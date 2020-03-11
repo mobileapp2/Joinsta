@@ -32,12 +32,11 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     // BETA API LINK V2
-    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
-    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/images/";
+//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
 
-    //LIVE API LINK V12
-//    private static final String API_LINK = "http://joinsta.in/Api_v12/";
-//    public static final String IMAGE_LINK = "http://joinsta.in/images/";
+    //LIVE API LINK V13
+    private static final String API_LINK = "http://joinsta.in/Api_v13/";
+    public static final String IMAGE_LINK = "http://joinsta.in/images/";
 
     public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";
     public static final String LOGINAPI = API_LINK + "login.php";

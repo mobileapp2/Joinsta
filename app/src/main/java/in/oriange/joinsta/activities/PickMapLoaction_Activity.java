@@ -131,8 +131,8 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
                     addressList.setCountry(addresses.get(0).getCountryName());
                     addressList.setState(addresses.get(0).getAdminArea());
                     addressList.setPincode(addresses.get(0).getPostalCode());
-                    addressList.setMap_location_lattitude(String.valueOf(addresses.get(0).getLatitude()));
-                    addressList.setMap_location_logitude(String.valueOf(addresses.get(0).getLongitude()));
+                    addressList.setMap_location_lattitude(String.valueOf(place.getLatLng().latitude));
+                    addressList.setMap_location_logitude(String.valueOf(place.getLatLng().longitude));
 
                     Intent intent = getIntent();
                     intent.putExtra("addressList", addressList);
@@ -243,8 +243,8 @@ public class PickMapLoaction_Activity extends FragmentActivity implements OnMapR
         addressList.setCountry(addresses.get(0).getCountryName());
         addressList.setState(addresses.get(0).getAdminArea());
         addressList.setPincode(addresses.get(0).getPostalCode());
-        addressList.setMap_location_lattitude(addresses.get(0).getPostalCode());
-        addressList.setMap_location_logitude(addresses.get(0).getPostalCode());
+        addressList.setMap_location_lattitude(String.valueOf(latLng1.latitude));
+        addressList.setMap_location_logitude(String.valueOf(latLng1.longitude));
 
         Intent intent = getIntent();
         intent.putExtra("addressList", addressList);

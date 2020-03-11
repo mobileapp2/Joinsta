@@ -547,20 +547,25 @@ public class EventsPaidModel implements Serializable {
                 String startDateStr = ordinal(Integer.parseInt(startDay)) + " " + startMonth + " " + startYear;
                 String endDateStr = ordinal(Integer.parseInt(endDay)) + " " + endMonth + " " + endYear;
 
-                boolean areDatesEqual = startDate.equals(endDate);
+//                boolean areDatesEqual = startDate.equals(endDate);
+//
+//                if (areDatesEqual)
+//                    return "On " + startDateStr +
+//                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+//                else
+//                    return "From " + startDateStr + " to " + endDateStr +
+//                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
 
-                if (areDatesEqual)
-                    return "On " + startDateStr +
-                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
-                else
-                    return "From " + startDateStr + " to " + endDateStr +
-                            " Time " + getAmPmFrom24Hour(event_start_time) + " to " + getAmPmFrom24Hour(event_end_time);
+                return "Start - " + startDateStr + " | " + getAmPmFrom24Hour(event_start_time) + "\n" +
+                        "End  - " + endDateStr + " | " + getAmPmFrom24Hour(event_end_time);
+
 
             } catch (ParseException e) {
                 e.printStackTrace();
                 return "";
             }
         }
+
 
         public boolean isEndDatePassed() {
             try {
