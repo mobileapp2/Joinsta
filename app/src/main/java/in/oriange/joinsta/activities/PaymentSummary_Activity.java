@@ -144,14 +144,13 @@ public class PaymentSummary_Activity extends AppCompatActivity {
                     return;
                 }
                 quantity = quantity - 1;
+                tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
 
                 if (isEarlyPaymentApplicable.equals("1")) {
                     int earlybirdPrice = actualEarlybirdPrice * quantity;
                     int actualPrice = actualNormalPrice * quantity;
                     applicablePrice = earlybirdPrice;
                     int savedAmount = actualPrice - applicablePrice;
-
-                    tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
                     tv_saved.setText(Html.fromHtml("<strike>₹ " + actualPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
 
                 } else {
@@ -166,16 +165,14 @@ public class PaymentSummary_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 quantity = quantity + 1;
+                tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
 
                 if (isEarlyPaymentApplicable.equals("1")) {
                     int earlybirdPrice = actualEarlybirdPrice * quantity;
                     int actualPrice = actualNormalPrice * quantity;
                     applicablePrice = earlybirdPrice;
                     int savedAmount = actualPrice - applicablePrice;
-
-                    tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
                     tv_saved.setText(Html.fromHtml("<strike>₹ " + actualPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
-
                 } else {
                     applicablePrice = actualNormalPrice * quantity;
                 }
