@@ -64,6 +64,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.EventTypeModel;
 import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.models.MasterModel;
@@ -90,6 +91,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
+    private TextView tv_countrycode;
     private Button btn_add_document, btn_add_image, btn_save;
     private int latestPosition;
 
@@ -100,6 +102,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
     private File photoFileFolder;
     private Uri photoURI;
     private int mYear, mMonth, mDay, startHour, startMinutes;
+    private ArrayList<ContryCodeModel> countryCodeList;
 
     private final int DOCUMENT_REQUEST = 100, CAMERA_REQUEST = 200, GALLERY_REQUEST = 300;
 
@@ -133,6 +136,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         edt_address = findViewById(R.id.edt_address);
         edt_city = findViewById(R.id.edt_city);
         edt_remark = findViewById(R.id.edt_remark);
+        tv_countrycode = findViewById(R.id.tv_countrycode);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         btn_add_image = findViewById(R.id.btn_add_image);
@@ -205,6 +209,13 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                 } else {
                     new GetEventTypeList().showEventTypeListDialog();
                 }
+            }
+        });
+
+        tv_countrycode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                showCountryCodeDialog();
             }
         });
 
