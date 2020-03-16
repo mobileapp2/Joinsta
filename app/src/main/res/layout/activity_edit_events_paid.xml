@@ -396,93 +396,229 @@
                         android:layout_height="0.5dp"
                         android:background="@color/colorPrimary" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:text="For Normal"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_outline"
+                        android:orientation="vertical">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_normal_amount"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:layout_marginRight="2.5dp"
-                            android:layout_weight="1"
-                            android:hint="Event price (₹)"
-                            android:inputType="number"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_marginTop="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="For Group Members"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_normal_due_date"
-                            android:layout_width="0dp"
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#c2c2c2" />
+
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="2.5dp"
-                            android:layout_weight="1"
-                            android:drawableRight="@drawable/icon_date"
-                            android:focusable="false"
-                            android:hint="Due Date"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:paddingLeft="5dp"
+                            android:text="For Normal"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_normal_amount"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="1"
+                                android:hint="Event price (₹)"
+                                android:inputType="number"
+                                android:textColorHint="@color/colorAccent"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_normal_due_date"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_weight="1"
+                                android:drawableRight="@drawable/icon_date"
+                                android:focusable="false"
+                                android:hint="Due Date"
+                                android:longClickable="false"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="Early Bird"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_early_bird_amount"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="1"
+                                android:hint="Event price (₹)"
+                                android:inputType="number"
+                                android:textColorHint="@color/colorAccent"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_early_bird_due_date"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_weight="1"
+                                android:drawableRight="@drawable/icon_date"
+                                android:focusable="false"
+                                android:hint="Due Date"
+                                android:longClickable="false"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:text="Early Bird"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/bg_outline"
+                        android:orientation="vertical">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_early_bird_amount"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:layout_marginRight="2.5dp"
-                            android:layout_weight="1"
-                            android:hint="Event price (₹)"
-                            android:inputType="number"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_marginTop="5dp"
+                            android:paddingLeft="5dp"
+                            android:text="For Non-group Members"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_early_bird_due_date"
-                            android:layout_width="0dp"
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#c2c2c2" />
+
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="2.5dp"
-                            android:layout_weight="1"
-                            android:drawableRight="@drawable/icon_date"
-                            android:focusable="false"
-                            android:hint="Due Date"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:paddingLeft="5dp"
+                            android:text="For Normal"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_normal_amount_non_member"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="1"
+                                android:hint="Event price (₹)"
+                                android:inputType="number"
+                                android:textColorHint="@color/colorAccent"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_normal_due_date_non_member"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_weight="1"
+                                android:drawableRight="@drawable/icon_date"
+                                android:focusable="false"
+                                android:hint="Due Date"
+                                android:longClickable="false"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:text="Early Bird"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_early_bird_amount_non_member"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="1dp"
+                                android:layout_marginRight="2.5dp"
+                                android:layout_weight="1"
+                                android:hint="Event price (₹)"
+                                android:inputType="number"
+                                android:textColorHint="@color/colorAccent"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                            <com.rengwuxian.materialedittext.MaterialEditText
+                                android:id="@+id/edt_early_bird_due_date_non_member"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="2.5dp"
+                                android:layout_weight="1"
+                                android:drawableRight="@drawable/icon_date"
+                                android:focusable="false"
+                                android:hint="Due Date"
+                                android:longClickable="false"
+                                android:textSize="16sp"
+                                app:met_floatingLabel="highlight"
+                                app:met_textColorHint="@color/darkGray"
+                                app:met_underlineColor="@color/mediumGray" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 

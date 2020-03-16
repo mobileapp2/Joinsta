@@ -7,5 +7,10 @@
         android:icon="@drawable/icon_export"
         android:title=""
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_message"
+        android:icon="@drawable/icon_message"
+        android:title=""
+        app:showAsAction="always" />
 
 </menu>

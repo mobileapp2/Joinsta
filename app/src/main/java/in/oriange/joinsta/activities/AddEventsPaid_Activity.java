@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +53,7 @@ import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -68,6 +71,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.CountryCodeAdapter;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.EventTypeModel;
 import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.models.GroupPaymentAccountModel;
@@ -76,11 +81,13 @@ import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.MultipartUtility;
+import in.oriange.joinsta.utilities.RecyclerItemClickListener;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
@@ -92,12 +99,14 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_name, edt_type, edt_description, edt_organizer_name, edt_organizer_mobile, edt_start_date,
             edt_end_date, edt_start_time, edt_end_time, edt_select_from_map, edt_address, edt_city, edt_early_bird_amount,
-            edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date, edt_remark, edt_msg_forpaid, edt_msg_forunpaid,
-            edt_payment_mode, edt_paylink, edt_payment_account,
+            edt_early_bird_due_date, edt_normal_amount, edt_normal_due_date, edt_early_bird_amount_non_member,
+            edt_early_bird_due_date_non_member, edt_normal_amount_non_member, edt_normal_due_date_non_member,
+            edt_remark, edt_msg_forpaid, edt_msg_forunpaid, edt_payment_mode, edt_paylink, edt_payment_account,
             edt_attach_doc_multi;
     private CheckBox cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
+    private TextView tv_countrycode;
     private Button btn_add_document, btn_add_image, btn_save;
     private int latestPosition;
 
@@ -106,12 +115,14 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     private List<EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean> paymentModeList;
     private ArrayList<MasterModel> imageList;
     private String userId, groupId, eventTypeId, eventStartDate, eventEndDate, eventStartTime, eventEndTime, earlyBirdDueDate, normalDueDate,
-            paymentAccountId = "0", latitude = "", longitude = "", isOfflinePaymentsAllowed = "0";
+            earlyBirdDueDateForNonMember, normalDueDateForNonMember, paymentAccountId = "0", latitude = "", longitude = "", isOfflinePaymentsAllowed = "0";
     private File photoFileFolder;
     private Uri photoURI;
     private JsonArray selectedPaymentModes;
     private int mYear, mMonth, mDay, startHour, startMinutes;
     private AlertDialog paymentDialog;
+    private ArrayList<ContryCodeModel> countryCodeList;
+    private AlertDialog countryCodeDialog;
 
     private final int DOCUMENT_REQUEST = 100, CAMERA_REQUEST = 200, GALLERY_REQUEST = 300;
 
@@ -148,12 +159,17 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         edt_early_bird_due_date = findViewById(R.id.edt_early_bird_due_date);
         edt_normal_amount = findViewById(R.id.edt_normal_amount);
         edt_normal_due_date = findViewById(R.id.edt_normal_due_date);
+        edt_early_bird_amount_non_member = findViewById(R.id.edt_early_bird_amount_non_member);
+        edt_early_bird_due_date_non_member = findViewById(R.id.edt_early_bird_due_date_non_member);
+        edt_normal_amount_non_member = findViewById(R.id.edt_normal_amount_non_member);
+        edt_normal_due_date_non_member = findViewById(R.id.edt_normal_due_date_non_member);
         edt_remark = findViewById(R.id.edt_remark);
         edt_msg_forpaid = findViewById(R.id.edt_msg_forpaid);
         edt_msg_forunpaid = findViewById(R.id.edt_msg_forunpaid);
         edt_payment_mode = findViewById(R.id.edt_payment_mode);
         edt_paylink = findViewById(R.id.edt_paylink);
         edt_payment_account = findViewById(R.id.edt_payment_account);
+        tv_countrycode = findViewById(R.id.tv_countrycode);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         btn_add_image = findViewById(R.id.btn_add_image);
@@ -169,6 +185,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         docsLayoutsList = new ArrayList<>();
         paymentModeList = new ArrayList<>();
         imageList = new ArrayList<>();
+        countryCodeList = new ArrayList<>();
 
         photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Events");
         if (!photoFileFolder.exists())
@@ -183,7 +200,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Online", "online", "", "0", false));
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Offline", "offline", "", "0", false));
         paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Payment link", "paymentlink", "", "0", false));
-        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Pay at counter ", "pay_at_counter", "", "0", false));
+        paymentModeList.add(new EventsPaidModel.ResultBean.PaideventsPaymentoptionsBean("Pay at counter", "pay_at_counter", "", "0", false));
     }
 
     private void getSessionDetails() {
@@ -198,6 +215,24 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+
+        try {
+            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
+            countryCodeList = new ArrayList<>();
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                countryCodeList.add(new ContryCodeModel(
+                        jo_inside.getString("name"),
+                        jo_inside.getString("dial_code"),
+                        jo_inside.getString("code")
+                ));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         groupId = getIntent().getStringExtra("groupId");
 
         Calendar calendar = Calendar.getInstance();
@@ -231,6 +266,13 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 } else {
                     new GetEventTypeList().showEventTypeListDialog();
                 }
+            }
+        });
+
+        tv_countrycode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCountryCodeDialog();
             }
         });
 
@@ -455,6 +497,87 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                     public void onCancel(DialogInterface dialog) {
                         earlyBirdDueDate = "";
                         edt_early_bird_due_date.setText("");
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        edt_normal_due_date_non_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        try {
+                            Date event = new SimpleDateFormat("yyyy-MM-dd").parse(eventEndDate);
+                            Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
+
+                            boolean isAfter = normal.after(event);
+
+                            if (isAfter) {
+                                Utilities.showMessage("Normal payment due date cannot be after event date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        normalDueDateForNonMember = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_normal_due_date_non_member.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", normalDueDateForNonMember));
+                        edt_early_bird_due_date_non_member.setText("");
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        normalDueDateForNonMember = "";
+                        edt_normal_due_date_non_member.setText("");
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        edt_early_bird_due_date_non_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        try {
+                            Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(normalDueDateForNonMember);
+                            Date early = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
+
+                            boolean isAfter = early.after(normal);
+
+                            if (isAfter) {
+                                Utilities.showMessage("Early bird payment due date cannot be after normal payment due date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        earlyBirdDueDateForNonMember = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_early_bird_due_date_non_member.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", earlyBirdDueDateForNonMember));
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        earlyBirdDueDateForNonMember = "";
+                        edt_early_bird_due_date_non_member.setText("");
                     }
                 });
                 dialog.show();
@@ -795,6 +918,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("description", edt_description.getText().toString().trim());
         mainObj.addProperty("organizer_name", edt_organizer_name.getText().toString().trim());
         mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
+        mainObj.addProperty("country_code", tv_countrycode.getText().toString().trim());
         mainObj.addProperty("event_date", eventStartDate);
         mainObj.addProperty("event_end_date", eventEndDate);
         mainObj.addProperty("event_start_time", eventStartTime);
@@ -847,6 +971,78 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
     public void removeAttachDoc(View view) {
         ll_documents.removeView((View) view.getParent());
         docsLayoutsList.remove(view.getParent());
+    }
+
+    private void showCountryCodeDialog() {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
+
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+                    return;
+                }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(context, searchedCountryList));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        rv_country.addOnItemTouchListener(new RecyclerItemClickListener(context,
+                (view1, position) -> {
+                    tv_countrycode.setText(countryCodeList.get(position).getDial_code());
+                    countryCodeDialog.dismiss();
+                }));
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
     }
 
     private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {

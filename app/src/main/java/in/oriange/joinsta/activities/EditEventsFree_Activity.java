@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -47,6 +50,7 @@ import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -64,6 +68,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.CountryCodeAdapter;
+import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.EventTypeModel;
 import in.oriange.joinsta.models.EventsFreeModel;
 import in.oriange.joinsta.models.MapAddressListModel;
@@ -71,12 +77,14 @@ import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.MultipartUtility;
+import in.oriange.joinsta.utilities.RecyclerItemClickListener;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
 import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinsta.utilities.Utilities.yyyyMMddDate;
 
@@ -92,6 +100,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     private CheckBox cb_confirmation_required, cb_online_event, cb_displayto_members, cb_displayin_city, cb_isactive;
     private RecyclerView rv_images;
     private LinearLayout ll_documents;
+    private TextView tv_countrycode;
     private Button btn_add_document, btn_add_image, btn_save;
     private int latestPosition;
 
@@ -102,6 +111,8 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     private File photoFileFolder;
     private Uri photoURI;
     private int mYear, mMonth, mDay, startHour, startMinutes;
+    private ArrayList<ContryCodeModel> countryCodeList;
+    private AlertDialog countryCodeDialog;
 
     private EventsFreeModel.ResultBean eventDetails;
 
@@ -137,6 +148,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         edt_address = findViewById(R.id.edt_address);
         edt_city = findViewById(R.id.edt_city);
         edt_remark = findViewById(R.id.edt_remark);
+        tv_countrycode = findViewById(R.id.tv_countrycode);
         ll_documents = findViewById(R.id.ll_documents);
         btn_add_document = findViewById(R.id.btn_add_document);
         btn_add_image = findViewById(R.id.btn_add_image);
@@ -152,6 +164,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         eventTypeList = new ArrayList<>();
         docsLayoutsList = new ArrayList<>();
         imageList = new ArrayList<>();
+        countryCodeList = new ArrayList<>();
 
         photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Events");
         if (!photoFileFolder.exists())
@@ -176,6 +189,26 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
+
+        try {
+            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
+            countryCodeList = new ArrayList<>();
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                countryCodeList.add(new ContryCodeModel(
+                        jo_inside.getString("name"),
+                        jo_inside.getString("dial_code"),
+                        jo_inside.getString("code")
+                ));
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        groupId = getIntent().getStringExtra("groupId");
+
         Calendar calendar = Calendar.getInstance();
 
         mYear = calendar.get(Calendar.YEAR);
@@ -269,6 +302,13 @@ public class EditEventsFree_Activity extends AppCompatActivity {
                 } else {
                     new GetEventTypeList().showEventTypeListDialog();
                 }
+            }
+        });
+
+        tv_countrycode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCountryCodeDialog();
             }
         });
 
@@ -562,6 +602,7 @@ public class EditEventsFree_Activity extends AppCompatActivity {
         mainObj.addProperty("description", edt_description.getText().toString().trim());
         mainObj.addProperty("organizer_name", edt_organizer_name.getText().toString().trim());
         mainObj.addProperty("mobile", edt_organizer_mobile.getText().toString().trim());
+        mainObj.addProperty("country_code", tv_countrycode.getText().toString().trim());
         mainObj.addProperty("event_date", eventStartDate);
         mainObj.addProperty("event_end_date", eventEndDate);
         mainObj.addProperty("event_start_time", eventStartTime);
@@ -602,6 +643,78 @@ public class EditEventsFree_Activity extends AppCompatActivity {
     public void removeAttachDoc(View view) {
         ll_documents.removeView((View) view.getParent());
         docsLayoutsList.remove(view.getParent());
+    }
+
+    private void showCountryCodeDialog() {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setView(view);
+        builder.setTitle("Select Country");
+        builder.setCancelable(false);
+
+        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
+        EditText edt_search = view.findViewById(R.id.edt_search);
+        rv_country.setLayoutManager(new LinearLayoutManager(context));
+        rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence query, int start, int before, int count) {
+
+                if (query.toString().isEmpty()) {
+                    rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+                    return;
+                }
+
+                if (countryCodeList.size() == 0) {
+                    rv_country.setVisibility(View.GONE);
+                    return;
+                }
+
+                if (!query.toString().equals("")) {
+                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    for (ContryCodeModel countryDetails : countryCodeList) {
+
+                        String countryToBeSearched = countryDetails.getName().toLowerCase();
+
+                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
+                            searchedCountryList.add(countryDetails);
+                        }
+                    }
+                    rv_country.setAdapter(new CountryCodeAdapter(context, searchedCountryList));
+                } else {
+                    rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        rv_country.addOnItemTouchListener(new RecyclerItemClickListener(context,
+                (view1, position) -> {
+                    tv_countrycode.setText(countryCodeList.get(position).getDial_code());
+                    countryCodeDialog.dismiss();
+                }));
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        countryCodeDialog = builder.create();
+        countryCodeDialog.show();
     }
 
     private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {

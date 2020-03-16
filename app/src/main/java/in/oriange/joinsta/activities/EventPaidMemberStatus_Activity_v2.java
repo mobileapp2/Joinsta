@@ -3,6 +3,7 @@ package in.oriange.joinsta.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -39,6 +40,7 @@ import in.oriange.joinsta.fragments.PaidEventsMembersPaid_Fragment;
 import in.oriange.joinsta.fragments.PaidEventsMembersPayAtCounter_Fragment;
 import in.oriange.joinsta.fragments.PaidEventsMembersUnPaid_Fragment;
 import in.oriange.joinsta.models.EventPaidMemberStatusModel;
+import in.oriange.joinsta.models.EventsPaidModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.NonSwipeableViewPager;
@@ -50,7 +52,8 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
     private SmartTabLayout tabs;
     private NonSwipeableViewPager viewpager;
 
-    private String eventId;
+    private EventsPaidModel.ResultBean eventDetails;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,7 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
     }
 
     private void setDefault() {
-        eventId = getIntent().getStringExtra("eventId");
+        eventDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetMemberStatus().execute();
@@ -81,7 +84,12 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-
+        tabs.setOnTabClickListener(new SmartTabLayout.OnTabClickListener() {
+            @Override
+            public void onTabClicked(int i) {
+                position = i;
+            }
+        });
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -131,7 +139,7 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getPaidEventMembers");
-            obj.addProperty("event_id", eventId);
+            obj.addProperty("event_id", eventDetails.getid());
             res = APICall.JSONAPICall(ApplicationConstants.PAYMENTTRACKAPI, obj.toString());
             return res.trim();
         }
@@ -235,6 +243,13 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_export) {
             showExportDialog();
+        } else if (item.getItemId() == R.id.action_message) {
+
+            startActivity(new Intent(context, EventsSendMessage_Activity.class)
+                    .putExtra("eventId", eventDetails.getid())
+                    .putExtra("messageForPaid", eventDetails.getMessage_for_paidmember())
+                    .putExtra("messageForUnPaid", eventDetails.getMessage_for_unpaidmember())
+                    .putExtra("position", position));
         }
         return super.onOptionsItemSelected(item);
     }
@@ -297,7 +312,7 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new SendPaidEventMemberStatus().execute(eventId, exportType, edt_entermobile.getText().toString().trim());
+                    new SendPaidEventMemberStatus().execute(eventDetails.getid(), exportType, edt_entermobile.getText().toString().trim());
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }

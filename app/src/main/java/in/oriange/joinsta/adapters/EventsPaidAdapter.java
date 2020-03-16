@@ -127,7 +127,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, EventPaidMemberStatus_Activity_v2.class)
-                        .putExtra("eventId", eventDetails.getid()));
+                        .putExtra("eventDetails", eventDetails));
             }
         });
 
