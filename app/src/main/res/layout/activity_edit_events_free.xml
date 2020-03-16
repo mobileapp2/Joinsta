@@ -159,11 +159,9 @@
 
                         <TextView
                             android:id="@+id/tv_countrycode"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.1"
                             android:gravity="center"
-                            android:onClick="selectContryCode"
                             android:text="+91"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
@@ -171,6 +169,7 @@
                         <View
                             android:layout_width="0.7dp"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginBottom="10dp"
@@ -180,7 +179,7 @@
                             android:id="@+id/edt_organizer_mobile"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.75"
+                            android:layout_weight="1"
                             android:hint="Mobile"
                             android:inputType="number"
                             android:maxLength="14"

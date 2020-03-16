@@ -438,7 +438,7 @@ public class ViewEventsFree_Activity extends AppCompatActivity {
                             return;
                         }
 
-                        Uri uri = Uri.parse("smsto:" + eventDetails.getMobile());
+                        Uri uri = Uri.parse("smsto:" + eventDetails.getCountry_code() + eventDetails.getMobile());
                         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
                         intent.putExtra("sms_body", edt_text.getText().toString());
                         startActivity(intent);

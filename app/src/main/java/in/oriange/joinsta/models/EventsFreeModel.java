@@ -109,6 +109,7 @@ public class EventsFreeModel implements Serializable {
         private String group_code;
         private String event_type_name;
         private String mobile;
+        private String country_code;
         private String organizer_name;
         private String is_active;
         private String status;
@@ -341,6 +342,18 @@ public class EventsFreeModel implements Serializable {
 
         public void setMobile(String mobile) {
             this.mobile = mobile;
+        }
+
+        public String getCountry_code() {
+            if (country_code != null) {
+                return country_code;
+            } else {
+                return "+91";
+            }
+        }
+
+        public void setCountry_code(String country_code) {
+            this.country_code = country_code;
         }
 
         public String getOrganizer_name() {

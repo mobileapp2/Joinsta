@@ -575,10 +575,13 @@ public class AddEventsFree_Activity extends AppCompatActivity {
         builder.setTitle("Select Country");
         builder.setCancelable(false);
 
+        final ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
         final RecyclerView rv_country = view.findViewById(R.id.rv_country);
         EditText edt_search = view.findViewById(R.id.edt_search);
         rv_country.setLayoutManager(new LinearLayoutManager(context));
         rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
+        searchedCountryList.clear();
+        searchedCountryList.addAll(countryCodeList);
 
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -590,6 +593,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
+                    searchedCountryList.clear();
+                    searchedCountryList.addAll(countryCodeList);
                     rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
                     return;
                 }
@@ -600,7 +605,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                 }
 
                 if (!query.toString().equals("")) {
-                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
+                    searchedCountryList.clear();
                     for (ContryCodeModel countryDetails : countryCodeList) {
 
                         String countryToBeSearched = countryDetails.getName().toLowerCase();
@@ -611,6 +616,8 @@ public class AddEventsFree_Activity extends AppCompatActivity {
                     }
                     rv_country.setAdapter(new CountryCodeAdapter(context, searchedCountryList));
                 } else {
+                    searchedCountryList.clear();
+                    searchedCountryList.addAll(countryCodeList);
                     rv_country.setAdapter(new CountryCodeAdapter(context, countryCodeList));
                 }
             }
@@ -623,7 +630,7 @@ public class AddEventsFree_Activity extends AppCompatActivity {
 
         rv_country.addOnItemTouchListener(new RecyclerItemClickListener(context,
                 (view1, position) -> {
-                    tv_countrycode.setText(countryCodeList.get(position).getDial_code());
+                    tv_countrycode.setText(searchedCountryList.get(position).getDial_code());
                     countryCodeDialog.dismiss();
                 }));
 
