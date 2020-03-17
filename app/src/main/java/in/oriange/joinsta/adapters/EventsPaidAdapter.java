@@ -35,13 +35,13 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
     private Context context;
     private List<EventsPaidModel.ResultBean> eventList;
     private String isAdmin;
-    private boolean isMyEvent;
+    private int callType; //1 = Group Events,  2 = Offer section events  3 = My Events
 
-    public EventsPaidAdapter(Context context, List<EventsPaidModel.ResultBean> eventList, String isAdmin, boolean isMyEvent) {
+    public EventsPaidAdapter(Context context, List<EventsPaidModel.ResultBean> eventList, String isAdmin, int callType) {
         this.context = context;
         this.eventList = eventList;
         this.isAdmin = isAdmin;
-        this.isMyEvent = isMyEvent;
+        this.callType = callType;
     }
 
     @NonNull
@@ -68,7 +68,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             holder.tv_payment_status.setVisibility(View.GONE);
 
 
-        if (!isMyEvent)
+        if (callType == 1) {
             if (eventDetails.getIs_early_payment_applicable().equals("1")) {
                 holder.tv_saved.setVisibility(View.VISIBLE);
 
@@ -85,7 +85,25 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
                 holder.tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
                 holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
             }
-        else
+        } else if (callType == 2) {
+            if (eventDetails.getIs_non_member_early_payment_applicable().equals("1")) {
+                holder.tv_saved.setVisibility(View.VISIBLE);
+
+                int actualEarlybirdPrice = Integer.parseInt(eventDetails.getNon_member_earlybird_price());
+                int actualNormalPrice = Integer.parseInt(eventDetails.getNon_member_normal_price());
+                int savedAmount = actualNormalPrice - actualEarlybirdPrice;
+
+                holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
+                holder.tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+                holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_earlybird_price_duedate()));
+
+            } else if (eventDetails.getIs_non_member_normal_payment_applicable().equals("1")) {
+                holder.tv_saved.setVisibility(View.GONE);
+                holder.tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNon_member_normal_price())));
+                holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_normal_price_duedate()));
+            } else
+                holder.ll_prices.setVisibility(View.GONE);
+        } else
             holder.ll_prices.setVisibility(View.GONE);
 
         if (eventDetails.getDocuments().size() != 0) {
@@ -117,7 +135,7 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, ViewEventsPaid_Activity.class)
-                        .putExtra("isMyEvent", isMyEvent)
+                        .putExtra("callType", callType)
                         .putExtra("eventDetails", eventDetails)
                         .putExtra("isAdmin", isAdmin));
             }

@@ -841,7 +841,7 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount.getText().toString().trim());
 
                 if (earlyBirdAmount > normalAmount) {
-                    Utilities.showMessage("Early bird discount amount cannot be greater than normal amount", context, 2);
+                    Utilities.showMessage("Early bird amount cannot be greater than normal amount", context, 2);
                     return;
                 }
 
@@ -862,6 +862,57 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
                 edt_early_bird_amount.setError("Please enter amount");
                 edt_early_bird_amount.requestFocus();
                 edt_early_bird_amount.getParent().requestChildFocus(edt_early_bird_amount, edt_early_bird_amount);
+                return;
+            }
+        }
+
+        if (!edt_normal_amount_non_member.getText().toString().trim().isEmpty()) {
+            if (edt_normal_due_date_non_member.getText().toString().trim().isEmpty()) {
+                edt_normal_due_date_non_member.setError("Please select date");
+                edt_normal_due_date_non_member.requestFocus();
+                edt_normal_due_date_non_member.getParent().requestChildFocus(edt_normal_due_date_non_member, edt_normal_due_date_non_member);
+                return;
+            }
+        }
+
+        if (!edt_normal_due_date_non_member.getText().toString().trim().isEmpty()) {
+            if (edt_normal_amount_non_member.getText().toString().trim().isEmpty()) {
+                edt_normal_amount_non_member.setError("Please enter amount");
+                edt_normal_amount_non_member.requestFocus();
+                edt_normal_amount_non_member.getParent().requestChildFocus(edt_normal_amount_non_member, edt_normal_amount_non_member);
+                return;
+            }
+        }
+
+        if (!edt_early_bird_amount_non_member.getText().toString().trim().isEmpty()) {
+            try {
+                float normalAmount = Float.parseFloat(edt_normal_amount_non_member.getText().toString().trim());
+                float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount_non_member.getText().toString().trim());
+
+                if (earlyBirdAmount > normalAmount) {
+                    Utilities.showMessage("Early bird amount cannot be greater than normal amount", context, 2);
+                    return;
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                Utilities.showMessage("Enter normal amount", context, 2);
+                return;
+            }
+
+            if (edt_early_bird_due_date_non_member.getText().toString().trim().isEmpty()) {
+                edt_early_bird_due_date_non_member.setError("Please select date");
+                edt_early_bird_due_date_non_member.requestFocus();
+                edt_early_bird_due_date_non_member.getParent().requestChildFocus(edt_early_bird_due_date_non_member, edt_early_bird_due_date_non_member);
+                return;
+            }
+        }
+
+        if (!edt_early_bird_due_date_non_member.getText().toString().trim().isEmpty()) {
+            if (edt_early_bird_amount_non_member.getText().toString().trim().isEmpty()) {
+                edt_early_bird_amount_non_member.setError("Please enter amount");
+                edt_early_bird_amount_non_member.requestFocus();
+                edt_early_bird_amount_non_member.getParent().requestChildFocus(edt_early_bird_amount_non_member, edt_early_bird_amount_non_member);
                 return;
             }
         }
@@ -940,6 +991,10 @@ public class AddEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("normal_price", edt_normal_amount.getText().toString().trim());
         mainObj.addProperty("earlybird_price_duedate", earlyBirdDueDate);
         mainObj.addProperty("normal_price_duedate", normalDueDate);
+        mainObj.addProperty("non_member_earlybird_price", edt_early_bird_amount_non_member.getText().toString().trim());
+        mainObj.addProperty("non_member_normal_price", edt_normal_amount_non_member.getText().toString().trim());
+        mainObj.addProperty("non_member_earlybird_price_duedate", earlyBirdDueDateForNonMember);
+        mainObj.addProperty("non_member_normal_price_duedate", normalDueDateForNonMember);
         mainObj.addProperty("is_online_events", is_online_event);
         mainObj.addProperty("payment_link", edt_paylink.getText().toString().trim());
         mainObj.addProperty("created_by", userId);

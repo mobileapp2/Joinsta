@@ -256,6 +256,8 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         edt_organizer_mobile.setText(eventDetails.getMobile());
         earlyBirdDueDate = eventDetails.getEarlybird_price_duedate();
         normalDueDate = eventDetails.getNormal_price_duedate();
+        earlyBirdDueDateForNonMember = eventDetails.getNon_member_earlybird_price_duedate();
+        normalDueDateForNonMember = eventDetails.getNon_member_normal_price_duedate();
         latitude = eventDetails.getVenue_latitude();
         longitude = eventDetails.getVenue_longitude();
         paymentAccountId = eventDetails.getPayment_account_id();
@@ -277,6 +279,10 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         edt_early_bird_due_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getEarlybird_price_duedate()));
         edt_normal_amount.setText(eventDetails.getNormal_price());
         edt_normal_due_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getNormal_price_duedate()));
+        edt_early_bird_amount_non_member.setText(eventDetails.getNon_member_earlybird_price());
+        edt_early_bird_due_date_non_member.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getNon_member_earlybird_price_duedate()));
+        edt_normal_amount_non_member.setText(eventDetails.getNon_member_normal_price());
+        edt_normal_due_date_non_member.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", eventDetails.getNon_member_normal_price_duedate()));
         edt_remark.setText(eventDetails.getRemark());
         edt_msg_forpaid.setText(eventDetails.getMessage_for_paidmember());
         edt_msg_forunpaid.setText(eventDetails.getMessage_for_unpaidmember());
@@ -626,6 +632,87 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             }
         });
 
+        edt_normal_due_date_non_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        try {
+                            Date event = new SimpleDateFormat("yyyy-MM-dd").parse(eventEndDate);
+                            Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
+
+                            boolean isAfter = normal.after(event);
+
+                            if (isAfter) {
+                                Utilities.showMessage("Normal payment due date cannot be after event date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        normalDueDateForNonMember = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_normal_due_date_non_member.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", normalDueDateForNonMember));
+                        edt_early_bird_due_date_non_member.setText("");
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        normalDueDateForNonMember = "";
+                        edt_normal_due_date_non_member.setText("");
+                    }
+                });
+                dialog.show();
+            }
+        });
+
+        edt_early_bird_due_date_non_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        try {
+                            Date normal = new SimpleDateFormat("yyyy-MM-dd").parse(normalDueDateForNonMember);
+                            Date early = new SimpleDateFormat("yyyy-MM-dd").parse(yyyyMMddDate(dayOfMonth, month + 1, year));
+
+                            boolean isAfter = early.after(normal);
+
+                            if (isAfter) {
+                                Utilities.showMessage("Early bird payment due date cannot be after normal payment due date", context, 2);
+                                return;
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        earlyBirdDueDateForNonMember = yyyyMMddDate(dayOfMonth, month + 1, year);
+                        edt_early_bird_due_date_non_member.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", earlyBirdDueDateForNonMember));
+                    }
+                }, mYear, mMonth, mDay);
+                try {
+                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        earlyBirdDueDateForNonMember = "";
+                        edt_early_bird_due_date_non_member.setText("");
+                    }
+                });
+                dialog.show();
+            }
+        });
+
         edt_payment_mode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -891,7 +978,7 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
                 float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount.getText().toString().trim());
 
                 if (earlyBirdAmount > normalAmount) {
-                    Utilities.showMessage("Early bird discount amount cannot be greater than normal amount", context, 2);
+                    Utilities.showMessage("Early bird amount cannot be greater than normal amount", context, 2);
                     return;
                 }
 
@@ -916,6 +1003,56 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
             }
         }
 
+        if (!edt_normal_amount_non_member.getText().toString().trim().isEmpty()) {
+            if (edt_normal_due_date_non_member.getText().toString().trim().isEmpty()) {
+                edt_normal_due_date_non_member.setError("Please select date");
+                edt_normal_due_date_non_member.requestFocus();
+                edt_normal_due_date_non_member.getParent().requestChildFocus(edt_normal_due_date_non_member, edt_normal_due_date_non_member);
+                return;
+            }
+        }
+
+        if (!edt_normal_due_date_non_member.getText().toString().trim().isEmpty()) {
+            if (edt_normal_amount_non_member.getText().toString().trim().isEmpty()) {
+                edt_normal_amount_non_member.setError("Please enter amount");
+                edt_normal_amount_non_member.requestFocus();
+                edt_normal_amount_non_member.getParent().requestChildFocus(edt_normal_amount_non_member, edt_normal_amount_non_member);
+                return;
+            }
+        }
+
+        if (!edt_early_bird_amount_non_member.getText().toString().trim().isEmpty()) {
+            try {
+                float normalAmount = Float.parseFloat(edt_normal_amount_non_member.getText().toString().trim());
+                float earlyBirdAmount = Float.parseFloat(edt_early_bird_amount_non_member.getText().toString().trim());
+
+                if (earlyBirdAmount > normalAmount) {
+                    Utilities.showMessage("Early bird amount cannot be greater than normal amount", context, 2);
+                    return;
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                Utilities.showMessage("Enter normal amount", context, 2);
+                return;
+            }
+
+            if (edt_early_bird_due_date_non_member.getText().toString().trim().isEmpty()) {
+                edt_early_bird_due_date_non_member.setError("Please select date");
+                edt_early_bird_due_date_non_member.requestFocus();
+                edt_early_bird_due_date_non_member.getParent().requestChildFocus(edt_early_bird_due_date_non_member, edt_early_bird_due_date_non_member);
+                return;
+            }
+        }
+
+        if (!edt_early_bird_due_date_non_member.getText().toString().trim().isEmpty()) {
+            if (edt_early_bird_amount_non_member.getText().toString().trim().isEmpty()) {
+                edt_early_bird_amount_non_member.setError("Please enter amount");
+                edt_early_bird_amount_non_member.requestFocus();
+                edt_early_bird_amount_non_member.getParent().requestChildFocus(edt_early_bird_amount_non_member, edt_early_bird_amount_non_member);
+                return;
+            }
+        }
 
         if (edt_payment_mode.getText().toString().trim().isEmpty()) {
             edt_payment_mode.setError("Please select payment mode");
@@ -1004,6 +1141,10 @@ public class EditEventsPaid_Activity extends AppCompatActivity {
         mainObj.addProperty("normal_price", edt_normal_amount.getText().toString().trim());
         mainObj.addProperty("earlybird_price_duedate", earlyBirdDueDate);
         mainObj.addProperty("normal_price_duedate", normalDueDate);
+        mainObj.addProperty("non_member_earlybird_price", edt_early_bird_amount_non_member.getText().toString().trim());
+        mainObj.addProperty("non_member_normal_price", edt_normal_amount_non_member.getText().toString().trim());
+        mainObj.addProperty("non_member_earlybird_price_duedate", earlyBirdDueDateForNonMember);
+        mainObj.addProperty("non_member_normal_price_duedate", normalDueDateForNonMember);
         mainObj.addProperty("is_online_events", is_online_event);
         mainObj.addProperty("payment_link", edt_paylink.getText().toString().trim());
         mainObj.addProperty("created_by", userId);

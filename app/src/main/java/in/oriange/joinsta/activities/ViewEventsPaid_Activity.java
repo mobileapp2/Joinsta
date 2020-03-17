@@ -77,7 +77,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private String userId, paymentLink, isAdmin;
     private File file, downloadedDocumentfolder;
     private EventsPaidModel.ResultBean eventDetails;
-    private boolean isMyEvent;
+    private int callType;     //1 = Group Events,  2 = Offer section events  3 = My Events
     private String shareMessage;
     private ArrayList<Uri> downloadedImagesUriList;
     private int numOfDocuments = 0;
@@ -171,7 +171,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
 
     private void setDefault() {
         eventDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
-        isMyEvent = getIntent().getBooleanExtra("isMyEvent", false);
+        callType = getIntent().getIntExtra("callType", 0);
         isAdmin = getIntent().getStringExtra("isAdmin");
 
         tv_name.setText(eventDetails.getEvent_code() + " - " + eventDetails.getName());
@@ -232,7 +232,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             cv_message.setVisibility(GONE);
         }
 
-        if (!isMyEvent)
+        if (callType == 1) {
             if (eventDetails.getIs_early_payment_applicable().equals("1")) {
                 tv_saved.setVisibility(View.VISIBLE);
 
@@ -251,7 +251,27 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
                 tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
             }
-        else
+        } else if (callType == 2) {
+            if (eventDetails.getIs_non_member_early_payment_applicable().equals("1")) {
+                tv_saved.setVisibility(View.VISIBLE);
+
+                int actualEarlybirdPrice = Integer.parseInt(eventDetails.getNon_member_earlybird_price());
+                int actualNormalPrice = Integer.parseInt(eventDetails.getNon_member_normal_price());
+
+                int savedAmount = actualNormalPrice - actualEarlybirdPrice;
+
+                tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
+                tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+                tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_earlybird_price_duedate()));
+
+            } else if (eventDetails.getIs_non_member_normal_payment_applicable().equals("1")) {
+                tv_saved.setVisibility(View.GONE);
+
+                tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNon_member_normal_price())));
+                tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_normal_price_duedate()));
+            } else
+                cv_price.setVisibility(View.GONE);
+        } else
             cv_price.setVisibility(View.GONE);
 
         if (!eventDetails.getCreated_by().equals(userId)) {
@@ -291,12 +311,12 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
             tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         }
 
-        if (isMyEvent || eventDetails.getPayment_status().equalsIgnoreCase("paid")
+        if (callType == 3 || eventDetails.getPayment_status().equalsIgnoreCase("paid")
                 || eventDetails.getPayment_status().equalsIgnoreCase("pay_at_counter")) {
             btn_buy.setVisibility(GONE);
         }
 
-        if (isMyEvent) {
+        if (callType == 2 || callType == 3) {
             imv_edit.setVisibility(GONE);
             imv_delete.setVisibility(GONE);
         }

@@ -133,6 +133,12 @@ public class EventsPaidModel implements Serializable {
         private String is_active;
         private String is_atleast_one_paymentdone;
         private String created_by_name;
+        private String non_member_earlybird_price;
+        private String non_member_normal_price;
+        private String non_member_earlybird_price_duedate;
+        private String non_member_normal_price_duedate;
+        private String is_non_member_early_payment_applicable;
+        private String is_non_member_normal_payment_applicable;
         private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
@@ -522,6 +528,54 @@ public class EventsPaidModel implements Serializable {
 
         public void setCreated_by_name(String created_by_name) {
             this.created_by_name = created_by_name;
+        }
+
+        public String getNon_member_earlybird_price() {
+            return non_member_earlybird_price;
+        }
+
+        public void setNon_member_earlybird_price(String non_member_earlybird_price) {
+            this.non_member_earlybird_price = non_member_earlybird_price;
+        }
+
+        public String getNon_member_normal_price() {
+            return non_member_normal_price;
+        }
+
+        public void setNon_member_normal_price(String non_member_normal_price) {
+            this.non_member_normal_price = non_member_normal_price;
+        }
+
+        public String getNon_member_earlybird_price_duedate() {
+            return non_member_earlybird_price_duedate;
+        }
+
+        public void setNon_member_earlybird_price_duedate(String non_member_earlybird_price_duedate) {
+            this.non_member_earlybird_price_duedate = non_member_earlybird_price_duedate;
+        }
+
+        public String getNon_member_normal_price_duedate() {
+            return non_member_normal_price_duedate;
+        }
+
+        public void setNon_member_normal_price_duedate(String non_member_normal_price_duedate) {
+            this.non_member_normal_price_duedate = non_member_normal_price_duedate;
+        }
+
+        public String getIs_non_member_early_payment_applicable() {
+            return is_non_member_early_payment_applicable;
+        }
+
+        public void setIs_non_member_early_payment_applicable(String is_non_member_early_payment_applicable) {
+            this.is_non_member_early_payment_applicable = is_non_member_early_payment_applicable;
+        }
+
+        public String getIs_non_member_normal_payment_applicable() {
+            return is_non_member_normal_payment_applicable;
+        }
+
+        public void setIs_non_member_normal_payment_applicable(String is_non_member_normal_payment_applicable) {
+            this.is_non_member_normal_payment_applicable = is_non_member_normal_payment_applicable;
         }
 
         public Date getEventStartDate() {

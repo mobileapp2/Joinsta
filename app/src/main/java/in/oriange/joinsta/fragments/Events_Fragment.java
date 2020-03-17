@@ -283,11 +283,11 @@ public class Events_Fragment extends Fragment {
 
                         if (selectedPaidTypeCount == 0) {
                             tv_filter_count.setVisibility(View.GONE);
-                            rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", false));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", 2));
                         } else {
                             tv_filter_count.setVisibility(View.VISIBLE);
                             tv_filter_count.setText(String.valueOf(selectedPaidTypeCount));
-                            rv_event.setAdapter(new EventsPaidAdapter(context, filteredPaidEventList, "0", false));
+                            rv_event.setAdapter(new EventsPaidAdapter(context, filteredPaidEventList, "0", 2));
                         }
 
                         break;
@@ -390,7 +390,7 @@ public class Events_Fragment extends Fragment {
                 break;
             case "2":
                 if (query.isEmpty()) {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", 2));
                     return;
                 }
 
@@ -411,7 +411,7 @@ public class Events_Fragment extends Fragment {
                         eventsPaidSearchedList.add(eventDetails);
                     }
                 }
-                rv_event.setAdapter(new EventsPaidAdapter(context, eventsPaidSearchedList, "0", false));
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventsPaidSearchedList, "0", 2));
 
                 break;
         }
@@ -486,7 +486,7 @@ public class Events_Fragment extends Fragment {
                 break;
             case "2":
                 if (eventPaidList.size() > 0) {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", true));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventPaidList, "0", 2));
                     ll_nopreview.setVisibility(View.GONE);
                     rv_event.setVisibility(View.VISIBLE);
                 } else {

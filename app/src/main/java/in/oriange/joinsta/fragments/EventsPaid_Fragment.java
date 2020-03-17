@@ -208,7 +208,7 @@ public class EventsPaid_Fragment extends Fragment {
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
                 if (query.toString().isEmpty()) {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, 1));
                     return;
                 }
 
@@ -229,9 +229,9 @@ public class EventsPaid_Fragment extends Fragment {
                             eventsSearchedList.add(eventDetails);
                         }
                     }
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventsSearchedList, isAdmin, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventsSearchedList, isAdmin, 1));
                 } else {
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, 1));
                 }
             }
 
@@ -298,7 +298,7 @@ public class EventsPaid_Fragment extends Fragment {
                             if (eventList.size() > 0) {
                                 rv_event.setVisibility(View.VISIBLE);
                                 ll_nopreview.setVisibility(View.GONE);
-                                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, 1));
                             } else {
                                 ll_nopreview.setVisibility(View.VISIBLE);
                                 rv_event.setVisibility(View.GONE);
@@ -403,12 +403,12 @@ public class EventsPaid_Fragment extends Fragment {
                 if (selectedTypeCount == 0) {
                     mFilteredEventList = eventList;
                     tv_filter_count.setVisibility(View.GONE);
-                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, 1));
                 } else {
                     mFilteredEventList = filteredEventList;
                     tv_filter_count.setVisibility(View.VISIBLE);
                     tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, isAdmin, false));
+                    rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, isAdmin, 1));
                 }
             }
         });
@@ -421,7 +421,7 @@ public class EventsPaid_Fragment extends Fragment {
                 }
 
                 tv_filter_count.setVisibility(View.GONE);
-                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, 1));
             }
         });
 
@@ -450,7 +450,7 @@ public class EventsPaid_Fragment extends Fragment {
                 dialog.dismiss();
 
                 tv_is_calendar_applied.setVisibility(View.GONE);
-                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, false));
+                rv_event.setAdapter(new EventsPaidAdapter(context, eventList, isAdmin, 1));
             }
         });
 
@@ -516,7 +516,7 @@ public class EventsPaid_Fragment extends Fragment {
             return;
         }
 
-        rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, isAdmin, false));
+        rv_event.setAdapter(new EventsPaidAdapter(context, filteredEventList, isAdmin, 1));
     }
 
     private class EventTypeListAdapter extends RecyclerView.Adapter<EventTypeListAdapter.MyViewHolder> {

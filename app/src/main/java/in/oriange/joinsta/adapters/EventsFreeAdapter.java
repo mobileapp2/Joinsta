@@ -33,7 +33,7 @@ public class EventsFreeAdapter extends RecyclerView.Adapter<EventsFreeAdapter.My
     private Context context;
     private List<EventsFreeModel.ResultBean> eventList;
     private String isAdmin;
-    private int callType;
+    private int callType; //1 = Group Events,  2 = Offer section events  3 = My Events
 
     public EventsFreeAdapter(Context context, List<EventsFreeModel.ResultBean> eventList, String isAdmin, int callType) {
         this.context = context;
