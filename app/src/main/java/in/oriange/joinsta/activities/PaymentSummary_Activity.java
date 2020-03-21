@@ -36,6 +36,7 @@ public class PaymentSummary_Activity extends AppCompatActivity {
 
     private int quantity = 1, applicablePrice = 0, actualNormalPrice = 0, actualEarlybirdPrice = 0;
     private String userId, randomNum, isEarlyPaymentApplicable, isNormalPaymentApplicable;
+    private int callType;
 
     private EventsPaidModel.ResultBean eventDetails;
 
@@ -78,31 +79,17 @@ public class PaymentSummary_Activity extends AppCompatActivity {
 
     private void setDefault() {
         eventDetails = (EventsPaidModel.ResultBean) getIntent().getSerializableExtra("eventDetails");
-        isEarlyPaymentApplicable = eventDetails.getIs_early_payment_applicable();
-        isNormalPaymentApplicable = eventDetails.getIs_normal_payment_applicable();
+        callType = getIntent().getIntExtra("callType", 0);
 
-        tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
 
-        if (isEarlyPaymentApplicable.equals("1")) {
-            tv_saved.setVisibility(View.VISIBLE);
-
-            actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
-            actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
-
-            applicablePrice = actualEarlybirdPrice;
-            int savedAmount = actualNormalPrice - applicablePrice;
-
-            tv_saved.setText(Html.fromHtml("<strike>₹ " + actualEarlybirdPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
-            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
-
-        } else {
-            tv_saved.setVisibility(View.GONE);
-
-            actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
-
-            applicablePrice = actualNormalPrice;
-
-            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
+        if (callType == 1) {
+            groupMemberPayment();
+        } else if (callType == 2) {
+            if (eventDetails.getIs_group_member().equals("1")) {
+                groupMemberPayment();
+            } else {
+                groupNonMemberPayment();
+            }
         }
 
         showDisclaimerDialog();
@@ -127,6 +114,64 @@ public class PaymentSummary_Activity extends AppCompatActivity {
                     }
                 })
                 .create().show();
+    }
+
+    private void groupMemberPayment() {
+
+        isEarlyPaymentApplicable = eventDetails.getIs_early_payment_applicable();
+        isNormalPaymentApplicable = eventDetails.getIs_normal_payment_applicable();
+
+        tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
+        if (isEarlyPaymentApplicable.equals("1")) {
+            tv_saved.setVisibility(View.VISIBLE);
+
+            actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
+            actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
+
+            applicablePrice = actualEarlybirdPrice;
+            int savedAmount = actualNormalPrice - applicablePrice;
+
+            tv_saved.setText(Html.fromHtml("<strike>₹ " + actualEarlybirdPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
+
+        } else {
+            tv_saved.setVisibility(View.GONE);
+
+            actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
+
+            applicablePrice = actualNormalPrice;
+
+            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
+        }
+    }
+
+    private void groupNonMemberPayment() {
+
+        isEarlyPaymentApplicable = eventDetails.getIs_non_member_early_payment_applicable();
+        isNormalPaymentApplicable = eventDetails.getIs_non_member_normal_payment_applicable();
+
+        tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
+        if (isEarlyPaymentApplicable.equals("1")) {
+            tv_saved.setVisibility(View.VISIBLE);
+
+            actualEarlybirdPrice = Integer.parseInt(eventDetails.getNon_member_earlybird_price());
+            actualNormalPrice = Integer.parseInt(eventDetails.getNon_member_normal_price());
+
+            applicablePrice = actualEarlybirdPrice;
+            int savedAmount = actualNormalPrice - applicablePrice;
+
+            tv_saved.setText(Html.fromHtml("<strike>₹ " + actualEarlybirdPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
+            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
+
+        } else {
+            tv_saved.setVisibility(View.GONE);
+
+            actualNormalPrice = Integer.parseInt(eventDetails.getNon_member_normal_price());
+
+            applicablePrice = actualNormalPrice;
+
+            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
+        }
     }
 
     private void setEventHandler() {

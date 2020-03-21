@@ -106,6 +106,17 @@
 
                     </RadioGroup>
 
+                    <com.rengwuxian.materialedittext.MaterialEditText
+                        android:id="@+id/edt_subject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Subject"
+                        android:inputType="textCapWords"
+                        android:textSize="16sp"
+                        app:met_floatingLabel="highlight"
+                        app:met_textColorHint="@color/darkGray"
+                        app:met_underlineColor="@color/mediumGray" />
+
                     <EditText
                         android:id="@+id/edt_message"
                         android:layout_width="match_parent"
@@ -119,6 +130,14 @@
                         android:padding="5dp"
                         android:textColorHint="@color/darkGray"
                         android:textSize="16sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_canshare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:checked="true"
+                        android:text="Allow members to share this message" />
 
                     <android.widget.Button
                         android:id="@+id/btn_save"

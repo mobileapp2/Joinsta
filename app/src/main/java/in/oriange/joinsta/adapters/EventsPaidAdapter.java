@@ -67,7 +67,6 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
         else
             holder.tv_payment_status.setVisibility(View.GONE);
 
-
         if (callType == 1) {
             if (eventDetails.getIs_early_payment_applicable().equals("1")) {
                 holder.tv_saved.setVisibility(View.VISIBLE);
@@ -86,23 +85,46 @@ public class EventsPaidAdapter extends RecyclerView.Adapter<EventsPaidAdapter.My
                 holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
             }
         } else if (callType == 2) {
-            if (eventDetails.getIs_non_member_early_payment_applicable().equals("1")) {
-                holder.tv_saved.setVisibility(View.VISIBLE);
+            if (eventDetails.getIs_group_member().equals("1")) {
+                if (eventDetails.getIs_early_payment_applicable().equals("1")) {
+                    holder.tv_saved.setVisibility(View.VISIBLE);
 
-                int actualEarlybirdPrice = Integer.parseInt(eventDetails.getNon_member_earlybird_price());
-                int actualNormalPrice = Integer.parseInt(eventDetails.getNon_member_normal_price());
-                int savedAmount = actualNormalPrice - actualEarlybirdPrice;
+                    int actualEarlybirdPrice = Integer.parseInt(eventDetails.getEarlybird_price());
+                    int actualNormalPrice = Integer.parseInt(eventDetails.getNormal_price());
+                    int savedAmount = actualNormalPrice - actualEarlybirdPrice;
 
-                holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
-                holder.tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
-                holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_earlybird_price_duedate()));
+                    holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
+                    holder.tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+                    holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getEarlybird_price_duedate()));
 
-            } else if (eventDetails.getIs_non_member_normal_payment_applicable().equals("1")) {
-                holder.tv_saved.setVisibility(View.GONE);
-                holder.tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNon_member_normal_price())));
-                holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_normal_price_duedate()));
-            } else
-                holder.ll_prices.setVisibility(View.GONE);
+                } else {
+                    holder.tv_saved.setVisibility(View.GONE);
+                    holder.tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNormal_price())));
+                    holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNormal_price_duedate()));
+                }
+            } else {
+                if (eventDetails.getCan_non_members_pay().equals("1")) {
+                    if (eventDetails.getIs_non_member_early_payment_applicable().equals("1")) {
+                        holder.tv_saved.setVisibility(View.VISIBLE);
+
+                        int actualEarlybirdPrice = Integer.parseInt(eventDetails.getNon_member_earlybird_price());
+                        int actualNormalPrice = Integer.parseInt(eventDetails.getNon_member_normal_price());
+                        int savedAmount = actualNormalPrice - actualEarlybirdPrice;
+
+                        holder.tv_saved.setText(Html.fromHtml("<strike>₹ " + actualNormalPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
+                        holder.tv_total_price.setText(Html.fromHtml("₹ " + actualEarlybirdPrice));
+                        holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_earlybird_price_duedate()));
+
+                    } else if (eventDetails.getIs_non_member_normal_payment_applicable().equals("1")) {
+                        holder.tv_saved.setVisibility(View.GONE);
+                        holder.tv_total_price.setText(Html.fromHtml("₹ " + Integer.parseInt(eventDetails.getNon_member_normal_price())));
+                        holder.tv_due_date.setText("Due Date: " + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", eventDetails.getNon_member_normal_price_duedate()));
+                    } else
+                        holder.ll_prices.setVisibility(View.GONE);
+                } else {
+                    holder.ll_prices.setVisibility(View.GONE);
+                }
+            }
         } else
             holder.ll_prices.setVisibility(View.GONE);
 

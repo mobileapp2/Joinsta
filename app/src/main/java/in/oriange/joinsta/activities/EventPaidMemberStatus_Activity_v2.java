@@ -36,6 +36,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.fragments.PaidEventsMembersAll_Fragment;
+import in.oriange.joinsta.fragments.PaidEventsMembersNonMembers_Fragment;
 import in.oriange.joinsta.fragments.PaidEventsMembersPaid_Fragment;
 import in.oriange.joinsta.fragments.PaidEventsMembersPayAtCounter_Fragment;
 import in.oriange.joinsta.fragments.PaidEventsMembersUnPaid_Fragment;
@@ -172,20 +173,26 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
     }
 
     private void filterMembersList(List<EventPaidMemberStatusModel.ResultBean> membersList) {
-        List<EventPaidMemberStatusModel.ResultBean> paidEventsMembersAllList = new ArrayList<>(membersList);
+        List<EventPaidMemberStatusModel.ResultBean> paidEventsMembersAllList = new ArrayList<>();
         List<EventPaidMemberStatusModel.ResultBean> paidEventsMembersPaidList = new ArrayList<>();
         List<EventPaidMemberStatusModel.ResultBean> paidEventsMembersUnPaidList = new ArrayList<>();
         List<EventPaidMemberStatusModel.ResultBean> paidEventsMembersPayAtCounterList = new ArrayList<>();
+        List<EventPaidMemberStatusModel.ResultBean> paidEventsMembersNonMemberList = new ArrayList<>();
 
         for (EventPaidMemberStatusModel.ResultBean resultBean : membersList) {
-            if (resultBean.getStatus().equals("paid")) {
-                if (resultBean.getPayment_mode().equals("online") || resultBean.getPayment_mode().equals("offline")) {
-                    paidEventsMembersPaidList.add(resultBean);
-                } else if (resultBean.getPayment_mode().equals("pay_at_counter")) {
-                    paidEventsMembersPayAtCounterList.add(resultBean);
+            if (resultBean.getIs_group_member().equals("1")) {
+                paidEventsMembersAllList.add(resultBean);
+                if (resultBean.getStatus().equals("paid")) {
+                    if (resultBean.getPayment_mode().equals("online") || resultBean.getPayment_mode().equals("offline")) {
+                        paidEventsMembersPaidList.add(resultBean);
+                    } else if (resultBean.getPayment_mode().equals("pay_at_counter")) {
+                        paidEventsMembersPayAtCounterList.add(resultBean);
+                    }
+                } else if (resultBean.getStatus().equals("unpaid")) {
+                    paidEventsMembersUnPaidList.add(resultBean);
                 }
-            } else if (resultBean.getStatus().equals("unpaid")) {
-                paidEventsMembersUnPaidList.add(resultBean);
+            } else if (resultBean.getIs_group_member().equals("0")) {
+                paidEventsMembersNonMemberList.add(resultBean);
             }
         }
 
@@ -210,11 +217,17 @@ public class EventPaidMemberStatus_Activity_v2 extends AppCompatActivity {
         PaidEventsMembersPayAtCounter_Fragment paidEventsMembersPayAtCounter_fragment = new PaidEventsMembersPayAtCounter_Fragment();
         paidEventsMembersPayAtCounter_fragment.setArguments(bundle4);
 
+        Bundle bundle5 = new Bundle();
+        bundle5.putSerializable("membersList", (Serializable) paidEventsMembersNonMemberList);
+        PaidEventsMembersNonMembers_Fragment paidEventsMembersNonMembers_fragment = new PaidEventsMembersNonMembers_Fragment();
+        paidEventsMembersNonMembers_fragment.setArguments(bundle5);
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(paidEventsMembersAll_fragment, "All");
         adapter.addFrag(paidEventsMembersPaid_fragment, "Paid");
         adapter.addFrag(paidEventsMembersUnPaid_fragment, "Unpaid");
         adapter.addFrag(paidEventsMembersPayAtCounter_fragment, "Pay At Counter");
+        adapter.addFrag(paidEventsMembersNonMembers_fragment, "Non Member Payment");
         viewpager.setAdapter(adapter);
         tabs.setViewPager(viewpager);
     }

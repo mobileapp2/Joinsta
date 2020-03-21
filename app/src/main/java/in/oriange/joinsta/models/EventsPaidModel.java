@@ -139,6 +139,8 @@ public class EventsPaidModel implements Serializable {
         private String non_member_normal_price_duedate;
         private String is_non_member_early_payment_applicable;
         private String is_non_member_normal_payment_applicable;
+        private String is_group_member;
+        private String can_non_members_pay;
         private List<PaideventsPaymentoptionsBean> paidevents_paymentoptions;
         private List<DocumentsBean> documents;
 
@@ -531,7 +533,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getNon_member_earlybird_price() {
-            return non_member_earlybird_price;
+            if (non_member_earlybird_price.equals("0")) {
+                return "";
+            } else {
+                return non_member_earlybird_price;
+            }
         }
 
         public void setNon_member_earlybird_price(String non_member_earlybird_price) {
@@ -539,7 +545,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getNon_member_normal_price() {
-            return non_member_normal_price;
+            if (non_member_normal_price.equals("0")) {
+                return "";
+            } else {
+                return non_member_normal_price;
+            }
         }
 
         public void setNon_member_normal_price(String non_member_normal_price) {
@@ -547,7 +557,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getNon_member_earlybird_price_duedate() {
-            return non_member_earlybird_price_duedate;
+            if (non_member_earlybird_price_duedate.equals("0000-00-00")) {
+                return "";
+            } else {
+                return non_member_earlybird_price_duedate;
+            }
         }
 
         public void setNon_member_earlybird_price_duedate(String non_member_earlybird_price_duedate) {
@@ -555,7 +569,11 @@ public class EventsPaidModel implements Serializable {
         }
 
         public String getNon_member_normal_price_duedate() {
-            return non_member_normal_price_duedate;
+            if (non_member_normal_price_duedate.equals("0000-00-00")) {
+                return "";
+            } else {
+                return non_member_normal_price_duedate;
+            }
         }
 
         public void setNon_member_normal_price_duedate(String non_member_normal_price_duedate) {
@@ -576,6 +594,24 @@ public class EventsPaidModel implements Serializable {
 
         public void setIs_non_member_normal_payment_applicable(String is_non_member_normal_payment_applicable) {
             this.is_non_member_normal_payment_applicable = is_non_member_normal_payment_applicable;
+        }
+
+        public String getIs_group_member() {
+//            return "0";
+            return is_group_member;
+        }
+
+        public void setIs_group_member(String is_group_member) {
+            this.is_group_member = is_group_member;
+        }
+
+        public String getCan_non_members_pay() {
+//            return "1";
+            return can_non_members_pay;
+        }
+
+        public void setCan_non_members_pay(String can_non_members_pay) {
+            this.can_non_members_pay = can_non_members_pay;
         }
 
         public Date getEventStartDate() {

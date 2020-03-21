@@ -68,6 +68,7 @@ public class EventPaidMemberStatusModel implements Serializable {
         private String quantity;
         private String amount;
         private String is_joinsta_member;
+        private String is_group_member;
 
         public String getFirst_name() {
             return first_name;
@@ -163,6 +164,14 @@ public class EventPaidMemberStatusModel implements Serializable {
 
         public void setIs_joinsta_member(String is_joinsta_member) {
             this.is_joinsta_member = is_joinsta_member;
+        }
+
+        public String getIs_group_member() {
+            return is_group_member;
+        }
+
+        public void setIs_group_member(String is_group_member) {
+            this.is_group_member = is_group_member;
         }
     }
 }

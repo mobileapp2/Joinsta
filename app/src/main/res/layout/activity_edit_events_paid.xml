@@ -508,12 +508,23 @@
 
                     </LinearLayout>
 
+                    <CheckBox
+                        android:id="@+id/cb_is_non_member_payment_allowed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Can non group members pay?"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
                     <LinearLayout
+                        android:id="@+id/ll_non_member_payment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/bg_outline"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="match_parent"
