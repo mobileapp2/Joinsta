@@ -1,7 +1,11 @@
 package in.oriange.joinsta.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +30,7 @@ public class MyEvents_Activity extends AppCompatActivity {
     private Context context;
     private SmartTabLayout tabs;
     private NonSwipeableViewPager viewpager;
+    private MenuItem action_notification;
 
 
     @Override
@@ -65,7 +70,19 @@ public class MyEvents_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-
+        tabs.setOnTabClickListener(new SmartTabLayout.OnTabClickListener() {
+            @Override
+            public void onTabClicked(int position) {
+                switch (position) {
+                    case 0:
+                        action_notification.setVisible(false);
+                        break;
+                    case 1:
+                        action_notification.setVisible(true);
+                        break;
+                }
+            }
+        });
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -112,5 +129,25 @@ public class MyEvents_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menus_notification, menu);
+        action_notification = menu.findItem(R.id.action_notification);
+        action_notification.setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_notification:
+                startActivity(new Intent(context, AllEventNotifications_Activity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

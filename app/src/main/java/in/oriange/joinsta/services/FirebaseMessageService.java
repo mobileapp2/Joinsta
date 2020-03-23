@@ -34,6 +34,7 @@ import java.util.Random;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.Enquiries_Activity;
+import in.oriange.joinsta.activities.EventsNotifications_Activity;
 import in.oriange.joinsta.activities.GroupNotifications_Activity;
 import in.oriange.joinsta.activities.Notification_Activity;
 import in.oriange.joinsta.activities.SplashScreen_Activity;
@@ -85,18 +86,22 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     .putExtra("groupId", remoteMessage.getData().get("group_id"))
                     .putExtra("msg_id", remoteMessage.getData().get("msg_id"))
                     .putExtra("groupName", remoteMessage.getData().get("group_name"));
-        } else if (remoteMessage.getData().get("notification_type").equals("1") || remoteMessage.getData().get("notification_type").equals("1")) {
+        } else if (remoteMessage.getData().get("notification_type").equals("1")) {
             notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
         } else if (remoteMessage.getData().get("notification_type").equals("3")) {
             notificationIntent = new Intent(getApplicationContext(), Enquiries_Activity.class);
+        } else if (remoteMessage.getData().get("notification_type").equals("4")) {
+            notificationIntent = new Intent(getApplicationContext(), EventsNotifications_Activity.class)
+                    .putExtra("eventId", remoteMessage.getData().get("event_id"))
+                    .putExtra("msg_id", remoteMessage.getData().get("event_notification_id"))
+                    .putExtra("eventName", remoteMessage.getData().get("event_name"));
         } else {
             notificationIntent = new Intent(getApplicationContext(), SplashScreen_Activity.class);
         }
 
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        if (remoteMessage.getData().get("notification_type").equals("2") ||
-                remoteMessage.getData().get("notification_type").equals("1")) {
+        if (remoteMessage.getData().get("notification_type").equals("2") || remoteMessage.getData().get("notification_type").equals("1")) {
             if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
                 showNewNotification(
                         getApplicationContext(),
@@ -134,6 +139,20 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("mobile"),
                     remoteMessage.getData().get("email")
             );
+        } else if (remoteMessage.getData().get("notification_type").equals("4")) {
+            showEventNotification(
+                    getApplicationContext(),
+                    notificationIntent,
+                    remoteMessage.getData().get("title"),
+                    remoteMessage.getData().get("message"),
+                    remoteMessage.getData().get("image"),
+                    remoteMessage.getData().get("icon"),
+                    remoteMessage.getData().get("type"),
+                    remoteMessage.getData().get("userId"),
+                    remoteMessage.getData().get("taskId"),
+                    remoteMessage.getData().get("event_id"),
+                    remoteMessage.getData().get("event_notification_id"),
+                    remoteMessage.getData().get("event_name"));
         }
     }
 
@@ -169,6 +188,69 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             } else {
                 notificationIntent = new Intent(context, SplashScreen_Activity.class);
             }
+
+            Bundle data = new Bundle();
+            data.putString("action", "notificationfromfcm");
+            data.putString("taskId", taskId);
+            data.putString("type", type);
+            notificationIntent.putExtras(data);
+        }
+
+
+        String channelId = "channel-01";
+        String channelName = "Channel Name";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+            builder = new NotificationCompat.Builder(context, channelId);
+        } else {
+            builder = new NotificationCompat.Builder(context);
+        }
+
+        pendingIntent = PendingIntent.getActivity((context), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification;
+        notification = builder
+                .setContentTitle(title)
+                .setContentText(msg)
+                .setSmallIcon(R.drawable.icon_notification_logo)
+                .setSound(notificationSound)
+                .setLights(Color.YELLOW, 1000, 1000)
+                .setVibrate(new long[]{500, 500})
+                .setWhen(System.currentTimeMillis())
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setAutoCancel(true)
+                .setColor(context.getResources().getColor(R.color.colorPrimary))
+                .setContentIntent(pendingIntent)
+                .build();
+        notificationManager.notify(m1, notification);
+    }
+
+    public static void showEventNotification(Context context, Intent intent, String title, String msg, String image, String icon, String type, String userId,
+                                             String taskId, String event_id, String event_notification_id, String event_name) {
+
+        Log.wtf(TAG, "showNewNotification: ");
+
+        notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder = new NotificationCompat.Builder(context);
+        notificationManager = NotificationManagerCompat.from(context);
+
+        int m1 = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        Intent notificationIntent = null;
+        if (intent != null) {
+            notificationIntent = intent;
+            Bundle data = new Bundle();
+            data.putString("action", "notificationfromfcm");
+            data.putString("taskId", taskId);
+            data.putString("type", type);
+            notificationIntent.putExtras(data);
+        } else {
+            notificationIntent = new Intent(context, EventsNotifications_Activity.class)
+                    .putExtra("eventId", event_id)
+                    .putExtra("msg_id", event_notification_id)
+                    .putExtra("eventName", event_name);
 
             Bundle data = new Bundle();
             data.putString("action", "notificationfromfcm");

@@ -532,7 +532,6 @@ public class GroupNotificationAdapter extends RecyclerView.Adapter<GroupNotifica
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("GroupNotifications_Activity"));
-                        Utilities.showMessage("Notification deleted successfully", context, 1);
                     }
                 }
             } catch (Exception e) {

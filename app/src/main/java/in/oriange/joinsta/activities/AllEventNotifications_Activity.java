@@ -27,14 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.adapters.AllGroupNotificationParentAdapter;
-import in.oriange.joinsta.models.AllGroupNotificationListModel;
+import in.oriange.joinsta.adapters.AllEventNotificationParentAdapter;
+import in.oriange.joinsta.models.AllEventNotificationListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
-public class AllGroupNotifications_Activity extends AppCompatActivity {
+public class AllEventNotifications_Activity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -49,7 +49,7 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_group_notifications);
+        setContentView(R.layout.activity_all_event_notifications);
 
         init();
         getSessionDetails();
@@ -59,7 +59,7 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = AllGroupNotifications_Activity.this;
+        context = AllEventNotifications_Activity.this;
         session = new UserSessionManager(context);
 
         progressBar = findViewById(R.id.progressBar);
@@ -83,13 +83,13 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
 
     private void setDefault() {
         if (Utilities.isNetworkAvailable(context)) {
-            new GetGroupNotification().execute();
+            new GetEventNotification().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("AllGroupNotifications_Activity");
+        IntentFilter intentFilter = new IntentFilter("AllEventNotifications_Activity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -98,17 +98,16 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetGroupNotification().execute();
+                    new GetEventNotification().execute();
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
-
     }
 
-    private class GetGroupNotification extends AsyncTask<String, Void, String> {
+    private class GetEventNotification extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -123,7 +122,7 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getAllGroupNotificationDetails");
+            obj.addProperty("type", "getAllEventNotificationDetails");
             obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.NOTIFICATIONAPI, obj.toString());
             return res.trim();
@@ -137,8 +136,8 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    List<AllGroupNotificationListModel.ResultBean> notificationList = new ArrayList<>();
-                    AllGroupNotificationListModel pojoDetails = new Gson().fromJson(result, AllGroupNotificationListModel.class);
+                    List<AllEventNotificationListModel.ResultBean> notificationList = new ArrayList<>();
+                    AllEventNotificationListModel pojoDetails = new Gson().fromJson(result, AllEventNotificationListModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
@@ -147,7 +146,7 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
                         if (notificationList.size() > 0) {
                             rv_notification.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_notification.setAdapter(new AllGroupNotificationParentAdapter(context, notificationList));
+                            rv_notification.setAdapter(new AllEventNotificationParentAdapter(context, notificationList));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_notification.setVisibility(View.GONE);
@@ -184,7 +183,7 @@ public class AllGroupNotifications_Activity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Utilities.isNetworkAvailable(context)) {
-                new GetGroupNotification().execute();
+                new GetEventNotification().execute();
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }

@@ -63,7 +63,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer;
+    private ImageButton imv_back, imv_share, imv_edit, imv_delete, imv_message_organizer, imv_notification;
     private BannerLayout rv_images;
     private ReadMoreTextView tv_description;
     private TextView tv_name, tv_type, tv_created_by_name, tv_is_online, tv_time_date, tv_venue, tv_view_on_map,
@@ -104,6 +104,7 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         imv_edit = findViewById(R.id.imv_edit);
         imv_delete = findViewById(R.id.imv_delete);
         imv_message_organizer = findViewById(R.id.imv_message_organizer);
+        imv_notification = findViewById(R.id.imv_notification);
 
         tv_name = findViewById(R.id.tv_name);
         tv_type = findViewById(R.id.tv_type);
@@ -121,7 +122,6 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
         tv_message_unpaid = findViewById(R.id.tv_message_unpaid);
         tv_organizer_name = findViewById(R.id.tv_organizer_name);
         tv_viewdocs = findViewById(R.id.tv_viewdocs);
-
 
         ll_paid_msg = findViewById(R.id.ll_paid_msg);
         ll_unpaid_msg = findViewById(R.id.ll_unpaid_msg);
@@ -437,6 +437,15 @@ public class ViewEventsPaid_Activity extends AppCompatActivity {
                 });
                 AlertDialog alertD = builder.create();
                 alertD.show();
+            }
+        });
+
+        imv_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, EventsNotifications_Activity.class)
+                        .putExtra("eventId", eventDetails.getid())
+                        .putExtra("eventName", eventDetails.getName()));
             }
         });
 
