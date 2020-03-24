@@ -75,9 +75,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 remoteMessage.getData().get("userId") + " " +
                 remoteMessage.getData().get("taskId"));
 
-        if (remoteMessage.getData() == null) {
-            return;
-        }
+        remoteMessage.getData();
 
         Intent notificationIntent = null;
 
@@ -95,7 +93,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     .putExtra("eventId", remoteMessage.getData().get("event_id"))
                     .putExtra("msg_id", remoteMessage.getData().get("event_notification_id"))
                     .putExtra("eventName", remoteMessage.getData().get("event_name"));
-        } else {
+        } else if (remoteMessage.getData().get("notification_type").equals("")) {
             notificationIntent = new Intent(getApplicationContext(), SplashScreen_Activity.class);
         }
 
@@ -153,6 +151,22 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("event_id"),
                     remoteMessage.getData().get("event_notification_id"),
                     remoteMessage.getData().get("event_name"));
+        } else if (remoteMessage.getData().get("notification_type").equals("")) {
+            showNewNotification(
+                    getApplicationContext(),
+                    notificationIntent,
+                    remoteMessage.getData().get("title"),
+                    remoteMessage.getData().get("message"),
+                    remoteMessage.getData().get("image"),
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "");
+
         }
     }
 
