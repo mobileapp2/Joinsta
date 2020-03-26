@@ -64,6 +64,7 @@ public class SearchEmployeeAdapter extends RecyclerView.Adapter<SearchEmployeeAd
             userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
+            if (!json.getString("email").equals("null"))
             emailJsonArray = new JSONArray(json.getString("email"));
             try {
                 countryCode = json.getString("country_code");

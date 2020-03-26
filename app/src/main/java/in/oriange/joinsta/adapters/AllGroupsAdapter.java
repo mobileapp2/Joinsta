@@ -38,7 +38,6 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
     private Context context;
     private String userId;
 
-
     public AllGroupsAdapter(Context context, List<AllGroupsListModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
@@ -227,7 +226,6 @@ public class AllGroupsAdapter extends RecyclerView.Adapter<AllGroupsAdapter.MyVi
             }
         }
     }
-
 
     private class CancelRequest extends AsyncTask<String, Void, String> {
 

@@ -219,7 +219,11 @@ public class GroupFeedsModel implements Serializable {
         }
 
         public String getImage_url() {
-            return image_url;
+            if (image_url != null) {
+                return image_url;
+            } else {
+                return "";
+            }
         }
 
         public void setImage_url(String image_url) {

@@ -402,11 +402,11 @@ public class EditGroupFeeds_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_description.getText().toString().trim().isEmpty()) {
-            edt_description.setError("Please enter Description");
-            edt_description.requestFocus();
-            return;
-        }
+//        if (edt_description.getText().toString().trim().isEmpty()) {
+//            edt_description.setError("Please enter Description");
+//            edt_description.requestFocus();
+//            return;
+//        }
 
         ArrayList<GroupFeedsModel.ResultBean.FeedDocumentsBean> docList = new ArrayList<>();
         JsonArray messageDocArray = new JsonArray();

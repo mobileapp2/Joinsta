@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -196,11 +197,19 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         if (!feedDetails.getFeed_title().trim().isEmpty())
             tv_feed_title.setText(feedDetails.getFeed_title());
         else
             tv_feed_title.setVisibility(View.GONE);
+
+
+        if (!feedDetails.getFeed_text().trim().isEmpty()) {
+            tv_feed_text.setText(feedDetails.getFeed_text());
+            tv_feed_text.setVisibility(View.VISIBLE);
+        } else {
+            tv_feed_text.setVisibility(View.GONE);
+        }
+
 
         tv_feed_text.setText(feedDetails.getFeed_text());
         Linkify.addLinks(tv_feed_text, Linkify.ALL);
@@ -334,7 +343,12 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         imv_feed_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showImageDialog(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+                List<String> imageUrlList = new ArrayList<>();
+                imageUrlList.add(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
+
+                context.startActivity(new Intent(context, FullScreenImages_Activity.class)
+                        .putExtra("imageUrlList", (Serializable) imageUrlList)
+                        .putExtra("position", 0));
             }
         });
 

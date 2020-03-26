@@ -1,6 +1,7 @@
 package in.oriange.joinsta.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +35,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.AddGroupCreateRequest_Activity;
 import in.oriange.joinsta.activities.AllGroupNotifications_Activity;
 import in.oriange.joinsta.activities.AllGroups_Activity;
+import in.oriange.joinsta.activities.EditBasicInformation_Activity;
 import in.oriange.joinsta.activities.GroupRequests_Activity;
 import in.oriange.joinsta.adapters.MyGroupsAdapter;
 import in.oriange.joinsta.models.GroupRequestsListModel;
@@ -144,6 +147,31 @@ public class Groups_Fragment extends Fragment {
         btn_group_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                JSONArray emailJsonArray = new JSONArray();
+
+                try {
+                    UserSessionManager session = new UserSessionManager(context);
+                    JSONArray user_info = new JSONArray(session.getUserDetails().get(
+                            ApplicationConstants.KEY_LOGIN_INFO));
+                    JSONObject json = user_info.getJSONObject(0);
+                    emailJsonArray = new JSONArray(json.getString("email"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                if (emailJsonArray == null) {
+                    addEmailDialog();
+                    return;
+                }
+
+                if (emailJsonArray.length() == 0) {
+                    addEmailDialog();
+                    return;
+
+                }
+
+
                 startActivity(new Intent(context, AddGroupCreateRequest_Activity.class));
             }
         });
@@ -238,6 +266,27 @@ public class Groups_Fragment extends Fragment {
                 tv_group_request_count.setVisibility(View.GONE);
             }
         }
+    }
+
+    public void addEmailDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setMessage("Please add email in from Basic Information");
+        builder.setTitle("Alert");
+        builder.setIcon(R.drawable.icon_alertred);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                startActivity(new Intent(context, EditBasicInformation_Activity.class));
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.show();
     }
 
 

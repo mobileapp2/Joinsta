@@ -65,7 +65,8 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
-            emailJsonArray = new JSONArray(json.getString("email"));
+            if (!json.getString("email").equals("null"))
+                emailJsonArray = new JSONArray(json.getString("email"));
             try {
                 countryCode = json.getString("country_code");
             } catch (Exception e) {

@@ -82,7 +82,17 @@ public class PaidEventsMembersAllAdapter extends RecyclerView.Adapter<PaidEvents
 
         switch (memberDetails.getStatus()) {
             case "paid":
-                holder.tv_status.setText("Paid");
+                switch (memberDetails.getPayment_mode()) {
+                    case "online":
+                        holder.tv_status.setText("Paid (Online)");
+                        break;
+                    case "offline":
+                        holder.tv_status.setText("Paid (Offline)");
+                        break;
+                    case "pay_at_counter":
+                        holder.tv_status.setText("Paid (Pay At Counter)");
+                        break;
+                }
                 holder.cv_main_layout.setCardBackgroundColor(context.getResources().getColor(R.color.lightgreen));
                 break;
             case "unpaid":

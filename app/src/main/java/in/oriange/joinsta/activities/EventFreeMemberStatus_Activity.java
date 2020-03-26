@@ -384,6 +384,8 @@ public class EventFreeMemberStatus_Activity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menus_export, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_message);
+        menuItem.setVisible(false);
         return true;
     }
 

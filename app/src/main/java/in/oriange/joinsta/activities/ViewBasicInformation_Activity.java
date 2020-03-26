@@ -305,9 +305,16 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!edt_referral_code.getText().toString().trim().isEmpty()) {
+                    String salutation = "";
+                    if (genderId.equals("1")) {
+                        salutation = "Mr. ";
+                    } else if (genderId.equals("2")) {
+                        salutation = "Ms. ";
+                    }
+
                     String shareMessage = "Welcome to Joinsta\n\n" +
                             "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                            "Enter my referral code - " + edt_referral_code.getText().toString().trim() + "\n" +
+                            "Enter referral code of " + salutation + edt_fname.getText().toString().trim() + " - " + edt_referral_code.getText().toString().trim() + "\n" +
                             "Below is the link to download the app.\n" +
                             "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
                             "Joinsta - Team";

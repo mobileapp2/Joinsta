@@ -38,7 +38,7 @@ public class Settings_Activity extends AppCompatActivity {
     private ProgressDialog pd;
     private CardView cv_logout, cv_feedback, cv_invite, cv_password, cv_report_issue;
     private UserSessionManager session;
-    private String userId, password, mobile, referral_code, country_code;
+    private String userId, password, mobile, referral_code, country_code, genderId, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +76,8 @@ public class Settings_Activity extends AppCompatActivity {
             mobile = json.getString("mobile");
             referral_code = json.getString("referral_code");
             country_code = json.getString("country_code");
+            genderId = json.getString("gender_id");
+            name = json.getString("first_name");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,10 +96,16 @@ public class Settings_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String shareMessage;
+                String salutation = "";
+                if (genderId.equals("1")) {
+                    salutation = "Mr. ";
+                } else if (genderId.equals("2")) {
+                    salutation = "Ms. ";
+                }
                 if (!referral_code.trim().equals("")) {
                     shareMessage = "Welcome to Joinsta\n\n" +
                             "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                            "Enter my referral code - " + referral_code + "\n" +
+                            "Enter referral code of " + salutation + name + " - " + referral_code + "\n" +
                             "Below is the link to download the app.\n" +
                             "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
                             "Joinsta - Team";

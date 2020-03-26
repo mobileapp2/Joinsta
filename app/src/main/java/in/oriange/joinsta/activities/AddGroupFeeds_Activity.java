@@ -361,12 +361,6 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
             return;
         }
 
-        if (edt_description.getText().toString().trim().isEmpty()) {
-            edt_description.setError("Please enter Description");
-            edt_description.requestFocus();
-            return;
-        }
-
         JsonArray messageDocArray = new JsonArray();
 
         for (int i = 0; i < docsLayoutsList.size(); i++) {

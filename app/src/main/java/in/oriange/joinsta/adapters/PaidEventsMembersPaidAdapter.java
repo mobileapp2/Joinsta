@@ -60,6 +60,11 @@ public class PaidEventsMembersPaidAdapter extends RecyclerView.Adapter<PaidEvent
         else
             holder.tv_early_bird_availed.setVisibility(View.GONE);
 
+        if (memberDetails.getPayment_mode().equals("online"))
+            holder.tv_paid_mode.setText("Paid Online");
+        else if (memberDetails.getPayment_mode().equals("offline"))
+            holder.tv_paid_mode.setText("Paid Offline");
+
         holder.ib_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,13 +103,14 @@ public class PaidEventsMembersPaidAdapter extends RecyclerView.Adapter<PaidEvent
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_main_layout;
-        private TextView tv_name, tv_mobile_email, tv_amount, tv_quantity, tv_early_bird_availed;
+        private TextView tv_name, tv_paid_mode, tv_mobile_email, tv_amount, tv_quantity, tv_early_bird_availed;
         private ImageButton ib_call;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
             cv_main_layout = view.findViewById(R.id.cv_main_layout);
             tv_name = view.findViewById(R.id.tv_name);
+            tv_paid_mode = view.findViewById(R.id.tv_paid_mode);
             tv_mobile_email = view.findViewById(R.id.tv_mobile_email);
             tv_amount = view.findViewById(R.id.tv_amount);
             tv_quantity = view.findViewById(R.id.tv_quantity);

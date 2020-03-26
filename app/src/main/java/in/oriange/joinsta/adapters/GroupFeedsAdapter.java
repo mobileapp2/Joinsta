@@ -147,13 +147,19 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             e.printStackTrace();
         }
 
-        if (!feedDetails.getFeed_title().trim().isEmpty())
+        if (!feedDetails.getFeed_title().trim().isEmpty()) {
             holder.tv_feed_title.setText(feedDetails.getFeed_title());
-        else
+            holder.tv_feed_title.setVisibility(View.VISIBLE);
+        } else {
             holder.tv_feed_title.setVisibility(View.GONE);
+        }
 
-
-        holder.tv_feed_text.setText(feedDetails.getFeed_text());
+        if (!feedDetails.getFeed_text().trim().isEmpty()) {
+            holder.tv_feed_text.setText(feedDetails.getFeed_text());
+            holder.tv_feed_text.setVisibility(View.VISIBLE);
+        } else {
+            holder.tv_feed_text.setVisibility(View.GONE);
+        }
 
         if (!feedDetails.getFeed_doc().equals("")) {
             String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
