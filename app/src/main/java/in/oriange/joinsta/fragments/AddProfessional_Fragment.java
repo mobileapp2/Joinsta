@@ -71,6 +71,7 @@ import co.lujun.androidtagview.TagView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.PickMapLoaction_Activity;
 import in.oriange.joinsta.activities.ProfileDetails_Activity;
+import in.oriange.joinsta.models.BizProfEmpProfileDesignationsModel;
 import in.oriange.joinsta.models.CategotyListModel;
 import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.GetTagsListModel;
@@ -313,6 +314,19 @@ public class AddProfessional_Fragment extends Fragment {
 
                 if (Utilities.isNetworkAvailable(context)) {
                     new GetSubCategotyList().execute(categoryId, "1", "3");
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
+            }
+        });
+
+        edt_designation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetDesignationList().execute("3");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -779,6 +793,83 @@ public class AddProfessional_Fragment extends Fragment {
                 SubCategotyListModel subCategoty = subCategoryList.get(which);
                 edt_subtype.setText(subCategoty.getName());
                 subCategoryId = subCategoty.getId();
+            }
+        });
+        builderSingle.show();
+    }
+
+    public class GetDesignationList extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getDesignation");
+            obj.addProperty("category_type_id", params[0]);
+            res = APICall.JSONAPICall(ApplicationConstants.DESIGNATIONAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    BizProfEmpProfileDesignationsModel pojoDetails = new Gson().fromJson(result, BizProfEmpProfileDesignationsModel.class);
+                    type = pojoDetails.getType();
+                    message = pojoDetails.getMessage();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        List<BizProfEmpProfileDesignationsModel.ResultBean> designationList = pojoDetails.getResult();
+                        if (designationList.size() > 0) {
+                            showDesignationListDialog(designationList);
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, "Subtype not available", false);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Server Not Responding", false);
+            }
+        }
+    }
+
+    private void showDesignationListDialog(final List<BizProfEmpProfileDesignationsModel.ResultBean> designationList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Designation");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < designationList.size(); i++) {
+            arrayAdapter.add(String.valueOf(designationList.get(i).getDesignation_name()));
+        }
+
+        builderSingle.setNegativeButton(
+                "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                BizProfEmpProfileDesignationsModel.ResultBean designation = designationList.get(which);
+                edt_designation.setText(designation.getDesignation_name());
             }
         });
         builderSingle.show();
