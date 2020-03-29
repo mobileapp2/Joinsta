@@ -362,6 +362,12 @@ public class EditGroupMembersAdmin_Activity extends AppCompatActivity {
             }
         }
 
+        if (!edt_role.getText().toString().trim().isEmpty()) {
+            edt_role.setError("Please enter select role");
+            edt_role.requestFocus();
+            return;
+        }
+
         JsonArray jsonArray = new JsonArray();
 
         for (int i = 0; i < selectedCategoryIds.size(); i++) {

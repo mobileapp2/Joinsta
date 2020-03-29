@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -29,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +94,6 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
 
         holder.tv_heading.setText(searchDetails.getProfessional_code() + " - " + searchDetails.getFirm_name());
 
-
         if (searchDetails.getTag().get(0) != null) {
             if (searchDetails.getTag().get(0).size() > 0) {
                 StringBuilder tag = new StringBuilder();
@@ -139,7 +141,6 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             }
         });
 
-
         holder.btn_caldist.setVisibility(View.GONE);
 
         if (searchDetails.getOrder_online().trim().equals("")) {
@@ -152,6 +153,17 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             holder.tv_mutual_groups.setPaintFlags(holder.tv_mutual_groups.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         } else {
             holder.tv_mutual_groups.setVisibility(View.GONE);
+        }
+
+        if (searchDetails.getTotal_number_review().equals("0")) {
+            holder.rl_rating.setVisibility(View.GONE);
+        } else {
+            holder.rl_rating.setVisibility(View.VISIBLE);
+            float averageRating = Float.parseFloat(searchDetails.getAvg_rating());
+            averageRating = Float.parseFloat(new DecimalFormat("#.#").format(averageRating));
+            holder.tv_total_rating.setText(String.valueOf(averageRating));
+            holder.tv_total_reviews.setText("(" + searchDetails.getTotal_number_review() + ")");
+            holder.rb_feedback_stars.setRating(averageRating);
         }
 
 //        float scale = context.getResources().getDisplayMetrics().density;
@@ -424,8 +436,10 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
         private ImageView imv_preview;
         private CardView cv_mainlayout;
         private ProgressBar progressBar;
+        private RelativeLayout rl_rating;
+        private RatingBar rb_feedback_stars;
         private Button btn_enquire, btn_caldist, btn_order_online;
-        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_mutual_groups;
+        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_mutual_groups, tv_total_rating, tv_total_reviews;
 
         public MyViewHolder(View view) {
             super(view);
@@ -439,6 +453,10 @@ public class SearchProfessionalAdapter extends RecyclerView.Adapter<SearchProfes
             btn_enquire = view.findViewById(R.id.btn_enquire);
             btn_caldist = view.findViewById(R.id.btn_caldist);
             btn_order_online = view.findViewById(R.id.btn_order_online);
+            rl_rating = view.findViewById(R.id.rl_rating);
+            rb_feedback_stars = view.findViewById(R.id.rb_feedback_stars);
+            tv_total_rating = view.findViewById(R.id.tv_total_rating);
+            tv_total_reviews = view.findViewById(R.id.tv_total_reviews);
         }
     }
 

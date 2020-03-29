@@ -244,6 +244,7 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -264,4 +265,6 @@ public class GroupFeedsCommentsReplys_Activity extends AppCompatActivity {
             }
         }
     };
+
+
 }

@@ -483,6 +483,12 @@ public class AddGroupMembersAdmin_Activity extends AppCompatActivity {
             }
         }
 
+        if (!edt_role.getText().toString().trim().isEmpty()) {
+            edt_role.setError("Please enter select role");
+            edt_role.requestFocus();
+            return;
+        }
+
         JsonObject mainObj = new JsonObject();
 
         mainObj.addProperty("type", "addGroupMemberDetails");

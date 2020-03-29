@@ -87,6 +87,8 @@ public class GroupNotifications_Activity extends AppCompatActivity {
         ll_nopreview = findViewById(R.id.ll_nopreview);
 
         notificationList = new ArrayList<>();
+
+        notificationAdapter = new GroupNotificationAdapter(context, notificationList);
     }
 
     private void getSessionDetails() {

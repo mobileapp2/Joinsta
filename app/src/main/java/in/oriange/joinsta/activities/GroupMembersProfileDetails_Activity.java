@@ -1,6 +1,9 @@
 package in.oriange.joinsta.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -58,6 +62,8 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
 
     private int currentPosition = 0;
     private UserSessionManager session;
+
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,39 +147,17 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
 
         if (Utilities.isNetworkAvailable(context))
             new GetBusiness().execute();
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("GroupMembersProfileDetails_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
-
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switch (currentPosition) {
-                    case 0:
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetBusiness().execute();
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                        break;
-                    case 1:
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetEmployee().execute();
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                        break;
-                    case 2:
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetProfessional().execute();
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                        break;
-                }
+                setUpRv();
             }
         });
 
@@ -181,12 +165,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentPosition = 0;
-                v_business.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                v_employee.setBackgroundColor(getResources().getColor(R.color.white));
-                v_professional.setBackgroundColor(getResources().getColor(R.color.white));
-
-                if (Utilities.isNetworkAvailable(context))
-                    new GetBusiness().execute();
+                setUpRv();
             }
         });
 
@@ -194,13 +173,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentPosition = 1;
-                v_business.setBackgroundColor(getResources().getColor(R.color.white));
-                v_employee.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                v_professional.setBackgroundColor(getResources().getColor(R.color.white));
-
-                if (Utilities.isNetworkAvailable(context))
-                    new GetEmployee().execute();
-
+                setUpRv();
             }
         });
 
@@ -208,13 +181,7 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 currentPosition = 2;
-                v_business.setBackgroundColor(getResources().getColor(R.color.white));
-                v_employee.setBackgroundColor(getResources().getColor(R.color.white));
-                v_professional.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-                if (Utilities.isNetworkAvailable(context))
-                    new GetProfessional().execute();
-
+                setUpRv();
             }
         });
     }
@@ -454,4 +421,60 @@ public class GroupMembersProfileDetails_Activity extends AppCompatActivity {
         });
     }
 
+    private void setUpRv() {
+        switch (currentPosition) {
+            case 0:
+                v_business.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                v_employee.setBackgroundColor(getResources().getColor(R.color.white));
+                v_professional.setBackgroundColor(getResources().getColor(R.color.white));
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetBusiness().execute();
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                break;
+            case 1:
+                v_business.setBackgroundColor(getResources().getColor(R.color.white));
+                v_employee.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                v_professional.setBackgroundColor(getResources().getColor(R.color.white));
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetEmployee().execute();
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                break;
+            case 2:
+                v_business.setBackgroundColor(getResources().getColor(R.color.white));
+                v_employee.setBackgroundColor(getResources().getColor(R.color.white));
+                v_professional.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetProfessional().execute();
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+                break;
+        }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            setUpRv();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
 }

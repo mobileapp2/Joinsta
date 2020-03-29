@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -26,6 +28,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -33,11 +36,13 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.GetProfessionalModel;
+import in.oriange.joinsta.models.RatingAndReviewModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -54,8 +59,10 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
     private ProgressBar progressBar;
     private LinearLayout ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_order_online;
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_order_online, tv_total_rating, tv_total_reviews;
     private ImageView imv_share;
+    private RelativeLayout rl_rating;
+    private RatingBar rb_feedback_stars;
     private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice, cv_add_offer, cv_view_offer, cv_order_online;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
@@ -110,6 +117,11 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         tv_ifsc = findViewById(R.id.tv_ifsc);
         tv_order_online = findViewById(R.id.tv_order_online);
         imv_share = findViewById(R.id.imv_share);
+
+        tv_total_rating = findViewById(R.id.tv_total_rating);
+        tv_total_reviews = findViewById(R.id.tv_total_reviews);
+        rl_rating = findViewById(R.id.rl_rating);
+        rb_feedback_stars = findViewById(R.id.rb_feedback_stars);
 
         container_tags = findViewById(R.id.container_tags);
         rv_mobilenos = findViewById(R.id.rv_mobilenos);
@@ -291,6 +303,17 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
             cv_order_online.setVisibility(View.GONE);
         }
 
+        if (searchDetails.getTotal_number_review().equals("0")) {
+            rl_rating.setVisibility(View.GONE);
+        } else {
+            rl_rating.setVisibility(View.VISIBLE);
+            float averageRating = Float.parseFloat(searchDetails.getAvg_rating());
+            averageRating = Float.parseFloat(new DecimalFormat("#.#").format(averageRating));
+
+            tv_total_rating.setText(String.valueOf(averageRating));
+            tv_total_reviews.setText("(" + searchDetails.getTotal_number_review() + ")");
+            rb_feedback_stars.setRating(averageRating);
+        }
     }
 
     private void getSessionDetails() {
@@ -457,6 +480,17 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        rl_rating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context))
+                    new GetRatingsAndReviews().execute("1", searchDetails.getId());
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
     }
 
     public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
@@ -634,6 +668,55 @@ public class ViewMyProfDetails_Activity extends AppCompatActivity {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", searchDetails.getEmail(), null));
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
+    }
+
+    public class GetRatingsAndReviews extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "GetProfileRating");
+            obj.addProperty("category_type_id", params[0]);
+            obj.addProperty("record_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.RATINGANDREVIEWAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "";
+            try {
+                if (!result.equals("")) {
+                    RatingAndReviewModel pojoDetails = new Gson().fromJson(result, RatingAndReviewModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        startActivity(new Intent(context, RatingAndReviewList_Activity.class)
+                                .putExtra("recordId", searchDetails.getId())
+                                .putExtra("profileName", tv_name.getText().toString().trim())
+                                .putExtra("reviewResult", result)
+                                .putExtra("categoryTypeId", "3"));
+
+                    } else {
+                        Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
+            }
+        }
     }
 
 }

@@ -81,6 +81,11 @@ public class GetProfessionalModel implements Serializable {
         private String is_visible;
         private String offer_count;
         private String order_online;
+        private String avg_rating;
+        private String review_title_by_user;
+        private String review_description_by_user;
+        private String rating_by_user;
+        private String total_number_review;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
@@ -515,6 +520,46 @@ public class GetProfessionalModel implements Serializable {
 
         public void setOrder_online(String order_online) {
             this.order_online = order_online;
+        }
+
+        public String getAvg_rating() {
+            return avg_rating;
+        }
+
+        public void setAvg_rating(String avg_rating) {
+            this.avg_rating = avg_rating;
+        }
+
+        public String getReview_title_by_user() {
+            return review_title_by_user;
+        }
+
+        public void setReview_title_by_user(String review_title_by_user) {
+            this.review_title_by_user = review_title_by_user;
+        }
+
+        public String getReview_description_by_user() {
+            return review_description_by_user;
+        }
+
+        public void setReview_description_by_user(String review_description_by_user) {
+            this.review_description_by_user = review_description_by_user;
+        }
+
+        public String getRating_by_user() {
+            return rating_by_user;
+        }
+
+        public void setRating_by_user(String rating_by_user) {
+            this.rating_by_user = rating_by_user;
+        }
+
+        public String getTotal_number_review() {
+            return total_number_review;
+        }
+
+        public void setTotal_number_review(String total_number_review) {
+            this.total_number_review = total_number_review;
         }
 
         public ArrayList<ArrayList<MobilesBean>> getMobiles() {

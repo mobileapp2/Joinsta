@@ -87,6 +87,7 @@ public class EventsNotifications_Activity extends AppCompatActivity {
         ll_nopreview = findViewById(R.id.ll_nopreview);
 
         notificationList = new ArrayList<>();
+        notificationAdapter = new EventNotificationAdapter(context, notificationList);
     }
 
     private void getSessionDetails() {

@@ -17,4 +17,5 @@
 
     <string name="places_api_key">AIzaSyBqsk7EvFj-f7wQ2QtR9x8NZJ2IvfusP2o</string>
     <string name="online_payment_disclaimer">Joinsta App facilitates online payment facility to event holders and Group Admins enabling them to collect payments from group members or any users of Joinsta App as per the discretion of Group Admin or event holder. Joinsta App, M/s. Empower Financial Consultants Pvt Ltd shall hold no responsibility, liability for any payments made thereof by any group members of users of Joinsta App to the event holder and/ Group Admin. Joinsta App is a mere facilitator in this regard. Further, Joinsta App disclaims any responsibility, liability regarding any payments made thereof and shall in no event permit any illegal, fraudulent, hawala transactions thereof.  You shall be solely and exclusively liable and responsible for any and all payments made by you through Joinsta App. You shall be required to go through the legal policies mentioned in Joinsta App.</string>
+    <string name="first_to_rate">Be the first one to post a review</string>
 </resources>

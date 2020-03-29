@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -25,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import in.oriange.joinsta.R;
@@ -145,6 +148,17 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
 
         if (searchDetails.getOrder_online().trim().equals("")) {
             holder.btn_order_online.setVisibility(View.GONE);
+        }
+
+        if (searchDetails.getTotal_number_review().equals("0")) {
+            holder.rl_rating.setVisibility(View.GONE);
+        } else {
+            holder.rl_rating.setVisibility(View.VISIBLE);
+            float averageRating = Float.parseFloat(searchDetails.getAvg_rating());
+            averageRating = Float.parseFloat(new DecimalFormat("#.#").format(averageRating));
+            holder.tv_total_rating.setText(String.valueOf(averageRating));
+            holder.tv_total_reviews.setText("(" + searchDetails.getTotal_number_review() + ")");
+            holder.rb_feedback_stars.setRating(averageRating);
         }
 
         holder.btn_enquire.setOnClickListener(new View.OnClickListener() {
@@ -330,8 +344,10 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
+        private RelativeLayout rl_rating;
+        private RatingBar rb_feedback_stars;
         private Button btn_enquire, btn_caldist, btn_order_online;
-        private TextView tv_heading, tv_subheading, tv_subsubheading;
+        private TextView tv_heading, tv_subheading, tv_subsubheading, tv_mutual_groups, tv_total_rating, tv_total_reviews;
 
         public MyViewHolder(View view) {
             super(view);
@@ -342,6 +358,10 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
             btn_enquire = view.findViewById(R.id.btn_enquire);
             btn_caldist = view.findViewById(R.id.btn_caldist);
             btn_order_online = view.findViewById(R.id.btn_order_online);
+            rl_rating = view.findViewById(R.id.rl_rating);
+            rb_feedback_stars = view.findViewById(R.id.rb_feedback_stars);
+            tv_total_rating = view.findViewById(R.id.tv_total_rating);
+            tv_total_reviews = view.findViewById(R.id.tv_total_reviews);
         }
     }
 

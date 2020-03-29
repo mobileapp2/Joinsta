@@ -1,9 +1,11 @@
 package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -28,11 +32,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
@@ -42,12 +48,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.GetProfessionalModel;
+import in.oriange.joinsta.models.RatingAndReviewModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.CalculateDistanceTime;
@@ -74,9 +82,11 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
     private ImageView imv_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc;
+            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_total_rating, tv_total_reviews, tv_first_to_rate;
+    private RelativeLayout rl_rating;
+    private RatingBar rb_feedback_stars, rb_post_rating;
     private Button btn_enquire, btn_caldist;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_post_review, cv_mutual_groups;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -84,6 +94,7 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
     private String userId, isFav, name, mobile, countryCode;
 
     private JSONArray emailJsonArray;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +102,8 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_viewgroupmember_profdetails);
 
         init();
-        getSessionDetails();
         setDefault();
+        getSessionDetails();
         setEventHandler();
         setUpToolbar();
     }
@@ -116,6 +127,8 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
         cv_address = findViewById(R.id.cv_address);
         cv_tax = findViewById(R.id.cv_tax);
         cv_bank = findViewById(R.id.cv_bank);
+        cv_post_review = findViewById(R.id.cv_post_review);
+        cv_mutual_groups = findViewById(R.id.cv_mutual_groups);
 
         tv_name = findViewById(R.id.tv_name);
         tv_nature = findViewById(R.id.tv_nature);
@@ -132,6 +145,13 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
         tv_acc_no = findViewById(R.id.tv_acc_no);
         tv_ifsc = findViewById(R.id.tv_ifsc);
         imv_share = findViewById(R.id.imv_share);
+
+        tv_total_rating = findViewById(R.id.tv_total_rating);
+        tv_total_reviews = findViewById(R.id.tv_total_reviews);
+        tv_first_to_rate = findViewById(R.id.tv_first_to_rate);
+        rl_rating = findViewById(R.id.rl_rating);
+        rb_feedback_stars = findViewById(R.id.rb_feedback_stars);
+        rb_post_rating = findViewById(R.id.rb_post_rating);
 
         btn_enquire = findViewById(R.id.btn_enquire);
         btn_caldist = findViewById(R.id.btn_caldist);
@@ -244,6 +264,27 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
             cv_address.setVisibility(View.GONE);
         }
 
+        if (searchDetails.getTotal_number_review().equals("0")) {
+            rl_rating.setVisibility(View.GONE);
+        } else {
+            rl_rating.setVisibility(View.VISIBLE);
+            float averageRating = Float.parseFloat(searchDetails.getAvg_rating());
+            averageRating = Float.parseFloat(new DecimalFormat("#.#").format(averageRating));
+
+            tv_total_rating.setText(String.valueOf(averageRating));
+            tv_total_reviews.setText("(" + searchDetails.getTotal_number_review() + ")");
+            rb_feedback_stars.setRating(averageRating);
+        }
+
+        cv_mutual_groups.setVisibility(View.GONE);
+
+        if (!searchDetails.getRating_by_user().equals("0")) {
+            cv_post_review.setVisibility(View.GONE);
+        }
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("ViewGroupMemberProfDetails_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
 //        if (!searchDetails.getTax_id().trim().isEmpty()) {
 //            if (!searchDetails.getTax_alias().trim().isEmpty()) {
 //                tv_tax_alias.setText("Alias - " + searchDetails.getTax_alias());
@@ -302,7 +343,6 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
-
             userId = json.getString("userid");
             name = json.getString("first_name");
             mobile = json.getString("mobile");
@@ -396,7 +436,6 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
                     Utilities.showMessage("Mobile number not added", context, 2);
             }
         });
-
 
         ll_landline.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -710,10 +749,43 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, details);
                 context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
-
             }
         });
 
+        rl_rating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Utilities.isNetworkAvailable(context))
+                    new GetRatingsAndReviews().execute("3", searchDetails.getId());
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+        tv_first_to_rate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, AddRatingAndReview_Activity.class)
+                        .putExtra("recordId", searchDetails.getId())
+                        .putExtra("profileName", tv_name.getText().toString().trim())
+                        .putExtra("categoryTypeId", "3")
+                        .putExtra("rating", 5));
+            }
+        });
+
+        rb_post_rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (rating == 0)
+                    return;
+
+                startActivity(new Intent(context, AddRatingAndReview_Activity.class)
+                        .putExtra("recordId", searchDetails.getId())
+                        .putExtra("profileName", tv_name.getText().toString().trim())
+                        .putExtra("categoryTypeId", "3")
+                        .putExtra("rating", (int) rb_post_rating.getRating()));
+            }
+        });
     }
 
     private void showMobileListDialog(final ArrayList<GetProfessionalModel.ResultBean.MobilesBean> mobileList) {
@@ -968,6 +1040,55 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
         }
     }
 
+    public class GetRatingsAndReviews extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "GetProfileRating");
+            obj.addProperty("category_type_id", params[0]);
+            obj.addProperty("record_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.RATINGANDREVIEWAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "";
+            try {
+                if (!result.equals("")) {
+                    RatingAndReviewModel pojoDetails = new Gson().fromJson(result, RatingAndReviewModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        startActivity(new Intent(context, RatingAndReviewList_Activity.class)
+                                .putExtra("recordId", searchDetails.getId())
+                                .putExtra("profileName", tv_name.getText().toString().trim())
+                                .putExtra("reviewResult", result)
+                                .putExtra("categoryTypeId", "3"));
+
+                    } else {
+                        Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
+            }
+        }
+    }
+
     private void sendEmail() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", searchDetails.getEmail(), null));
@@ -990,5 +1111,24 @@ public class ViewGroupMemberProfDetails_Activity extends AppCompatActivity {
         });
 
         collapsingToolbar.setTitle("");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        rb_post_rating.setRating(0);
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }
