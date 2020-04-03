@@ -129,6 +129,9 @@ public class AddGroupMembersAdmin_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
+
+        edt_role.setText("Group Member");
+        role = "group_member";
     }
 
     private void setEventHandler() {
@@ -483,7 +486,7 @@ public class AddGroupMembersAdmin_Activity extends AppCompatActivity {
             }
         }
 
-        if (!edt_role.getText().toString().trim().isEmpty()) {
+        if (edt_role.getText().toString().trim().isEmpty()) {
             edt_role.setError("Please enter select role");
             edt_role.requestFocus();
             return;

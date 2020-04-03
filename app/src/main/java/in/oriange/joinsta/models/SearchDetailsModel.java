@@ -632,6 +632,7 @@ public class SearchDetailsModel implements Serializable {
             public static class MobilesBean implements Serializable {
                 private String id;
                 private String mobile_number;
+                private String country_code;
 
                 public String getId() {
                     return id;
@@ -642,11 +643,31 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getMobile_number() {
-                    return mobile_number;
+                    return mobile_number.replace("-", "").replace("+", "");
                 }
 
                 public void setMobile_number(String mobile_number) {
                     this.mobile_number = mobile_number;
+                }
+
+                public String getCountry_code() {
+                    if (country_code != null) {
+                        if (!country_code.equals("")) {
+                            if (country_code.startsWith("+")) {
+                                return country_code;
+                            } else {
+                                return "+" + country_code;
+                            }
+                        } else {
+                            return "+91";
+                        }
+                    } else {
+                        return "+91";
+                    }
+                }
+
+                public void setCountry_code(String country_code) {
+                    this.country_code = country_code;
                 }
             }
 
@@ -654,6 +675,7 @@ public class SearchDetailsModel implements Serializable {
 
                 private String id;
                 private String landline_numbers;
+                private String country_code;
 
                 public String getId() {
                     return id;
@@ -664,11 +686,31 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getLandline_numbers() {
-                    return landline_numbers;
+                    return landline_numbers.replace("-", "").replace("+", "");
                 }
 
                 public void setLandline_numbers(String landline_numbers) {
                     this.landline_numbers = landline_numbers;
+                }
+
+                public String getCountry_code() {
+                    if (country_code != null) {
+                        if (!country_code.equals("")) {
+                            if (country_code.startsWith("+")) {
+                                return country_code;
+                            } else {
+                                return "+" + country_code;
+                            }
+                        } else {
+                            return "+91";
+                        }
+                    } else {
+                        return "+91";
+                    }
+                }
+
+                public void setCountry_code(String country_code) {
+                    this.country_code = country_code;
                 }
             }
 
@@ -1391,6 +1433,7 @@ public class SearchDetailsModel implements Serializable {
 
                 private String id;
                 private String mobile_number;
+                private String country_code;
 
                 public String getId() {
                     return id;
@@ -1401,11 +1444,31 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getMobile_number() {
-                    return mobile_number;
+                    return mobile_number.replace("-", "").replace("+", "");
                 }
 
                 public void setMobile_number(String mobile_number) {
                     this.mobile_number = mobile_number;
+                }
+
+                public String getCountry_code() {
+                    if (country_code != null) {
+                        if (!country_code.equals("")) {
+                            if (country_code.startsWith("+")) {
+                                return country_code;
+                            } else {
+                                return "+" + country_code;
+                            }
+                        } else {
+                            return "+91";
+                        }
+                    } else {
+                        return "+91";
+                    }
+                }
+
+                public void setCountry_code(String country_code) {
+                    this.country_code = country_code;
                 }
             }
 
@@ -1413,6 +1476,7 @@ public class SearchDetailsModel implements Serializable {
 
                 private String id;
                 private String landline_number;
+                private String country_code;
 
                 public String getId() {
                     return id;
@@ -1423,11 +1487,31 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getLandline_number() {
-                    return landline_number;
+                    return landline_number.replace("-", "").replace("+", "");
                 }
 
                 public void setLandline_number(String landline_number) {
                     this.landline_number = landline_number;
+                }
+
+                public String getCountry_code() {
+                    if (country_code != null) {
+                        if (!country_code.equals("")) {
+                            if (country_code.startsWith("+")) {
+                                return country_code;
+                            } else {
+                                return "+" + country_code;
+                            }
+                        } else {
+                            return "+91";
+                        }
+                    } else {
+                        return "+91";
+                    }
+                }
+
+                public void setCountry_code(String country_code) {
+                    this.country_code = country_code;
                 }
             }
 
@@ -2123,6 +2207,7 @@ public class SearchDetailsModel implements Serializable {
 
                 private String id;
                 private String mobile_number;
+                private String country_code;
 
                 public String getId() {
                     return id;
@@ -2133,11 +2218,31 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getMobile_number() {
-                    return mobile_number;
+                    return mobile_number.replace("-", "").replace("+", "");
                 }
 
                 public void setMobile_number(String mobile_number) {
                     this.mobile_number = mobile_number;
+                }
+
+                public String getCountry_code() {
+                    if (country_code != null) {
+                        if (!country_code.equals("")) {
+                            if (country_code.startsWith("+")) {
+                                return country_code;
+                            } else {
+                                return "+" + country_code;
+                            }
+                        } else {
+                            return "+91";
+                        }
+                    } else {
+                        return "+91";
+                    }
+                }
+
+                public void setCountry_code(String country_code) {
+                    this.country_code = country_code;
                 }
             }
 
@@ -2145,6 +2250,7 @@ public class SearchDetailsModel implements Serializable {
 
                 private String id;
                 private String landline_number;
+                private String country_code;
 
                 public String getId() {
                     return id;
@@ -2155,11 +2261,31 @@ public class SearchDetailsModel implements Serializable {
                 }
 
                 public String getLandline_number() {
-                    return landline_number;
+                    return landline_number.replace("-", "").replace("+", "");
                 }
 
                 public void setLandline_number(String landline_number) {
                     this.landline_number = landline_number;
+                }
+
+                public String getCountry_code() {
+                    if (country_code != null) {
+                        if (!country_code.equals("")) {
+                            if (country_code.startsWith("+")) {
+                                return country_code;
+                            } else {
+                                return "+" + country_code;
+                            }
+                        } else {
+                            return "+91";
+                        }
+                    } else {
+                        return "+91";
+                    }
+                }
+
+                public void setCountry_code(String country_code) {
+                    this.country_code = country_code;
                 }
             }
 

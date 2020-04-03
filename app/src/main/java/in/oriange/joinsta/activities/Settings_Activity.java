@@ -30,6 +30,7 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
+import static in.oriange.joinsta.utilities.Utilities.getMd5;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 
 public class Settings_Activity extends AppCompatActivity {
@@ -180,8 +181,9 @@ public class Settings_Activity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String oldPwdMdfStr = getMd5(edt_oldpassword.getText().toString().trim());
 
-                if (!edt_oldpassword.getText().toString().trim().equals(password)) {
+                if (!oldPwdMdfStr.equals(password)) {
                     edt_oldpassword.setError("Please enter correct old password");
                     edt_oldpassword.requestFocus();
                     return;
@@ -299,6 +301,4 @@ public class Settings_Activity extends AppCompatActivity {
         super.onPause();
         hideSoftKeyboard(Settings_Activity.this);
     }
-
-
 }

@@ -21,10 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -79,14 +79,13 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     private ProgressDialog pd;
 
     private CircleImageView imv_user, imv_current_user;
-    private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_viewdocs, tv_disclaimer;
+    private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_viewdocs, tv_disclaimer, tv_comment;
     private CardView cv_feed_image;
-    private ImageView imv_feed_image;
-    private Button btn_comment, btn_share;
+    private ImageView imv_feed_image, imv_favourite;
     private RecyclerView rv_feeds_comments;
     private EditText edt_comment;
+    private LinearLayout ll_favourites, ll_comments, ll_share;
     private ImageButton imb_post_comment;
-    private CheckBox cb_like;
 
     private GroupFeedsModel.ResultBean feedDetails;
     private String userId;
@@ -125,13 +124,15 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         tv_disclaimer = findViewById(R.id.tv_disclaimer);
         cv_feed_image = findViewById(R.id.cv_feed_image);
         imv_feed_image = findViewById(R.id.imv_feed_image);
-        btn_comment = findViewById(R.id.btn_comment);
-        btn_share = findViewById(R.id.btn_share);
+        tv_comment = findViewById(R.id.tv_comment);
+        imv_favourite = findViewById(R.id.imv_favourite);
         rv_feeds_comments = findViewById(R.id.rv_feeds_comments);
         rv_feeds_comments.setLayoutManager(new LinearLayoutManager(context));
         edt_comment = findViewById(R.id.edt_comment);
         imb_post_comment = findViewById(R.id.imb_post_comment);
-        cb_like = findViewById(R.id.cb_like);
+        ll_favourites = findViewById(R.id.ll_favourites);
+        ll_comments = findViewById(R.id.ll_comments);
+        ll_share = findViewById(R.id.ll_share);
 
         downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Posts");
         if (!downloadedDocsfolder.exists())
@@ -202,14 +203,12 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         else
             tv_feed_title.setVisibility(View.GONE);
 
-
         if (!feedDetails.getFeed_text().trim().isEmpty()) {
             tv_feed_text.setText(feedDetails.getFeed_text());
             tv_feed_text.setVisibility(View.VISIBLE);
         } else {
             tv_feed_text.setVisibility(View.GONE);
         }
-
 
         tv_feed_text.setText(feedDetails.getFeed_text());
         Linkify.addLinks(tv_feed_text, Linkify.ALL);
@@ -236,14 +235,16 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
         if (feedDetails.getFeed_comments().size() != 0) {
             if (feedDetails.getFeed_comments().size() == 1) {
-                btn_comment.setText("1 Comment");
+                tv_comment.setText("1 Comment");
             } else {
-                btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+                tv_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
             }
         }
 
         if (feedDetails.getIs_favourite() == 1) {
-            cb_like.setChecked(true);
+            imv_favourite.setImageResource(R.drawable.icon_like_red);
+        } else {
+            imv_favourite.setImageResource(R.drawable.icon_like_grey);
         }
 
         if (feedDetails.getFeed_documents().size() != 0) {
@@ -292,7 +293,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             }
         });
 
-        btn_share.setOnClickListener(new View.OnClickListener() {
+        ll_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (feedDetails.getCan_share().equals("1")) {
@@ -315,14 +316,14 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             }
         });
 
-        cb_like.setOnClickListener(new View.OnClickListener() {
+        ll_favourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String isFav;
+                String isFav = "0";
 
-                if (cb_like.isChecked())
+                if (feedDetails.getIs_favourite() == 0)
                     isFav = "1";
-                else
+                else if (feedDetails.getIs_favourite() == 1)
                     isFav = "0";
 
                 JsonObject mainObj = new JsonObject();
@@ -935,10 +936,16 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
             if (feedDetails.getFeed_comments().size() != 0) {
                 if (feedDetails.getFeed_comments().size() == 1) {
-                    btn_comment.setText("1 Comment");
+                    tv_comment.setText("1 Comment");
                 } else {
-                    btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+                    tv_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
                 }
+            }
+
+            if (feedDetails.getIs_favourite() == 1) {
+                imv_favourite.setImageResource(R.drawable.icon_like_red);
+            } else {
+                imv_favourite.setImageResource(R.drawable.icon_like_grey);
             }
 
             feedCommentsList.clear();

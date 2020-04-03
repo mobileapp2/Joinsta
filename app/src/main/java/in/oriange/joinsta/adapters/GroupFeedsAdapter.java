@@ -13,10 +13,9 @@ import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -182,16 +181,16 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
 
         if (feedDetails.getFeed_comments().size() != 0) {
             if (feedDetails.getFeed_comments().size() == 1) {
-                holder.btn_comment.setText("1 Comment");
+                holder.tv_comment.setText("1 Comment");
             } else {
-                holder.btn_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
+                holder.tv_comment.setText(feedDetails.getFeed_comments().size() + " Comments");
             }
         }
 
         if (feedDetails.getIs_favourite() == 1) {
-            holder.cb_like.setChecked(true);
+            holder.imv_favourite.setImageResource(R.drawable.icon_like_red);
         } else {
-            holder.cb_like.setChecked(false);
+            holder.imv_favourite.setImageResource(R.drawable.icon_like_grey);
         }
 
         if (feedDetails.getIs_hidden().equals("1")) {
@@ -209,7 +208,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             }
         });
 
-        holder.btn_comment.setOnClickListener(new View.OnClickListener() {
+        holder.ll_comments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 itemClickedPosition = position;
@@ -218,7 +217,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             }
         });
 
-        holder.btn_share.setOnClickListener(new View.OnClickListener() {
+        holder.ll_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (feedDetails.getCan_share().equals("1")) {
@@ -257,14 +256,14 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             }
         });
 
-        holder.cb_like.setOnClickListener(new View.OnClickListener() {
+        holder.ll_favourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String isFav;
+                String isFav = "0";
 
-                if (holder.cb_like.isChecked())
+                if (feedDetails.getIs_favourite() == 0)
                     isFav = "1";
-                else
+                else if (feedDetails.getIs_favourite() == 1)
                     isFav = "0";
 
                 JsonObject mainObj = new JsonObject();
@@ -290,12 +289,11 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CircleImageView imv_user;
-        private TextView tv_name, tv_time, tv_feed_title, tv_feed_text;
+        private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_comment;
         private CardView cv_mainlayout, cv_feed_image;
-        private ImageView imv_feed_image;
-        private Button btn_comment, btn_share;
+        private ImageView imv_feed_image, imv_favourite;
+        private LinearLayout ll_favourites, ll_comments, ll_share;
         private ImageButton imv_more, ib_ishidden;
-        private CheckBox cb_like;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -311,10 +309,11 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             cv_feed_image = view.findViewById(R.id.cv_feed_image);
             imv_feed_image = view.findViewById(R.id.imv_feed_image);
             ib_ishidden = view.findViewById(R.id.ib_ishidden);
-            btn_comment = view.findViewById(R.id.btn_comment);
-            btn_share = view.findViewById(R.id.btn_share);
-            cb_like = view.findViewById(R.id.cb_like);
-
+            tv_comment = view.findViewById(R.id.tv_comment);
+            ll_favourites = view.findViewById(R.id.ll_favourites);
+            ll_comments = view.findViewById(R.id.ll_comments);
+            ll_share = view.findViewById(R.id.ll_share);
+            imv_favourite = view.findViewById(R.id.imv_favourite);
         }
     }
 

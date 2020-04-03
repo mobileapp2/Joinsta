@@ -79,16 +79,16 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
         Intent notificationIntent = null;
 
-        if (remoteMessage.getData().get("notification_type").equals("2")) {
+        if (remoteMessage.getData().get("notification_type").equals("2")) {   // Group Notifications
             notificationIntent = new Intent(getApplicationContext(), GroupNotifications_Activity.class)
                     .putExtra("groupId", remoteMessage.getData().get("group_id"))
                     .putExtra("msg_id", remoteMessage.getData().get("msg_id"))
                     .putExtra("groupName", remoteMessage.getData().get("group_name"));
-        } else if (remoteMessage.getData().get("notification_type").equals("1")) {
+        } else if (remoteMessage.getData().get("notification_type").equals("1")) {     // General Notifications
             notificationIntent = new Intent(getApplicationContext(), Notification_Activity.class);
-        } else if (remoteMessage.getData().get("notification_type").equals("3")) {
+        } else if (remoteMessage.getData().get("notification_type").equals("3")) {     // Enquiry Notifications
             notificationIntent = new Intent(getApplicationContext(), Enquiries_Activity.class);
-        } else if (remoteMessage.getData().get("notification_type").equals("4")) {
+        } else if (remoteMessage.getData().get("notification_type").equals("4")) {     // Event Notifications
             notificationIntent = new Intent(getApplicationContext(), EventsNotifications_Activity.class)
                     .putExtra("eventId", remoteMessage.getData().get("event_id"))
                     .putExtra("msg_id", remoteMessage.getData().get("event_notification_id"))

@@ -833,23 +833,21 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
         for (int i = 0; i < mobileList.size(); i++) {
-            arrayAdapter.add(String.valueOf(mobileList.get(i).getMobile_number()));
+            arrayAdapter.add(mobileList.get(i).getCountry_code() + mobileList.get(i).getMobile_number());
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(Intent.ACTION_CALL,
-                        Uri.parse("tel:" + mobileList.get(which).getMobile_number())));
+                        Uri.parse("tel:" + mobileList.get(which).getCountry_code() + mobileList.get(which).getMobile_number())));
             }
         });
         builderSingle.show();
@@ -863,22 +861,20 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
         for (int i = 0; i < mobileList.size(); i++) {
-            arrayAdapter.add(String.valueOf(mobileList.get(i).getMobile_number()));
+            arrayAdapter.add(mobileList.get(i).getCountry_code() + mobileList.get(i).getMobile_number());
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String URL = "https://wa.me/" + mobileList.get(which).getMobile_number();
+                String URL = "https://wa.me/" + mobileList.get(which).getCountry_code() + mobileList.get(which).getMobile_number();
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL)));
             }
         });
@@ -893,23 +889,21 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
 
         for (int i = 0; i < landlineList.size(); i++) {
-            arrayAdapter.add(String.valueOf(landlineList.get(i).getLandline_numbers()));
+            arrayAdapter.add(landlineList.get(i).getCountry_code() + landlineList.get(i).getLandline_numbers());
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(Intent.ACTION_CALL,
-                        Uri.parse("tel:" + landlineList.get(which).getLandline_numbers())));
+                        Uri.parse("tel:" + landlineList.get(which).getCountry_code() + landlineList.get(which).getLandline_numbers())));
             }
         });
         builderSingle.show();
@@ -958,7 +952,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
             final int position = holder.getAdapterPosition();
             final SearchDetailsModel.ResultBean.EmployeesBean.MobilesBean searchDetails = resultArrayList.get(position);
 
-            holder.tv_mobile.setText(searchDetails.getMobile_number());
+            holder.tv_mobile.setText(searchDetails.getCountry_code() + searchDetails.getMobile_number());
 
             holder.tv_mobile.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -971,7 +965,7 @@ public class ViewSearchEmpDetails_Activity extends AppCompatActivity {
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:" + searchDetails.getMobile_number())));
+                                    Uri.parse("tel:" + searchDetails.getCountry_code() + searchDetails.getMobile_number())));
                         }
                     });
                     builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {

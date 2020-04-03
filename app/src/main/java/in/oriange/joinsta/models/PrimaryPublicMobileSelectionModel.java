@@ -2,24 +2,34 @@ package in.oriange.joinsta.models;
 
 public class PrimaryPublicMobileSelectionModel {
 
-    private String details;
+    private String country_code;
+    private String mobile;
     private String isPrimary;
     private String isPublic;
     private String id;
 
-    public PrimaryPublicMobileSelectionModel(String details, String isPrimary, String isPublic, String id) {
-        this.details = details;
+    public PrimaryPublicMobileSelectionModel(String country_code, String mobile, String isPrimary, String isPublic, String id) {
+        this.country_code = country_code;
+        this.mobile = mobile;
         this.isPrimary = isPrimary;
         this.isPublic = isPublic;
         this.id = id;
     }
 
-    public String getDetails() {
-        return details;
+    public String getCountry_code() {
+        return country_code;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setCountry_code(String country_code) {
+        this.country_code = country_code;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getIsPrimary() {

@@ -602,6 +602,20 @@ public class AddGroupMemberSupervisor_Activity extends AppCompatActivity {
             return;
         }
 
+        if (!edt_email.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isEmailValid(edt_email.getText().toString())) {
+                edt_email.setError("Please enter valid email");
+                edt_email.requestFocus();
+                return;
+            }
+        }
+
+        if (!edt_role.getText().toString().trim().isEmpty()) {
+            edt_role.setError("Please enter select role");
+            edt_role.requestFocus();
+            return;
+        }
+
         JsonObject mainObj = new JsonObject();
         if (role.equals("group_supervisor")) {
             mainObj.addProperty("type", "addGroupSupervisorDetails");

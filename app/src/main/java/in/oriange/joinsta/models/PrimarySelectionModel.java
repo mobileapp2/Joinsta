@@ -5,11 +5,13 @@ public class PrimarySelectionModel {
     private String details;
     private String isPrimary;
     private String id;
+    private String country_code;
 
-    public PrimarySelectionModel(String details, String isPrimary, String id) {
+    public PrimarySelectionModel(String details, String isPrimary, String id, String country_code) {
         this.details = details;
         this.isPrimary = isPrimary;
         this.id = id;
+        this.country_code = country_code;
     }
 
     public String getDetails() {
@@ -34,5 +36,13 @@ public class PrimarySelectionModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getCountry_code() {
+        return country_code;
+    }
+
+    public void setCountry_code(String country_code) {
+        this.country_code = country_code;
     }
 }

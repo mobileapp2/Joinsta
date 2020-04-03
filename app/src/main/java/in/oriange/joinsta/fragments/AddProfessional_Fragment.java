@@ -499,15 +499,18 @@ public class AddProfessional_Fragment extends Fragment {
         imv_show_hide_tax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sv_scroll.post(new Runnable() {
+                sv_scroll.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
                     }
-                });
+                }, 1);
+
                 if (ll_tax_details.getVisibility() == View.VISIBLE) {
+                    Utilities.animateCollapse(imv_show_hide_tax);
                     ll_tax_details.setVisibility(View.GONE);
                 } else {
+                    Utilities.animateExpand(imv_show_hide_tax);
                     ll_tax_details.setVisibility(View.VISIBLE);
                 }
             }
@@ -516,15 +519,18 @@ public class AddProfessional_Fragment extends Fragment {
         imv_show_hide_bank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sv_scroll.post(new Runnable() {
+                sv_scroll.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
                     }
-                });
+                }, 1);
+
                 if (ll_bank_details.getVisibility() == View.VISIBLE) {
+                    Utilities.animateCollapse(imv_show_hide_bank);
                     ll_bank_details.setVisibility(View.GONE);
                 } else {
+                    Utilities.animateExpand(imv_show_hide_bank);
                     ll_bank_details.setVisibility(View.VISIBLE);
                 }
             }
@@ -798,7 +804,7 @@ public class AddProfessional_Fragment extends Fragment {
         builderSingle.show();
     }
 
-    public class GetDesignationList extends AsyncTask<String, Void, String> {
+    private class GetDesignationList extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -835,7 +841,7 @@ public class AddProfessional_Fragment extends Fragment {
                             showDesignationListDialog(designationList);
                         }
                     } else {
-                        Utilities.showAlertDialog(context, "Subtype not available", false);
+                        Utilities.showAlertDialog(context, "Designations not available", false);
                     }
                 }
             } catch (Exception e) {
@@ -1143,37 +1149,33 @@ public class AddProfessional_Fragment extends Fragment {
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
-                mobileList.add(((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).getText().toString() + "" +
-                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim());
+                JsonObject mobileJSONObj = new JsonObject();
+                mobileJSONObj.addProperty("mobile", ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim());
+                mobileJSONObj.addProperty("country_code", ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).getText().toString());
+                mobileJSONArray.add(mobileJSONObj);
             }
         }
 
         if (!edt_mobile.getText().toString().trim().isEmpty()) {
-            mobileList.add(tv_countrycode_mobile.getText().toString() + "" + edt_mobile.getText().toString().trim());
+            JsonObject mobileJSONObj = new JsonObject();
+            mobileJSONObj.addProperty("mobile", edt_mobile.getText().toString().trim());
+            mobileJSONObj.addProperty("country_code", tv_countrycode_mobile.getText().toString());
+            mobileJSONArray.add(mobileJSONObj);
         }
 
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
             if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
-                landlineList.add(((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).getText().toString() + "" +
-                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim());
+                JsonObject landlineJSONObj = new JsonObject();
+                landlineJSONObj.addProperty("landlinenumber", ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim());
+                landlineJSONObj.addProperty("country_code", ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).getText().toString());
+                landlineJSONArray.add(landlineJSONObj);
             }
         }
 
         if (!edt_landline.getText().toString().trim().isEmpty()) {
-            landlineList.add(tv_countrycode_landline.getText().toString() + "" + edt_landline.getText().toString().trim());
-        }
-
-        JsonObject mainObj = new JsonObject();
-
-        for (int i = 0; i < mobileList.size(); i++) {
-            JsonObject mobileJSONObj = new JsonObject();
-            mobileJSONObj.addProperty("mobile", mobileList.get(i));
-            mobileJSONArray.add(mobileJSONObj);
-        }
-
-        for (int i = 0; i < landlineList.size(); i++) {
             JsonObject landlineJSONObj = new JsonObject();
-            landlineJSONObj.addProperty("landlinenumber", landlineList.get(i));
+            landlineJSONObj.addProperty("landlinenumber", edt_landline.getText().toString());
+            landlineJSONObj.addProperty("country_code", tv_countrycode_landline.getText().toString().trim());
             landlineJSONArray.add(landlineJSONObj);
         }
 
@@ -1184,6 +1186,8 @@ public class AddProfessional_Fragment extends Fragment {
             tagsJSONObj.addProperty("is_approved", tagsListTobeSubmitted.get(i).getIs_approved());
             tagJSONArray.add(tagsJSONObj);
         }
+
+        JsonObject mainObj = new JsonObject();
 
         String isVisible = "0";
 

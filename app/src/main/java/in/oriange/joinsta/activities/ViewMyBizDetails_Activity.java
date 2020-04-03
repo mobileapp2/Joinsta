@@ -598,7 +598,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
             final int position = holder.getAdapterPosition();
             final GetBusinessModel.ResultBean.MobilesBean searchDetails = resultArrayList.get(position);
 
-            holder.tv_mobile.setText(searchDetails.getMobile_number());
+            holder.tv_mobile.setText(searchDetails.getCountry_code() + searchDetails.getMobile_number());
 
             holder.tv_mobile.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -611,7 +611,7 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
                     builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:" + searchDetails.getMobile_number())));
+                                    Uri.parse("tel:" + searchDetails.getCountry_code() + searchDetails.getMobile_number())));
                         }
                     });
                     builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {

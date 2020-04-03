@@ -2,10 +2,6 @@ package in.oriange.joinsta.services;
 
 //import com.google.firebase.iid.FirebaseInstanceIdService;
 
-/**
- * Created by priyeshp on 02-01-18.
- */
-
 //public class FirebaseTokenIdService extends FirebaseInstanceIdService {
 //
 //    private Context context;

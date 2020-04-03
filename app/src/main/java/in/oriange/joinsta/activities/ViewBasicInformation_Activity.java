@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
@@ -28,9 +29,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.UserProfileDetailsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
@@ -51,12 +54,10 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton imv_share;
-
+    UserProfileDetailsModel userDetailsPojo;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
     private String userId, imageUrl = "", countryCode, genderId;
-
-    private JSONArray mobileJsonArray, landlineJsonArray, emailJsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,156 +136,84 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
         ll_landline.removeAllViews();
         ll_email.removeAllViews();
 
-        try {
-            JSONArray user_info = new JSONArray(session.getUserDetails().get(
-                    ApplicationConstants.KEY_LOGIN_INFO));
-            JSONObject json = user_info.getJSONObject(0);
+        UserProfileDetailsModel.ResultBean userDetails = userDetailsPojo.getResult().get(0);
 
-            userId = json.getString("userid");
-            edt_bloodgroup.setText(json.getString("blood_group_description"));
-            edt_education.setText(json.getString("education_description"));
-            edt_specify.setText(json.getString("specific_education"));
-            edt_nativeplace.setText(json.getString("native_place"));
-            edt_fname.setText(json.getString("first_name"));
-            edt_mname.setText(json.getString("middle_name"));
-            edt_lname.setText(json.getString("last_name"));
-            imageUrl = json.getString("image_url");
-            genderId = json.getString("gender_id");
+        userId = userDetails.getUserid();
+        imageUrl = userDetails.getImage_url();
+        genderId = userDetails.getGender_id();
+        edt_bloodgroup.setText(userDetails.getBlood_group_description());
+        edt_education.setText(userDetails.getEducation_description());
+        edt_specify.setText(userDetails.getSpecific_education());
+        edt_nativeplace.setText(userDetails.getNative_place());
+        edt_fname.setText(userDetails.getFirst_name());
+        edt_mname.setText(userDetails.getMiddle_name());
+        edt_lname.setText(userDetails.getLast_name());
+        edt_about.setText(userDetails.getAbout());
+        edt_reg_mobile.setText(userDetails.getCountry_code() + userDetails.getMobile());
+        edt_referral_code.setText(userDetails.getReferral_code());
 
-            try {
-                edt_about.setText(json.getString("about"));
-
-                if (edt_about.getText().toString().trim().equals("null")) {
-                    edt_about.setText("");
-                }
-            } catch (Exception e) {
-                edt_about.setText("");
-            }
-
-            try {
-                countryCode = json.getString("country_code");
-            } catch (Exception e) {
-                countryCode = "91";
-            }
-
-            try {
-                String referral_code;
-                referral_code = json.getString("referral_code");
-                edt_referral_code.setText(referral_code);
-            } catch (Exception e) {
-                edt_referral_code.setText("");
-            }
-
-            edt_reg_mobile.setText("+" + countryCode + " " + json.getString("mobile"));
-
-            if (edt_bloodgroup.getText().toString().trim().equals("null"))
-                edt_bloodgroup.setText("");
-
-            if (edt_education.getText().toString().trim().equals("null"))
-                edt_education.setText("");
-
-            if (!imageUrl.equals("")) {
-                Picasso.with(context)
-                        .load(imageUrl)
-                        .placeholder(R.drawable.icon_userphoto)
-                        .into(imv_user);
-            }
-
-            if (genderId.equals("1")) {
-                rb_male.setChecked(true);
-            } else if (genderId.equals("2")) {
-                rb_female.setChecked(true);
-            }
-
-            try {
-                mobileJsonArray = new JSONArray(json.getString("mobile_numbers"));
-            } catch (Exception e) {
-                mobileJsonArray = new JSONArray();
-            }
-
-            try {
-                landlineJsonArray = new JSONArray(json.getString("landline_numbers"));
-            } catch (Exception e) {
-                landlineJsonArray = new JSONArray();
-            }
-
-            try {
-                emailJsonArray = new JSONArray(json.getString("email"));
-            } catch (Exception e) {
-                emailJsonArray = new JSONArray();
-            }
-
-            if (mobileJsonArray != null)
-                if (mobileJsonArray.length() > 0) {
-                    for (int i = 0; i < mobileJsonArray.length(); i++) {
-
-                        try {
-                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_view_mobile, null);
-                            LinearLayout ll = (LinearLayout) rowView;
-                            mobileLayoutsList.add(ll);
-                            ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-                            if (mobileJsonArray.getJSONObject(i).getString("mobile").length() > 10) {
-                                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile").substring(mobileJsonArray.getJSONObject(i).getString("mobile").length() - 10));
-                                String code = mobileJsonArray.getJSONObject(i).getString("mobile").substring(0, mobileJsonArray.getJSONObject(i).getString("mobile").length() - 10);
-                                if (!code.isEmpty())
-                                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(code);
-                            } else {
-                                ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileJsonArray.getJSONObject(i).getString("mobile"));
-                                ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText("+91");
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-            if (landlineJsonArray != null)
-                if (landlineJsonArray.length() > 0) {
-                    for (int i = 0; i < landlineJsonArray.length(); i++) {
-                        try {
-                            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            final View rowView = inflater.inflate(R.layout.layout_view_landline, null);
-                            LinearLayout ll = (LinearLayout) rowView;
-                            landlineLayoutsList.add(ll);
-                            ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-
-                            if (landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() > 10) {
-                                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").substring(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() - 10));
-                                String code = landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").substring(0, landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", "").length() - 10);
-                                if (!code.isEmpty())
-                                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(code);
-                            } else {
-                                ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineJsonArray.getJSONObject(i).getString("landline_number").replace("-", ""));
-                                ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText("+91");
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-            if (emailJsonArray != null)
-                if (emailJsonArray.length() > 0) {
-                    for (int i = 0; i < emailJsonArray.length(); i++) {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_view_email, null);
-                        emailLayoutsList.add((LinearLayout) rowView);
-                        ll_email.addView(rowView, ll_email.getChildCount());
-                        ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailJsonArray.getJSONObject(i).getString("email"));
-                        if (emailJsonArray.getJSONObject(i).getString("email_verification").equals("0")) {
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.GONE);
-                        } else {
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.GONE);
-                        }
-                    }
-                }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (!imageUrl.equals("")) {
+            Picasso.with(context)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.icon_userphoto)
+                    .into(imv_user);
         }
+
+        if (genderId.equals("1")) {
+            rb_male.setChecked(true);
+        } else if (genderId.equals("2")) {
+            rb_female.setChecked(true);
+        }
+
+        List<UserProfileDetailsModel.ResultBean.MobileNumbersBean> mobileList = userDetails.getMobile_numbers();
+        List<UserProfileDetailsModel.ResultBean.LandlineNumbersBean> landlineList = userDetails.getLandline_numbers();
+        List<UserProfileDetailsModel.ResultBean.EmailBean> emailList = userDetails.getEmail();
+
+        if (mobileList != null)
+            if (mobileList.size() > 0) {
+                for (int i = 0; i < mobileList.size(); i++) {
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_view_mobile, null);
+                    LinearLayout ll = (LinearLayout) rowView;
+                    mobileLayoutsList.add(ll);
+                    ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+
+                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileList.get(i).getMobile());
+                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(mobileList.get(i).getCountry_code());
+                }
+            }
+
+        if (landlineList != null)
+            if (landlineList.size() > 0) {
+                for (int i = 0; i < landlineList.size(); i++) {
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_view_landline, null);
+                    LinearLayout ll = (LinearLayout) rowView;
+                    landlineLayoutsList.add(ll);
+                    ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+
+                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number());
+                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(landlineList.get(i).getCountry_code());
+                }
+            }
+
+        if (emailList != null)
+            if (emailList.size() > 0) {
+                for (int i = 0; i < emailList.size(); i++) {
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_view_email, null);
+                    emailLayoutsList.add((LinearLayout) rowView);
+                    ll_email.addView(rowView, ll_email.getChildCount());
+                    ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailList.get(i).getEmail());
+                    if (emailList.get(i).getEmail_verification().equals("0")) {
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.GONE);
+                    } else {
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.GONE);
+                    }
+                }
+            }
     }
 
     private void setEventHandlers() {
@@ -428,6 +357,8 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
+
+                    userDetailsPojo = new Gson().fromJson(result, UserProfileDetailsModel.class);
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {

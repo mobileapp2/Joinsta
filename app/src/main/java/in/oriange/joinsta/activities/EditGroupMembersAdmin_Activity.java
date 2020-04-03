@@ -362,7 +362,7 @@ public class EditGroupMembersAdmin_Activity extends AppCompatActivity {
             }
         }
 
-        if (!edt_role.getText().toString().trim().isEmpty()) {
+        if (edt_role.getText().toString().trim().isEmpty()) {
             edt_role.setError("Please enter select role");
             edt_role.requestFocus();
             return;

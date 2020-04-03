@@ -7,19 +7,25 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -49,10 +55,10 @@ public class RatingAndReviewList_Activity extends AppCompatActivity {
     AppCompatTextView tvNoReview;
     @BindView(R.id.ll_nopreview)
     LinearLayout llNopreview;
-    private Context context;
-    private UserSessionManager session;
-    private ProgressDialog pd;
-
+    @BindView(R.id.cv_ratings)
+    CardView cvRatings;
+    @BindView(R.id.hsv_stars)
+    HorizontalScrollView hsvStars;
     @BindView(R.id.cg_category)
     ChipGroup cgCategory;
     @BindView(R.id.edt_profile_name)
@@ -87,6 +93,10 @@ public class RatingAndReviewList_Activity extends AppCompatActivity {
     Chip chipOneStar;
     @BindView(R.id.rv_reviews)
     RecyclerView rvReviews;
+
+    private Context context;
+    private UserSessionManager session;
+    private ProgressDialog pd;
 
     private String userId, recordId, reviewResult, profileName, categoryTypeId;
     private List<RatingAndReviewModel.ResultBean> reviewsList;
@@ -314,20 +324,45 @@ public class RatingAndReviewList_Activity extends AppCompatActivity {
                         setUpRatingAndReviewRv();
                         setUpRatingAndReviewBars();
                     } else {
-                        Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
-                        reviewsList = new ArrayList<>();
-                        setUpRatingAndReviewRv();
-                        setUpRatingAndReviewBars();
+                        showNoRatingDialog();
                     }
                 }
             } catch (Exception e) {
+                showNoRatingDialog();
                 e.printStackTrace();
-                reviewsList = new ArrayList<>();
-                setUpRatingAndReviewRv();
-                setUpRatingAndReviewBars();
-                Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
             }
         }
+    }
+
+    private void showNoRatingDialog() {
+        cvRatings.setVisibility(View.GONE);
+        hsvStars.setVisibility(View.GONE);
+        rvReviews.setVisibility(View.GONE);
+        llNopreview.setVisibility(View.GONE);
+
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+        TextView tv_title = promptView.findViewById(R.id.tv_title);
+        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+        animation_view.playAnimation();
+        tv_title.setText("Ratings and reviews not available");
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+                finish();
+            }
+        });
+
+        alertD.show();
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

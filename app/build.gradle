@@ -7,8 +7,8 @@ android {
         applicationId "in.oriange.joinsta"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 20
-        versionName "2.9"
+        versionCode 21
+        versionName "3.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

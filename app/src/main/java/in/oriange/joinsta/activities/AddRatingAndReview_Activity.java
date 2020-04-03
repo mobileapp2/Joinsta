@@ -297,13 +297,18 @@ public class AddRatingAndReview_Activity extends AppCompatActivity {
                             setPublicNameDialog();
                         } else if (result instanceof JSONArray) {
                             JSONArray jsonArray = mainObj.getJSONArray("result");
-                            JSONObject jsonObject = jsonArray.getJSONObject(0);
-                            String publicName = jsonObject.getString("public_name");
 
-                            if (!publicName.trim().isEmpty())
-                                edtPublicName.setText(publicName);
-                            else
+                            if (jsonArray.length() > 0) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                String publicName = jsonObject.getString("public_name");
+
+                                if (!publicName.trim().isEmpty())
+                                    edtPublicName.setText(publicName);
+                                else
+                                    setPublicNameDialog();
+                            } else {
                                 setPublicNameDialog();
+                            }
                         }
                     } else {
                         Utilities.showMessage(message, context, 3);
