@@ -70,6 +70,7 @@ import in.oriange.joinsta.utilities.Utilities;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 
 public class AddGroupFeeds_Activity extends AppCompatActivity {
 
@@ -79,18 +80,20 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
 
     private MaterialEditText edt_feed_type, edt_title, edt_attach_multidoc;
     private EditText edt_description;
-    private ImageView imv_photo1, imv_photo2;
     private Button btn_save, btn_add_document;
     private LinearLayout ll_attach_docs;
     private CheckBox cb_canshare, cb_disclaimer;
+    private ImageView imv_image_one, imv_image_one_delete, imv_image_two, imv_image_two_delete, imv_image_three, imv_image_three_delete;
 
-    private String userId, groupId, isAdmin, typeId = "1", imageName = "";
+    private String userId, groupId, isAdmin, typeId = "1";
     private List<GetFeedTypesListModel.ResultBean> feedTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
 
     private Uri photoURI;
-    private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
+    private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200, DOCUMENT_REQUEST = 300, MESSAGE_REQUEST = 400;
     private File photoFileFolder;
+    private int IMAGE_TYPE = 1;
+    private String imageOneName = "", imageTwoName = "", imageThreeName = "";
 
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -114,12 +117,16 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         edt_title = findViewById(R.id.edt_title);
         edt_feed_type = findViewById(R.id.edt_feed_type);
         edt_description = findViewById(R.id.edt_description);
-        imv_photo1 = findViewById(R.id.imv_photo1);
-        imv_photo2 = findViewById(R.id.imv_photo2);
         btn_add_document = findViewById(R.id.btn_add_document);
         cb_canshare = findViewById(R.id.cb_canshare);
         cb_disclaimer = findViewById(R.id.cb_disclaimer);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
+        imv_image_one = findViewById(R.id.imv_image_one);
+        imv_image_one_delete = findViewById(R.id.imv_image_one_delete);
+        imv_image_two = findViewById(R.id.imv_image_two);
+        imv_image_two_delete = findViewById(R.id.imv_image_two_delete);
+        imv_image_three = findViewById(R.id.imv_image_three);
+        imv_image_three_delete = findViewById(R.id.imv_image_three_delete);
         btn_save = findViewById(R.id.btn_save);
 
         feedTypeList = new ArrayList<>();
@@ -172,9 +179,18 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
             }
         });
 
-        imv_photo1.setOnClickListener(new View.OnClickListener() {
+        edt_description.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                startActivityForResult(new Intent(context, GroupsSendMessageScroll_Activity.class)
+                        .putExtra("message", edt_description.getText().toString().trim()), MESSAGE_REQUEST);
+            }
+        });
+
+        imv_image_one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IMAGE_TYPE = 0;
                 if (Utilities.isNetworkAvailable(context)) {
                     if (doesAppNeedPermissions()) {
                         askPermission();
@@ -187,9 +203,10 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
             }
         });
 
-        imv_photo2.setOnClickListener(new View.OnClickListener() {
+        imv_image_two.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
+                IMAGE_TYPE = 1;
                 if (Utilities.isNetworkAvailable(context)) {
                     if (doesAppNeedPermissions()) {
                         askPermission();
@@ -199,6 +216,52 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
+            }
+        });
+
+        imv_image_three.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IMAGE_TYPE = 2;
+                if (Utilities.isNetworkAvailable(context)) {
+                    if (doesAppNeedPermissions()) {
+                        askPermission();
+                    } else {
+                        selectImage();
+                    }
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+
+        imv_image_one_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageOneName = "";
+                setPaddingForView(context, imv_image_one, 40);
+                imv_image_one.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+                imv_image_one_delete.setVisibility(View.GONE);
+            }
+        });
+
+        imv_image_two_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageTwoName = "";
+                setPaddingForView(context, imv_image_two, 40);
+                imv_image_two.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+                imv_image_two_delete.setVisibility(View.GONE);
+            }
+        });
+
+        imv_image_three_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageThreeName = "";
+                setPaddingForView(context, imv_image_three, 40);
+                imv_image_three.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+                imv_image_three_delete.setVisibility(View.GONE);
             }
         });
 
@@ -262,7 +325,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
             Intent intent = new Intent(context, NormalFilePickActivity.class);
             intent.putExtra(Constant.MAX_NUMBER, 1);
             intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
-            startActivityForResult(intent, 1025);
+            startActivityForResult(intent, DOCUMENT_REQUEST);
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -348,13 +411,11 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
-
 //        if (edt_feed_type.getText().toString().trim().isEmpty()) {
 //            edt_feed_type.setError("Please select post type");
 //            edt_feed_type.requestFocus();
 //            return;
 //        }
-
         if (edt_title.getText().toString().trim().isEmpty()) {
             edt_title.setError("Please enter title");
             edt_title.requestFocus();
@@ -371,6 +432,26 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
             }
         }
 
+        JsonArray imagesArray = new JsonArray();
+
+        if (!imageOneName.isEmpty()) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("image", imageOneName);
+            imagesArray.add(jsonObject);
+        }
+
+        if (!imageTwoName.isEmpty()) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("image", imageTwoName);
+            imagesArray.add(jsonObject);
+        }
+
+        if (!imageThreeName.isEmpty()) {
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("image", imageThreeName);
+            imagesArray.add(jsonObject);
+        }
+
         String canShare = cb_canshare.isChecked() ? "1" : "0";
         String showDisclaimer = cb_disclaimer.isChecked() ? "1" : "0";
 
@@ -381,10 +462,10 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         mainObj.addProperty("type_id", typeId);
         mainObj.addProperty("feed_title", edt_title.getText().toString().trim());
         mainObj.addProperty("feed_text", edt_description.getText().toString().trim());
-        mainObj.addProperty("image", imageName);
         mainObj.addProperty("is_admin", isAdmin);
         mainObj.addProperty("can_share", canShare);
         mainObj.addProperty("show_disclaimer", showDisclaimer);
+        mainObj.add("image", imagesArray);
         mainObj.add("document", messageDocArray);
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -472,9 +553,13 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
                 CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(AddGroupFeeds_Activity.this);
             }
 
-            if (requestCode == 1025) {
+            if (requestCode == DOCUMENT_REQUEST) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "1");
+                new UploadImage().execute(list.get(0).getPath(), "4");
+            }
+
+            if (requestCode == MESSAGE_REQUEST) {
+                edt_description.setText(data.getStringExtra("message"));
             }
         }
 
@@ -516,7 +601,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload.getPath(), "0");
+        new UploadImage().execute(photoFileToUpload.getPath(), String.valueOf(IMAGE_TYPE));
 
     }
 
@@ -565,16 +650,44 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
                         if (TYPE.equals("0")) {
                             String imageUrl = jsonObject.getString("document_url");
-                            imageName = jsonObject.getString("name");
+                            imageOneName = jsonObject.getString("name");
 
                             if (!imageUrl.equals("")) {
                                 Picasso.with(context)
                                         .load(imageUrl)
-                                        .into(imv_photo1);
-                                imv_photo2.setVisibility(View.GONE);
-                                imv_photo1.setVisibility(View.VISIBLE);
+                                        .resize(100, 100)
+                                        .into(imv_image_one);
+                                setPaddingForView(context, imv_image_one, 0);
+                                imv_image_one_delete.setVisibility(View.VISIBLE);
+                                imv_image_one_delete.bringToFront();
                             }
                         } else if (TYPE.equals("1")) {
+                            String imageUrl = jsonObject.getString("document_url");
+                            imageTwoName = jsonObject.getString("name");
+
+                            if (!imageUrl.equals("")) {
+                                Picasso.with(context)
+                                        .load(imageUrl)
+                                        .resize(100, 100)
+                                        .into(imv_image_two);
+                                setPaddingForView(context, imv_image_two, 0);
+                                imv_image_two_delete.setVisibility(View.VISIBLE);
+                                imv_image_two_delete.bringToFront();
+                            }
+                        } else if (TYPE.equals("2")) {
+                            String imageUrl = jsonObject.getString("document_url");
+                            imageThreeName = jsonObject.getString("name");
+
+                            if (!imageUrl.equals("")) {
+                                Picasso.with(context)
+                                        .load(imageUrl)
+                                        .resize(100, 100)
+                                        .into(imv_image_three);
+                                setPaddingForView(context, imv_image_three, 0);
+                                imv_image_three_delete.setVisibility(View.VISIBLE);
+                                imv_image_three_delete.bringToFront();
+                            }
+                        } else if (TYPE.equals("4")) {
                             edt_attach_multidoc.setText(jsonObject.getString("name"));
                         }
                     } else {

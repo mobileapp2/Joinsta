@@ -32,7 +32,9 @@ import com.skydoves.powermenu.OnDismissedListener;
 import com.skydoves.powermenu.OnMenuItemClickListener;
 import com.skydoves.powermenu.PowerMenu;
 import com.skydoves.powermenu.PowerMenuItem;
-import com.squareup.picasso.Callback;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -56,6 +58,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.EditGroupFeeds_Activity;
 import in.oriange.joinsta.activities.GroupFeedsComments_Activity;
+import in.oriange.joinsta.models.BannerListModel;
 import in.oriange.joinsta.models.GroupFeedsModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -72,8 +75,11 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     private List<GroupFeedsModel.ResultBean> feedsList;
     private PrettyTime p;
 
-    private File downloadedDocsfolder, file;
-    private String description, isAdmin;
+    private ArrayList<Uri> downloadedImagesUriList;
+    private int numOfDocuments = 0;
+    private int numOfFilesDownloaded = 0;
+    private File downloadedDocsfolder;
+    private String title, description, isAdmin;
 
     private PowerMenu powerMenu;
     public static int itemClickedPosition = 0;
@@ -160,23 +166,30 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             holder.tv_feed_text.setVisibility(View.GONE);
         }
 
-        if (!feedDetails.getFeed_doc().equals("")) {
-            String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
-            Picasso.with(context)
-                    .load(url)
-                    .into(holder.imv_feed_image, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            holder.cv_feed_image.setVisibility(View.VISIBLE);
-                        }
+        List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
 
-                        @Override
-                        public void onError() {
-                            holder.cv_feed_image.setVisibility(View.GONE);
-                        }
-                    });
+        if (!feedDetails.getFeed_doc().equals("")) {
+            bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc()));
+        }
+
+        for (int i = 0; i < feedDetails.getFeed_documents().size(); i++) {
+            if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationimage")) {
+                bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_documents().get(i).getDocuments()));
+            }
+        }
+
+        if (bannerList.size() != 0) {
+            holder.imageSlider.setVisibility(View.VISIBLE);
+            OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, bannerList);
+            holder.imageSlider.setSliderAdapter(adapter);
+            holder.imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+            holder.imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+            holder.imageSlider.setIndicatorSelectedColor(Color.WHITE);
+            holder.imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+            holder.imageSlider.setAutoCycle(true);
+            holder.imageSlider.setScrollTimeInSec(10);
         } else {
-            holder.cv_feed_image.setVisibility(View.GONE);
+            holder.imageSlider.setVisibility(View.GONE);
         }
 
         if (feedDetails.getFeed_comments().size() != 0) {
@@ -221,17 +234,24 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             @Override
             public void onClick(View v) {
                 if (feedDetails.getCan_share().equals("1")) {
+                    title = feedDetails.getFeed_title();
                     description = feedDetails.getFeed_text();
-                    if (!feedDetails.getFeed_doc().equals("")) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    if (bannerList.size() != 0) {
+                        numOfDocuments = bannerList.size();
+                        downloadedImagesUriList = new ArrayList<>();
+                        numOfFilesDownloaded = 0;
+                        for (int i = 0; i < bannerList.size(); i++) {
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new DownloadDocumentForShare().execute(bannerList.get(i).getBanners_image());
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
                         }
+
                     } else {
                         Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                         shareIntent.setType("text/html");
-                        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
+                        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
                         context.startActivity(Intent.createChooser(shareIntent, "Share via"));
                     }
                 } else {
@@ -290,10 +310,11 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
 
         private CircleImageView imv_user;
         private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_comment;
-        private CardView cv_mainlayout, cv_feed_image;
-        private ImageView imv_feed_image, imv_favourite;
+        private CardView cv_mainlayout;
+        private ImageView imv_favourite;
         private LinearLayout ll_favourites, ll_comments, ll_share;
         private ImageButton imv_more, ib_ishidden;
+        private SliderView imageSlider;
 
         public MyViewHolder(@NonNull View view) {
             super(view);
@@ -306,25 +327,23 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             tv_feed_text = view.findViewById(R.id.tv_feed_text);
             tv_time = view.findViewById(R.id.tv_time);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
-            cv_feed_image = view.findViewById(R.id.cv_feed_image);
-            imv_feed_image = view.findViewById(R.id.imv_feed_image);
             ib_ishidden = view.findViewById(R.id.ib_ishidden);
             tv_comment = view.findViewById(R.id.tv_comment);
             ll_favourites = view.findViewById(R.id.ll_favourites);
             ll_comments = view.findViewById(R.id.ll_comments);
             ll_share = view.findViewById(R.id.ll_share);
             imv_favourite = view.findViewById(R.id.imv_favourite);
+            imageSlider = view.findViewById(R.id.imageSlider);
         }
     }
 
     private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
         int lenghtOfFile = -1;
-        int count = 0;
-        int content = -1;
         int counter = 0;
         int progress = 0;
         URL downloadurl = null;
-        private ProgressDialog pd;
+        ProgressDialog pd;
+        File file;
 
         @Override
         protected void onPreExecute() {
@@ -403,14 +422,17 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             pd.dismiss();
             super.onPostExecute(aBoolean);
             Uri uri = Uri.parse("file:///" + file);
+            downloadedImagesUriList.add(uri);
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            numOfFilesDownloaded = numOfFilesDownloaded + 1;
 
-            Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-            shareIntent.setType("text/html");
-            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, description);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            context.startActivity(Intent.createChooser(shareIntent, "Share via"));
-
+            if (numOfFilesDownloaded == numOfDocuments) {
+                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.setType("text/html");
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+            }
         }
     }
 
@@ -483,7 +505,6 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
 
                 }
             };
-
 
     private PowerMenu getHamburgerPowerMenu(Context context,
                                             OnMenuItemClickListener<PowerMenuItem> onMenuItemClickListener,

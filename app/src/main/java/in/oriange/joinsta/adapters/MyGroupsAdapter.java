@@ -212,7 +212,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         .putExtra("groupId", groupDetails.getId())
                         .putExtra("groupName", groupDetails.getGroup_name())
                         .putExtra("isAdmin", groupDetails.getIs_admin())
-                        .putExtra("canPost", groupDetails.getCan_post()));
+                        .putExtra("canPost", groupDetails.getCan_post())
+                        .putExtra("isPublicGroup", groupDetails.getIs_public_group()));
             }
         });
 
@@ -231,7 +232,11 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             public void onClick(View v) {
                 if (groupDetails.getStatus().equals("") || groupDetails.getStatus().equals("left")) {
                     if (Utilities.isNetworkAvailable(context)) {
-                        new JoinGroup().execute(groupDetails.getId());
+                        if (groupDetails.getIs_public_group().equals("2")) {
+                            new JoinGroup().execute("accepted", groupDetails.getId());
+                        } else {
+                            new JoinGroup().execute("requested", groupDetails.getId());
+                        }
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
@@ -397,8 +402,8 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "joingroup");
-            obj.addProperty("status", "requested");
-            obj.addProperty("group_id", params[0]);
+            obj.addProperty("status", params[0]);
+            obj.addProperty("group_id", params[1]);
             obj.addProperty("user_id", userId);
             obj.addProperty("role", "group_member");
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());

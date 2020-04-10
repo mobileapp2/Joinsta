@@ -364,7 +364,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
                 if (notificationDetails.getAttachment().equals("")) {
                     Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                     shareIntent.setType("text/html");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
                     context.startActivity(Intent.createChooser(shareIntent, "Share via"));
                 } else {
                     if (Utilities.isNetworkAvailable(context)) {
@@ -820,7 +820,7 @@ public class AllGroupNotificationChildAdapter extends RecyclerView.Adapter<AllGr
 
             Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
             shareIntent.setType("text/html");
-            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description);
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             context.startActivity(Intent.createChooser(shareIntent, "Share via"));
 

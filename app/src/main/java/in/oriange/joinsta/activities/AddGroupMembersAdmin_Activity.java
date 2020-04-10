@@ -60,7 +60,7 @@ public class AddGroupMembersAdmin_Activity extends AppCompatActivity {
     private MaterialEditText edt_name, edt_mobile, edt_email, edt_role, edt_members_category;
     private TextView tv_countrycode_mobile;
     private Button btn_save;
-    private String userId, groupId, role;
+    private String userId, groupId, role, userStatus;
 
     private JsonArray selectedCategoryIds;
     private List<MemberCategoryModel.ResultBean> categotyList;
@@ -129,6 +129,13 @@ public class AddGroupMembersAdmin_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
+        String isPublicGroup = getIntent().getStringExtra("isPublicGroup");
+
+        if (isPublicGroup.equals("2")) {
+            userStatus = "accepted";
+        } else {
+            userStatus = "requested";
+        }
 
         edt_role.setText("Group Member");
         role = "group_member";
@@ -504,6 +511,7 @@ public class AddGroupMembersAdmin_Activity extends AppCompatActivity {
         mainObj.addProperty("member_district", "");
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("group_id", groupId);
+        mainObj.addProperty("user_status", userStatus);
         mainObj.add("member_categories", selectedCategoryIds);
 
         if (Utilities.isNetworkAvailable(context)) {

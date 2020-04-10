@@ -359,7 +359,7 @@ public class EditOffers_Activity extends AppCompatActivity {
         imv_image_three_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageOneName = "";
+                imageThreeName = "";
                 setPaddingForView(context, imv_image_three, 40);
                 imv_image_three.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
                 imv_image_three_delete.setVisibility(View.GONE);

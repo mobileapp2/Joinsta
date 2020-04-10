@@ -29,6 +29,7 @@ import java.util.List;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.BannerListModel;
+import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.SliderAdapterVH> {
@@ -193,7 +194,7 @@ public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.S
             Uri uri = Uri.parse("file:///" + file);
             Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
             shareIntent.setType("text/html");
-            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, subject + "\n" + description);
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, subject + "\n" + description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             context.startActivity(Intent.createChooser(shareIntent, "Share Deal"));
         }

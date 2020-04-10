@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -27,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,6 +52,7 @@ import in.oriange.joinsta.adapters.GroupBannerSliderAdapter;
 import in.oriange.joinsta.fragments.Groups_Fragment;
 import in.oriange.joinsta.models.GroupBannerListModel;
 import in.oriange.joinsta.models.GroupsEventPaymentDoneModel;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.models.MyGroupsListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
@@ -65,19 +66,18 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_add_member, cv_requests, cv_send_message,
-            cv_group_banners, cv_grp_settings, cv_group_utils, cv_notifications, cv_feeds, cv_events;
-    private LinearLayout ll_group_admin, ll_notification_feeds;
+    private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_grp_settings, cv_group_utils;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
     private Switch sw_hide_members, sw_hide_group;
-    private RecyclerView rv_group_members;
+    private RecyclerView rv_group_members, rv_group_utils;
     private Button btn_connect, btn_status, btn_delete_group;
     private ImageButton ib_more;
     private CheckBox cb_like;
 
     private MyGroupsListModel.ResultBean groupDetails;
     private ArrayList<MyGroupsListModel.ResultBean.GroupMemberDetailsBean> leadsList;
+    private ArrayList<MasterModel> grpUtilsList;
     private boolean isExpanded;
     private String userId;
 
@@ -102,17 +102,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cv_banner = findViewById(R.id.cv_banner);
         cv_rejoin = findViewById(R.id.cv_rejoin);
         cv_members = findViewById(R.id.cv_members);
-        cv_add_member = findViewById(R.id.cv_add_member);
-        cv_requests = findViewById(R.id.cv_requests);
-        cv_send_message = findViewById(R.id.cv_send_message);
-        cv_group_banners = findViewById(R.id.cv_group_banners);
         cv_grp_settings = findViewById(R.id.cv_grp_settings);
         cv_group_utils = findViewById(R.id.cv_group_utils);
-        cv_notifications = findViewById(R.id.cv_notifications);
-        cv_feeds = findViewById(R.id.cv_feeds);
-        cv_events = findViewById(R.id.cv_events);
-        ll_group_admin = findViewById(R.id.ll_group_admin);
-        ll_notification_feeds = findViewById(R.id.ll_notification_feeds);
         imageSlider = findViewById(R.id.imageSlider);
         tv_codename = findViewById(R.id.tv_codename);
         tv_description = findViewById(R.id.tv_description);
@@ -122,6 +113,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         sw_hide_group = findViewById(R.id.sw_hide_group);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
+        rv_group_utils = findViewById(R.id.rv_group_utils);
+        rv_group_utils.setLayoutManager(new GridLayoutManager(context, 2));
         btn_connect = findViewById(R.id.btn_connect);
         btn_status = findViewById(R.id.btn_status);
         btn_delete_group = findViewById(R.id.btn_delete_group);
@@ -129,6 +122,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         cb_like = findViewById(R.id.cb_like);
 
         leadsList = new ArrayList<>();
+        grpUtilsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -175,12 +169,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 btn_status.setVisibility(View.GONE);
                 cv_members.setVisibility(View.VISIBLE);
                 cv_group_utils.setVisibility(View.VISIBLE);
-                ll_notification_feeds.setVisibility(View.VISIBLE);
                 btn_connect.setText("EXIT GROUP");
                 break;
         }
-
-//        cv_events.setVisibility(View.GONE);
 
         int members = 0;
         if (leadsList != null) {
@@ -215,8 +206,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
 
         if (groupDetails.getIs_admin().equals("1")) {
             cv_group_utils.setVisibility(View.VISIBLE);
-            ll_group_admin.setVisibility(View.VISIBLE);
-            ll_notification_feeds.setVisibility(View.VISIBLE);
             cv_grp_settings.setVisibility(View.VISIBLE);
             btn_connect.setVisibility(View.GONE);
             btn_status.setVisibility(View.GONE);
@@ -225,7 +214,16 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 sw_hide_group.setChecked(true);
             }
 
-            btn_delete_group.setVisibility(View.VISIBLE);
+            if (leadsList != null)
+                if (leadsList.size() != 0)
+                    if (leadsList.size() == 1) {
+                        btn_connect.setVisibility(View.GONE);
+                        btn_delete_group.setVisibility(View.VISIBLE);
+                    } else {
+                        btn_connect.setVisibility(View.VISIBLE);
+                        btn_delete_group.setVisibility(View.GONE);
+                        btn_connect.setText("EXIT GROUP");
+                    }
         }
 
         if (groupDetails.getIs_visible().equals("1")) {
@@ -249,6 +247,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         tv_codename.setText(groupDetails.getGroup_code() + " - " + groupDetails.getGroup_name());
         tv_description.setText(groupDetails.getGroup_description());
 
+        setUpGroupUtils();
+
     }
 
     private void setEventHandler() {
@@ -261,11 +261,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                             .putExtra("groupId", groupDetails.getId())
                             .putExtra("isAdmin", groupDetails.getIs_admin()));
                 } else {
-                    if (!sw_hide_members.isChecked()) {
-                        startActivity(new Intent(context, GroupMembersList_Activity.class)
-                                .putExtra("groupId", groupDetails.getId())
-                                .putExtra("isAdmin", groupDetails.getIs_admin()));
-                    }
+                    if (!groupDetails.getIs_public_group().equals("2"))
+                        if (!sw_hide_members.isChecked())
+                            startActivity(new Intent(context, GroupMembersList_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId())
+                                    .putExtra("isAdmin", groupDetails.getIs_admin()));
                 }
             }
         });
@@ -400,69 +400,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             }
         });
 
-        cv_add_member.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, GroupMembersAdmins_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
-            }
-        });
-
-        cv_requests.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, GroupsMembersRequests_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
-            }
-        });
-
-        cv_send_message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, GroupsSendMessage_Activity.class)
-                        .putExtra("groupId", groupDetails.getId())
-                        .putExtra("groupName", groupDetails.getGroup_name()));
-            }
-        });
-
-        cv_group_banners.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, GroupBanners_Activity.class)
-                        .putExtra("groupId", groupDetails.getId()));
-            }
-        });
-
-        cv_notifications.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, GroupNotifications_Activity.class)
-                        .putExtra("groupId", groupDetails.getId())
-                        .putExtra("groupName", groupDetails.getGroup_name()));
-            }
-        });
-
-        cv_feeds.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, GroupFeeds_Activity.class)
-                        .putExtra("groupId", groupDetails.getId())
-                        .putExtra("groupName", groupDetails.getGroup_name())
-                        .putExtra("isAdmin", groupDetails.getIs_admin())
-                        .putExtra("canPost", groupDetails.getCan_post()));
-            }
-        });
-
-        cv_events.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, Events_Activity.class)
-                        .putExtra("groupId", groupDetails.getId())
-                        .putExtra("groupName", groupDetails.getGroup_name())
-                        .putExtra("isAdmin", groupDetails.getIs_admin()));
-            }
-        });
-
         cb_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -545,6 +482,29 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         rotate.setFillAfter(true);
         rotate.setInterpolator(new LinearInterpolator());
         ib_more.startAnimation(rotate);
+    }
+
+    private void setUpGroupUtils() {
+        if (groupDetails.getIs_admin().equals("1")) {
+            grpUtilsList.add(new MasterModel("Participants", "1"));
+            if (!groupDetails.getIs_public_group().equals("2"))
+                grpUtilsList.add(new MasterModel("Requests", "2"));
+            grpUtilsList.add(new MasterModel("Send Message", "3"));
+            grpUtilsList.add(new MasterModel("Banners", "4"));
+            grpUtilsList.add(new MasterModel("Notifications", "5"));
+            grpUtilsList.add(new MasterModel("Posts", "6"));
+            grpUtilsList.add(new MasterModel("Events", "7"));
+        } else {
+            if (groupDetails.getStatus().equals("accepted")) {
+                grpUtilsList.add(new MasterModel("Notifications", "5"));
+                grpUtilsList.add(new MasterModel("Posts", "6"));
+                grpUtilsList.add(new MasterModel("Events", "7"));
+            } else {
+                cv_group_utils.setVisibility(View.GONE);
+            }
+        }
+
+        rv_group_utils.setAdapter(new GroupUtilsAdapter());
     }
 
     public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
@@ -655,8 +615,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     alertD.show();
                 }
             });
-
-
         }
 
         @Override
@@ -692,6 +650,203 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             return position;
         }
 
+    }
+
+    public class GroupUtilsAdapter extends RecyclerView.Adapter<GroupUtilsAdapter.MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_grputils, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+            final MasterModel grpUtil = grpUtilsList.get(position);
+
+            holder.tv_name.setText(grpUtil.getName());
+
+            holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (grpUtil.getId()) {
+                        case "1": {
+                            startActivity(new Intent(context, GroupMembersAdmins_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId())
+                                    .putExtra("isPublicGroup", groupDetails.getIs_public_group()));
+                        }
+                        break;
+                        case "2": {
+                            startActivity(new Intent(context, GroupsMembersRequests_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId()));
+                        }
+                        break;
+                        case "3": {
+                            startActivity(new Intent(context, GroupsSendMessage_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId())
+                                    .putExtra("groupName", groupDetails.getGroup_name()));
+                        }
+                        break;
+                        case "4": {
+                            startActivity(new Intent(context, GroupBanners_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId()));
+                        }
+                        break;
+                        case "5": {
+                            context.startActivity(new Intent(context, GroupNotifications_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId())
+                                    .putExtra("groupName", groupDetails.getGroup_name()));
+                        }
+                        break;
+                        case "6": {
+                            context.startActivity(new Intent(context, GroupFeeds_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId())
+                                    .putExtra("groupName", groupDetails.getGroup_name())
+                                    .putExtra("isAdmin", groupDetails.getIs_admin())
+                                    .putExtra("canPost", groupDetails.getCan_post())
+                                    .putExtra("isPublicGroup", groupDetails.getIs_public_group()));
+                        }
+                        break;
+                        case "7": {
+                            context.startActivity(new Intent(context, Events_Activity.class)
+                                    .putExtra("groupId", groupDetails.getId())
+                                    .putExtra("groupName", groupDetails.getGroup_name())
+                                    .putExtra("isAdmin", groupDetails.getIs_admin()));
+                        }
+                        break;
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return grpUtilsList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CardView cv_mainlayout;
+            private TextView tv_name;
+
+            public MyViewHolder(View view) {
+                super(view);
+                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+                tv_name = view.findViewById(R.id.tv_name);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+    }
+
+    private void deleteGroupConfirmation() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertBuilder.setMessage("Once you delete the group, all members, messages, posts will be deleted. Are you sure, you want to delete the group?");
+        alertBuilder.setCancelable(false);
+        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                String[] mode = {"SMS", "Email"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setTitle("OTP verification is required to delete group");
+                builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            if (item == 0) {
+                                new GetOtpToDelete().execute(
+                                        userId,
+                                        "otp"
+                                );
+                            } else if (item == 1) {
+                                new GetOtpToDelete().execute(
+                                        userId,
+                                        "email"
+                                );
+                            }
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+
+                        dialog.dismiss();
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = alertBuilder.create();
+        alertDialog.show();
+    }
+
+    private void createDialogForOTP(final String otp) {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View promptView = layoutInflater.inflate(R.layout.dialog_layout_otp, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        alertDialogBuilder.setView(promptView);
+
+        Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
+        TextView tv_message = promptView.findViewById(R.id.tv_message);
+        TextView tv_title = promptView.findViewById(R.id.tv_title);
+        Button btn_cancel = promptView.findViewById(R.id.btn_cancel);
+        pinview_opt.setPinLength(otp.length());
+        tv_title.setText("Please enter the code");
+        tv_message.setVisibility(View.GONE);
+
+        alertDialogBuilder.setCancelable(false);
+        final AlertDialog alertD = alertDialogBuilder.create();
+
+        pinview_opt.setPinViewEventListener(new Pinview.PinViewEventListener() {
+            @Override
+            public void onDataEntered(Pinview pinview, boolean fromUser) {
+
+                if (pinview.getValue().length() == otp.length()) {
+                    if (pinview.getValue().equals(otp)) {
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new DeleteGroup().execute(groupDetails.getId());
+
+                            alertD.dismiss();
+
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
+                    } else {
+                        Utilities.showMessage("OTP did not match", context, 3);
+                    }
+                }
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+            }
+        });
+
+        alertD.show();
     }
 
     private class JoinGroup extends AsyncTask<String, Void, String> {
@@ -976,109 +1131,6 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                 deleteGroupConfirmation();
             }
         }
-    }
-
-    private void deleteGroupConfirmation() {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertBuilder.setMessage("Once you delete the group, all members, messages, posts will be deleted. Are you sure, you want to delete the group?");
-        alertBuilder.setCancelable(false);
-        alertBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                String[] mode = {"SMS", "Email"};
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setTitle("OTP verification is required to delete group");
-                builder.setSingleChoiceItems(mode, -1, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int item) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            if (item == 0) {
-                                new GetOtpToDelete().execute(
-                                        userId,
-                                        "otp"
-                                );
-                            } else if (item == 1) {
-                                new GetOtpToDelete().execute(
-                                        userId,
-                                        "email"
-                                );
-                            }
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-
-                        dialog.dismiss();
-
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                AlertDialog alert = builder.create();
-                alert.show();
-            }
-        });
-        alertBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alertDialog = alertBuilder.create();
-        alertDialog.show();
-    }
-
-    private void createDialogForOTP(final String otp) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_otp, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setView(promptView);
-
-        Pinview pinview_opt = promptView.findViewById(R.id.pinview_opt);
-        TextView tv_message = promptView.findViewById(R.id.tv_message);
-        TextView tv_title = promptView.findViewById(R.id.tv_title);
-        Button btn_cancel = promptView.findViewById(R.id.btn_cancel);
-        pinview_opt.setPinLength(otp.length());
-        tv_title.setText("Please enter the code");
-        tv_message.setVisibility(View.GONE);
-
-        alertDialogBuilder.setCancelable(false);
-        final AlertDialog alertD = alertDialogBuilder.create();
-
-        pinview_opt.setPinViewEventListener(new Pinview.PinViewEventListener() {
-            @Override
-            public void onDataEntered(Pinview pinview, boolean fromUser) {
-
-                if (pinview.getValue().length() == otp.length()) {
-                    if (pinview.getValue().equals(otp)) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new DeleteGroup().execute(groupDetails.getId());
-
-                            alertD.dismiss();
-
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-                    } else {
-                        Utilities.showMessage("OTP did not match", context, 3);
-                    }
-                }
-            }
-        });
-
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertD.dismiss();
-            }
-        });
-
-        alertD.show();
     }
 
     private class DeleteGroup extends AsyncTask<String, Void, String> {

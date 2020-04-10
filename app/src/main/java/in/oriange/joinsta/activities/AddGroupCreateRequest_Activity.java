@@ -2,10 +2,12 @@ package in.oriange.joinsta.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -22,19 +24,20 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 public class AddGroupCreateRequest_Activity extends AppCompatActivity {
-
-    private Context context;
 
     @BindView(R.id.edt_name)
     MaterialEditText edtName;
@@ -46,8 +49,12 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
     CheckBox cbCanPost;
     @BindView(R.id.btn_save)
     Button btnSave;
+    @BindView(R.id.edt_select_group_type)
+    MaterialEditText edtSelectGroupType;
 
-    private String userId;
+    private Context context;
+    private String userId, groupTypeId;
+    private List<MasterModel> groupTypeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +70,11 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
 
     private void init() {
         context = AddGroupCreateRequest_Activity.this;
+
+        groupTypeList = new ArrayList<>();
+        groupTypeList.add(new MasterModel("Private Group", "0"));
+        groupTypeList.add(new MasterModel("Public Group", "1"));
+        groupTypeList.add(new MasterModel("Social Group", "2"));
     }
 
     private void getSessionDetails() {
@@ -79,9 +91,14 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+        edtSelectGroupType.setOnClickListener(v -> {
+            showEventTypeListDialog();
+        });
+
         btnSave.setOnClickListener(v -> {
             submitDate();
         });
+
     }
 
     private void submitDate() {
@@ -96,6 +113,13 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
             edtDescription.setError("Please enter group description");
             edtDescription.requestFocus();
             edtDescription.getParent().requestChildFocus(edtDescription, edtDescription);
+            return;
+        }
+
+        if (edtSelectGroupType.getText().toString().trim().isEmpty()) {
+            edtSelectGroupType.setError("Please select group type");
+            edtSelectGroupType.requestFocus();
+            edtSelectGroupType.getParent().requestChildFocus(edtSelectGroupType, edtSelectGroupType);
             return;
         }
 
@@ -115,6 +139,7 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
         mainObj.addProperty("group_admin_name", edtAdminName.getText().toString().trim());
         mainObj.addProperty("can_members_post", canMembersPost);
         mainObj.addProperty("user_id", userId);
+        mainObj.addProperty("is_public_group", groupTypeId);
         mainObj.addProperty("is_active", "2");
 
         if (Utilities.isNetworkAvailable(context)) {
@@ -122,6 +147,40 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+    }
+
+    private void showEventTypeListDialog() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Group Type");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < groupTypeList.size(); i++) {
+            arrayAdapter.add(String.valueOf(groupTypeList.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MasterModel event = groupTypeList.get(which);
+                edtSelectGroupType.setText(event.getName());
+                groupTypeId = event.getId();
+
+                if (groupTypeId.equals("2")) {
+                    cbCanPost.setChecked(false);
+                    cbCanPost.setVisibility(View.GONE);
+                }
+            }
+        });
+        builderSingle.show();
     }
 
     private class CreateGroupRequest extends AsyncTask<String, Void, String> {

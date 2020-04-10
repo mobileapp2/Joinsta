@@ -48,7 +48,7 @@ public class GroupMembersAdmins_Activity extends AppCompatActivity {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private FloatingActionButton btn_add;
-    private String userId, groupId;
+    private String userId, groupId, isPublicGroup;
 
     List<GroupMembersAdminsListModel.ResultBean> participantsList;
     private LocalBroadcastManager localBroadcastManager;
@@ -64,7 +64,6 @@ public class GroupMembersAdmins_Activity extends AppCompatActivity {
         setEventHandler();
         setUpToolbar();
     }
-
 
     private void init() {
         context = GroupMembersAdmins_Activity.this;
@@ -95,6 +94,7 @@ public class GroupMembersAdmins_Activity extends AppCompatActivity {
 
     private void setDefault() {
         groupId = getIntent().getStringExtra("groupId");
+        isPublicGroup = getIntent().getStringExtra("isPublicGroup");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAllMembersAdminList().execute();
@@ -124,7 +124,8 @@ public class GroupMembersAdmins_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, AddGroupMembersAdmin_Activity.class)
-                        .putExtra("groupId", groupId));
+                        .putExtra("groupId", groupId)
+                        .putExtra("isPublicGroup", isPublicGroup));
             }
         });
 

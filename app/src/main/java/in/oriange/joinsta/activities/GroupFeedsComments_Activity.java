@@ -30,14 +30,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.library.banner.BannerLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -48,7 +47,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,6 +60,7 @@ import java.util.regex.Matcher;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.GroupFeedsCommentsAdapter;
+import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
 import in.oriange.joinsta.models.DisclaimerModel;
 import in.oriange.joinsta.models.GroupFeedsModel;
 import in.oriange.joinsta.utilities.APICall;
@@ -80,8 +79,8 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
     private CircleImageView imv_user, imv_current_user;
     private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_viewdocs, tv_disclaimer, tv_comment;
-    private CardView cv_feed_image;
-    private ImageView imv_feed_image, imv_favourite;
+    private ImageView imv_favourite;
+    private BannerLayout rv_images;
     private RecyclerView rv_feeds_comments;
     private EditText edt_comment;
     private LinearLayout ll_favourites, ll_comments, ll_share;
@@ -91,10 +90,15 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
     private String userId;
 
     private File downloadedDocsfolder, downloadedDocumentfolder, file;
-    private String description;
+    private String title, description;
+    private int numOfDocuments = 0;
+    private int numOfFilesDownloaded = 0;
+    private ArrayList<Uri> downloadedImagesUriList;
 
     private LocalBroadcastManager localBroadcastManager;
     private List<GroupFeedsModel.ResultBean.FeedCommentsBean> feedCommentsList;
+    private List<String> postImages;
+    private List<String> postDocuments;
     private GroupFeedsCommentsAdapter groupFeedsCommentsAdapter;
 
     @Override
@@ -122,8 +126,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         tv_feed_text = findViewById(R.id.tv_feed_text);
         tv_viewdocs = findViewById(R.id.tv_viewdocs);
         tv_disclaimer = findViewById(R.id.tv_disclaimer);
-        cv_feed_image = findViewById(R.id.cv_feed_image);
-        imv_feed_image = findViewById(R.id.imv_feed_image);
+        rv_images = findViewById(R.id.rv_images);
         tv_comment = findViewById(R.id.tv_comment);
         imv_favourite = findViewById(R.id.imv_favourite);
         rv_feeds_comments = findViewById(R.id.rv_feeds_comments);
@@ -138,7 +141,6 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 
-
         downloadedDocumentfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Posts Documents");
         if (!downloadedDocumentfolder.exists())
             downloadedDocumentfolder.mkdirs();
@@ -150,6 +152,8 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         }
 
         feedCommentsList = new ArrayList<>();
+        postImages = new ArrayList<>();
+        postDocuments = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -215,23 +219,19 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         Linkify.addLinks(tv_feed_title, Linkify.ALL);
 
         if (!feedDetails.getFeed_doc().equals("")) {
-            String url = IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc();
-            Picasso.with(context)
-                    .load(url)
-                    .into(imv_feed_image, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            cv_feed_image.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onError() {
-                            cv_feed_image.setVisibility(View.GONE);
-                        }
-                    });
-        } else {
-            cv_feed_image.setVisibility(View.GONE);
+            postImages.add(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
         }
+
+        for (int i = 0; i < feedDetails.getFeed_documents().size(); i++) {
+            if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationimage")) {
+                postImages.add(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_documents().get(i).getDocuments());
+            } else if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationdocument")) {
+                postDocuments.add(feedDetails.getFeed_documents().get(i).getDocuments());
+            }
+        }
+
+        OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, postImages);
+        rv_images.setAdapter(webBannerAdapter);
 
         if (feedDetails.getFeed_comments().size() != 0) {
             if (feedDetails.getFeed_comments().size() == 1) {
@@ -247,12 +247,12 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             imv_favourite.setImageResource(R.drawable.icon_like_grey);
         }
 
-        if (feedDetails.getFeed_documents().size() != 0) {
+        if (postDocuments.size() != 0) {
             tv_viewdocs.setVisibility(View.VISIBLE);
-            if (feedDetails.getFeed_documents().size() == 1) {
-                tv_viewdocs.setText(feedDetails.getFeed_documents().size() + " Document Attached");
+            if (postDocuments.size() == 1) {
+                tv_viewdocs.setText(postDocuments.size() + " Document Attached");
             } else {
-                tv_viewdocs.setText(feedDetails.getFeed_documents().size() + " Documents Attached");
+                tv_viewdocs.setText(postDocuments.size() + " Documents Attached");
             }
             tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         }
@@ -297,18 +297,25 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (feedDetails.getCan_share().equals("1")) {
+                    title = feedDetails.getFeed_title();
                     description = feedDetails.getFeed_text();
-                    if (!feedDetails.getFeed_doc().equals("")) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new DownloadDocumentForShare().execute(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    if (postImages.size() != 0) {
+                        numOfDocuments = postImages.size();
+                        downloadedImagesUriList = new ArrayList<>();
+                        numOfFilesDownloaded = 0;
+                        for (int i = 0; i < postImages.size(); i++) {
+                            if (Utilities.isNetworkAvailable(context)) {
+                                new DownloadDocumentForShare().execute(postImages.get(i));
+                            } else {
+                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            }
                         }
+
                     } else {
-                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                        sharingIntent.setType("text/html");
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
-                        context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                        Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        shareIntent.setType("text/html");
+                        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                        context.startActivity(Intent.createChooser(shareIntent, "Share via"));
                     }
                 } else {
                     Utilities.showMessage("You cannot share this feed", context, 2);
@@ -341,22 +348,10 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             }
         });
 
-        imv_feed_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> imageUrlList = new ArrayList<>();
-                imageUrlList.add(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
-
-                context.startActivity(new Intent(context, FullScreenImages_Activity.class)
-                        .putExtra("imageUrlList", (Serializable) imageUrlList)
-                        .putExtra("position", 0));
-            }
-        });
-
         tv_viewdocs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDocumentsList(feedDetails.getFeed_documents());
+                showDocumentsList();
             }
         });
 
@@ -369,7 +364,6 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
-
     }
 
     private class AddFeedComment extends AsyncTask<String, Void, String> {
@@ -414,12 +408,11 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
 
     private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
         int lenghtOfFile = -1;
-        int count = 0;
-        int content = -1;
         int counter = 0;
         int progress = 0;
         URL downloadurl = null;
-        private ProgressDialog pd;
+        ProgressDialog pd;
+        File file;
 
         @Override
         protected void onPreExecute() {
@@ -498,14 +491,17 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             pd.dismiss();
             super.onPostExecute(aBoolean);
             Uri uri = Uri.parse("file:///" + file);
+            downloadedImagesUriList.add(uri);
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            numOfFilesDownloaded = numOfFilesDownloaded + 1;
 
-            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-            sharingIntent.setType("text/html");
-            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
-            sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
-            context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
-
+            if (numOfFilesDownloaded == numOfDocuments) {
+                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.setType("text/html");
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+            }
         }
     }
 
@@ -545,15 +541,15 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void showDocumentsList(final List<GroupFeedsModel.ResultBean.FeedDocumentsBean> documentList) {
+    private void showDocumentsList() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Document List");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row_ellipsize);
 
-        for (int i = 0; i < documentList.size(); i++) {
-            arrayAdapter.add(documentList.get(i).getDocuments());
+        for (int i = 0; i < postDocuments.size(); i++) {
+            arrayAdapter.add(postDocuments.get(i));
         }
 
         builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -567,7 +563,7 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (Utilities.isNetworkAvailable(context))
-                    new DownloadDocument().execute(IMAGE_LINK + "feed_doc/" + documentList.get(which).getDocuments(), "1");
+                    new DownloadDocument().execute(IMAGE_LINK + "feed_doc/" + postDocuments.get(which), "1");
                 else
                     Utilities.showMessage("Please check your internet connection", context, 2);
             }

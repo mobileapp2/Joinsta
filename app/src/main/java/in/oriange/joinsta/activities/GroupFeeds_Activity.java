@@ -51,7 +51,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private FloatingActionButton btn_add_post;
-    private String userId, groupId, isAdmin, canPost;
+    private String userId, groupId, isAdmin, canPost, isPublicGroup;
 
     private LocalBroadcastManager localBroadcastManager;
     private GroupFeedsAdapter groupFeedsAdapter;
@@ -101,6 +101,10 @@ public class GroupFeeds_Activity extends AppCompatActivity {
         groupId = getIntent().getStringExtra("groupId");
         isAdmin = getIntent().getStringExtra("isAdmin");
         canPost = getIntent().getStringExtra("canPost");
+        isPublicGroup = getIntent().getStringExtra("isPublicGroup");
+
+        if (isPublicGroup.equals("2") && !isAdmin.equals("1"))
+            btn_add_post.setVisibility(View.GONE);
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAllFeedDetails().execute("1");
@@ -299,7 +303,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isAdmin.equals("1")) {
+        if (isAdmin.equals("1") && !isPublicGroup.equals("2")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menus_settings, menu);
             return true;

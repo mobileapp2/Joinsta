@@ -279,6 +279,7 @@ public class GroupFeedsModel implements Serializable {
 
             private String id;
             private String feed_details_id;
+            private String document_type;
             private String documents;
 
             public FeedDocumentsBean(String documents, String id) {
@@ -311,6 +312,14 @@ public class GroupFeedsModel implements Serializable {
 
             public void setDocuments(String documents) {
                 this.documents = documents;
+            }
+
+            public String getDocument_type() {
+                return document_type;
+            }
+
+            public void setDocument_type(String document_type) {
+                this.document_type = document_type;
             }
         }
 

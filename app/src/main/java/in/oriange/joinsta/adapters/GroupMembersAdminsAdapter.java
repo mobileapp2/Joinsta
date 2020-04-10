@@ -151,27 +151,25 @@ public class GroupMembersAdminsAdapter extends RecyclerView.Adapter<GroupMembers
         holder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this member?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_alertred);
-                builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (Utilities.isNetworkAvailable(context))
-                            new DeleteGroupMember().execute(memberDetails.getId());
+                int numOfAdmins = 0;
+                if (memberDetails.getRole().equals("group_admin")) {
+                    for (GroupMembersAdminsListModel.ResultBean resultBean : participantsList)
+                        if (resultBean.getRole().equals("group_admin") && resultBean.getIs_joinsta_member().equals("1"))
+                            numOfAdmins = numOfAdmins + 1;
+
+                    if (numOfAdmins == 1)
+                        if (memberDetails.getIs_joinsta_member().equals("1"))
+                            Utilities.showAlertDialogNormal(context, "You cannot delete this group admin");
                         else
-                            Utilities.showMessage("Please check your internet connection", context, 2);
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
+                            deleteDialog(memberDetails);
+                    else
+                        deleteDialog(memberDetails);
+
+                } else if (memberDetails.getRole().equals("group_member")) {
+                    deleteDialog(memberDetails);
+                } else {
+                    deleteDialog(memberDetails);
+                }
             }
         });
 
@@ -266,8 +264,6 @@ public class GroupMembersAdminsAdapter extends RecyclerView.Adapter<GroupMembers
                 alertD.show();
             }
         });
-
-
     }
 
     @Override
@@ -307,6 +303,30 @@ public class GroupMembersAdminsAdapter extends RecyclerView.Adapter<GroupMembers
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    private void deleteDialog(GroupMembersAdminsListModel.ResultBean memberDetails) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setMessage("Are you sure you want to delete this member?");
+        builder.setTitle("Alert");
+        builder.setIcon(R.drawable.icon_alertred);
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DeleteGroupMember().execute(memberDetails.getId());
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertD = builder.create();
+        alertD.show();
     }
 
     private class DeleteGroupMember extends AsyncTask<String, Void, String> {
@@ -438,7 +458,7 @@ public class GroupMembersAdminsAdapter extends RecyclerView.Adapter<GroupMembers
         }
     }
 
-    public class SendInviteSMS extends AsyncTask<String, Void, String> {
+    private class SendInviteSMS extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
