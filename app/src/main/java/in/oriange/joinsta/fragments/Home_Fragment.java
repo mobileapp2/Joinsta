@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.PublicOfficeByLocation_Activity;
 import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.BannerSliderAdapter;
 import in.oriange.joinsta.adapters.CategoryAdapter;
@@ -57,7 +58,7 @@ public class Home_Fragment extends Fragment {
     private final String TAG = "bottom_sheet";
     private AppCompatEditText edt_type, edt_location;
     private AnimatedRecyclerView rv_category;
-    private CardView cv_banner;
+    private CardView cv_banner, cv_public_office;
     private SliderView imageSlider;
     private SpinKitView progressBar;
     private PowerMenu iconMenu;
@@ -82,6 +83,7 @@ public class Home_Fragment extends Fragment {
         edt_type = rootView.findViewById(R.id.edt_type);
         edt_location = rootView.findViewById(R.id.edt_location);
         cv_banner = rootView.findViewById(R.id.cv_banner);
+        cv_public_office = rootView.findViewById(R.id.cv_public_office);
         imageSlider = rootView.findViewById(R.id.imageSlider);
 
         progressBar = rootView.findViewById(R.id.progressBar);
@@ -92,7 +94,6 @@ public class Home_Fragment extends Fragment {
     }
 
     private void setDefault() {
-
         categoryTypeId = "1";
         edt_type.setText("Business");
 
@@ -100,21 +101,21 @@ public class Home_Fragment extends Fragment {
             new GetBanners().execute(categoryTypeId, new UserSessionManager(context).getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
             new GetCategotyList().execute("0", "0", categoryTypeId);
         }
-
-
     }
 
     private void getSessionDetails() {
         try {
             UserSessionManager session = new UserSessionManager(context);
             edt_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void setEventHandler() {
+        cv_public_office.setOnClickListener(v -> {
+            startActivity(new Intent(context, PublicOfficeByLocation_Activity.class));
+        });
 
         edt_type.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,7 +232,6 @@ public class Home_Fragment extends Fragment {
             } catch (Exception e) {
                 e.printStackTrace();
                 cv_banner.setVisibility(View.GONE);
-
             }
         }
     }
@@ -272,6 +272,7 @@ public class Home_Fragment extends Fragment {
                     if (type.equalsIgnoreCase("success")) {
                         categotyList = pojoDetails.getResult();
                         if (categotyList.size() > 0) {
+                            cv_public_office.setVisibility(View.VISIBLE);
                             rv_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
                         }
                     } else {

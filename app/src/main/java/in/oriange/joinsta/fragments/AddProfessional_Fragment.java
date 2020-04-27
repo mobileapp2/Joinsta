@@ -434,7 +434,7 @@ public class AddProfessional_Fragment extends Fragment {
 
                     tag_container.addTag(edt_tag.getText().toString().trim());
                 } else {
-                    Utilities.showMessage("Tag aleady added", context, 2);
+                    Utilities.showMessage("Tag already added", context, 2);
                 }
 
                 edt_tag.setText("");
@@ -489,7 +489,7 @@ public class AddProfessional_Fragment extends Fragment {
                     tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
                     tag_container.addTag(edt_tag.getText().toString().trim());
                 } else {
-                    Utilities.showMessage("Tag aleady added", context, 2);
+                    Utilities.showMessage("Tag already added", context, 2);
                 }
 
                 edt_tag.setText("");

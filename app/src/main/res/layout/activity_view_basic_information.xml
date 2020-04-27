@@ -429,7 +429,7 @@
                                 android:id="@+id/edt_email"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.6"
+                                android:layout_weight="0.8"
                                 android:clickable="false"
                                 android:focusable="false"
                                 android:hint="Email"

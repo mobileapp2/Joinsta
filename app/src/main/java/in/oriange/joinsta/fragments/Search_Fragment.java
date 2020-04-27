@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.PublicOfficeByLocation_Activity;
 import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
 import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
@@ -54,6 +56,7 @@ public class Search_Fragment extends Fragment {
     private static Context context;
     private UserSessionManager session;
     private AppCompatEditText edt_type, edt_location;
+    private CardView cv_public_office;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_searchlist;
     private static LinearLayout ll_nopreview;
@@ -95,6 +98,7 @@ public class Search_Fragment extends Fragment {
         edt_search = rootView.findViewById(R.id.edt_search);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
+        cv_public_office = rootView.findViewById(R.id.cv_public_office);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
@@ -137,29 +141,27 @@ public class Search_Fragment extends Fragment {
     }
 
     private void setEventHandler() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    swipeRefreshLayout.setRefreshing(false);
-                }
+        cv_public_office.setOnClickListener(v -> {
+            startActivity(new Intent(context, PublicOfficeByLocation_Activity.class));
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        edt_type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (powerMenuItems.size() == 0)
-                    if (Utilities.isNetworkAvailable(context))
-                        new GetMainCategotyList().execute();
-                    else
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        edt_type.setOnClickListener(v -> {
+            if (powerMenuItems.size() == 0)
+                if (Utilities.isNetworkAvailable(context))
+                    new GetMainCategotyList().execute();
                 else
-                    showCategoryMenus(powerMenuItems);
-            }
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            else
+                showCategoryMenus(powerMenuItems);
         });
 
         edt_search.addTextChangedListener(new TextWatcher() {
@@ -179,9 +181,7 @@ public class Search_Fragment extends Fragment {
             }
         });
 
-        edt_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        edt_location.setOnClickListener(v -> {
 //                startActivity(new Intent(context, SelectLocation_Activity.class)
 //                        .putExtra("startOrigin", 1));
 //                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
@@ -194,9 +194,8 @@ public class Search_Fragment extends Fragment {
 //                    e.printStackTrace();
 //                }
 
-                startActivity(new Intent(context, SelectCity_Activity.class)
-                        .putExtra("requestCode", 1));
-            }
+            startActivity(new Intent(context, SelectCity_Activity.class)
+                    .putExtra("requestCode", 1));
         });
 
     }

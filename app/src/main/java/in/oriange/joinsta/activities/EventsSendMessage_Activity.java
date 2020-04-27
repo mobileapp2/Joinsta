@@ -158,7 +158,7 @@ public class EventsSendMessage_Activity extends AppCompatActivity {
         edtMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(context, GroupsSendMessageScroll_Activity.class)
+                startActivityForResult(new Intent(context, FullScreenTextEdit_Activity.class)
                         .putExtra("message", edtMessage.getText().toString().trim()), MESSAGE_REQUEST);
             }
         });
@@ -216,7 +216,6 @@ public class EventsSendMessage_Activity extends AppCompatActivity {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
     }
-
 
     private class SendMessage extends AsyncTask<String, Void, String> {
 

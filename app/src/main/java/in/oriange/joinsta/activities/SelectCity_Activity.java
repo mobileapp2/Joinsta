@@ -32,6 +32,7 @@ import in.oriange.joinsta.models.GetCityListModel;
 import in.oriange.joinsta.models.MapAddressListModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
+import in.oriange.joinsta.utilities.RecyclerItemClickListener;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
@@ -49,7 +50,7 @@ public class SelectCity_Activity extends AppCompatActivity {
     private TextView tv_recent_city;
     private String userId;
 
-    private ArrayList<GetCityListModel.ResultBean> cityList;
+    private ArrayList<GetCityListModel.ResultBean> cityList, searchedCityList;
     private int requestCode = 0;
 
     @Override
@@ -77,6 +78,7 @@ public class SelectCity_Activity extends AppCompatActivity {
         rv_city.setLayoutManager(new LinearLayoutManager(context));
 
         cityList = new ArrayList<>();
+        searchedCityList = new ArrayList<>();
     }
 
     private void setDefault() {
@@ -114,26 +116,7 @@ public class SelectCity_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        edt_search_city.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        ll_user_current_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ll_user_current_location.setOnClickListener(v -> {
 //                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 //                try {
 //                    startActivityForResult(builder.build(SelectCity_Activity.this), requestCode);
@@ -142,8 +125,7 @@ public class SelectCity_Activity extends AppCompatActivity {
 //                } catch (GooglePlayServicesNotAvailableException e) {
 //                    e.printStackTrace();
 //                }
-                startActivityForResult(new Intent(context, PickMapLoaction_Activity.class), requestCode);
-            }
+            startActivityForResult(new Intent(context, PickMapLoaction_Activity.class), requestCode);
         });
 
         edt_search_city.addTextChangedListener(new TextWatcher() {
@@ -170,8 +152,10 @@ public class SelectCity_Activity extends AppCompatActivity {
                             citySearchedList.add(cityDetails);
                         }
                     }
+                    searchedCityList = citySearchedList;
                     rv_city.setAdapter(new CityAdapter(context, citySearchedList, requestCode));
                 } else {
+                    searchedCityList = cityList;
                     rv_city.setAdapter(new CityAdapter(context, cityList, requestCode));
                 }
 
@@ -183,6 +167,23 @@ public class SelectCity_Activity extends AppCompatActivity {
             }
         });
 
+        rv_city.addOnItemTouchListener(new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (requestCode == 0 || requestCode == 1 || requestCode == 3) {
+                    session.setLocation(searchedCityList.get(position).getCity_name());
+                    ((SelectCity_Activity) context).finishAffinity();
+                    context.startActivity(new Intent(context, MainDrawer_Activity.class)
+                            .putExtra("startOrigin", requestCode));
+                } else {
+                    Intent intent = getIntent();
+                    intent.putExtra("cityName", searchedCityList.get(position).getCity_name());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            }
+        }));
+
     }
 
     @Override
@@ -190,12 +191,17 @@ public class SelectCity_Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
+            MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
             if (requestCode == 0 || requestCode == 1 || requestCode == 3) {
-                MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
                 session.setLocation(addressList.getDistrict());
                 finishAffinity();
                 startActivity(new Intent(context, MainDrawer_Activity.class)
                         .putExtra("startOrigin", requestCode));
+            } else {
+                Intent intent = getIntent();
+                intent.putExtra("cityName", addressList.getDistrict());
+                setResult(RESULT_OK, intent);
+                finish();
             }
         }
     }
@@ -234,8 +240,7 @@ public class SelectCity_Activity extends AppCompatActivity {
 
                     if (type.equalsIgnoreCase("success")) {
                         cityList = pojoDetails.getResult();
-
-
+                        searchedCityList = pojoDetails.getResult();
                     } else {
                         Utilities.showAlertDialog(context, message, false);
 

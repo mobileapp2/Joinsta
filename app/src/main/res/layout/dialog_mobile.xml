@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_countrycode"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:text="+91"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="0.7dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/mediumGray" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_mobile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="Mobile"
+        android:inputType="number"
+        android:maxLength="14"
+        android:textSize="16sp"
+        app:met_floatingLabel="highlight"
+        app:met_helperText="Enter assignee mobile number"
+        app:met_helperTextAlwaysShown="true"
+        app:met_helperTextColor="@color/helper_color"
+        app:met_textColorHint="@color/darkGray"
+        app:met_underlineColor="@color/mediumGray" />
+
+</LinearLayout>

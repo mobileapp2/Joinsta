@@ -94,6 +94,7 @@ import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
@@ -119,7 +120,7 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
 
-    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageUrl = "", isActive, referralCode, latitude, longitude;
+    private String userId, password, bloodGroupId = "0", educationId = "0", genderId = "0", imageName = "", isActive, referralCode, latitude, longitude;
 
     private ArrayList<PrimaryPublicMobileSelectionModel> mobileList;
     private ArrayList<PrimarySelectionModel> landlineList, emailList;
@@ -272,7 +273,7 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
         bloodGroupId = userDetails.getBlood_group_id();
         educationId = userDetails.getEducation_id();
         genderId = userDetails.getGender_id();
-        imageUrl = userDetails.getImage_url();
+        imageName = userDetails.getImage_url();
         isActive = userDetails.getIs_active();
         referralCode = userDetails.getReferral_code();
         latitude = userDetails.getLatitude();
@@ -289,9 +290,10 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
         edt_reg_mobile.setText(userDetails.getCountry_code() + userDetails.getMobile());
 
 
-        if (!imageUrl.equals("")) {
+        if (!imageName.equals("")) {
+            String url = IMAGE_LINK + userId + "/" + imageName;
             Picasso.with(context)
-                    .load(imageUrl)
+                    .load(url)
                     .placeholder(R.drawable.icon_userphoto)
                     .into(imv_user);
         }
@@ -712,7 +714,8 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        imageUrl = jsonObject.getString("document_url");
+                        String imageUrl = jsonObject.getString("document_url");
+                        imageName = jsonObject.getString("name");
 
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
@@ -1621,7 +1624,7 @@ public class EditBasicInformation_Activity extends AppCompatActivity {
         mainObj.addProperty("referral_code", referralCode);
         mainObj.addProperty("is_active", isActive);
         mainObj.addProperty("password", password);
-        mainObj.addProperty("image_url", imageUrl);
+        mainObj.addProperty("image_url", imageName);
         mainObj.addProperty("native_place", edt_nativeplace.getText().toString().trim());
         mainObj.addProperty("latitude", latitude);
         mainObj.addProperty("longitude", longitude);

@@ -36,6 +36,8 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
 public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersListAdapter.MyViewHolder> {
 
     private List<GroupMemebersListModel.ResultBean> resultArrayList;
@@ -93,8 +95,10 @@ public class GroupMembersListAdapter extends RecyclerView.Adapter<GroupMembersLi
         }
 
         if (!memberDetails.getImage_url().trim().isEmpty()) {
+
+            String url = IMAGE_LINK + "" + memberDetails.getId() + "/" + memberDetails.getImage_url();
             Picasso.with(context)
-                    .load(memberDetails.getImage_url().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_user)
                     .resize(250, 250)
                     .centerCrop()

@@ -44,6 +44,8 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
 public class RatingAndReviewAdapter extends RecyclerView.Adapter<RatingAndReviewAdapter.MyViewHolder> {
 
     private Context context;
@@ -90,6 +92,7 @@ public class RatingAndReviewAdapter extends RecyclerView.Adapter<RatingAndReview
         }
 
         if (!resultBean.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + resultBean.getUser_id() + "/" + resultBean.getImage_url();
             Picasso.with(context)
                     .load(resultBean.getImage_url().trim())
                     .placeholder(R.drawable.icon_user)

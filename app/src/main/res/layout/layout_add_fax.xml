@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_fax"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8"
+        android:hint="Fax"
+        android:inputType="number"
+        android:maxLength="14"
+        android:textSize="16sp"
+        app:met_floatingLabel="highlight"
+        app:met_textColorHint="@color/darkGray"
+        app:met_underlineColor="@color/mediumGray" />
+
+    <ImageButton
+        android:id="@+id/ib_remove_fax"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|end"
+        android:layout_weight="0.1"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:onClick="removeFaxLayout"
+        android:src="@drawable/icon_cross"
+        android:tint="@color/black" />
+
+</LinearLayout>

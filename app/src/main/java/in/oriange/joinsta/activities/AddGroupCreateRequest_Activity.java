@@ -92,7 +92,7 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
 
     private void setEventHandler() {
         edtSelectGroupType.setOnClickListener(v -> {
-            showEventTypeListDialog();
+            showGroupTypeListDialog();
         });
 
         btnSave.setOnClickListener(v -> {
@@ -149,7 +149,7 @@ public class AddGroupCreateRequest_Activity extends AppCompatActivity {
         }
     }
 
-    private void showEventTypeListDialog() {
+    private void showGroupTypeListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select Group Type");
         builderSingle.setCancelable(false);

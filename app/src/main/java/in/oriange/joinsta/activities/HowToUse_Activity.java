@@ -59,7 +59,7 @@ public class HowToUse_Activity extends AppCompatActivity {
                 }
             }
         });
-        String s = "https://docs.google.com/gview?embedded=true&url=http://joinsta.in/images/JoinstaHowtouse.pdf";
+        String s = "https://docs.google.com/gview?embedded=true&url=https://joinsta.in/images/JoinstaHowtouse.pdf";
         webview.loadUrl(s);
     }
 

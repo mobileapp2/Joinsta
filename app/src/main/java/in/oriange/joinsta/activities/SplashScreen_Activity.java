@@ -58,6 +58,11 @@ public class SplashScreen_Activity extends Activity {
 
         if (Utilities.isNetworkAvailable(context)) {
             new CheckVersion().execute();
+//            if (session.isUserLoggedIn()) {
+//                startActivity(new Intent(context, MainDrawer_Activity.class).putExtra("startOrigin", 0));
+//            } else {
+//                startActivity(new Intent(context, Login_Activity.class));
+//            }
         } else {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
             View promptView = layoutInflater.inflate(R.layout.dialog_layout_error, null);
@@ -78,9 +83,7 @@ public class SplashScreen_Activity extends Activity {
                 @Override
                 public void onClick(View v) {
                     alertD.dismiss();
-                    startActivity(new Intent(context, MainDrawer_Activity.class)
-                            .putExtra("startOrigin", 0));
-                    finish();
+                    new CheckVersion().execute();
                 }
             });
 
@@ -88,7 +91,7 @@ public class SplashScreen_Activity extends Activity {
         }
     }
 
-    public class CheckVersion extends AsyncTask<String, Void, String> {
+    private class CheckVersion extends AsyncTask<String, Void, String> {
 
         @Override
         protected void onPreExecute() {

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -42,7 +44,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vincent.filepicker.Constant;
@@ -308,7 +309,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         edt_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(context, GroupsSendMessageScroll_Activity.class)
+                startActivityForResult(new Intent(context, FullScreenTextEdit_Activity.class)
                         .putExtra("message", edt_message.getText().toString().trim()), MESSAGE_REQUEST);
 
 //                Rect displayRectangle = new Rect();
@@ -701,11 +702,11 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
         }
 
         if (rb_all.isChecked()) {
-            userType = "group_supervisors";
+            userType = "all";
         } else if (rb_app_members.isChecked()) {
-            userType = "all";
+            userType = "app";
         } else if (rb_non_app_members.isChecked()) {
-            userType = "all";
+            userType = "non-app";
         } else {
             Utilities.showMessage("Please select user type", context, 2);
             return;
@@ -856,7 +857,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 
     private class UploadImage extends AsyncTask<String, Integer, String> {
 
-        String TYPE;
+        String TYPE, filePath;
 
         @Override
         protected void onPreExecute() {
@@ -868,6 +869,7 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
+            filePath = params[0];
             TYPE = params[1];
             StringBuilder res = new StringBuilder();
             try {
@@ -902,13 +904,11 @@ public class GroupsSendMessage_Activity extends AppCompatActivity {
                         if (TYPE.equals("0")) {
                             String imageUrl = jsonObject.getString("document_url");
                             imageName = jsonObject.getString("name");
-
                             if (!imageUrl.equals("")) {
-                                Picasso.with(context)
-                                        .load(imageUrl)
-                                        .into(imv_photo1);
+                                Bitmap photoBm = BitmapFactory.decodeFile(filePath);
+                                photoBm = Bitmap.createScaledBitmap(photoBm, 150, 150, false);
+                                imv_photo1.setImageBitmap(photoBm);
                                 imv_photo2.setVisibility(View.GONE);
-                                imv_photo1.setVisibility(View.VISIBLE);
                             }
                         } else if (TYPE.equals("1")) {
                             edt_attach_multidoc.setText(jsonObject.getString("name"));

@@ -71,7 +71,7 @@ public class GroupFeedsModel implements Serializable {
         private String group_id;
         private String type_id;
         private String feed_text;
-        private String feed_doc;
+//        private String feed_doc;
         private String is_admin;
         private String is_private;
         private String is_hidden;
@@ -122,13 +122,13 @@ public class GroupFeedsModel implements Serializable {
             this.feed_text = feed_text;
         }
 
-        public String getFeed_doc() {
-            return feed_doc;
-        }
-
-        public void setFeed_doc(String feed_doc) {
-            this.feed_doc = feed_doc;
-        }
+//        public String getFeed_doc() {
+//            return feed_doc;
+//        }
+//
+//        public void setFeed_doc(String feed_doc) {
+//            this.feed_doc = feed_doc;
+//        }
 
         public String getIs_admin() {
             return is_admin;
@@ -282,7 +282,8 @@ public class GroupFeedsModel implements Serializable {
             private String document_type;
             private String documents;
 
-            public FeedDocumentsBean(String documents, String id) {
+            public FeedDocumentsBean(String document_type,String documents, String id) {
+                this.document_type = document_type;
                 this.documents = documents;
                 this.id = id;
             }

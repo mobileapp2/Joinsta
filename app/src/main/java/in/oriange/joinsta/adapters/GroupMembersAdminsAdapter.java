@@ -93,10 +93,13 @@ public class GroupMembersAdminsAdapter extends RecyclerView.Adapter<GroupMembers
             holder.tv_mobile_email.setVisibility(View.GONE);
         }
 
-        if (memberDetails.getRole().equals("group_admin"))
-            holder.tv_role.setText("Group Admin");
-        else if (memberDetails.getRole().equals("group_member"))
-            holder.tv_role.setText("Group Member");
+        if (memberDetails.getRole().equals("group_admin")) {
+            holder.tv_role.setText("Admin");
+            holder.tv_role.setTextColor(context.getResources().getColor(R.color.helper_color));
+        } else if (memberDetails.getRole().equals("group_member")) {
+            holder.tv_role.setText("Member");
+            holder.tv_role.setTextColor(context.getResources().getColor(R.color.Clover_Green));
+        }
 
         if (memberDetails.getIs_active().equals("1"))
             holder.sw_active.setChecked(true);

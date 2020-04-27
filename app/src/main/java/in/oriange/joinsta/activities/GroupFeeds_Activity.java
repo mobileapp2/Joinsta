@@ -158,7 +158,6 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                     return;
                 }
 
-
                 if (feedsList.size() == 0) {
                     rv_feeds.setVisibility(View.GONE);
                     return;
@@ -168,7 +167,7 @@ public class GroupFeeds_Activity extends AppCompatActivity {
                     ArrayList<GroupFeedsModel.ResultBean> groupsSearchedList = new ArrayList<>();
                     for (GroupFeedsModel.ResultBean groupsDetails : feedsList) {
 
-                        String feedToBeSearched = groupsDetails.getFirst_name().toLowerCase() + groupsDetails.getFeed_text().toLowerCase();
+                        String feedToBeSearched = groupsDetails.getFirst_name().toLowerCase() + groupsDetails.getFeed_title().toLowerCase() + groupsDetails.getFeed_text().toLowerCase();
 
                         if (feedToBeSearched.contains(query.toString().toLowerCase())) {
                             groupsSearchedList.add(groupsDetails);

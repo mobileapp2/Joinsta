@@ -17,6 +17,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,13 +33,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vincent.filepicker.Constant;
@@ -60,6 +63,7 @@ import java.util.regex.Matcher;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.GetFeedTypesListModel;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.utilities.APICall;
 import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.MultipartUtility;
@@ -68,7 +72,6 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
-import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 
@@ -82,18 +85,18 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
     private EditText edt_description;
     private Button btn_save, btn_add_document;
     private LinearLayout ll_attach_docs;
+    private RecyclerView rv_images;
     private CheckBox cb_canshare, cb_disclaimer;
-    private ImageView imv_image_one, imv_image_one_delete, imv_image_two, imv_image_two_delete, imv_image_three, imv_image_three_delete;
 
     private String userId, groupId, isAdmin, typeId = "1";
     private List<GetFeedTypesListModel.ResultBean> feedTypeList;
     private ArrayList<LinearLayout> docsLayoutsList;
 
     private Uri photoURI;
+    private int latestPosition;
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200, DOCUMENT_REQUEST = 300, MESSAGE_REQUEST = 400;
     private File photoFileFolder;
-    private int IMAGE_TYPE = 1;
-    private String imageOneName = "", imageTwoName = "", imageThreeName = "";
+    private ArrayList<MasterModel> imageList;
 
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
@@ -121,16 +124,13 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         cb_canshare = findViewById(R.id.cb_canshare);
         cb_disclaimer = findViewById(R.id.cb_disclaimer);
         ll_attach_docs = findViewById(R.id.ll_attach_docs);
-        imv_image_one = findViewById(R.id.imv_image_one);
-        imv_image_one_delete = findViewById(R.id.imv_image_one_delete);
-        imv_image_two = findViewById(R.id.imv_image_two);
-        imv_image_two_delete = findViewById(R.id.imv_image_two_delete);
-        imv_image_three = findViewById(R.id.imv_image_three);
-        imv_image_three_delete = findViewById(R.id.imv_image_three_delete);
+        rv_images = findViewById(R.id.rv_images);
+        rv_images.setLayoutManager(new GridLayoutManager(context, 3));
         btn_save = findViewById(R.id.btn_save);
 
         feedTypeList = new ArrayList<>();
         docsLayoutsList = new ArrayList<>();
+        imageList = new ArrayList<>();
 
         photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Posts");
         if (!photoFileFolder.exists())
@@ -159,129 +159,39 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         groupId = getIntent().getStringExtra("groupId");
         isAdmin = getIntent().getStringExtra("isAdmin");
 
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View rowView = inflater.inflate(R.layout.layout_add_document, null);
         LinearLayout ll = (LinearLayout) rowView;
         docsLayoutsList.add(ll);
         ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
+
+        imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
+        rv_images.setAdapter(new ImagesAdapter());
     }
 
     private void setEventHandler() {
-        edt_feed_type.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetFeedTypes().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
+        edt_feed_type.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetFeedTypes().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
 
-        edt_description.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(context, GroupsSendMessageScroll_Activity.class)
-                        .putExtra("message", edt_description.getText().toString().trim()), MESSAGE_REQUEST);
-            }
+        edt_description.setOnClickListener(v -> startActivityForResult(new Intent(context, FullScreenTextEdit_Activity.class)
+                .putExtra("message", edt_description.getText().toString().trim()), MESSAGE_REQUEST));
+
+        btn_add_document.setOnClickListener(v -> {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+            LinearLayout ll = (LinearLayout) rowView;
+            docsLayoutsList.add(ll);
+            ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
         });
 
-        imv_image_one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IMAGE_TYPE = 0;
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        imv_image_two.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IMAGE_TYPE = 1;
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        imv_image_three.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IMAGE_TYPE = 2;
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        imv_image_one_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageOneName = "";
-                setPaddingForView(context, imv_image_one, 40);
-                imv_image_one.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
-                imv_image_one_delete.setVisibility(View.GONE);
-            }
-        });
-
-        imv_image_two_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageTwoName = "";
-                setPaddingForView(context, imv_image_two, 40);
-                imv_image_two.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
-                imv_image_two_delete.setVisibility(View.GONE);
-            }
-        });
-
-        imv_image_three_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageThreeName = "";
-                setPaddingForView(context, imv_image_three, 40);
-                imv_image_three.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
-                imv_image_three_delete.setVisibility(View.GONE);
-            }
-        });
-
-        btn_add_document.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_document, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                docsLayoutsList.add(ll);
-                ll_attach_docs.addView(rowView, ll_attach_docs.getChildCount());
-            }
-        });
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitData();
-            }
-        });
+        btn_save.setOnClickListener(v -> submitData());
     }
 
     private void selectImage() {
@@ -379,6 +289,95 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         }
     }
 
+    private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+
+        ImagesAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.grid_row_images, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            if (!imageList.get(position).getId().isEmpty()) {
+                Glide.with(context)
+                        .load(imageList.get(position).getId())
+                        .into(holder.imv_image);
+                setPaddingForView(context, holder.imv_image, 0);
+                holder.imv_image_delete.setVisibility(View.VISIBLE);
+                holder.imv_image_delete.bringToFront();
+            }
+
+            holder.imv_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    latestPosition = position;
+
+                    final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setCancelable(false);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int item) {
+                            if (options[item].equals("Take a Photo")) {
+                                File file = new File(photoFileFolder, "doc_image.png");
+                                photoURI = Uri.fromFile(file);
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(intent, CAMERA_REQUEST);
+                            } else if (options[item].equals("Choose from Gallery")) {
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("image/*");
+                                startActivityForResult(intent, GALLERY_REQUEST);
+                            }
+                        }
+                    });
+                    builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            });
+
+            holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageList.set(position, new MasterModel("", ""));
+                    rv_images.setAdapter(new ImagesAdapter());
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return imageList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private ImageView imv_image, imv_image_delete;
+
+            private MyViewHolder(View view) {
+                super(view);
+                imv_image = view.findViewById(R.id.imv_image);
+                imv_image_delete = view.findViewById(R.id.imv_image_delete);
+
+            }
+        }
+    }
+
     private void showFeedListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select Post Type");
@@ -411,45 +410,32 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
     }
 
     private void submitData() {
-//        if (edt_feed_type.getText().toString().trim().isEmpty()) {
-//            edt_feed_type.setError("Please select post type");
-//            edt_feed_type.requestFocus();
-//            return;
-//        }
         if (edt_title.getText().toString().trim().isEmpty()) {
             edt_title.setError("Please enter title");
             edt_title.requestFocus();
             return;
         }
 
-        JsonArray messageDocArray = new JsonArray();
+        JsonArray documentsArray = new JsonArray();
 
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", "0");
+                jsonObject.addProperty("document_type", "invitationdocument");
                 jsonObject.addProperty("document", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
-                messageDocArray.add(jsonObject);
+                documentsArray.add(jsonObject);
             }
         }
 
-        JsonArray imagesArray = new JsonArray();
-
-        if (!imageOneName.isEmpty()) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("image", imageOneName);
-            imagesArray.add(jsonObject);
-        }
-
-        if (!imageTwoName.isEmpty()) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("image", imageTwoName);
-            imagesArray.add(jsonObject);
-        }
-
-        if (!imageThreeName.isEmpty()) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("image", imageThreeName);
-            imagesArray.add(jsonObject);
+        for (int i = 0; i < imageList.size(); i++) {
+            if (!imageList.get(i).getName().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", "0");
+                jsonObject.addProperty("document_type", "invitationimage");
+                jsonObject.addProperty("document", imageList.get(i).getName());
+                documentsArray.add(jsonObject);
+            }
         }
 
         String canShare = cb_canshare.isChecked() ? "1" : "0";
@@ -465,8 +451,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         mainObj.addProperty("is_admin", isAdmin);
         mainObj.addProperty("can_share", canShare);
         mainObj.addProperty("show_disclaimer", showDisclaimer);
-        mainObj.add("image", imagesArray);
-        mainObj.add("document", messageDocArray);
+        mainObj.add("document", documentsArray);
 
         if (Utilities.isNetworkAvailable(context)) {
             new AddGroupFeed().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
@@ -555,7 +540,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
 
             if (requestCode == DOCUMENT_REQUEST) {
                 ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
-                new UploadImage().execute(list.get(0).getPath(), "4");
+                new UploadImage().execute(list.get(0).getPath(), "1");
             }
 
             if (requestCode == MESSAGE_REQUEST) {
@@ -601,7 +586,7 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload.getPath(), String.valueOf(IMAGE_TYPE));
+        new UploadImage().execute(photoFileToUpload.getPath(), "0");
 
     }
 
@@ -648,48 +633,13 @@ public class AddGroupFeeds_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        if (TYPE.equals("0")) {
-                            String imageUrl = jsonObject.getString("document_url");
-                            imageOneName = jsonObject.getString("name");
-
-                            if (!imageUrl.equals("")) {
-                                Picasso.with(context)
-                                        .load(imageUrl)
-                                        .resize(100, 100)
-                                        .into(imv_image_one);
-                                setPaddingForView(context, imv_image_one, 0);
-                                imv_image_one_delete.setVisibility(View.VISIBLE);
-                                imv_image_one_delete.bringToFront();
-                            }
-                        } else if (TYPE.equals("1")) {
-                            String imageUrl = jsonObject.getString("document_url");
-                            imageTwoName = jsonObject.getString("name");
-
-                            if (!imageUrl.equals("")) {
-                                Picasso.with(context)
-                                        .load(imageUrl)
-                                        .resize(100, 100)
-                                        .into(imv_image_two);
-                                setPaddingForView(context, imv_image_two, 0);
-                                imv_image_two_delete.setVisibility(View.VISIBLE);
-                                imv_image_two_delete.bringToFront();
-                            }
-                        } else if (TYPE.equals("2")) {
-                            String imageUrl = jsonObject.getString("document_url");
-                            imageThreeName = jsonObject.getString("name");
-
-                            if (!imageUrl.equals("")) {
-                                Picasso.with(context)
-                                        .load(imageUrl)
-                                        .resize(100, 100)
-                                        .into(imv_image_three);
-                                setPaddingForView(context, imv_image_three, 0);
-                                imv_image_three_delete.setVisibility(View.VISIBLE);
-                                imv_image_three_delete.bringToFront();
-                            }
-                        } else if (TYPE.equals("4")) {
+                        if (TYPE.equals("1")) {
                             edt_attach_multidoc.setText(jsonObject.getString("name"));
+                        } else if (TYPE.equals("0")) {
+                            imageList.set(latestPosition, new MasterModel(jsonObject.getString("name"), jsonObject.getString("document_url")));
+                            rv_images.setAdapter(new ImagesAdapter());
                         }
+
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
                     }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -60,6 +61,8 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
 public class MyGroupDetails_Activity extends AppCompatActivity {
 
     private Context context;
@@ -69,7 +72,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
     private CardView cv_grp_details, cv_banner, cv_rejoin, cv_members, cv_grp_settings, cv_group_utils;
     private SliderView imageSlider;
     private TextView tv_codename, tv_description, tv_praticipants, tv_members;
-    private Switch sw_hide_members, sw_hide_group;
+    private Switch sw_hide_members;
+    private TextView tv_group_type;
     private RecyclerView rv_group_members, rv_group_utils;
     private Button btn_connect, btn_status, btn_delete_group;
     private ImageButton ib_more;
@@ -109,8 +113,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         tv_description = findViewById(R.id.tv_description);
         tv_praticipants = findViewById(R.id.tv_praticipants);
         tv_members = findViewById(R.id.tv_members);
+        tv_group_type = findViewById(R.id.tv_group_type);
         sw_hide_members = findViewById(R.id.sw_hide_members);
-        sw_hide_group = findViewById(R.id.sw_hide_group);
         rv_group_members = findViewById(R.id.rv_group_members);
         rv_group_members.setLayoutManager(new LinearLayoutManager(context));
         rv_group_utils = findViewById(R.id.rv_group_utils);
@@ -211,7 +215,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             btn_status.setVisibility(View.GONE);
 
             if (groupDetails.getIs_public_group().equals("0")) {
-                sw_hide_group.setChecked(true);
+                tv_group_type.setText("Private Group");
+            } else if (groupDetails.getIs_public_group().equals("1")) {
+                tv_group_type.setText("Public Group");
+            } else if (groupDetails.getIs_public_group().equals("2")) {
+                tv_group_type.setText("Social Group");
             }
 
             if (leadsList != null)
@@ -288,23 +296,17 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             }
         });
 
-        sw_hide_group.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        tv_group_type.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String is_public = "";
-                if (isChecked) {
-                    is_public = "0";
-                } else {
-                    is_public = "1";
-                }
-
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GroupVisiblity().execute(groupDetails.getId(), is_public);
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
+            public void onClick(View v) {
+                List<MasterModel> groupTypeList = new ArrayList<>();
+                groupTypeList.add(new MasterModel("Private Group", "0"));
+                groupTypeList.add(new MasterModel("Public Group", "1"));
+                groupTypeList.add(new MasterModel("Social Group", "2"));
+                showGroupTypeListDialog(groupTypeList);
             }
         });
+
 
         btn_delete_group.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -343,7 +345,11 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             public void onClick(View v) {
                 if (groupDetails.getStatus().equals("") || groupDetails.getStatus().equals("left")) {
                     if (Utilities.isNetworkAvailable(context)) {
-                        new JoinGroup().execute(groupDetails.getId());
+                        if (groupDetails.getIs_public_group().equals("2")) {
+                            new JoinGroup().execute("accepted", groupDetails.getId());
+                        } else {
+                            new JoinGroup().execute("requested", groupDetails.getId());
+                        }
                     } else {
                         Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                     }
@@ -507,6 +513,39 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         rv_group_utils.setAdapter(new GroupUtilsAdapter());
     }
 
+    private void showGroupTypeListDialog(List<MasterModel> groupTypeList) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Select Group Type");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+
+        for (int i = 0; i < groupTypeList.size(); i++) {
+            arrayAdapter.add(String.valueOf(groupTypeList.get(i).getName()));
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MasterModel event = groupTypeList.get(which);
+                tv_group_type.setText(event.getName());
+                if (Utilities.isNetworkAvailable(context)) {
+                    new ChangeGroupType().execute(groupDetails.getId(), event.getId());
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            }
+        });
+        builderSingle.show();
+    }
+
     public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.MyViewHolder> {
 
         @NonNull
@@ -546,8 +585,9 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             }
 
             if (!memberDetails.getImage_url().trim().isEmpty()) {
+                String url = IMAGE_LINK + "" + memberDetails.getId() + "/" + memberDetails.getImage_url();
                 Picasso.with(context)
-                        .load(memberDetails.getImage_url().trim())
+                        .load(url)
                         .placeholder(R.drawable.icon_user)
                         .resize(250, 250)
                         .centerCrop()
@@ -867,8 +907,8 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "joingroup");
-            obj.addProperty("status", "requested");
-            obj.addProperty("group_id", params[0]);
+            obj.addProperty("status", params[0]);
+            obj.addProperty("group_id", params[1]);
             obj.addProperty("user_id", userId);
             obj.addProperty("role", "group_member");
             res = APICall.JSONAPICall(ApplicationConstants.GROUPSAPI, obj.toString());
@@ -896,7 +936,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Your request to join this group is submitted successfully");
+                        tv_title.setText(message);
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -922,7 +962,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         }
     }
 
-    public class SendInviteSMS extends AsyncTask<String, Void, String> {
+    private class SendInviteSMS extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -1409,7 +1449,7 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
         }
     }
 
-    private class GroupVisiblity extends AsyncTask<String, Void, String> {
+    private class ChangeGroupType extends AsyncTask<String, Void, String> {
 
         ProgressDialog pd;
 
@@ -1443,7 +1483,28 @@ public class MyGroupDetails_Activity extends AppCompatActivity {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
-                        Utilities.showMessage("Group visibility status changed successfully", context, 1);
+                        LayoutInflater layoutInflater = LayoutInflater.from(context);
+                        View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                        alertDialogBuilder.setView(promptView);
+
+                        LottieAnimationView animation_view = promptView.findViewById(R.id.animation_view);
+                        TextView tv_title = promptView.findViewById(R.id.tv_title);
+                        Button btn_ok = promptView.findViewById(R.id.btn_ok);
+
+                        animation_view.playAnimation();
+                        tv_title.setText("Group type changed successfully");
+                        alertDialogBuilder.setCancelable(false);
+                        final AlertDialog alertD = alertDialogBuilder.create();
+
+                        btn_ok.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertD.dismiss();
+                                finish();
+                            }
+                        });
+                        alertD.show();
 
                         new Groups_Fragment.GetMyGroupsList().execute();
                         new AllGroups_Activity.GetGroupsList().execute();

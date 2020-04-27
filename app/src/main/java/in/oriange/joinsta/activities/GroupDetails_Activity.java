@@ -56,6 +56,8 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
 public class GroupDetails_Activity extends AppCompatActivity {
 
     private Context context;
@@ -545,8 +547,9 @@ public class GroupDetails_Activity extends AppCompatActivity {
             }
 
             if (!memberDetails.getImage_url().trim().isEmpty()) {
+                String url = IMAGE_LINK + "" + memberDetails.getId() + "/" + memberDetails.getImage_url();
                 Picasso.with(context)
-                        .load(memberDetails.getImage_url().trim())
+                        .load(url)
                         .placeholder(R.drawable.icon_user)
                         .resize(250, 250)
                         .centerCrop()

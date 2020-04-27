@@ -52,6 +52,8 @@ import in.oriange.joinsta.utilities.ParamsPojo;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
 public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCommentsAdapter.MyViewHolder> {
 
     private String userId;
@@ -101,8 +103,9 @@ public class GroupFeedsCommentsAdapter extends RecyclerView.Adapter<GroupFeedsCo
         }
 
         if (!commentsDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + commentsDetails.getCreated_by() + "/" + commentsDetails.getImage_url();
             Picasso.with(context)
-                    .load(commentsDetails.getImage_url().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_user)
                     .resize(250, 250)
                     .centerCrop()

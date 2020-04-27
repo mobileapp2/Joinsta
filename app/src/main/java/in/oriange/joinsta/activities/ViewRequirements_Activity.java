@@ -42,6 +42,7 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
 public class ViewRequirements_Activity extends AppCompatActivity {
@@ -90,8 +91,9 @@ public class ViewRequirements_Activity extends AppCompatActivity {
 
 
         if (!reqDetails.getImageURL().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + reqDetails.getCreated_by() + "/" + reqDetails.getImageURL();
             Picasso.with(context)
-                    .load(reqDetails.getImageURL().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_userphoto)
                     .into(imv_user, new Callback() {
                         @Override

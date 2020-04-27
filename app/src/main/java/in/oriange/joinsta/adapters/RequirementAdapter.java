@@ -48,6 +48,8 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
+
 public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.MyViewHolder> {
 
     private String userId;
@@ -97,8 +99,9 @@ public class RequirementAdapter extends RecyclerView.Adapter<RequirementAdapter.
         }
 
         if (!reqDetails.getImageURL().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + reqDetails.getCreated_by() + "/" + reqDetails.getImageURL();
             Picasso.with(context)
-                    .load(reqDetails.getImageURL().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_user)
                     .resize(250, 250)
                     .centerCrop()

@@ -56,6 +56,7 @@ public class Requirements_Activity extends AppCompatActivity {
     private String userId;
     private ArrayList<RequirementsListModel> requirementsList;
 
+    private final int LOCATION_REQUEST = 300;
     private boolean business, employment, professional, posted, starred;
 
     private LocalBroadcastManager localBroadcastManager;
@@ -115,201 +116,176 @@ public class Requirements_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetRequirementList().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetRequirementList().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    swipeRefreshLayout.setRefreshing(false);
+        ib_filter.setOnClickListener(v -> {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.dialog_layout_filter, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            alertDialogBuilder.setTitle("Filter");
+            alertDialogBuilder.setCancelable(false);
+            alertDialogBuilder.setView(promptView);
+
+            final CheckBox cb_business = promptView.findViewById(R.id.cb_business);
+            final CheckBox cb_employment = promptView.findViewById(R.id.cb_employment);
+            final CheckBox cb_professional = promptView.findViewById(R.id.cb_professional);
+            final CheckBox cb_postedbyme = promptView.findViewById(R.id.cb_postedbyme);
+            final CheckBox cb_staredbyme = promptView.findViewById(R.id.cb_staredbyme);
+
+            if (business)
+                cb_business.setChecked(true);
+
+            if (employment)
+                cb_employment.setChecked(true);
+
+            if (professional)
+                cb_professional.setChecked(true);
+
+            if (posted)
+                cb_postedbyme.setChecked(true);
+
+            if (starred)
+                cb_staredbyme.setChecked(true);
+
+
+            alertDialogBuilder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+
+                    ArrayList<RequirementsListModel> filteredRequirementsList = new ArrayList<>();
+
+                    if (cb_business.isChecked() || cb_employment.isChecked() || cb_professional.isChecked()
+                            || cb_postedbyme.isChecked() || cb_staredbyme.isChecked()) {
+
+
+                        if (cb_business.isChecked()) {
+                            business = true;
+                            for (int j = 0; j < requirementsList.size(); j++)
+                                if (requirementsList.get(j).getCategory_type_id().equals("1"))
+                                    filteredRequirementsList.add(requirementsList.get(j));
+                        } else {
+                            business = false;
+                        }
+
+
+                        if (cb_employment.isChecked()) {
+                            employment = true;
+                            for (int j = 0; j < requirementsList.size(); j++) {
+                                if (requirementsList.get(j).getCategory_type_id().equals("2")) {
+                                    filteredRequirementsList.add(requirementsList.get(j));
+                                }
+                            }
+                        } else {
+                            employment = false;
+                        }
+
+
+                        if (cb_professional.isChecked()) {
+                            professional = true;
+                            for (int j = 0; j < requirementsList.size(); j++) {
+                                if (requirementsList.get(j).getCategory_type_id().equals("3")) {
+                                    filteredRequirementsList.add(requirementsList.get(j));
+                                }
+                            }
+                        } else {
+                            professional = false;
+                        }
+
+
+                        if (cb_postedbyme.isChecked()) {
+                            posted = true;
+
+                            if (filteredRequirementsList.size() > 0) {
+                                ArrayList<RequirementsListModel> filteredRequirementsListByMe = new ArrayList<>();
+                                for (int j = 0; j < filteredRequirementsList.size(); j++) {
+                                    if (filteredRequirementsList.get(j).getCreated_by().equals(userId)) {
+                                        filteredRequirementsListByMe.add(filteredRequirementsList.get(j));
+                                    }
+                                }
+
+                                filteredRequirementsList.clear();
+                                filteredRequirementsList.addAll(filteredRequirementsListByMe);
+
+                            } else {
+                                for (int j = 0; j < requirementsList.size(); j++) {
+                                    if (requirementsList.get(j).getCreated_by().equals(userId)) {
+                                        filteredRequirementsList.add(requirementsList.get(j));
+                                    }
+                                }
+                            }
+                        } else {
+                            posted = false;
+                        }
+
+                        if (cb_staredbyme.isChecked()) {
+                            starred = true;
+
+                            if (filteredRequirementsList.size() > 0) {
+                                ArrayList<RequirementsListModel> filteredRequirementsListByMe = new ArrayList<>();
+                                for (int j = 0; j < filteredRequirementsList.size(); j++) {
+                                    if (filteredRequirementsList.get(j).getIsStarred().equals("1")) {
+                                        filteredRequirementsListByMe.add(filteredRequirementsList.get(j));
+                                    }
+                                }
+
+                                filteredRequirementsList.clear();
+                                filteredRequirementsList.addAll(filteredRequirementsListByMe);
+
+                            } else {
+                                for (int j = 0; j < requirementsList.size(); j++) {
+                                    if (requirementsList.get(j).getIsStarred().equals("1")) {
+                                        filteredRequirementsList.add(requirementsList.get(j));
+                                    }
+                                }
+                            }
+                        } else {
+                            starred = false;
+                        }
+
+
+                        rv_requirementlist.setAdapter(new RequirementAdapter(context, filteredRequirementsList));
+                    } else {
+
+                    }
                 }
-            }
-        });
+            });
 
-
-        ib_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater layoutInflater = LayoutInflater.from(context);
-                View promptView = layoutInflater.inflate(R.layout.dialog_layout_filter, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                alertDialogBuilder.setTitle("Filter");
-                alertDialogBuilder.setCancelable(false);
-                alertDialogBuilder.setView(promptView);
-
-                final CheckBox cb_business = promptView.findViewById(R.id.cb_business);
-                final CheckBox cb_employment = promptView.findViewById(R.id.cb_employment);
-                final CheckBox cb_professional = promptView.findViewById(R.id.cb_professional);
-                final CheckBox cb_postedbyme = promptView.findViewById(R.id.cb_postedbyme);
-                final CheckBox cb_staredbyme = promptView.findViewById(R.id.cb_staredbyme);
-
-                if (business)
-                    cb_business.setChecked(true);
-
-                if (employment)
-                    cb_employment.setChecked(true);
-
-                if (professional)
-                    cb_professional.setChecked(true);
-
-                if (posted)
-                    cb_postedbyme.setChecked(true);
-
-                if (starred)
-                    cb_staredbyme.setChecked(true);
-
-
-                alertDialogBuilder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-
-                        ArrayList<RequirementsListModel> filteredRequirementsList = new ArrayList<>();
-
-                        if (cb_business.isChecked() || cb_employment.isChecked() || cb_professional.isChecked()
-                                || cb_postedbyme.isChecked() || cb_staredbyme.isChecked()) {
-
-
-                            if (cb_business.isChecked()) {
-                                business = true;
-                                for (int j = 0; j < requirementsList.size(); j++)
-                                    if (requirementsList.get(j).getCategory_type_id().equals("1"))
-                                        filteredRequirementsList.add(requirementsList.get(j));
-                            } else {
-                                business = false;
-                            }
-
-
-                            if (cb_employment.isChecked()) {
-                                employment = true;
-                                for (int j = 0; j < requirementsList.size(); j++) {
-                                    if (requirementsList.get(j).getCategory_type_id().equals("2")) {
-                                        filteredRequirementsList.add(requirementsList.get(j));
-                                    }
-                                }
-                            } else {
-                                employment = false;
-                            }
-
-
-                            if (cb_professional.isChecked()) {
-                                professional = true;
-                                for (int j = 0; j < requirementsList.size(); j++) {
-                                    if (requirementsList.get(j).getCategory_type_id().equals("3")) {
-                                        filteredRequirementsList.add(requirementsList.get(j));
-                                    }
-                                }
-                            } else {
-                                professional = false;
-                            }
-
-
-                            if (cb_postedbyme.isChecked()) {
-                                posted = true;
-
-                                if (filteredRequirementsList.size() > 0) {
-                                    ArrayList<RequirementsListModel> filteredRequirementsListByMe = new ArrayList<>();
-                                    for (int j = 0; j < filteredRequirementsList.size(); j++) {
-                                        if (filteredRequirementsList.get(j).getCreated_by().equals(userId)) {
-                                            filteredRequirementsListByMe.add(filteredRequirementsList.get(j));
-                                        }
-                                    }
-
-                                    filteredRequirementsList.clear();
-                                    filteredRequirementsList.addAll(filteredRequirementsListByMe);
-
-                                } else {
-                                    for (int j = 0; j < requirementsList.size(); j++) {
-                                        if (requirementsList.get(j).getCreated_by().equals(userId)) {
-                                            filteredRequirementsList.add(requirementsList.get(j));
-                                        }
-                                    }
-                                }
-                            } else {
-                                posted = false;
-                            }
-
-                            if (cb_staredbyme.isChecked()) {
-                                starred = true;
-
-                                if (filteredRequirementsList.size() > 0) {
-                                    ArrayList<RequirementsListModel> filteredRequirementsListByMe = new ArrayList<>();
-                                    for (int j = 0; j < filteredRequirementsList.size(); j++) {
-                                        if (filteredRequirementsList.get(j).getIsStarred().equals("1")) {
-                                            filteredRequirementsListByMe.add(filteredRequirementsList.get(j));
-                                        }
-                                    }
-
-                                    filteredRequirementsList.clear();
-                                    filteredRequirementsList.addAll(filteredRequirementsListByMe);
-
-                                } else {
-                                    for (int j = 0; j < requirementsList.size(); j++) {
-                                        if (requirementsList.get(j).getIsStarred().equals("1")) {
-                                            filteredRequirementsList.add(requirementsList.get(j));
-                                        }
-                                    }
-                                }
-                            } else {
-                                starred = false;
-                            }
-
-
-                            rv_requirementlist.setAdapter(new RequirementAdapter(context, filteredRequirementsList));
-                        } else {
-
-                        }
+            alertDialogBuilder.setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    business = false;
+                    employment = false;
+                    professional = false;
+                    posted = false;
+                    starred = false;
+                    if (requirementsList.size() > 0) {
+                        rv_requirementlist.setVisibility(View.VISIBLE);
+                        ll_nopreview.setVisibility(View.GONE);
+                        rv_requirementlist.setAdapter(new RequirementAdapter(context, requirementsList));
+                    } else {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_requirementlist.setVisibility(View.GONE);
                     }
-                });
-
-                alertDialogBuilder.setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        business = false;
-                        employment = false;
-                        professional = false;
-                        posted = false;
-                        starred = false;
-                        if (requirementsList.size() > 0) {
-                            rv_requirementlist.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_requirementlist.setAdapter(new RequirementAdapter(context, requirementsList));
-                        } else {
-                            ll_nopreview.setVisibility(View.VISIBLE);
-                            rv_requirementlist.setVisibility(View.GONE);
-                        }
-                    }
-                });
+                }
+            });
 
 
-                final AlertDialog alertD = alertDialogBuilder.create();
-                alertD.show();
-            }
+            final AlertDialog alertD = alertDialogBuilder.create();
+            alertD.show();
         });
 
-        btn_post_requirement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, AddRequirement_Activity.class));
-            }
-        });
+        btn_post_requirement.setOnClickListener(v -> startActivity(new Intent(context, AddRequirement_Activity.class)));
 
-
-        edt_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-//
-//                try {
-//                    startActivityForResult(builder.build(Requirements_Activity.this), 0);
-//                } catch (GooglePlayServicesRepairableException e) {
-//                    e.printStackTrace();
-//                } catch (GooglePlayServicesNotAvailableException e) {
-//                    e.printStackTrace();
-//                }
-            }
+        edt_location.setOnClickListener(v -> {
+            startActivityForResult(new Intent(context, SelectCity_Activity.class).putExtra("requestCode", LOCATION_REQUEST), LOCATION_REQUEST);
         });
     }
 
@@ -354,7 +330,7 @@ public class Requirements_Activity extends AppCompatActivity {
                         if (requirementsList.size() > 0) {
                             ArrayList<RequirementsListModel> foundEmp = new ArrayList<>();
                             for (RequirementsListModel empdetails : requirementsList) {
-                                if (!empdetails.getCity().equals(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO))) {
+                                if (!empdetails.getCity().equals(edt_location.getText().toString().trim())) {
                                     foundEmp.add(empdetails);
                                 }
                             }
@@ -401,66 +377,12 @@ public class Requirements_Activity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        if (resultCode == RESULT_OK) {
-//            try {
-//                Place place = PlacePicker.getPlace(this, data);
-//                Geocoder gcd = new Geocoder(context, Locale.getDefault());
-//                List<Address> addresses = gcd.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-//
-//                if (addresses.size() != 0) {
-//                    edt_location.setText(addresses.get(0).getLocality());
-//
-//                    if (Utilities.isNetworkAvailable(context)) {
-//                        new GetRequirementList().execute();
-//                    } else {
-//                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-//                    }
-//                } else {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//                    builder.setTitle("Alert");
-//                    builder.setMessage("City not found, please try again");
-//                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            dialog.dismiss();
-//                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-//
-//                            try {
-//                                startActivityForResult(builder.build(Requirements_Activity.this), 0);
-//                            } catch (GooglePlayServicesRepairableException e) {
-//                                e.printStackTrace();
-//                            } catch (GooglePlayServicesNotAvailableException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-//                    builder.create();
-//                    AlertDialog alertD = builder.create();
-//                    alertD.show();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//                builder.setTitle("Alert");
-//                builder.setMessage("City not found, please try again");
-//                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        dialog.dismiss();
-//                        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-//
-//                        try {
-//                            startActivityForResult(builder.build(Requirements_Activity.this), 0);
-//                        } catch (GooglePlayServicesRepairableException e) {
-//                            e.printStackTrace();
-//                        } catch (GooglePlayServicesNotAvailableException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//                builder.create();
-//                AlertDialog alertD = builder.create();
-//                alertD.show();
-//            }
-//        }
+        if (resultCode == RESULT_OK)
+            if (requestCode == LOCATION_REQUEST) {
+                edt_location.setText(data.getStringExtra("cityName"));
+                new GetRequirementList().execute();
+            }
+
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

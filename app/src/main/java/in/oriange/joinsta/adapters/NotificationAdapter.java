@@ -222,7 +222,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final ImageButton imb_close = promptView.findViewById(R.id.imb_close);
         final Button btn_close = promptView.findViewById(R.id.btn_close);
 
-        if (!notificationDetails.getImage().equals("0")) {
+        if (notificationDetails.getImage().equals("") || notificationDetails.getImage().equals("0")) {
+            imv_notificationimg.setVisibility(View.GONE);
+            btn_download.setVisibility(View.GONE);
+        } else {
             String url = IMAGE_LINK + "notifications/" + notificationDetails.getImage();
             String fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
 
@@ -247,11 +250,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                             imv_notificationimg.setVisibility(View.GONE);
                         }
                     });
-
-
-        } else {
-            imv_notificationimg.setVisibility(View.GONE);
-            btn_download.setVisibility(View.GONE);
         }
 
         tv_title.setText(notificationDetails.getTitle().trim());
@@ -262,75 +260,61 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
-        btn_download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isDownloaded) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    Uri uri = Uri.parse("file://" + downloadedFile);
-                    intent.setDataAndType(uri, "image/jpeg");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+        btn_download.setOnClickListener(v -> {
+            if (isDownloaded) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("file://" + downloadedFile);
+                intent.setDataAndType(uri, "image/jpeg");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                new DownloadDocument().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
+            }
+        });
+
+        btn_delete.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            builder.setMessage("Are you sure you want to delete this notification?");
+            builder.setTitle("Alert");
+            builder.setIcon(R.drawable.icon_alertred);
+            builder.setCancelable(false);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    alertD.dismiss();
+                    if (Utilities.isNetworkAvailable(context))
+                        new DeleteNotification().execute(notificationDetails.getUsernotification_id());
+                    else
+                        Utilities.showMessage("Please check your internet connection", context, 2);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertD1 = builder.create();
+            alertD1.show();
+        });
+
+        btn_share.setOnClickListener(v -> {
+            title = notificationDetails.getTitle();
+            description = notificationDetails.getDescription();
+            if (notificationDetails.getImage().equals("") || notificationDetails.getImage().equals("0")) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/html");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                context.startActivity(Intent.createChooser(shareIntent, "Share via"));
+            } else {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new DownloadDocumentForShare().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
                 } else {
-                    new DownloadDocument().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
             }
         });
 
-        btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this notification?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_alertred);
-                builder.setCancelable(false);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        alertD.dismiss();
-                        if (Utilities.isNetworkAvailable(context))
-                            new DeleteNotification().execute(notificationDetails.getUsernotification_id());
-                        else
-                            Utilities.showMessage("Please check your internet connection", context, 2);
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
-            }
-        });
-
-        btn_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                title = notificationDetails.getTitle();
-                description = notificationDetails.getDescription();
-                if (!notificationDetails.getImage().equals("0")) {
-                    if (Utilities.isNetworkAvailable(context)) {
-                        new DownloadDocumentForShare().execute(IMAGE_LINK + "notifications/" + notificationDetails.getImage());
-                    } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    }
-                } else {
-                    Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-                    shareIntent.setType("text/html");
-                    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
-                    context.startActivity(Intent.createChooser(shareIntent, "Share via"));
-                }
-            }
-        });
-
-        imb_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertD.dismiss();
-            }
-        });
+        imb_close.setOnClickListener(v -> alertD.dismiss());
 
         alertD.show();
 
@@ -606,7 +590,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
             shareIntent.setType("text/html");
-            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description+ "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+            shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             context.startActivity(Intent.createChooser(shareIntent, "Share via"));
 

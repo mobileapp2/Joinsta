@@ -540,7 +540,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
 
                     tag_container.addTag(edt_tag.getText().toString().trim());
                 } else {
-                    Utilities.showMessage("Tag aleady added", context, 2);
+                    Utilities.showMessage("Tag already added", context, 2);
                 }
 
                 edt_tag.setText("");
@@ -595,7 +595,7 @@ public class EditEmployee_Activity extends AppCompatActivity {
                     tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
                     tag_container.addTag(edt_tag.getText().toString().trim());
                 } else {
-                    Utilities.showMessage("Tag aleady added", context, 2);
+                    Utilities.showMessage("Tag already added", context, 2);
                 }
 
                 edt_tag.setText("");

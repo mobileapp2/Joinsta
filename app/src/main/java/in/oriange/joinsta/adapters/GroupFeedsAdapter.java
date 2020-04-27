@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -13,6 +14,7 @@ import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -133,8 +135,9 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         }
 
         if (!feedDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + feedDetails.getCreated_by() + "/" + feedDetails.getImage_url();
             Picasso.with(context)
-                    .load(feedDetails.getImage_url().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_user)
                     .resize(250, 250)
                     .centerCrop()
@@ -166,32 +169,6 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             holder.tv_feed_text.setVisibility(View.GONE);
         }
 
-        List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
-
-        if (!feedDetails.getFeed_doc().equals("")) {
-            bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc()));
-        }
-
-        for (int i = 0; i < feedDetails.getFeed_documents().size(); i++) {
-            if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationimage")) {
-                bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_documents().get(i).getDocuments()));
-            }
-        }
-
-        if (bannerList.size() != 0) {
-            holder.imageSlider.setVisibility(View.VISIBLE);
-            OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, bannerList);
-            holder.imageSlider.setSliderAdapter(adapter);
-            holder.imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-            holder.imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
-            holder.imageSlider.setIndicatorSelectedColor(Color.WHITE);
-            holder.imageSlider.setIndicatorUnselectedColor(Color.GRAY);
-            holder.imageSlider.setAutoCycle(true);
-            holder.imageSlider.setScrollTimeInSec(10);
-        } else {
-            holder.imageSlider.setVisibility(View.GONE);
-        }
-
         if (feedDetails.getFeed_comments().size() != 0) {
             if (feedDetails.getFeed_comments().size() == 1) {
                 holder.tv_comment.setText("1 Comment");
@@ -210,6 +187,43 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             holder.ib_ishidden.setVisibility(View.VISIBLE);
         } else {
             holder.ib_ishidden.setVisibility(View.GONE);
+        }
+
+        List<BannerListModel.ResultBean> imagesList = new ArrayList<>();
+        List<String> documentsList = new ArrayList<>();
+
+        for (int i = 0; i < feedDetails.getFeed_documents().size(); i++) {
+            if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationimage")) {
+                imagesList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_documents().get(i).getDocuments()));
+            } else if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationdocument")) {
+                documentsList.add(feedDetails.getFeed_documents().get(i).getDocuments());
+            }
+        }
+
+        if (imagesList.size() != 0) {
+            holder.imageSlider.setVisibility(View.VISIBLE);
+            OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, imagesList);
+            holder.imageSlider.setSliderAdapter(adapter);
+            holder.imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+            holder.imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
+            holder.imageSlider.setIndicatorSelectedColor(Color.WHITE);
+            holder.imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+            holder.imageSlider.setAutoCycle(true);
+            holder.imageSlider.setScrollTimeInSec(10);
+        } else {
+            holder.imageSlider.setVisibility(View.GONE);
+        }
+
+        if (documentsList.size() != 0) {
+            holder.tv_viewdocs.setVisibility(View.VISIBLE);
+            if (documentsList.size() == 1) {
+                holder.tv_viewdocs.setText(documentsList.size() + " Document Attached");
+            } else {
+                holder.tv_viewdocs.setText(documentsList.size() + " Documents Attached");
+            }
+            holder.tv_viewdocs.setPaintFlags(holder.tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        } else {
+            holder.tv_viewdocs.setVisibility(View.GONE);
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -236,13 +250,13 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                 if (feedDetails.getCan_share().equals("1")) {
                     title = feedDetails.getFeed_title();
                     description = feedDetails.getFeed_text();
-                    if (bannerList.size() != 0) {
-                        numOfDocuments = bannerList.size();
+                    if (imagesList.size() != 0) {
+                        numOfDocuments = imagesList.size();
                         downloadedImagesUriList = new ArrayList<>();
                         numOfFilesDownloaded = 0;
-                        for (int i = 0; i < bannerList.size(); i++) {
+                        for (int i = 0; i < imagesList.size(); i++) {
                             if (Utilities.isNetworkAvailable(context)) {
-                                new DownloadDocumentForShare().execute(bannerList.get(i).getBanners_image());
+                                new DownloadDocumentForShare().execute(imagesList.get(i).getBanners_image());
                             } else {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
@@ -299,6 +313,14 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                 }
             }
         });
+
+        holder.tv_viewdocs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDocumentsList(documentsList);
+            }
+        });
+
     }
 
     @Override
@@ -309,7 +331,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CircleImageView imv_user;
-        private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_comment;
+        private TextView tv_name, tv_time, tv_feed_title, tv_feed_text, tv_comment, tv_viewdocs;
         private CardView cv_mainlayout;
         private ImageView imv_favourite;
         private LinearLayout ll_favourites, ll_comments, ll_share;
@@ -329,6 +351,7 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             ib_ishidden = view.findViewById(R.id.ib_ishidden);
             tv_comment = view.findViewById(R.id.tv_comment);
+            tv_viewdocs = view.findViewById(R.id.tv_viewdocs);
             ll_favourites = view.findViewById(R.id.ll_favourites);
             ll_comments = view.findViewById(R.id.ll_comments);
             ll_share = view.findViewById(R.id.ll_share);
@@ -536,6 +559,36 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
         return powerMenuBuilder.build();
     }
 
+    private void showDocumentsList(List<String> postDocuments) {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Document List");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row_ellipsize);
+
+        for (int i = 0; i < postDocuments.size(); i++) {
+            arrayAdapter.add(postDocuments.get(i));
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(IMAGE_LINK + "feed_doc/" + postDocuments.get(which));
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+        builderSingle.show();
+    }
+
     private class DeleteFeed extends AsyncTask<String, Void, String> {
         ProgressDialog pd;
 
@@ -656,6 +709,138 @@ public class GroupFeedsAdapter extends RecyclerView.Adapter<GroupFeedsAdapter.My
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+        File file;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(downloadedDocsfolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            if (aBoolean) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("file://" + file);
+                if (downloadurl.toString().contains(".doc") || downloadurl.toString().contains(".docx")) {
+                    // Word document
+                    intent.setDataAndType(uri, "application/msword");
+                } else if (downloadurl.toString().contains(".pdf")) {
+                    // PDF file
+                    intent.setDataAndType(uri, "application/pdf");
+                } else if (downloadurl.toString().contains(".ppt") || downloadurl.toString().contains(".pptx")) {
+                    // Powerpoint file
+                    intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                } else if (downloadurl.toString().contains(".xls") || downloadurl.toString().contains(".xlsx")) {
+                    // Excel file
+                    intent.setDataAndType(uri, "application/vnd.ms-excel");
+                } else if (downloadurl.toString().contains(".zip") || downloadurl.toString().contains(".rar")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "application/x-wav");
+                } else if (downloadurl.toString().contains(".rtf")) {
+                    // RTF file
+                    intent.setDataAndType(uri, "application/rtf");
+                } else if (downloadurl.toString().contains(".wav") || downloadurl.toString().contains(".mp3")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "audio/x-wav");
+                } else if (downloadurl.toString().contains(".gif")) {
+                    // GIF file
+                    intent.setDataAndType(uri, "image/gif");
+                } else if (downloadurl.toString().contains(".jpg") || downloadurl.toString().contains(".jpeg") || downloadurl.toString().contains(".png")) {
+                    // JPG file
+                    intent.setDataAndType(uri, "image/jpeg");
+                } else if (downloadurl.toString().contains(".txt")) {
+                    // Text file
+                    intent.setDataAndType(uri, "text/plain");
+                } else if (downloadurl.toString().contains(".3gp") || downloadurl.toString().contains(".mpg") || downloadurl.toString().contains(".mpeg") || downloadurl.toString().contains(".mpe") || downloadurl.toString().contains(".mp4") || downloadurl.toString().contains(".avi")) {
+                    // Video files
+                    intent.setDataAndType(uri, "video/*");
+                } else {
+                    intent.setDataAndType(uri, "*/*");
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
             }
         }
     }

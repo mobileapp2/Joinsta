@@ -12,7 +12,9 @@ import androidx.appcompat.widget.Toolbar;
 
 import in.oriange.joinsta.R;
 
-public class GroupsSendMessageScroll_Activity extends AppCompatActivity {
+import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
+
+public class FullScreenTextEdit_Activity extends AppCompatActivity {
 
     private Context context;
     private EditText edt_text;
@@ -21,7 +23,7 @@ public class GroupsSendMessageScroll_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_groups_sendmessage_scroll);
+        setContentView(R.layout.activity_fullscreen_textedit);
 
         init();
         setDefault();
@@ -30,7 +32,7 @@ public class GroupsSendMessageScroll_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = GroupsSendMessageScroll_Activity.this;
+        context = FullScreenTextEdit_Activity.this;
         edt_text = findViewById(R.id.edt_text);
         btn_save = findViewById(R.id.btn_save);
     }
@@ -67,5 +69,11 @@ public class GroupsSendMessageScroll_Activity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideSoftKeyboard(FullScreenTextEdit_Activity.this);
     }
 }

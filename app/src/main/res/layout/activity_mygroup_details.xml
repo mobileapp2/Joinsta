@@ -240,7 +240,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_group_utils"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             </androidx.cardview.widget.CardView>
 
@@ -272,12 +272,14 @@
                         android:text="Hide Members"
                         android:textSize="16sp" />
 
-                    <Switch
-                        android:id="@+id/sw_hide_group"
+                    <TextView
+                        android:id="@+id/tv_group_type"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5"
-                        android:text="Mark Private"
+                        android:drawableRight="@drawable/icon_arrowdown"
+                        android:text="Private Group"
+                        android:textColor="@color/black"
                         android:textSize="16sp" />
 
                 </LinearLayout>

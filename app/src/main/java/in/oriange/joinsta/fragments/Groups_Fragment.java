@@ -211,8 +211,13 @@ public class Groups_Fragment extends Fragment {
 
                     if (type.equalsIgnoreCase("success")) {
                         myGroupsList = pojoDetails.getResult();
-                        rv_groups.setAdapter(new MyGroupsAdapter(context, myGroupsList));
-                        rv_groups.setVisibility(View.VISIBLE);
+                        if (myGroupsList.size() != 0) {
+                            rv_groups.setAdapter(new MyGroupsAdapter(context, myGroupsList));
+                            rv_groups.setVisibility(View.VISIBLE);
+                        } else {
+                            ll_nopreview.setVisibility(View.VISIBLE);
+                            rv_groups.setVisibility(View.GONE);
+                        }
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_groups.setVisibility(View.GONE);

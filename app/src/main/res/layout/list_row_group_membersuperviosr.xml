@@ -25,8 +25,8 @@
                 android:id="@+id/tv_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:gravity="center_vertical"
                 android:paddingLeft="5dp"
                 android:paddingTop="2.5dp"
                 android:paddingRight="5dp"
@@ -34,6 +34,21 @@
                 android:text="Priyesh Pawar"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_role"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="0.4"
+                android:background="@drawable/bg_outline"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/ib_ishidden"
@@ -50,6 +65,7 @@
                 android:id="@+id/ib_call"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
                 android:layout_margin="2dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/icon_call"
@@ -69,39 +85,19 @@
             android:textColor="@color/black"
             android:textSize="16sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <TextView
-                android:id="@+id/tv_role"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/bg_outline"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btn_invite"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0.5"
-                android:text="Invite"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:visibility="gone" />
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/btn_invite"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="-7dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:text="Invite"
+            android:textSize="12sp" />
 
         <View
             android:id="@+id/view_divider"

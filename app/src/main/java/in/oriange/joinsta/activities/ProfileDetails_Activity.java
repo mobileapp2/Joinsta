@@ -1,12 +1,15 @@
 package in.oriange.joinsta.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -39,7 +42,7 @@ import in.oriange.joinsta.utilities.Utilities;
 public class ProfileDetails_Activity extends AppCompatActivity {
 
     private static Context context;
-    private CardView cv_basicinfo, cv_offers;
+    private CardView cv_basicinfo, cv_offers, cv_public_office;
     private FloatingActionButton btn_add;
     private static SwipeRefreshLayout swipeRefreshLayout;
     private static RecyclerView rv_details;
@@ -77,6 +80,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
         btn_add = findViewById(R.id.btn_add);
         cv_basicinfo = findViewById(R.id.cv_basicinfo);
         cv_offers = findViewById(R.id.cv_offers);
+        cv_public_office = findViewById(R.id.cv_public_office);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progressBar);
         rv_details = findViewById(R.id.rv_details);
@@ -117,104 +121,109 @@ public class ProfileDetails_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            switch (currentPosition) {
+                case 0:
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new GetBusiness().execute();
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    break;
+                case 1:
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new GetEmployee().execute();
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    break;
+                case 2:
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new GetProfessional().execute();
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    break;
+            }
+        });
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        cv_basicinfo.setOnClickListener(v -> startActivity(new Intent(context, ViewBasicInformation_Activity.class)));
+
+        cv_offers.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffers_Actvity.class)));
+
+        cv_public_office.setOnClickListener(v -> {
+            selectImage();
+        });
+
+        btn_add.setOnClickListener(v -> startActivity(new Intent(context, BizProfEmpDetails_Activity.class)
+                .putExtra("currentPosition", currentPosition)));
+
+        ll_business.setOnClickListener(v -> {
+            currentPosition = 0;
+            v_business.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            v_employee.setBackgroundColor(getResources().getColor(R.color.white));
+            v_professional.setBackgroundColor(getResources().getColor(R.color.white));
+
+            if (Utilities.isNetworkAvailable(context))
+                new GetBusiness().execute();
+        });
+
+        ll_employee.setOnClickListener(v -> {
+            currentPosition = 1;
+            v_business.setBackgroundColor(getResources().getColor(R.color.white));
+            v_employee.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            v_professional.setBackgroundColor(getResources().getColor(R.color.white));
+
+            if (Utilities.isNetworkAvailable(context))
+                new GetEmployee().execute();
+
+        });
+
+        ll_professional.setOnClickListener(v -> {
+            currentPosition = 2;
+            v_business.setBackgroundColor(getResources().getColor(R.color.white));
+            v_employee.setBackgroundColor(getResources().getColor(R.color.white));
+            v_professional.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+            if (Utilities.isNetworkAvailable(context))
+                new GetProfessional().execute();
+
+        });
+    }
+
+    private void selectImage() {
+        final CharSequence[] options = {"My Public Office", "Public Office Approval Requests"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setCancelable(false);
+        builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
-            public void onRefresh() {
-                switch (currentPosition) {
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item) {
                     case 0:
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetBusiness().execute();
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
+                        if (Utilities.isNetworkAvailable(context))
+                            new CheckUsersPermissions().execute();
+                        else
+                            Utilities.showMessage("Please check your internet connection", context, 2);
                         break;
                     case 1:
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetEmployee().execute();
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                        break;
-                    case 2:
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetProfessional().execute();
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
+                        startActivity(new Intent(context, PublicOfficeApprovalRequestList_Activity.class));
                         break;
                 }
             }
         });
-
-
-        cv_basicinfo.setOnClickListener(new View.OnClickListener() {
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, ViewBasicInformation_Activity.class));
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
-
-        cv_offers.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, MyAddedOffers_Actvity.class));
-            }
-        });
-
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(context, BizProfEmpDetails_Activity.class)
-                        .putExtra("currentPosition", currentPosition));
-            }
-        });
-
-
-        ll_business.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = 0;
-                v_business.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                v_employee.setBackgroundColor(getResources().getColor(R.color.white));
-                v_professional.setBackgroundColor(getResources().getColor(R.color.white));
-
-                if (Utilities.isNetworkAvailable(context))
-                    new GetBusiness().execute();
-            }
-        });
-
-        ll_employee.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = 1;
-                v_business.setBackgroundColor(getResources().getColor(R.color.white));
-                v_employee.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                v_professional.setBackgroundColor(getResources().getColor(R.color.white));
-
-                if (Utilities.isNetworkAvailable(context))
-                    new GetEmployee().execute();
-
-            }
-        });
-
-        ll_professional.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentPosition = 2;
-                v_business.setBackgroundColor(getResources().getColor(R.color.white));
-                v_employee.setBackgroundColor(getResources().getColor(R.color.white));
-                v_professional.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-                if (Utilities.isNetworkAvailable(context))
-                    new GetProfessional().execute();
-
-            }
-        });
+        AlertDialog alertD = builder.create();
+        alertD.show();
     }
+
 
     public static class GetBusiness extends AsyncTask<String, Void, String> {
 
@@ -387,6 +396,61 @@ public class ProfileDetails_Activity extends AppCompatActivity {
                 e.printStackTrace();
                 ll_nopreview.setVisibility(View.VISIBLE);
                 rv_details.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private class CheckUsersPermissions extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "checkUsersPermissions");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.OFFICEAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        JSONArray jsonArray = mainObj.getJSONArray("result");
+                        if (jsonArray.length() != 0) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(0);
+                            String officeTypeId = jsonObject.getString("office_type_id");
+                            String officeTypeName = jsonObject.getString("type");
+                            startActivity(new Intent(context, MyPublicOffice_Activity.class)
+                                    .putExtra("officeTypeId", officeTypeId)
+                                    .putExtra("officeTypeName", officeTypeName));
+                        } else {
+                            Utilities.showAlertDialog(context, message, false);
+                        }
+                    } else {
+                        Utilities.showAlertDialog(context, message, false);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

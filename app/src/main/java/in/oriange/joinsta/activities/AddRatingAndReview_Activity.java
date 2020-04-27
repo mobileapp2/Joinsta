@@ -90,7 +90,6 @@ public class AddRatingAndReview_Activity extends AppCompatActivity {
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
             userId = json.getString("userid");
-            edtPublicName.setText(json.getString("name"));
         } catch (Exception e) {
             e.printStackTrace();
         }

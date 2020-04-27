@@ -39,6 +39,7 @@ import in.oriange.joinsta.utilities.ApplicationConstants;
 import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
+import static in.oriange.joinsta.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinsta.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
 
 public class ViewBasicInformation_Activity extends AppCompatActivity {
@@ -153,8 +154,9 @@ public class ViewBasicInformation_Activity extends AppCompatActivity {
         edt_referral_code.setText(userDetails.getReferral_code());
 
         if (!imageUrl.equals("")) {
+            String url = IMAGE_LINK + userId + "/" + imageUrl;
             Picasso.with(context)
-                    .load(imageUrl)
+                    .load(url)
                     .placeholder(R.drawable.icon_userphoto)
                     .into(imv_user);
         }

@@ -165,8 +165,9 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             String imageUrl = json.getString("image_url");
 
             if (!imageUrl.equals("")) {
+                String url = IMAGE_LINK + "" + userId + "/" + imageUrl;
                 Picasso.with(context)
-                        .load(imageUrl)
+                        .load(url)
                         .placeholder(R.drawable.icon_user)
                         .resize(250, 250)
                         .centerCrop()
@@ -183,8 +184,9 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         feedDetails = (GroupFeedsModel.ResultBean) getIntent().getSerializableExtra("feedDetails");
 
         if (!feedDetails.getImage_url().trim().isEmpty()) {
+            String url = IMAGE_LINK + "" + feedDetails.getCreated_by() + "/" + feedDetails.getImage_url();
             Picasso.with(context)
-                    .load(feedDetails.getImage_url().trim())
+                    .load(url)
                     .placeholder(R.drawable.icon_user)
                     .resize(250, 250)
                     .centerCrop()
@@ -218,10 +220,6 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
         Linkify.addLinks(tv_feed_text, Linkify.ALL);
         Linkify.addLinks(tv_feed_title, Linkify.ALL);
 
-        if (!feedDetails.getFeed_doc().equals("")) {
-            postImages.add(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_doc());
-        }
-
         for (int i = 0; i < feedDetails.getFeed_documents().size(); i++) {
             if (feedDetails.getFeed_documents().get(i).getDocument_type().equalsIgnoreCase("invitationimage")) {
                 postImages.add(IMAGE_LINK + "feed_doc/" + feedDetails.getFeed_documents().get(i).getDocuments());
@@ -230,8 +228,22 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             }
         }
 
-        OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, postImages);
-        rv_images.setAdapter(webBannerAdapter);
+        if (postImages.size() != 0) {
+            OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, postImages);
+            rv_images.setAdapter(webBannerAdapter);
+        } else {
+            rv_images.setVisibility(View.GONE);
+        }
+
+        if (postDocuments.size() != 0) {
+            tv_viewdocs.setVisibility(View.VISIBLE);
+            if (postDocuments.size() == 1) {
+                tv_viewdocs.setText(postDocuments.size() + " Document Attached");
+            } else {
+                tv_viewdocs.setText(postDocuments.size() + " Documents Attached");
+            }
+            tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
 
         if (feedDetails.getFeed_comments().size() != 0) {
             if (feedDetails.getFeed_comments().size() == 1) {
@@ -245,16 +257,6 @@ public class GroupFeedsComments_Activity extends AppCompatActivity {
             imv_favourite.setImageResource(R.drawable.icon_like_red);
         } else {
             imv_favourite.setImageResource(R.drawable.icon_like_grey);
-        }
-
-        if (postDocuments.size() != 0) {
-            tv_viewdocs.setVisibility(View.VISIBLE);
-            if (postDocuments.size() == 1) {
-                tv_viewdocs.setText(postDocuments.size() + " Document Attached");
-            } else {
-                tv_viewdocs.setText(postDocuments.size() + " Documents Attached");
-            }
-            tv_viewdocs.setPaintFlags(tv_viewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         }
 
         if (feedDetails.getShow_disclaimer().equals("1")) {

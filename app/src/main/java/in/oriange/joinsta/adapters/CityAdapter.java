@@ -48,16 +48,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.MyViewHolder> 
         final GetCityListModel.ResultBean cityDetails = cityList.get(position);
 
         holder.tv_city.setText(cityDetails.getCity_name());
-
-        holder.tv_city.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                session.setLocation(cityDetails.getCity_name());
-                ((SelectCity_Activity) context).finishAffinity();
-                context.startActivity(new Intent(context, MainDrawer_Activity.class)
-                        .putExtra("startOrigin", requestCode));
-            }
-        });
     }
 
     @Override

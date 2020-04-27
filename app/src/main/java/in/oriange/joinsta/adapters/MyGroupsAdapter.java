@@ -431,16 +431,11 @@ public class MyGroupsAdapter extends RecyclerView.Adapter<MyGroupsAdapter.MyView
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Your request to join this group is submitted successfully");
+                        tv_title.setText(message);
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertD.dismiss();
-                            }
-                        });
+                        btn_ok.setOnClickListener(v -> alertD.dismiss());
 
                         alertD.show();
                         new Groups_Fragment.GetMyGroupsList().execute();
