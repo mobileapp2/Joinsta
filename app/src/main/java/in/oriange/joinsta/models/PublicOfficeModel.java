@@ -514,6 +514,16 @@ public class PublicOfficeModel implements Serializable {
 
             private String id;
             private String images;
+            private String document_type;
+
+            public ImageUrlBean(String document_type, String images, String id) {
+                this.document_type = document_type;
+                this.images = images;
+                this.id = id;
+            }
+
+            public ImageUrlBean() {
+            }
 
             public String getId() {
                 return id;
@@ -529,6 +539,14 @@ public class PublicOfficeModel implements Serializable {
 
             public void setImages(String images) {
                 this.images = images;
+            }
+
+            public String getDocument_type() {
+                return document_type;
+            }
+
+            public void setDocument_type(String document_type) {
+                this.document_type = document_type;
             }
         }
 

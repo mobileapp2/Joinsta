@@ -7,21 +7,22 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,12 +38,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.borjabravo.readmoretextview.ReadMoreTextView;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.example.library.banner.BannerLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -59,6 +58,7 @@ import butterknife.ButterKnife;
 import co.lujun.androidtagview.TagContainerLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.adapters.OfferRecyclerBannerAdapter;
 import in.oriange.joinsta.adapters.PublicOfficeEmailAdapter;
 import in.oriange.joinsta.adapters.PublicOfficeFaxAdapter;
 import in.oriange.joinsta.adapters.PublicOfficeLandlineAdapter;
@@ -79,24 +79,10 @@ import static in.oriange.joinsta.utilities.Utilities.provideCallPremission;
 
 public class ViewPublicOffice_Activity extends AppCompatActivity {
 
-    @BindView(R.id.ll_nopreview)
-    LinearLayout llNopreview;
-    @BindView(R.id.imv_image)
-    ImageView imvImage;
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-    @BindView(R.id.anim_toolbar)
-    Toolbar animToolbar;
-    @BindView(R.id.imb_edit)
-    ImageButton imbEdit;
-    @BindView(R.id.imb_delete)
-    ImageButton imbDelete;
-    @BindView(R.id.imb_back)
-    ImageButton imbBack;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.appbar)
-    AppBarLayout appbar;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.rv_offer_images)
+    BannerLayout rvOfferImages;
     @BindView(R.id.ll_direction)
     LinearLayout llDirection;
     @BindView(R.id.ll_mobile)
@@ -177,6 +163,10 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
     Button btnReject;
     @BindView(R.id.cv_created_by)
     CardView cvCreatedBy;
+    @BindView(R.id.tv_viewdocs)
+    TextView tvViewdocs;
+    @BindView(R.id.cv_documents)
+    CardView cvDocuments;
 
     private Context context;
     private UserSessionManager session;
@@ -190,6 +180,7 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
     private int callType;                       //    1 == My Public Office,  2 == Location-wise Public Office  3 == Approval Request
     private AlertDialog assignToOtherDialog;
     private LocalBroadcastManager localBroadcastManager;
+    private ArrayList<String> imagesList, documentsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,6 +209,8 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         rvFax.setLayoutManager(new LinearLayoutManager(context));
 
         countryCodeList = new ArrayList<>();
+        imagesList = new ArrayList<>();
+        documentsList = new ArrayList<>();
     }
 
     private void getSessionDetails() {
@@ -253,33 +246,12 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         publicOfficeDetails = (PublicOfficeModel.ResultBean) getIntent().getSerializableExtra("publicOfficeDetails");
         callType = getIntent().getIntExtra("callType", 2);
 
-        List<PublicOfficeModel.ResultBean.ImageUrlBean> imagesList = publicOfficeDetails.getImage_url();
-
-        if (imagesList != null)
-            if (imagesList.size() != 0)
-                if (!imagesList.get(0).getImages().equals("")) {
-                    String url = IMAGE_LINK + "office/image/" + imagesList.get(0).getImages();
-                    Picasso.with(context)
-                            .load(url)
-                            .into(imvImage, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    llNopreview.setVisibility(GONE);
-                                    imvImage.setVisibility(View.VISIBLE);
-                                    progressBar.setVisibility(GONE);
-                                }
-
-                                @Override
-                                public void onError() {
-                                    imageNotAvailable();
-                                }
-                            });
-                } else
-                    imageNotAvailable();
-            else
-                imageNotAvailable();
-        else
-            imageNotAvailable();
+        List<PublicOfficeModel.ResultBean.ImageUrlBean> docList = publicOfficeDetails.getImage_url();
+        List<PublicOfficeModel.ResultBean.TagsBean> tagsList = publicOfficeDetails.getTags();
+        List<PublicOfficeModel.ResultBean.MobileNumberBean> mobileList = publicOfficeDetails.getMobile_number();
+        List<PublicOfficeModel.ResultBean.LandlineNumberBean> landlineList = publicOfficeDetails.getLandline_number();
+        List<PublicOfficeModel.ResultBean.EmailsBean> emailList = publicOfficeDetails.getEmails();
+        List<PublicOfficeModel.ResultBean.FaxBean> faxList = publicOfficeDetails.getFax();
 
         if (!publicOfficeDetails.getName().trim().equals(""))
             tvName.setText(publicOfficeDetails.getName());
@@ -311,7 +283,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         else
             tvWebsite.setVisibility(GONE);
 
-        List<PublicOfficeModel.ResultBean.TagsBean> tagsList = publicOfficeDetails.getTags();
 
         if (tagsList != null)
             if (tagsList.size() > 0)
@@ -325,7 +296,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         else
             cvTabs.setVisibility(GONE);
 
-        List<PublicOfficeModel.ResultBean.MobileNumberBean> mobileList = publicOfficeDetails.getMobile_number();
 
         if (mobileList != null)
             if (mobileList.size() != 0)
@@ -335,7 +305,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         else
             cvMobile.setVisibility(GONE);
 
-        List<PublicOfficeModel.ResultBean.LandlineNumberBean> landlineList = publicOfficeDetails.getLandline_number();
 
         if (landlineList != null)
             if (landlineList.size() != 0)
@@ -345,7 +314,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         else
             cvLandline.setVisibility(GONE);
 
-        List<PublicOfficeModel.ResultBean.EmailsBean> emailList = publicOfficeDetails.getEmails();
 
         if (emailList != null)
             if (emailList.size() != 0)
@@ -355,7 +323,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         else
             cvEmail.setVisibility(GONE);
 
-        List<PublicOfficeModel.ResultBean.FaxBean> faxList = publicOfficeDetails.getFax();
 
         if (faxList != null)
             if (faxList.size() != 0)
@@ -364,6 +331,7 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
                 cvFax.setVisibility(GONE);
         else
             cvFax.setVisibility(GONE);
+
 
         if (!publicOfficeDetails.getAddress().trim().equals(""))
             tvAddress.setText(publicOfficeDetails.getAddress());
@@ -376,8 +344,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
             cvCreatedBy.setVisibility(GONE);
         } else if (callType == 2) {
             tvReportIssue.setText("Reporte Issue");
-            imbEdit.setVisibility(View.INVISIBLE);
-            imbDelete.setVisibility(View.INVISIBLE);
             cvAssignToOtherUser.setVisibility(GONE);
             cvCreatedBy.setVisibility(GONE);
 
@@ -419,6 +385,36 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
             rbFeedbackStars.setRating(averageRating);
         }
 
+        if (docList.size() == 0) {
+            rvOfferImages.setVisibility(View.GONE);
+            cvDocuments.setVisibility(View.GONE);
+        } else {
+            for (PublicOfficeModel.ResultBean.ImageUrlBean documentsBean : docList) {
+                if (documentsBean.getDocument_type().equalsIgnoreCase("1")) {
+                    documentsList.add(IMAGE_LINK + "events/document/" + documentsBean.getImages());
+                } else if (documentsBean.getDocument_type().equalsIgnoreCase("2")) {
+                    imagesList.add(IMAGE_LINK + "events/image/" + documentsBean.getImages());
+                }
+            }
+        }
+
+        if (docList.size() == 0)
+            rvOfferImages.setVisibility(View.GONE);
+        else {
+            OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, imagesList);
+            rvOfferImages.setAdapter(webBannerAdapter);
+        }
+
+        if (documentsList.size() == 0)
+            cvDocuments.setVisibility(View.GONE);
+        else {
+            if (documentsList.size() == 1) {
+                tvViewdocs.setText(documentsList.size() + " Document Attached");
+            } else {
+                tvViewdocs.setText(documentsList.size() + " Documents Attached");
+            }
+            tvViewdocs.setPaintFlags(tvViewdocs.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("ViewPublicOffice_Activity");
@@ -426,31 +422,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        imbBack.setOnClickListener(v -> finish());
-
-        imbEdit.setOnClickListener(v -> startActivity(new Intent(context, EditPublicOffice_Activity.class)
-                .putExtra("publicOfficeDetails", publicOfficeDetails)));
-
-        imbDelete.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-            builder.setMessage("Are you sure you want to delete this item?");
-            builder.setTitle("Alert");
-            builder.setIcon(R.drawable.icon_alertred);
-            builder.setCancelable(false);
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    new DeletePublicOffice().execute();
-                }
-            });
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alertD = builder.create();
-            alertD.show();
-        });
 
         llDirection.setOnClickListener(v -> {
             if (publicOfficeDetails.getLatitude().trim().isEmpty() || publicOfficeDetails.getLongitude().trim().isEmpty()) {
@@ -633,12 +604,6 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         });
 
         builderSingle.show();
-    }
-
-    private void imageNotAvailable() {
-        imvImage.setVisibility(GONE);
-        llNopreview.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(GONE);
     }
 
     private void openAssignToOtherDialog() {
@@ -1047,11 +1012,59 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
     }
 
     private void setUpToolbar() {
-        setSupportActionBar(animToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        animToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        animToolbar.setNavigationOnClickListener(view -> finish());
-        collapsingToolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (callType == 2) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menus_edit_delete, menu);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to delete this item?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_alertred);
+                builder.setCancelable(false);
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        new DeletePublicOffice().execute();
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
+                break;
+            case R.id.action_edit:
+                startActivity(new Intent(context, EditPublicOffice_Activity.class)
+                        .putExtra("publicOfficeDetails", publicOfficeDetails));
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     @Override

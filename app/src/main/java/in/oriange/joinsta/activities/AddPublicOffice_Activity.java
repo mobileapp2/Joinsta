@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -38,10 +35,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -49,6 +48,9 @@ import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.vincent.filepicker.Constant;
+import com.vincent.filepicker.activity.NormalFilePickActivity;
+import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,6 +74,7 @@ import in.oriange.joinsta.R;
 import in.oriange.joinsta.models.ContryCodeModel;
 import in.oriange.joinsta.models.GetTagsListModel;
 import in.oriange.joinsta.models.MapAddressListModel;
+import in.oriange.joinsta.models.MasterModel;
 import in.oriange.joinsta.models.PublicOfficeSubTypeModel;
 import in.oriange.joinsta.models.PublicOfficeTypeModel;
 import in.oriange.joinsta.models.TagsListModel;
@@ -82,18 +85,14 @@ import in.oriange.joinsta.utilities.UserSessionManager;
 import in.oriange.joinsta.utilities.Utilities;
 
 import static in.oriange.joinsta.utilities.PermissionUtil.PERMISSION_ALL;
-import static in.oriange.joinsta.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinsta.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinsta.utilities.Utilities.loadJSONForCountryCode;
+import static in.oriange.joinsta.utilities.Utilities.setPaddingForView;
 
 public class AddPublicOffice_Activity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.imv_photo1)
-    ImageView imvPhoto1;
-    @BindView(R.id.imv_photo2)
-    ImageView imvPhoto2;
     @BindView(R.id.edt_name)
     MaterialEditText edtName;
     @BindView(R.id.edt_name_local_language)
@@ -146,21 +145,30 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
     Button btnAddTag;
     @BindView(R.id.tag_container)
     TagContainerLayout tagContainer;
+    @BindView(R.id.rv_images)
+    RecyclerView rvImages;
+    @BindView(R.id.ll_documents)
+    LinearLayout llDocuments;
+    @BindView(R.id.btn_add_document)
+    Button btnAddDocument;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private MaterialEditText edt_attach_doc_multi;
     private String userId, typeId = "", subTypeId = "", imageName = "", latitude = "", longitude = "";
     private Uri photoURI;
     private File officeFileFolder;
-    private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200, LOCATION_REQUEST = 300, OFFICE_FUNCTION_REQUEST = 400, OTHER_INFORMATION_REQUEST = 500;
-    private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList, faxLayoutsList;
+    private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200, LOCATION_REQUEST = 300,
+            OFFICE_FUNCTION_REQUEST = 400, OTHER_INFORMATION_REQUEST = 500, DOCUMENT_REQUEST = 600;
+    private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList, faxLayoutsList, docsLayoutsList;
     private ArrayList<GetTagsListModel.ResultBean> tagsListFromAPI;
     private ArrayList<TagsListModel> tagsListTobeSubmitted;
     private ArrayList<ContryCodeModel> countryCodeList;
+    private ArrayList<MasterModel> imageList;
     private TextView tv_selected_forconcode = null;
     private AlertDialog countryCodeDialog;
-    private boolean isApproverVerified;
+    private int latestPosition;
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
@@ -188,9 +196,11 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         landlineLayoutsList = new ArrayList<>();
         emailLayoutsList = new ArrayList<>();
         faxLayoutsList = new ArrayList<>();
+        docsLayoutsList = new ArrayList<>();
         countryCodeList = new ArrayList<>();
         tagsListTobeSubmitted = new ArrayList<>();
         tagsListFromAPI = new ArrayList<>();
+        imageList = new ArrayList<>();
 
         officeFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Public Office");
         if (!officeFileFolder.exists())
@@ -201,6 +211,8 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             builder.detectFileUriExposure();
         }
+
+        rvImages.setLayoutManager(new GridLayoutManager(context, 3));
     }
 
     private void getSessionDetails() {
@@ -260,30 +272,19 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         LinearLayout ll3 = (LinearLayout) rowView3;
         faxLayoutsList.add(ll3);
         llAttachFax.addView(rowView3, llAttachFax.getChildCount());
+
+        final View rowView4 = inflater.inflate(R.layout.layout_add_document, null);
+        LinearLayout ll4 = (LinearLayout) rowView4;
+        docsLayoutsList.add(ll4);
+        llDocuments.addView(rowView4, llDocuments.getChildCount());
+
+        imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
+        imageList.add(new MasterModel("", ""));
+        rvImages.setAdapter(new ImagesAdapter());
     }
 
     private void setEventHandler() {
-        imvPhoto1.setOnClickListener(view -> {
-            if (Utilities.isNetworkAvailable(context)) {
-                if (doesAppNeedPermissions())
-                    askPermission();
-                else
-                    selectImage();
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
-        });
-
-        imvPhoto2.setOnClickListener(view -> {
-            if (Utilities.isNetworkAvailable(context)) {
-                if (doesAppNeedPermissions())
-                    askPermission();
-                else
-                    selectImage();
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
-        });
 
         edtType.setOnClickListener(v -> {
             if (Utilities.isNetworkAvailable(context)) {
@@ -408,33 +409,27 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
             }
         });
 
-        edtTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        edtTag.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
+            GetTagsListModel.ResultBean tagObj = (GetTagsListModel.ResultBean) arg0.getAdapter().getItem(arg2);
 
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3) {
-                GetTagsListModel.ResultBean tagObj = (GetTagsListModel.ResultBean) arg0.getAdapter().getItem(arg2);
+            boolean isTagSelected = false;
 
+            for (TagsListModel tagObj1 : tagsListTobeSubmitted) {
+                if (tagObj1.getTag_name().equalsIgnoreCase(edtTag.getText().toString().trim())) {
+                    isTagSelected = true;
+                    break;
 
-                boolean isTagSelected = false;
-
-                for (TagsListModel tagObj1 : tagsListTobeSubmitted) {
-                    if (tagObj1.getTag_name().equalsIgnoreCase(edtTag.getText().toString().trim())) {
-                        isTagSelected = true;
-                        break;
-
-                    }
                 }
-
-                if (!isTagSelected) {
-                    tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
-                    tagContainer.addTag(edtTag.getText().toString().trim());
-                } else {
-                    Utilities.showMessage("Tag already added", context, 2);
-                }
-
-                edtTag.setText("");
             }
+
+            if (!isTagSelected) {
+                tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
+                tagContainer.addTag(edtTag.getText().toString().trim());
+            } else {
+                Utilities.showMessage("Tag already added", context, 2);
+            }
+
+            edtTag.setText("");
         });
 
         edtSelectArea.setOnClickListener(v -> startActivityForResult(new Intent(context, PickMapLoaction_Activity.class), LOCATION_REQUEST));
@@ -444,6 +439,14 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
 
         tiedtOtherInformation.setOnClickListener(v -> startActivityForResult(new Intent(context, FullScreenTextEdit_Activity.class)
                 .putExtra("message", tiedtOtherInformation.getText().toString().trim()), OTHER_INFORMATION_REQUEST));
+
+        btnAddDocument.setOnClickListener(v -> {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            final View rowView = inflater.inflate(R.layout.layout_add_document, null);
+            LinearLayout ll = (LinearLayout) rowView;
+            docsLayoutsList.add(ll);
+            llDocuments.addView(rowView, llDocuments.getChildCount());
+        });
 
         btnSave.setOnClickListener(v -> {
             submitData();
@@ -481,6 +484,95 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         alertD.show();
     }
 
+    private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+
+        ImagesAdapter() {
+
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.grid_row_images, parent, false);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
+            return myViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+            final int position = holder.getAdapterPosition();
+
+            if (!imageList.get(position).getId().isEmpty()) {
+                Glide.with(context)
+                        .load(imageList.get(position).getId())
+                        .into(holder.imv_image);
+                setPaddingForView(context, holder.imv_image, 0);
+                holder.imv_image_delete.setVisibility(View.VISIBLE);
+                holder.imv_image_delete.bringToFront();
+            }
+
+            holder.imv_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    latestPosition = position;
+
+                    final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                    builder.setCancelable(false);
+                    builder.setItems(options, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int item) {
+                            if (options[item].equals("Take a Photo")) {
+                                File file = new File(officeFileFolder, "doc_image.png");
+                                photoURI = Uri.fromFile(file);
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                                startActivityForResult(intent, CAMERA_REQUEST);
+                            } else if (options[item].equals("Choose from Gallery")) {
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType("image/*");
+                                startActivityForResult(intent, GALLERY_REQUEST);
+                            }
+                        }
+                    });
+                    builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertD = builder.create();
+                    alertD.show();
+                }
+            });
+
+            holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageList.set(position, new MasterModel("", ""));
+                    rvImages.setAdapter(new ImagesAdapter());
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return imageList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private ImageView imv_image, imv_image_delete;
+
+            private MyViewHolder(View view) {
+                super(view);
+                imv_image = view.findViewById(R.id.imv_image);
+                imv_image_delete = view.findViewById(R.id.imv_image_delete);
+
+            }
+        }
+    }
+
     public void selectContryCode(View view) {
         tv_selected_forconcode = (TextView) view;
         showCountryCodeDialog();
@@ -504,6 +596,23 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
     public void removeFaxLayout(View view) {
         llAttachFax.removeView((View) view.getParent());
         faxLayoutsList.remove(view.getParent());
+    }
+
+    public void pickAttachDoc(View view) {
+        if (Utilities.isNetworkAvailable(context)) {
+            edt_attach_doc_multi = (MaterialEditText) view;
+            Intent intent = new Intent(context, NormalFilePickActivity.class);
+            intent.putExtra(Constant.MAX_NUMBER, 1);
+            intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+            startActivityForResult(intent, DOCUMENT_REQUEST);
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    public void removeAttachDoc(View view) {
+        llDocuments.removeView((View) view.getParent());
+        docsLayoutsList.remove(view.getParent());
     }
 
     private void submitData() {
@@ -625,10 +734,22 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
             return;
         }
 
-        if (!imageName.equals("")) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("images", imageName);
-            imageJsonArray.add(jsonObject);
+        for (int i = 0; i < docsLayoutsList.size(); i++) {
+            if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("document_type", "2");
+                jsonObject.addProperty("images", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
+                imageJsonArray.add(jsonObject);
+            }
+        }
+
+        for (int i = 0; i < imageList.size(); i++) {
+            if (!imageList.get(i).getName().equals("")) {
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("document_type", "1");
+                jsonObject.addProperty("images", imageList.get(i).getName());
+                imageJsonArray.add(jsonObject);
+            }
         }
 
         for (int i = 0; i < tagsListTobeSubmitted.size(); i++) {
@@ -1052,6 +1173,11 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
                 CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(AddPublicOffice_Activity.this);
             }
 
+            if (requestCode == DOCUMENT_REQUEST) {
+                ArrayList<NormalFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_FILE);
+                new UploadImageAndDocument().execute("uploadOfficeDoc", list.get(0).getPath(), "1");
+            }
+
             if (requestCode == LOCATION_REQUEST) {
                 MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
                 if (addressList != null) {
@@ -1122,13 +1248,13 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImage().execute(photoFileToUpload);
+        new UploadImageAndDocument().execute("uploadOfficeImage", photoFileToUpload.getPath(), "0");
 
     }
 
-    private class UploadImage extends AsyncTask<File, Integer, String> {
+    private class UploadImageAndDocument extends AsyncTask<String, Integer, String> {
 
-        private String filePath = "";
+        private String TYPE = "";
 
         @Override
         protected void onPreExecute() {
@@ -1137,15 +1263,15 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(File... params) {
-            filePath = params[0].toString();
+        protected String doInBackground(String... params) {
+            TYPE = params[2];
             String res = "";
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
-                multipart.addFormField("request_type", "uploadOfficeImage");
+                multipart.addFormField("request_type", params[0]);
                 multipart.addFormField("user_id", userId);
-                multipart.addFilePart("document", params[0]);
+                multipart.addFilePart("document", new File(params[1]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {
@@ -1168,15 +1294,11 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        String imageUrl = jsonObject.getString("document_url");
-                        imageName = jsonObject.getString("name");
-
-                        if (!imageUrl.equals("")) {
-                            Bitmap photoBm = BitmapFactory.decodeFile(filePath);
-                            photoBm = Bitmap.createScaledBitmap(photoBm, 150, 150, false);
-                            imvPhoto1.setImageBitmap(photoBm);
-                            imvPhoto1.setVisibility(View.VISIBLE);
-                            imvPhoto2.setVisibility(View.GONE);
+                        if (TYPE.equals("1")) {
+                            edt_attach_doc_multi.setText(jsonObject.getString("name"));
+                        } else if (TYPE.equals("0")) {
+                            imageList.set(latestPosition, new MasterModel(jsonObject.getString("name"), jsonObject.getString("document_url")));
+                            rvImages.setAdapter(new ImagesAdapter());
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
