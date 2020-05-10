@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
@@ -38,6 +39,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.BookOrderMyOrders_Activity;
 import in.oriange.joinsta.activities.PublicOfficeByLocation_Activity;
 import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
@@ -62,6 +64,7 @@ public class Search_Fragment extends Fragment {
     private static LinearLayout ll_nopreview;
     private static EditText edt_search;
     private static SpinKitView progressBar;
+    private ImageButton ib_cart;
     private PowerMenu iconMenu;
     public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
@@ -99,6 +102,7 @@ public class Search_Fragment extends Fragment {
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         cv_public_office = rootView.findViewById(R.id.cv_public_office);
+        ib_cart = rootView.findViewById(R.id.ib_cart);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
@@ -196,6 +200,13 @@ public class Search_Fragment extends Fragment {
 
             startActivity(new Intent(context, SelectCity_Activity.class)
                     .putExtra("requestCode", 1));
+        });
+
+        ib_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, BookOrderMyOrders_Activity.class));
+            }
         });
 
     }

@@ -10,7 +10,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -48,6 +51,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -182,6 +192,8 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
     private LocalBroadcastManager localBroadcastManager;
     private ArrayList<String> imagesList, documentsList;
 
+    private File file, officeFileFolder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,6 +223,16 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
         countryCodeList = new ArrayList<>();
         imagesList = new ArrayList<>();
         documentsList = new ArrayList<>();
+
+        officeFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Public Office");
+        if (!officeFileFolder.exists())
+            officeFileFolder.mkdirs();
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     private void getSessionDetails() {
@@ -398,7 +420,7 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
             }
         }
 
-        if (docList.size() == 0)
+        if (imagesList.size() == 0)
             rvOfferImages.setVisibility(View.GONE);
         else {
             OfferRecyclerBannerAdapter webBannerAdapter = new OfferRecyclerBannerAdapter(this, imagesList);
@@ -603,6 +625,36 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
             startActivity(Intent.createChooser(emailIntent, "Send email..."));
         });
 
+        builderSingle.show();
+    }
+
+    private void showDocumentsList() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builderSingle.setTitle("Document List");
+        builderSingle.setCancelable(false);
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row_ellipsize);
+
+        for (int i = 0; i < documentsList.size(); i++) {
+            arrayAdapter.add(documentsList.get(i));
+        }
+
+        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (Utilities.isNetworkAvailable(context))
+                    new DownloadDocument().execute(IMAGE_LINK + "office/document/" + documentsList.get(which), "1");
+                else
+                    Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
         builderSingle.show();
     }
 
@@ -1007,6 +1059,145 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    private class DownloadDocument extends AsyncTask<String, Integer, Boolean> {
+        int lenghtOfFile = -1;
+        int count = 0;
+        int content = -1;
+        int counter = 0;
+        int progress = 0;
+        URL downloadurl = null;
+        private ProgressDialog pd;
+
+        String TYPE = "";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+            pd.setCancelable(true);
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.setMessage("Downloading Document");
+            pd.setIndeterminate(false);
+            pd.setCancelable(false);
+            pd.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            TYPE = params[1];
+            boolean success = false;
+            HttpURLConnection httpURLConnection = null;
+            InputStream inputStream = null;
+            int read = -1;
+            byte[] buffer = new byte[1024];
+            FileOutputStream fileOutputStream = null;
+            long total = 0;
+
+            try {
+                downloadurl = new URL(params[0]);
+                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
+                lenghtOfFile = httpURLConnection.getContentLength();
+                inputStream = httpURLConnection.getInputStream();
+
+                file = new File(officeFileFolder, Uri.parse(params[0]).getLastPathSegment());
+                fileOutputStream = new FileOutputStream(file);
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                    counter = counter + read;
+                    publishProgress(counter);
+                }
+                success = true;
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+                if (httpURLConnection != null) {
+                    httpURLConnection.disconnect();
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return success;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
+            pd.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            pd.dismiss();
+            super.onPostExecute(aBoolean);
+            if (aBoolean == true) {
+
+                if (TYPE.equals("1")) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Uri uri = Uri.parse("file://" + file);
+                    if (downloadurl.toString().contains(".doc") || downloadurl.toString().contains(".docx")) {
+                        // Word document
+                        intent.setDataAndType(uri, "application/msword");
+                    } else if (downloadurl.toString().contains(".pdf")) {
+                        // PDF file
+                        intent.setDataAndType(uri, "application/pdf");
+                    } else if (downloadurl.toString().contains(".ppt") || downloadurl.toString().contains(".pptx")) {
+                        // Powerpoint file
+                        intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                    } else if (downloadurl.toString().contains(".xls") || downloadurl.toString().contains(".xlsx")) {
+                        // Excel file
+                        intent.setDataAndType(uri, "application/vnd.ms-excel");
+                    } else if (downloadurl.toString().contains(".zip") || downloadurl.toString().contains(".rar")) {
+                        // WAV audio file
+                        intent.setDataAndType(uri, "application/x-wav");
+                    } else if (downloadurl.toString().contains(".rtf")) {
+                        // RTF file
+                        intent.setDataAndType(uri, "application/rtf");
+                    } else if (downloadurl.toString().contains(".wav") || downloadurl.toString().contains(".mp3")) {
+                        // WAV audio file
+                        intent.setDataAndType(uri, "audio/x-wav");
+                    } else if (downloadurl.toString().contains(".gif")) {
+                        // GIF file
+                        intent.setDataAndType(uri, "image/gif");
+                    } else if (downloadurl.toString().contains(".jpg") || downloadurl.toString().contains(".jpeg") || downloadurl.toString().contains(".png")) {
+                        // JPG file
+                        intent.setDataAndType(uri, "image/jpeg");
+                    } else if (downloadurl.toString().contains(".txt")) {
+                        // Text file
+                        intent.setDataAndType(uri, "text/plain");
+                    } else if (downloadurl.toString().contains(".3gp") || downloadurl.toString().contains(".mpg") || downloadurl.toString().contains(".mpeg") || downloadurl.toString().contains(".mpe") || downloadurl.toString().contains(".mp4") || downloadurl.toString().contains(".avi")) {
+                        // Video files
+                        intent.setDataAndType(uri, "video/*");
+                    } else {
+                        intent.setDataAndType(uri, "*/*");
+                    }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } else if (TYPE.equals("2")) {
+                    Utilities.showMessage("Image successfully downloaded", context, 1);
+                }
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+
             }
         }
     }

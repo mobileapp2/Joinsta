@@ -1722,6 +1722,7 @@ public class SearchDetailsModel implements Serializable {
             private String review_description_by_user;
             private String rating_by_user;
             private String total_number_review;
+            private String can_book_order;
             private ArrayList<ArrayList<MobilesBeanXX>> mobiles;
             private ArrayList<ArrayList<LandlineBeanXX>> landline;
             private ArrayList<ArrayList<TagBeanXX>> tag;
@@ -2161,6 +2162,18 @@ public class SearchDetailsModel implements Serializable {
 
             public void setTotal_number_review(String total_number_review) {
                 this.total_number_review = total_number_review;
+            }
+
+            public String getCan_book_order() {
+                if (can_book_order != null) {
+                    return can_book_order;
+                } else {
+                    return "0";
+                }
+            }
+
+            public void setCan_book_order(String can_book_order) {
+                this.can_book_order = can_book_order;
             }
 
             public ArrayList<ArrayList<MobilesBeanXX>> getMobiles() {

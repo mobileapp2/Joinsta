@@ -31,23 +31,23 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/tv_local_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="2"
+            android:text="Joinsta Development"
+            android:textColor="@color/darkGray"
+            android:textSize="16sp" />
+
+        <TextView
             android:id="@+id/tv_type_subtype"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:text="Joinsta Development"
-            android:textColor="@color/darkGray"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tv_function"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:maxLines="2"
             android:text="Joinsta Development"
             android:textColor="@color/darkGray"
             android:textSize="16sp" />

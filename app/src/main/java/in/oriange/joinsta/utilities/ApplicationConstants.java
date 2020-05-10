@@ -32,12 +32,12 @@ public class ApplicationConstants {
 //    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
 
     // BETA API LINK V2
-//    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/images/";
+    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/images/";
 
     //LIVE API LINK V16
-    private static final String API_LINK = "https://joinsta.in/Api_v16/";
-    public static final String IMAGE_LINK = "https://joinsta.in/images/";
+//    private static final String API_LINK = "https://joinsta.in/Api_v16/";
+//    public static final String IMAGE_LINK = "https://joinsta.in/images/";
 
     public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";
     public static final String LOGINAPI = API_LINK + "login.php";
@@ -90,6 +90,7 @@ public class ApplicationConstants {
     public static final String OFFICEAPI = API_LINK + "office.php";
     public static final String OFFICERATINGANDREVIEWAPI = API_LINK + "office_ratings_reviews.php";
     public static final String OFFICEREPORTISSUEAPI = API_LINK + "office_report_issues.php";
+    public static final String BOOKORDERAPI = API_LINK + "product.php";
 
     public static final String VERSIONAPI = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/version.php";
 

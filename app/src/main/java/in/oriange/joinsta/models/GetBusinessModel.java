@@ -85,9 +85,11 @@ public class GetBusinessModel implements Serializable {
         private String review_description_by_user;
         private String rating_by_user;
         private String total_number_review;
+        private String can_book_order;
         private ArrayList<ArrayList<MobilesBean>> mobiles;
         private ArrayList<ArrayList<LandlineBean>> landline;
         private ArrayList<ArrayList<TagBean>> tag;
+        private boolean isChecked;
 
         public String getId() {
             return id;
@@ -581,6 +583,27 @@ public class GetBusinessModel implements Serializable {
             this.tag = tag;
         }
 
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+        }
+
+        public String getCan_book_order() {
+            if (can_book_order != null) {
+                return can_book_order;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setCan_book_order(String can_book_order) {
+            this.can_book_order = can_book_order;
+        }
+
+
         public static class MobilesBean implements Serializable {
 
             private String id;
@@ -714,5 +737,7 @@ public class GetBusinessModel implements Serializable {
                 this.is_approved = is_approved;
             }
         }
+
+
     }
 }

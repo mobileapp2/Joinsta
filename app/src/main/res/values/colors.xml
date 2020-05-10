@@ -6,15 +6,16 @@
     <color name="colorPrimaryLight">#FFF3E0</color>
     <color name="primaryVeryDark">#EF6C00</color>
 
-<!--   <color name="colorPrimary">#8b60c8</color>-->
-<!--   <color name="colorPrimaryDark">#8b60c8</color>-->
-<!--   <color name="colorAccent">#8b60c8</color>-->
+    <!--   <color name="colorPrimary">#8b60c8</color>-->
+    <!--   <color name="colorPrimaryDark">#8b60c8</color>-->
+    <!--   <color name="colorAccent">#8b60c8</color>-->
 
     <color name="default_text">#212121</color>
     <color name="default_hint_text">#757575</color>
 
     <color name="black">#000000</color>
     <color name="lightGray">#EEEEEE</color>
+    <color name="veryLightGray">#FAFAFA</color>
     <color name="mediumGray">#9E9E9E</color>
     <color name="darkGray">#616161</color>
     <color name="white">#FFFFFF</color>
@@ -32,7 +33,14 @@
 
     <color name="helper_color">#1C3BE6</color>
     <color name="Clover_Green">#3EA055</color>
+    <color name="textColorProduct">#0a3142</color>
+    <color name="light_orange">#FFF3E0</color>
+
+    <color name="purple">#4A148C</color>
+    <color name="blue">#01579B</color>
+    <color name="teal">#00BFA5</color>
+    <color name="yellow">#F9A825</color>
+    <color name="orange">#FF6D00</color>
     <color name="red">#FF0000</color>
     <color name="green">#008000</color>
-
 </resources>

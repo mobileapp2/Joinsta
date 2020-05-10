@@ -59,12 +59,14 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
     private ImageButton imb_share_tax, imb_share_bank;
     private ProgressBar progressBar;
     private LinearLayout ll_nopreview;
-    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_order_online, tv_total_rating, tv_total_reviews;
+    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias,
+            tv_pan, tv_gst, tv_accholder_name, tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_order_online,
+            tv_total_rating, tv_total_reviews;
     private ImageView imv_share;
     private RelativeLayout rl_rating;
     private RatingBar rb_feedback_stars;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice, cv_add_offer, cv_view_offer, cv_order_online;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_texbank_notice, cv_add_offer,
+            cv_view_offer, cv_order_online, cv_view_orders, cv_dummy;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
 
@@ -100,6 +102,8 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
         cv_add_offer = findViewById(R.id.cv_add_offer);
         cv_view_offer = findViewById(R.id.cv_view_offer);
         cv_order_online = findViewById(R.id.cv_order_online);
+        cv_view_orders = findViewById(R.id.cv_view_orders);
+        cv_dummy = findViewById(R.id.cv_dummy);
 
         imb_share_tax = findViewById(R.id.imb_share_tax);
         imb_share_bank = findViewById(R.id.imb_share_bank);
@@ -317,6 +321,13 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
             tv_total_reviews.setText("(" + searchDetails.getTotal_number_review() + ")");
             rb_feedback_stars.setRating(averageRating);
         }
+
+        if (searchDetails.getCan_book_order().equals("1")) {
+            cv_view_orders.setVisibility(View.VISIBLE);
+        } else if (searchDetails.getCan_book_order().equals("0")) {
+            cv_view_orders.setVisibility(View.GONE);
+            cv_dummy.setVisibility(View.GONE);
+        }
     }
 
     private void getSessionDetails() {
@@ -511,6 +522,14 @@ public class ViewMyBizDetails_Activity extends AppCompatActivity {
                     new GetRatingsAndReviews().execute("1", searchDetails.getId());
                 else
                     Utilities.showMessage("Please check your internet connection", context, 2);
+            }
+        });
+
+        cv_view_orders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, BookOrderBusinessOwnerOrders_Activity.class)
+                        .putExtra("businessId", searchDetails.getId()));
             }
         });
 

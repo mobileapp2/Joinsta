@@ -125,6 +125,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Enquire"
+                android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -137,6 +138,20 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="No Offers"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_book_order"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="0.6"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Book Order"
+                android:textAllCaps="false"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -149,6 +164,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Order Online"
+                android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
