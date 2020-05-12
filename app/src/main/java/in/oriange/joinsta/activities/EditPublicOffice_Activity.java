@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -214,6 +215,7 @@ public class EditPublicOffice_Activity extends AppCompatActivity {
         tagsList = new ArrayList<>();
         documentList = new ArrayList<>();
         imageList = new ArrayList<>();
+        docsLayoutsList = new ArrayList<>();
 
         officeFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Public Office");
         if (!officeFileFolder.exists())
@@ -224,6 +226,8 @@ public class EditPublicOffice_Activity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             builder.detectFileUriExposure();
         }
+
+        rvImages.setLayoutManager(new GridLayoutManager(context, 3));
     }
 
     private void getSessionDetails() {
@@ -372,14 +376,14 @@ public class EditPublicOffice_Activity extends AppCompatActivity {
         }
 
         for (int i = 0; i < documentList.size(); i++) {
-            if (documentList.get(i).getDocument_type().equals("invitationdocument")) {
+            if (documentList.get(i).getDocument_type().equals("1")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.layout_add_document, null);
                 LinearLayout ll = (LinearLayout) rowView;
                 docsLayoutsList.add(ll);
                 llDocuments.addView(rowView, llDocuments.getChildCount() - 1);
                 ((EditText) rowView.findViewById(R.id.edt_attach_doc)).setText(documentList.get(i).getImages());
-            } else if (documentList.get(i).getDocument_type().equals("invitationimage")) {
+            } else if (documentList.get(i).getDocument_type().equals("2")) {
                 imageList.add(new MasterModel(documentList.get(i).getImages(), IMAGE_LINK + "office/image/" + documentList.get(i).getImages()));
             }
         }
@@ -929,7 +933,7 @@ public class EditPublicOffice_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("document_type", "2");
+                jsonObject.addProperty("document_type", "1");
                 jsonObject.addProperty("images", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 documentsArray.add(jsonObject);
             }
@@ -938,7 +942,7 @@ public class EditPublicOffice_Activity extends AppCompatActivity {
         for (int i = 0; i < imageList.size(); i++) {
             if (!imageList.get(i).getName().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("document_type", "1");
+                jsonObject.addProperty("document_type", "2");
                 jsonObject.addProperty("images", imageList.get(i).getName());
                 documentsArray.add(jsonObject);
             }

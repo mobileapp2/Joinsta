@@ -151,20 +151,25 @@ public class BookOrderPurchaseTypeSelection_Activity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_individual:
-                        llIndividualDetails.setVisibility(View.VISIBLE);
-                        llBusiness.setVisibility(View.GONE);
+                        if (rbIndividual.isChecked()) {
+                            llIndividualDetails.setVisibility(View.VISIBLE);
+                            llBusiness.setVisibility(View.GONE);
+                        }
                         break;
                     case R.id.rb_business:
-                        llIndividualDetails.setVisibility(View.GONE);
 
-                        if (businessList.size() == 0) {
-                            if (Utilities.isNetworkAvailable(context))
-                                new GetBusiness().execute();
-                            else
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        } else {
-                            llBusiness.setVisibility(View.VISIBLE);
-                            rvBusiness.setAdapter(new BusinessAdapter());
+                        if (rbBusiness.isChecked()) {
+                            llIndividualDetails.setVisibility(View.GONE);
+
+                            if (businessList.size() == 0) {
+                                if (Utilities.isNetworkAvailable(context))
+                                    new GetBusiness().execute();
+                                else
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                            } else {
+                                llBusiness.setVisibility(View.VISIBLE);
+                                rvBusiness.setAdapter(new BusinessAdapter());
+                            }
                         }
                         break;
                 }

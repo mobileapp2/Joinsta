@@ -31,6 +31,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.BookOrderOrderTypeSelect_Activity;
 import in.oriange.joinsta.activities.OffersForParticularRecord_Activity;
 import in.oriange.joinsta.activities.ViewGroupMemberBizDetails_Activity;
 import in.oriange.joinsta.models.GetBusinessModel;
@@ -124,6 +125,12 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
             }
         } else {
             holder.btn_caldist.setText("No Offers");
+        }
+
+        if (searchDetails.getCan_book_order().equals("1")) {
+            holder.btn_book_order.setVisibility(View.VISIBLE);
+        } else if (searchDetails.getCan_book_order().equals("0")) {
+            holder.btn_book_order.setVisibility(View.GONE);
         }
 
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
@@ -334,6 +341,11 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
             }
         });
 
+        holder.btn_book_order.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, BookOrderOrderTypeSelect_Activity.class)
+                    .putExtra("businessOwnerId", searchDetails.getId()));
+        });
+
     }
 
     @Override
@@ -346,7 +358,7 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
         private CardView cv_mainlayout;
         private RelativeLayout rl_rating;
         private RatingBar rb_feedback_stars;
-        private Button btn_enquire, btn_caldist, btn_order_online;
+        private Button btn_enquire, btn_caldist, btn_order_online, btn_book_order;
         private TextView tv_heading, tv_subheading, tv_subsubheading, tv_mutual_groups, tv_total_rating, tv_total_reviews;
 
         public MyViewHolder(View view) {
@@ -357,6 +369,7 @@ public class GroupMemberBusinessAdapter extends RecyclerView.Adapter<GroupMember
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             btn_enquire = view.findViewById(R.id.btn_enquire);
             btn_caldist = view.findViewById(R.id.btn_caldist);
+            btn_book_order = view.findViewById(R.id.btn_book_order);
             btn_order_online = view.findViewById(R.id.btn_order_online);
             rl_rating = view.findViewById(R.id.rl_rating);
             rb_feedback_stars = view.findViewById(R.id.rb_feedback_stars);

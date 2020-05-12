@@ -45,8 +45,9 @@ public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProd
         final BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean productDetails = productDetailsList.get(position);
 
         if (productDetails.getProduct_images().size() != 0) {
+            String url = IMAGE_LINK + "product/" + productDetails.getProduct_images().get(0);
             Picasso.with(context)
-                    .load(IMAGE_LINK + "product/" + productDetails.getProduct_images().get(0))
+                    .load(url)
                     .into(holder.imv_productimage, new Callback() {
                         @Override
                         public void onSuccess() {

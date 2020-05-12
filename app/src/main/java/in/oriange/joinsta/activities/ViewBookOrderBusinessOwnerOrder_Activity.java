@@ -221,15 +221,12 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
                 break;
             case "2":
                 btnAction.setText("Accept");
-                btnReject.setVisibility(View.GONE);
                 break;
             case "3":
                 btnAction.setText("In Progress");
-                btnReject.setVisibility(View.GONE);
                 break;
             case "4":
                 btnAction.setText("Delivered");
-                btnReject.setVisibility(View.GONE);
                 break;
             case "5":
                 btnAction.setText("Billing");

@@ -3,7 +3,10 @@ package in.oriange.joinsta.activities;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -73,6 +77,8 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
     SpinKitView progressBar;
     @BindView(R.id.ll_nopreview)
     LinearLayout llNopreview;
+    @BindView(R.id.btn_save)
+    Button btnSave;
 
     private Context context;
     private UserSessionManager session;
@@ -81,8 +87,10 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
     private String userId, businessOwnerId;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
+    private BookOrderGetMyOrdersModel.ResultBean orderDetails;
 
-    int quantity = 1;
+    private LocalBroadcastManager localBroadcastManager;
+    private int quantity = 1;
     private float sellingPrice, applicablePrice = 0;
 
     @Override
@@ -133,6 +141,10 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("BookOrderProductsList_Activity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
@@ -179,6 +191,19 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        btnSave.setOnClickListener(v -> startActivity(new Intent(context, BookOrderImageUpload_Activity.class)
+                .putExtra("orderDetails", orderDetails)));
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetAllProducts().execute();
+                new GetOrders().execute();
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
     }
@@ -269,6 +294,26 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
 
                     if (type.equalsIgnoreCase("success")) {
                         ordersList = pojoDetails.getResult();
+                        for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList) {
+                            if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
+                                if (orderDetail.getStatus_details().size() == 1) {
+                                    if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
+                                        if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
+                                            orderDetails = orderDetail;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                        if (orderDetails != null) {
+                            btnSave.setVisibility(View.VISIBLE);
+                        } else {
+                            btnSave.setVisibility(View.GONE);
+                        }
+
                     }
                 }
             } catch (Exception e) {
@@ -467,8 +512,8 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
 
             for (BookOrderGetMyOrdersModel.ResultBean orderDetails : ordersList) {
                 if (orderDetails.getStatus_details().size() == 1) {
-                    isPendingOrderAvailable = true;
                     if (orderDetails.getStatus_details().get(0).getStatus().equals("1")) {
+                        isPendingOrderAvailable = true;
                         if (!orderDetails.getOwner_business_id().equals(businessOwnerId)) {
                             cancelOtherBusinessOwnerOrderDialog(orderDetails);
                             break;
@@ -583,14 +628,14 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
                 JsonObject productObject = new JsonObject();
                 productObject.addProperty("id", orderDetails.getProduct_details().get(i).getId());
                 productObject.addProperty("product_id", productsToBeAddedList.get(i).getProduct_id());
-                productObject.addProperty("quantity", String.valueOf(quantity));
+                productObject.addProperty("quantity", productsToBeAddedList.get(i).getQuantity());
                 productObject.addProperty("amount", productsToBeAddedList.get(i).getAmount());
                 productsDetailsArray.add(productObject);
             } else {
                 JsonObject productObject = new JsonObject();
                 productObject.addProperty("id", "0");
                 productObject.addProperty("product_id", productsToBeAddedList.get(i).getProduct_id());
-                productObject.addProperty("quantity", String.valueOf(quantity));
+                productObject.addProperty("quantity", productsToBeAddedList.get(i).getQuantity());
                 productObject.addProperty("amount", productsToBeAddedList.get(i).getAmount());
                 productsDetailsArray.add(productObject);
             }
@@ -648,6 +693,25 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Product added to cart", context, 1);
                         ordersList = pojoDetails.getResult();
+                        for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList) {
+                            if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
+                                if (orderDetail.getStatus_details().size() == 1) {
+                                    if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
+                                        if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
+                                            orderDetails = orderDetail;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                        if (orderDetails != null) {
+                            btnSave.setVisibility(View.VISIBLE);
+                        } else {
+                            btnSave.setVisibility(View.GONE);
+                        }
                     } else {
                         Utilities.showMessage(message, context, 3);
                     }
@@ -688,6 +752,25 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Product added to cart", context, 1);
                         ordersList = pojoDetails.getResult();
+                        for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList) {
+                            if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
+                                if (orderDetail.getStatus_details().size() == 1) {
+                                    if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
+                                        if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
+                                            orderDetails = orderDetail;
+                                            break;
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                        if (orderDetails != null) {
+                            btnSave.setVisibility(View.VISIBLE);
+                        } else {
+                            btnSave.setVisibility(View.GONE);
+                        }
                     } else {
                         Utilities.showMessage(message, context, 3);
                     }
@@ -744,6 +827,19 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.icon_backarrow);
         toolbar.setNavigationOnClickListener(view -> finish());
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }
 

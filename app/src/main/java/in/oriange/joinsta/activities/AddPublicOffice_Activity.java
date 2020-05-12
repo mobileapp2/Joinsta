@@ -737,7 +737,7 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         for (int i = 0; i < docsLayoutsList.size(); i++) {
             if (!((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString().trim().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("document_type", "2");
+                jsonObject.addProperty("document_type", "1");
                 jsonObject.addProperty("images", ((EditText) docsLayoutsList.get(i).findViewById(R.id.edt_attach_doc)).getText().toString());
                 imageJsonArray.add(jsonObject);
             }
@@ -746,7 +746,7 @@ public class AddPublicOffice_Activity extends AppCompatActivity {
         for (int i = 0; i < imageList.size(); i++) {
             if (!imageList.get(i).getName().equals("")) {
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("document_type", "1");
+                jsonObject.addProperty("document_type", "2");
                 jsonObject.addProperty("images", imageList.get(i).getName());
                 imageJsonArray.add(jsonObject);
             }

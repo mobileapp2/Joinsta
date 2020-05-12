@@ -84,7 +84,7 @@
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:background="@drawable/button_background_filled"
-        android:text="Select Purchase Type"
+        android:text="Place Order"
         android:textColor="@color/white" />
 
 </LinearLayout>

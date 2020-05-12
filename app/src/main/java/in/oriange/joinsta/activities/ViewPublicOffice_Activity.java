@@ -412,10 +412,10 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
             cvDocuments.setVisibility(View.GONE);
         } else {
             for (PublicOfficeModel.ResultBean.ImageUrlBean documentsBean : docList) {
-                if (documentsBean.getDocument_type().equalsIgnoreCase("1")) {
-                    documentsList.add(IMAGE_LINK + "events/document/" + documentsBean.getImages());
-                } else if (documentsBean.getDocument_type().equalsIgnoreCase("2")) {
-                    imagesList.add(IMAGE_LINK + "events/image/" + documentsBean.getImages());
+                if (documentsBean.getDocument_type().equalsIgnoreCase("2")) {
+                    imagesList.add(IMAGE_LINK + "office/image/" + documentsBean.getImages());
+                } else if (documentsBean.getDocument_type().equalsIgnoreCase("1")) {
+                    documentsList.add(documentsBean.getImages());
                 }
             }
         }
@@ -554,6 +554,8 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
 
             startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + tvCreaterMobile.getText().toString().trim())));
         });
+
+        tvViewdocs.setOnClickListener(v -> showDocumentsList());
 
         btnApprove.setOnClickListener(v -> {
             if (Utilities.isNetworkAvailable(context))
@@ -1216,7 +1218,7 @@ public class ViewPublicOffice_Activity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (callType == 2) {
+        if (callType == 1 || callType == 3) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menus_edit_delete, menu);
             return true;

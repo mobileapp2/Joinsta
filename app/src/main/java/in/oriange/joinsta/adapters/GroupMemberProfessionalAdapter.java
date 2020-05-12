@@ -126,6 +126,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
         });
 
         holder.btn_caldist.setVisibility(View.GONE);
+        holder.btn_book_order.setVisibility(View.GONE);
 
         if (searchDetails.getOrder_online().trim().equals("")) {
             holder.btn_order_online.setVisibility(View.INVISIBLE);
@@ -327,7 +328,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
         private CardView cv_mainlayout;
         private RelativeLayout rl_rating;
         private RatingBar rb_feedback_stars;
-        private Button btn_enquire, btn_caldist, btn_order_online;
+        private Button btn_enquire, btn_caldist, btn_order_online, btn_book_order;
         private TextView tv_heading, tv_subheading, tv_subsubheading, tv_mutual_groups, tv_total_rating, tv_total_reviews;
 
         public MyViewHolder(View view) {
@@ -338,6 +339,7 @@ public class GroupMemberProfessionalAdapter extends RecyclerView.Adapter<GroupMe
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             btn_enquire = view.findViewById(R.id.btn_enquire);
             btn_caldist = view.findViewById(R.id.btn_caldist);
+            btn_book_order = view.findViewById(R.id.btn_book_order);
             btn_order_online = view.findViewById(R.id.btn_order_online);
             rl_rating = view.findViewById(R.id.rl_rating);
             rb_feedback_stars = view.findViewById(R.id.rb_feedback_stars);

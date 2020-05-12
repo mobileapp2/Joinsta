@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -119,6 +121,11 @@ public class BookOrderImageUpload_Activity extends AppCompatActivity {
         if (!orderFileFolder.exists())
             orderFileFolder.mkdirs();
 
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            builder.detectFileUriExposure();
+        }
     }
 
     private void getSessionDetails() {
@@ -224,6 +231,11 @@ public class BookOrderImageUpload_Activity extends AppCompatActivity {
             holder.imv_image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!Utilities.isNetworkAvailable(context)) {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        return;
+                    }
+
                     latestPosition = position;
 
                     final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
@@ -319,7 +331,7 @@ public class BookOrderImageUpload_Activity extends AppCompatActivity {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
         String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
-                + "Public Office/" + "uplimg.png";
+                + "Book Order/" + "uplimg.png";
 
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
@@ -344,13 +356,10 @@ public class BookOrderImageUpload_Activity extends AppCompatActivity {
         }
 
         File photoFileToUpload = new File(destinationFile);
-        new UploadImageAndDocument().execute("uploadOrderImage", photoFileToUpload.getPath());
-
+        new UploadImage().execute(photoFileToUpload.getPath());
     }
 
-    private class UploadImageAndDocument extends AsyncTask<String, Integer, String> {
-
-        private String TYPE = "";
+    private class UploadImage extends AsyncTask<String, Integer, String> {
 
         @Override
         protected void onPreExecute() {
@@ -364,8 +373,8 @@ public class BookOrderImageUpload_Activity extends AppCompatActivity {
             try {
                 MultipartUtility multipart = new MultipartUtility(ApplicationConstants.FILEUPLOADAPI, "UTF-8");
 
-                multipart.addFormField("request_type", params[0]);
-                multipart.addFilePart("document", new File(params[1]));
+                multipart.addFormField("request_type", "uploadOrderImage");
+                multipart.addFilePart("document", new File(params[0]));
 
                 List<String> response = multipart.finish();
                 for (String line : response) {
@@ -396,6 +405,7 @@ public class BookOrderImageUpload_Activity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Utilities.showMessage(e.toString(), context, 3);
             }
         }
     }

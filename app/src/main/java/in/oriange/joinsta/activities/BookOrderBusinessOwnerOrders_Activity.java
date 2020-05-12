@@ -310,10 +310,10 @@ public class BookOrderBusinessOwnerOrders_Activity extends AppCompatActivity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getReceivedOrders");
-//            obj.addProperty("business_id", businessId);
-//            obj.addProperty("user_id", userId);
-            obj.addProperty("business_id", "18");
-            obj.addProperty("user_id", "21");
+            obj.addProperty("business_id", businessId);
+            obj.addProperty("user_id", userId);
+//            obj.addProperty("business_id", "18");
+//            obj.addProperty("user_id", "21");
             res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
             return res.trim();
         }
