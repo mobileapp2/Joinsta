@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import java.util.Random;
 
 import in.oriange.joinsta.R;
+import in.oriange.joinsta.activities.BookOrderMyOrders_Activity;
 import in.oriange.joinsta.activities.ContactUs_Activity;
 import in.oriange.joinsta.activities.Enquiries_Activity;
 import in.oriange.joinsta.activities.Favourites_Activity;
@@ -43,7 +44,7 @@ public class More_Fragment extends Fragment {
 
     private Context context;
     private CardView cv_profiledetails, cv_myevents, cv_favourite, cv_notifications, cv_requirements,
-            cv_settings, cv_enquires, cv_policies, cv_contactus, cv_howto;
+            cv_settings, cv_enquires, cv_policies, cv_contactus, cv_howto, cv_myorders;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class More_Fragment extends Fragment {
         cv_policies = rootView.findViewById(R.id.cv_policies);
         cv_contactus = rootView.findViewById(R.id.cv_contactus);
         cv_howto = rootView.findViewById(R.id.cv_howto);
+        cv_myorders = rootView.findViewById(R.id.cv_myorders);
     }
 
     private void setDefault() {
@@ -150,6 +152,13 @@ public class More_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(context, HowToUse_Activity.class));
+            }
+        });
+
+        cv_myorders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, BookOrderMyOrders_Activity.class));
             }
         });
     }

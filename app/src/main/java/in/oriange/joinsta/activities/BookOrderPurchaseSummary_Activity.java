@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.adapters.BookOrderOrderImagesAdapter;
 import in.oriange.joinsta.adapters.BookOrderProductsAdapter;
+import in.oriange.joinsta.fragments.Search_Fragment;
 import in.oriange.joinsta.models.BookOrderBusinessOwnerModel;
 import in.oriange.joinsta.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinsta.models.GetBusinessModel;
@@ -82,6 +84,8 @@ public class BookOrderPurchaseSummary_Activity extends AppCompatActivity {
     RecyclerView rvProducts;
     @BindView(R.id.cv_products)
     CardView cvProducts;
+    @BindView(R.id.tv_more_order_images)
+    TextView tvMoreOrderImages;
 
     private Context context;
     private UserSessionManager session;
@@ -90,6 +94,7 @@ public class BookOrderPurchaseSummary_Activity extends AppCompatActivity {
     private GetBusinessModel.ResultBean businessDetails;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
     private JsonArray orderImageJsonArray;
+    private boolean isOrderImagesExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,19 +229,34 @@ public class BookOrderPurchaseSummary_Activity extends AppCompatActivity {
             cvImages.setVisibility(View.GONE);
         }
 
-
+        if (orderImagesList.size() > 3) {
+            tvMoreOrderImages.setVisibility(View.VISIBLE);
+        } else {
+            tvMoreOrderImages.setVisibility(View.GONE);
+        }
     }
 
     private void setEventHandler() {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (orderType.equals("2") || orderType.equals("3")) {
                     addOrder();
                 } else if (orderType.equals("1")) {
                     updateOrder(orderImageJsonArray);
                 }
+            }
+        });
+
+        tvMoreOrderImages.setOnClickListener(v -> {
+            if (!isOrderImagesExpanded) {
+                isOrderImagesExpanded = true;
+                tvMoreOrderImages.setText("View More");
+                rvOrderImages.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            } else {
+                isOrderImagesExpanded = false;
+                tvMoreOrderImages.setText("View Less");
+                rvOrderImages.setLayoutManager(new GridLayoutManager(context, 3));
             }
         });
     }
@@ -400,7 +420,9 @@ public class BookOrderPurchaseSummary_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
+                        new Search_Fragment.GetOrders().execute();
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrders_Activity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderCartProducts_Activity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderPurchaseTypeSelection_Activity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeText_Activity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImage_Activity"));

@@ -282,7 +282,18 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_order_images"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:id="@+id/tv_more_order_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginLeft="10dp"
+                        android:text="View More"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -294,12 +305,11 @@
 
     <android.widget.Button
         android:id="@+id/btn_save"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:background="@drawable/button_background_filled"
-        android:text="PLACE ORDER"
-        android:textColor="@color/white" />
+        android:text="Place Order"
+        android:textStyle="bold" />
 
 </LinearLayout>

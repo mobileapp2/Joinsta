@@ -173,7 +173,7 @@
 
         <TextView
             android:id="@+id/tv_mutual_groups"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -183,7 +183,7 @@
 
         <RelativeLayout
             android:id="@+id/rl_rating"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <TextView

@@ -41,7 +41,8 @@
                 android:layout_marginRight="10dp"
                 android:text="SKIP"
                 android:textColor="@color/white"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 app:strokeColor="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
@@ -81,7 +82,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="ADD Photo" />
+                    android:text="ADD Photo"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -91,12 +93,11 @@
 
     <android.widget.Button
         android:id="@+id/btn_save"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:background="@drawable/button_background_filled"
         android:text="Select Purchase Type"
-        android:textColor="@color/white" />
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -90,12 +91,15 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
     ImageButton ibEmail;
     @BindView(R.id.ll_email)
     LinearLayout llEmail;
+    @BindView(R.id.tv_more_order_images)
+    TextView tvMoreOrderImages;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId;
     private BookOrderBusinessOwnerModel.ResultBean orderDetails;
+    private boolean isOrderImagesExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,6 +213,12 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
             rvImages.setAdapter(new BookOrderOrderImagesAdapter(context, orderImagesList));
         }
 
+        if (orderImagesList.size() > 3) {
+            tvMoreOrderImages.setVisibility(View.VISIBLE);
+        } else {
+            tvMoreOrderImages.setVisibility(View.GONE);
+        }
+
         rvStatus.setAdapter(new BookOrderStatusAdapter(context, orderDetails.getStatus_details()));
 
         switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
@@ -311,6 +321,18 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                     "mailto", tvCustomerEmail.getText().toString().trim(), null));
             context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
+        });
+
+        tvMoreOrderImages.setOnClickListener(v -> {
+            if (!isOrderImagesExpanded) {
+                isOrderImagesExpanded = true;
+                tvMoreOrderImages.setText("View More");
+                rvImages.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            } else {
+                isOrderImagesExpanded = false;
+                tvMoreOrderImages.setText("View Less");
+                rvImages.setLayoutManager(new GridLayoutManager(context, 3));
+            }
         });
     }
 

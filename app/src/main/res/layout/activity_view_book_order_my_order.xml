@@ -246,7 +246,18 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_images"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                    <TextView
+                        android:id="@+id/tv_more_order_images"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginLeft="10dp"
+                        android:text="View More"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 

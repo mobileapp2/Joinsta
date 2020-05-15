@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,14 +39,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.joinsta.R;
-import in.oriange.joinsta.activities.BookOrderMyOrders_Activity;
+import in.oriange.joinsta.activities.BookOrderCartProducts_Activity;
 import in.oriange.joinsta.activities.PublicOfficeByLocation_Activity;
 import in.oriange.joinsta.activities.SelectCity_Activity;
 import in.oriange.joinsta.adapters.SearchBusinessAdapter;
 import in.oriange.joinsta.adapters.SearchEmployeeAdapter;
 import in.oriange.joinsta.adapters.SearchProfessionalAdapter;
+import in.oriange.joinsta.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinsta.models.MainCategoryListModel;
 import in.oriange.joinsta.models.SearchDetailsModel;
 import in.oriange.joinsta.pojos.MainCategoryListPojo;
@@ -63,6 +67,8 @@ public class Search_Fragment extends Fragment {
     private static RecyclerView rv_searchlist;
     private static LinearLayout ll_nopreview;
     private static EditText edt_search;
+    private static FrameLayout fl_cart;
+    private static TextView tv_cart_count;
     private static SpinKitView progressBar;
     private ImageButton ib_cart;
     private PowerMenu iconMenu;
@@ -103,6 +109,8 @@ public class Search_Fragment extends Fragment {
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
         cv_public_office = rootView.findViewById(R.id.cv_public_office);
         ib_cart = rootView.findViewById(R.id.ib_cart);
+        fl_cart = rootView.findViewById(R.id.fl_cart);
+        tv_cart_count = rootView.findViewById(R.id.tv_cart_count);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
@@ -120,6 +128,7 @@ public class Search_Fragment extends Fragment {
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            new GetOrders().execute();
         }
 
     }
@@ -205,7 +214,8 @@ public class Search_Fragment extends Fragment {
         ib_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, BookOrderMyOrders_Activity.class));
+                startActivity(new Intent(context, BookOrderCartProducts_Activity.class));
+
             }
         });
 
@@ -469,4 +479,65 @@ public class Search_Fragment extends Fragment {
             setDataToRecyclerView(categoryTypeId);
         }
     };
+
+    public static class GetOrders extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getAllOrders");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        List<BookOrderGetMyOrdersModel.ResultBean> ordersList = pojoDetails.getResult();
+                        BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails = null;
+                        for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList)
+                            if (orderDetail.getStatus_details().size() == 1)
+                                if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
+                                    businessOwnerOrderDetails = orderDetail;
+                                    break;
+                                }
+
+
+                        if (businessOwnerOrderDetails != null) {
+                            if (businessOwnerOrderDetails.getProduct_details().size() != 0) {
+                                fl_cart.setVisibility(View.VISIBLE);
+                                tv_cart_count.setVisibility(View.VISIBLE);
+                                tv_cart_count.setText(String.valueOf(businessOwnerOrderDetails.getProduct_details().size()));
+                            } else {
+                                tv_cart_count.setVisibility(View.GONE);
+                                tv_cart_count.setText("");
+                            }
+                        } else {
+                            tv_cart_count.setVisibility(View.GONE);
+                            tv_cart_count.setText("");
+                        }
+                    } else {
+                        tv_cart_count.setVisibility(View.GONE);
+                        tv_cart_count.setText("");
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

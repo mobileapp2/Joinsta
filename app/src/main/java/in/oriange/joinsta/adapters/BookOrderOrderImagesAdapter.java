@@ -34,7 +34,7 @@ public class BookOrderOrderImagesAdapter extends RecyclerView.Adapter<BookOrderO
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.grid_row_images, parent, false);
+        View view = inflater.inflate(R.layout.grid_row_book_order_images, parent, false);
         return new MyViewHolder(view);
     }
 

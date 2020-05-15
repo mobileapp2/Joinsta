@@ -32,6 +32,40 @@
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
+            <FrameLayout
+                android:id="@+id/fl_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="end"
+                android:layout_marginRight="20dp"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/ib_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/icon_cart"
+                    android:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tv_cart_count"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="right|top"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/bg_circularview_red"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="7sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -74,8 +108,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -126,16 +159,5 @@
         </LinearLayout>
 
     </FrameLayout>
-
-    <android.widget.Button
-        android:id="@+id/btn_save"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:background="@drawable/button_background_filled"
-        android:text="Place Order"
-        android:textColor="@color/white"
-        android:visibility="gone" />
 
 </LinearLayout>

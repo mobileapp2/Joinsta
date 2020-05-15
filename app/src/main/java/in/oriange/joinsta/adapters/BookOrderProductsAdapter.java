@@ -72,6 +72,9 @@ public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProd
         holder.tv_quantity.setText("Quantity - " + productDetails.getQuantity());
         holder.tv_price.setText("₹ " + Integer.parseInt(productDetails.getAmount()) + "/" + productDetails.getUnit_of_measure());
 
+        if (holder.tv_productinfo.getText().toString().trim().equals(""))
+            holder.tv_productinfo.setVisibility(View.GONE);
+
         if (position == productDetailsList.size() - 1)
             holder.view_divider.setVisibility(View.GONE);
     }
