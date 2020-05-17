@@ -103,7 +103,14 @@ public class BookOrderProductsListModel implements Serializable {
         }
 
         public String getMax_retail_price() {
-            return max_retail_price;
+            if (max_retail_price != null)
+                if (!max_retail_price.equals(""))
+                    return max_retail_price;
+                else
+                    return "0";
+            else
+                return "0";
+
 //            return "100";
         }
 
@@ -112,7 +119,14 @@ public class BookOrderProductsListModel implements Serializable {
         }
 
         public String getSelling_price() {
-            return selling_price;
+            if (selling_price != null)
+                if (!selling_price.equals(""))
+                    return selling_price;
+                else
+                    return "0";
+            else
+                return "0";
+
 //            return "70";
         }
 

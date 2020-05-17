@@ -236,7 +236,7 @@ public class PublicOfficeRatingAndReviewAdapter extends RecyclerView.Adapter<Pub
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("type", "DeleteProfileRating");
+            jsonObject.addProperty("type", "deleteOfficeRating");
             jsonObject.addProperty("office_rating_reviews_id", reviewsList.get(itemClickedPosition).getId());
             res = APICall.JSONAPICall(ApplicationConstants.OFFICERATINGANDREVIEWAPI, jsonObject.toString());
             return res.trim();
@@ -254,6 +254,8 @@ public class PublicOfficeRatingAndReviewAdapter extends RecyclerView.Adapter<Pub
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("PublicOfficeRatingAndReviewList_Activity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("PublicOfficeByLocation_Activity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewPublicOffice_Activity"));
 
                         Utilities.showMessage("Review deleted successfully", context, 1);
                     }

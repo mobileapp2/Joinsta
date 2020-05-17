@@ -45,10 +45,10 @@ public class FullScreenTextEdit_Activity extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edt_text.getText().toString().trim().isEmpty()) {
-                    edt_text.setError("Please enter message");
-                    return;
-                }
+//                if (edt_text.getText().toString().trim().isEmpty()) {
+//                    edt_text.setError("Please enter message");
+//                    return;
+//                }
 
                 Intent intent = getIntent();
                 intent.putExtra("message", edt_text.getText().toString().trim());

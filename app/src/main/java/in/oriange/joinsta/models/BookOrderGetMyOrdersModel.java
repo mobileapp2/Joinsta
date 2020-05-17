@@ -81,6 +81,8 @@ public class BookOrderGetMyOrdersModel implements Serializable {
         private String owner_name;
         private String owner_country_code;
         private String owner_mobile;
+        private String business_code;
+        private String business_name;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -221,6 +223,22 @@ public class BookOrderGetMyOrdersModel implements Serializable {
             this.owner_mobile = owner_mobile;
         }
 
+        public String getBusiness_code() {
+            return business_code;
+        }
+
+        public void setBusiness_code(String business_code) {
+            this.business_code = business_code;
+        }
+
+        public String getBusiness_name() {
+            return business_name;
+        }
+
+        public void setBusiness_name(String business_name) {
+            this.business_name = business_name;
+        }
+
         public List<String> getOrder_images() {
             return order_images;
         }
@@ -316,7 +334,13 @@ public class BookOrderGetMyOrdersModel implements Serializable {
             }
 
             public String getAmount() {
-                return amount;
+                if (amount != null)
+                    if (!amount.equals(""))
+                        return amount;
+                    else
+                        return "0";
+                else
+                    return "0";
             }
 
             public void setAmount(String amount) {
@@ -324,7 +348,13 @@ public class BookOrderGetMyOrdersModel implements Serializable {
             }
 
             public String getCurrent_amount() {
-                return current_amount;
+                if (current_amount != null)
+                    if (!current_amount.equals(""))
+                        return current_amount;
+                    else
+                        return "0";
+                else
+                    return "0";
             }
 
             public void setCurrent_amount(String current_amount) {

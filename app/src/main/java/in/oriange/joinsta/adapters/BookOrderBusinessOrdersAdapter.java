@@ -51,13 +51,13 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
 
         switch (orderDetails.getOrder_type()) {         //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
             case "1":
-                holder.tv_purchase_order_type.setText("Order with Product");
+                holder.tv_purchase_order_type.setText("Order by Product | " + "Order Id - " + orderDetails.getOrder_id());
                 break;
             case "2":
-                holder.tv_purchase_order_type.setText("Order by Image");
+                holder.tv_purchase_order_type.setText("Order by Image | " + "Order Id - " + orderDetails.getOrder_id());
                 break;
             case "3":
-                holder.tv_purchase_order_type.setText("Order by Text");
+                holder.tv_purchase_order_type.setText("Order by Text | " + "Order Id - " + orderDetails.getOrder_id());
                 break;
         }
 
@@ -67,27 +67,19 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
 
                 holder.tv_mobile.setText("+" + orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
 
-                holder.tv_email.setText(orderDetails.getCustomer_email());
-
+//                holder.tv_email.setText(orderDetails.getCustomer_email());
                 break;
             case "2":
                 holder.tv_order_by.setText("Placed by - " + orderDetails.getCustomer_business_name());
 
-//                StringBuilder mobilesSb = new StringBuilder();
                 List<BookOrderBusinessOwnerModel.ResultBean.CustomerBusinessMobileBean> mobilesList = orderDetails.getCustomer_business_mobile().get(0);
                 if (mobilesList != null) {
                     if (mobilesList.size() != 0) {
-//                        for (BookOrderBusinessOwnerModel.ResultBean.CustomerBusinessMobileBean mobileBean : orderDetails.getCustomer_business_mobile().get(0)) {
-//                            mobilesSb.append(mobileBean.getCountry_code() + mobileBean.getMobile_number() + ", ");
-//                        }
-//                        String mobileStr = mobilesSb.toString();
-//                        mobileStr = mobileStr.substring(0, mobileStr.length() - 2);
-//                        holder.tv_mobile.setText(mobileStr);
                         holder.tv_mobile.setText(mobilesList.get(0).getCountry_code() + mobilesList.get(0).getMobile_number());
                     }
                 }
 
-                holder.tv_email.setText(orderDetails.getCustomer_business_email());
+//                holder.tv_email.setText(orderDetails.getCustomer_business_email());
                 break;
         }
 

@@ -1,6 +1,5 @@
 package in.oriange.joinsta.activities;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -89,7 +88,6 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
     private String userId, businessOwnerId;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
-    private BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails;
 
     private LocalBroadcastManager localBroadcastManager;
     private int quantity = 1;
@@ -198,10 +196,7 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
         });
 
         ibCart.setOnClickListener(v -> {
-            startActivity(new Intent(context, BookOrderCartProducts_Activity.class)
-                    .putExtra("businessOwnerOrderDetails", businessOwnerOrderDetails)
-                    .putExtra("businessOwnerId", businessOwnerId));
-            finish();
+            startActivity(new Intent(context, BookOrderCartProducts_Activity.class));
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -311,25 +306,19 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
     }
 
     private void showCartCount() {
+        int numberOfProducts = 0;
+
         for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList)
-//            if (orderDetail.getOwner_business_id().equals(businessOwnerId))
             if (orderDetail.getStatus_details().size() == 1)
-                if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
-//                    if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
-                    businessOwnerOrderDetails = orderDetail;
-                    break;
-//                    }
-                }
+                if (orderDetail.getStatus_details().get(0).getStatus().equals("1"))
+                    numberOfProducts = numberOfProducts + orderDetail.getProduct_details().size();
 
-
-        if (businessOwnerOrderDetails != null) {
-            if (businessOwnerOrderDetails.getProduct_details().size() != 0) {
-                flCart.setVisibility(View.VISIBLE);
-                tvCartCount.setText(String.valueOf(businessOwnerOrderDetails.getProduct_details().size()));
-            } else {
-                flCart.setVisibility(View.GONE);
-                tvCartCount.setText("");
-            }
+        if (numberOfProducts != 0) {
+            flCart.setVisibility(View.VISIBLE);
+            tvCartCount.setText(String.valueOf(numberOfProducts));
+        } else {
+            flCart.setVisibility(View.GONE);
+            tvCartCount.setText("");
         }
     }
 
@@ -373,23 +362,27 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
 
             holder.tv_product_name.setText(productDetails.getName());
 
-            int maxRetailPrice = (int) Float.parseFloat(productDetails.getMax_retail_price());
-            int sellingPrice = (int) Float.parseFloat(productDetails.getSelling_price());
+            float maxRetailPrice = Float.parseFloat(productDetails.getMax_retail_price());
+            float sellingPrice = Float.parseFloat(productDetails.getSelling_price());
 
-            int savedAmount = maxRetailPrice - sellingPrice;
-
-            if (savedAmount <= 0) {
-                holder.tv_selling_price.setText("₹ " + sellingPrice);
-                holder.tv_max_retail_price.setVisibility(View.GONE);
-                holder.tv_precentage_off.setVisibility(View.GONE);
+            if (sellingPrice != 0) {
+                holder.tv_no_price_available.setVisibility(View.GONE);
+                float savedAmount = maxRetailPrice - sellingPrice;
+                if (savedAmount <= 0) {
+                    holder.tv_selling_price.setText("₹ " + (int) sellingPrice);
+                    holder.tv_max_retail_price.setVisibility(View.GONE);
+                    holder.tv_precentage_off.setVisibility(View.GONE);
+                } else {
+                    float divide = sellingPrice / maxRetailPrice;
+                    int percent = (int) (divide * 100);
+                    holder.tv_selling_price.setText("₹ " + (int) sellingPrice);
+                    holder.tv_max_retail_price.setText(Html.fromHtml("<strike>₹ " + (int) maxRetailPrice + "</strike>"));
+                    holder.tv_precentage_off.setText(100 - percent + "% off");
+                }
             } else {
-
-                int percent = maxRetailPrice % sellingPrice;
-
-                holder.tv_selling_price.setText("₹ " + sellingPrice);
-                holder.tv_max_retail_price.setText(Html.fromHtml("<strike>₹ " + maxRetailPrice + "</strike>"));
-                holder.tv_precentage_off.setText(percent + "% off");
+                holder.ll_prices.setVisibility(View.GONE);
             }
+
 
             holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
 
@@ -409,20 +402,12 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
                 }
             });
 
-            holder.btn_add.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    quantity[0] = quantity[0] + 1;
-                    holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
-                }
+            holder.btn_add.setOnClickListener(v -> {
+                quantity[0] = quantity[0] + 1;
+                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
             });
 
-            holder.btn_addtocart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    findValidOrderId(productDetails, quantity[0]);
-                }
-            });
+            holder.btn_addtocart.setOnClickListener(v -> findValidOrderId(productDetails, quantity[0]));
 
         }
 
@@ -435,7 +420,9 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
 
             private CardView cv_mainlayout;
             private ImageView imv_productimage;
-            private TextView tv_nopreview, tv_product_name, tv_selling_price, tv_max_retail_price, tv_precentage_off, tv_quantity;
+            private LinearLayout ll_prices;
+            private TextView tv_nopreview, tv_product_name, tv_selling_price, tv_max_retail_price,
+                    tv_precentage_off, tv_quantity, tv_no_price_available;
             private ImageButton btn_remove, btn_add;
             private Button btn_addtocart;
 
@@ -443,11 +430,13 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
                 super(view);
                 cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
                 imv_productimage = view.findViewById(R.id.imv_productimage);
+                ll_prices = view.findViewById(R.id.ll_prices);
                 tv_nopreview = view.findViewById(R.id.tv_nopreview);
                 tv_product_name = view.findViewById(R.id.tv_product_name);
                 tv_selling_price = view.findViewById(R.id.tv_selling_price);
                 tv_max_retail_price = view.findViewById(R.id.tv_max_retail_price);
                 tv_precentage_off = view.findViewById(R.id.tv_precentage_off);
+                tv_no_price_available = view.findViewById(R.id.tv_no_price_available);
                 tv_quantity = view.findViewById(R.id.tv_quantity);
                 btn_remove = view.findViewById(R.id.btn_remove);
                 btn_add = view.findViewById(R.id.btn_add);
@@ -561,17 +550,13 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
         if (ordersList.size() == 0) {
             addOrderJsonCreation(productDetails, quantity);
         } else {
-
             boolean isPendingOrderAvailable = false;
 
             for (BookOrderGetMyOrdersModel.ResultBean orderDetails : ordersList) {
                 if (orderDetails.getStatus_details().size() == 1) {
                     if (orderDetails.getStatus_details().get(0).getStatus().equals("1")) {
-                        isPendingOrderAvailable = true;
-                        if (!orderDetails.getOwner_business_id().equals(businessOwnerId)) {
-                            cancelOtherBusinessOwnerOrderDialog(orderDetails);
-                            break;
-                        } else if (orderDetails.getOwner_business_id().equals(businessOwnerId)) {
+                        if (orderDetails.getOwner_business_id().equals(businessOwnerId)) {
+                            isPendingOrderAvailable = true;
                             updateOrderWithNewProduct(productDetails, orderDetails, quantity);
                             break;
                         }
@@ -613,31 +598,6 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
-    }
-
-    private void cancelOtherBusinessOwnerOrderDialog(BookOrderGetMyOrdersModel.ResultBean orderDetails) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Alert");
-        alertDialogBuilder.setMessage("There is already an order pending for " + orderDetails.getOwner_business_name() + ", do you want to cancel that order?");
-        alertDialogBuilder.setCancelable(false);
-        alertDialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
-            JsonObject mainObj = new JsonObject();
-
-            mainObj.addProperty("type", "changeOrderStatus");
-            mainObj.addProperty("id", orderDetails.getId());
-            mainObj.addProperty("status", "7");    //status = 'CANCEL'-7
-            mainObj.addProperty("user_id", userId);
-
-            if (Utilities.isNetworkAvailable(context)) {
-                new ChangeOrderStatus().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
-        });
-        alertDialogBuilder.setNegativeButton("No", (dialog, which) -> {
-
-        });
-        alertDialogBuilder.create().show();
     }
 
     private void updateOrderWithNewProduct(BookOrderProductsListModel.ResultBean selectedProduct, BookOrderGetMyOrdersModel.ResultBean orderDetails, int quantity) {
@@ -799,47 +759,6 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
         }
     }
 
-    private class ChangeOrderStatus extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String type = "", message = "";
-            try {
-                pd.dismiss();
-                if (!result.equals("")) {
-                    JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-                        Utilities.showMessage("Order cancelled successfully", context, 1);
-                        new GetOrders().execute();
-                    } else {
-                        Utilities.showMessage(message, context, 3);
-                    }
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -861,86 +780,98 @@ public class BookOrderProductsList_Activity extends AppCompatActivity {
     }
 }
 
-//private class BookOrderProductsListAdapter extends RecyclerView.Adapter<BookOrderProductsListAdapter.MyViewHolder> {
+//////////////////////////////////////////////Code to cancel other pending others/////////////////////////////////////
+
+//    private void findValidOrderId(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
+//        if (ordersList.size() == 0) {
+//            addOrderJsonCreation(productDetails, quantity);
+//        } else {
 //
-//    @NonNull
-//    @Override
-//    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View view = inflater.inflate(R.layout.list_row_book_order_products, parent, false);
-//        return new MyViewHolder(view);
-//    }
+//            boolean isPendingOrderAvailable = false;
 //
-//    @Override
-//    public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
-//        int position = holder.getAdapterPosition();
-//
-//        final BookOrderProductsListModel.ResultBean productDetails = searchedProductsList.get(position);
-//
-//        final List<MyOffersListModel.ResultBean.DocumentsBean> documentsList = new ArrayList<>();
-//        for (int i = 0; i < productDetails.getProduct_images().size(); i++) {
-//            documentsList.add(new MyOffersListModel.ResultBean.DocumentsBean(productDetails.getProduct_images().get(i)));
-//        }
-//        if (documentsList.size() != 0) {
-//            List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
-//            for (int i = 0; i < documentsList.size(); i++) {
-//                bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "product/" + documentsList.get(i).getDocument()));
+//            for (BookOrderGetMyOrdersModel.ResultBean orderDetails : ordersList) {
+//                if (orderDetails.getStatus_details().size() == 1) {
+//                    if (orderDetails.getStatus_details().get(0).getStatus().equals("1")) {
+//                        isPendingOrderAvailable = true;
+//                        if (!orderDetails.getOwner_business_id().equals(businessOwnerId)) {
+//                            cancelOtherBusinessOwnerOrderDialog(orderDetails);
+//                            break;
+//                        } else if (orderDetails.getOwner_business_id().equals(businessOwnerId)) {
+//                            updateOrderWithNewProduct(productDetails, orderDetails, quantity);
+//                            break;
+//                        }
+//                    }
+//                }
 //            }
 //
-//            OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, bannerList);
-//            holder.imageSlider.setSliderAdapter(adapter);
-//            holder.imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-//            holder.imageSlider.setSliderTransformAnimation(SliderAnimations.VERTICALFLIPTRANSFORMATION);
-//            holder.imageSlider.setIndicatorSelectedColor(Color.WHITE);
-//            holder.imageSlider.setIndicatorUnselectedColor(Color.GRAY);
-//            holder.imageSlider.setAutoCycle(true);
-//            holder.imageSlider.setScrollTimeInSec(10);
-//        } else {
-//            holder.imageSlider.setVisibility(View.GONE);
+//            if (!isPendingOrderAvailable) {
+//                addOrderJsonCreation(productDetails, quantity);
+//            }
 //        }
+//    }
+
+//    private void cancelOtherBusinessOwnerOrderDialog(BookOrderGetMyOrdersModel.ResultBean orderDetails) {
+//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+//        alertDialogBuilder.setTitle("Alert");
+//        alertDialogBuilder.setMessage("There is already an order pending for " + orderDetails.getOwner_business_name() + ", do you want to cancel that order?");
+//        alertDialogBuilder.setCancelable(false);
+//        alertDialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+//            JsonObject mainObj = new JsonObject();
 //
-//        holder.tv_product_name.setText(productDetails.getName());
-//        holder.tv_product_description.setText(productDetails.getRemark());
+//            mainObj.addProperty("type", "changeOrderStatus");
+//            mainObj.addProperty("id", orderDetails.getId());
+//            mainObj.addProperty("status", "7");    //status = 'CANCEL'-7
+//            mainObj.addProperty("user_id", userId);
 //
-//        float maxRetailPrice = Float.parseFloat(productDetails.getMax_retail_price());
-//        float sellingPrice = Float.parseFloat(productDetails.getSelling_price());
-////            int maxRetailPrice = 100;
-////            int sellingPrice = 70;
-//        float savedAmount = maxRetailPrice - sellingPrice;
-//
-//        if (savedAmount <= 0) {
-//            holder.tv_price.setText(Html.fromHtml("<font color=\"#008000\"> <b>₹ " + sellingPrice + " / " + productDetails.getUnit_of_measure() + "</b></font>"));
-//            holder.tv_saved_price.setVisibility(View.GONE);
-//        } else {
-//            holder.tv_price.setText(Html.fromHtml("<font color=\"#008000\"> <b>₹ " + sellingPrice + " / " + productDetails.getUnit_of_measure() + "</b></font>"));
-//            holder.tv_saved_price.setText(Html.fromHtml("<strike>₹ " + maxRetailPrice + "</strike> <font color=\"#ff0000\"> <i>Save ₹ " + savedAmount + "</i></font>"));
-//        }
-//
-//        holder.cv_mainlayout.setOnClickListener(v -> {
-//            showProductDetailsDialog(productDetails);
+//            if (Utilities.isNetworkAvailable(context)) {
+//                new ChangeOrderStatus().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+//            } else {
+//                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+//            }
 //        });
+//        alertDialogBuilder.setNegativeButton("No", (dialog, which) -> {
 //
+//        });
+//        alertDialogBuilder.create().show();
+//    }
+
+//private class ChangeOrderStatus extends AsyncTask<String, Void, String> {
+//
+//    @Override
+//    protected void onPreExecute() {
+//        super.onPreExecute();
+//        pd.setMessage("Please wait ...");
+//        pd.setCancelable(false);
+//        pd.show();
 //    }
 //
 //    @Override
-//    public int getItemCount() {
-//        return searchedProductsList.size();
+//    protected String doInBackground(String... params) {
+//        String res = "[]";
+//        res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
+//        return res.trim();
 //    }
 //
-//    public class MyViewHolder extends RecyclerView.ViewHolder {
+//    @Override
+//    protected void onPostExecute(String result) {
+//        super.onPostExecute(result);
+//        String type = "", message = "";
+//        try {
+//            pd.dismiss();
+//            if (!result.equals("")) {
+//                JSONObject mainObj = new JSONObject(result);
+//                type = mainObj.getString("type");
+//                message = mainObj.getString("message");
+//                if (type.equalsIgnoreCase("success")) {
+//                    Utilities.showMessage("Order cancelled successfully", context, 1);
+//                    new GetOrders().execute();
+//                } else {
+//                    Utilities.showMessage(message, context, 3);
+//                }
 //
-//        private CardView cv_mainlayout;
-//        private SliderView imageSlider;
-//        private TextView tv_product_name, tv_product_description, tv_price, tv_saved_price;
-//
-//        public MyViewHolder(@NonNull View view) {
-//            super(view);
-//            cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
-//            imageSlider = view.findViewById(R.id.imageSlider);
-//            tv_product_name = view.findViewById(R.id.tv_product_name);
-//            tv_product_description = view.findViewById(R.id.tv_product_description);
-//            tv_price = view.findViewById(R.id.tv_price);
-//            tv_saved_price = view.findViewById(R.id.tv_saved_price);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
 //        }
 //    }
 //}

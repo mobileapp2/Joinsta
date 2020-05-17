@@ -93,13 +93,21 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
     LinearLayout llEmail;
     @BindView(R.id.tv_more_order_images)
     TextView tvMoreOrderImages;
+    @BindView(R.id.tv_order_type)
+    TextView tvOrderType;
+    @BindView(R.id.tv_order_id)
+    TextView tvOrderId;
+    @BindView(R.id.tv_purchase_order_type)
+    TextView tvPurchaseOrderType;
+    @BindView(R.id.tv_order_status)
+    TextView tvOrderStatus;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId;
     private BookOrderBusinessOwnerModel.ResultBean orderDetails;
-    private boolean isOrderImagesExpanded = false;
+    private boolean isOrderImagesExpanded = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +127,8 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
-        rvImages.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+//        rvImages.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        rvImages.setLayoutManager(new GridLayoutManager(context, 3));
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
         rvStatus.setLayoutManager(new LinearLayoutManager(context));
     }
@@ -139,8 +148,11 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
     private void setDefault() {
         orderDetails = (BookOrderBusinessOwnerModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
+        tvOrderId.setText("Order Id - " + orderDetails.getOrder_id());
+
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1":
+                tvPurchaseOrderType.setText("Purchase Type - Individual");
                 tvCustomerName.setText(orderDetails.getCustomer_name());
 
                 tvCustomerMobile.setText("+" + orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
@@ -149,6 +161,7 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
 
                 break;
             case "2":
+                tvPurchaseOrderType.setText("Purchase Type - Business");
                 tvCustomerName.setText(orderDetails.getCustomer_business_name());
 
                 List<BookOrderBusinessOwnerModel.ResultBean.CustomerBusinessMobileBean> mobilesList = orderDetails.getCustomer_business_mobile().get(0);
@@ -174,6 +187,7 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
 
         switch (orderDetails.getOrder_type()) {
             case "1":
+                tvOrderType.setText("Order by Product");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.VISIBLE);
@@ -182,6 +196,7 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
 
                 break;
             case "2":
+                tvOrderType.setText("Order by Image");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.VISIBLE);
                 cvProducts.setVisibility(View.GONE);
@@ -194,6 +209,7 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
 //                rvImages.setAdapter(new BookOrderOrderImagesAdapter(context, orderImagesList));
                 break;
             case "3":
+                tvOrderType.setText("Order by Text");
                 cvText.setVisibility(View.VISIBLE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.GONE);
@@ -201,7 +217,6 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
                 tvText.setText(orderDetails.getOrder_text());
                 break;
         }
-
 
         ArrayList<String> orderImagesList = new ArrayList<>();
 
@@ -224,22 +239,42 @@ public class ViewBookOrderBusinessOwnerOrder_Activity extends AppCompatActivity 
         switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
             //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
-            case "6":
-            case "7":
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
+                tvOrderStatus.setText("Order Added in Cart");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.blue));
                 break;
             case "2":
                 btnAction.setText("Accept");
+                tvOrderStatus.setText("Order Placed");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.yellow));
                 break;
             case "3":
                 btnAction.setText("In Progress");
+                tvOrderStatus.setText("Order Accepted");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.green));
                 break;
             case "4":
                 btnAction.setText("Delivered");
+                tvOrderStatus.setText("Order in Progress");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.orange));
                 break;
             case "5":
                 btnAction.setText("Billing");
+                btnReject.setVisibility(View.GONE);
+                tvOrderStatus.setText("Order Delivered");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.green));
+                break;
+            case "6":
+                tvOrderStatus.setText("Order Billing");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.green));
+                btnAction.setVisibility(View.GONE);
+                btnReject.setVisibility(View.GONE);
+                break;
+            case "7":
+                tvOrderStatus.setText("Order Cancelled");
+                tvOrderStatus.setTextColor(context.getResources().getColor(R.color.red));
+                btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
                 break;
         }

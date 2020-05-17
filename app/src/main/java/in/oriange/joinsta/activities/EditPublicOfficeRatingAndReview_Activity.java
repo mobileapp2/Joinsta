@@ -189,7 +189,9 @@ public class EditPublicOfficeRatingAndReview_Activity extends AppCompatActivity 
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("PublicOfficeRatingAndReviewList_Activity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("PublicOfficeByLocation_Activity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewPublicOffice_Activity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

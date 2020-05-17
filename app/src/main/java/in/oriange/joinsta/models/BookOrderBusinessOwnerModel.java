@@ -389,7 +389,13 @@ public class BookOrderBusinessOwnerModel implements Serializable {
             }
 
             public String getAmount() {
-                return amount;
+                if (amount != null)
+                    if (!amount.equals(""))
+                        return amount;
+                    else
+                        return "0";
+                else
+                    return "0";
             }
 
             public void setAmount(String amount) {

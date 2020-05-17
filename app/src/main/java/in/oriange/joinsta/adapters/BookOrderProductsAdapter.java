@@ -70,7 +70,15 @@ public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProd
         holder.tv_productname.setText(productDetails.getName());
         holder.tv_productinfo.setText(productDetails.getDescription());
         holder.tv_quantity.setText("Quantity - " + productDetails.getQuantity());
-        holder.tv_price.setText("₹ " + Integer.parseInt(productDetails.getAmount()) + "/" + productDetails.getUnit_of_measure());
+
+        if (productDetails.getAmount().equals("0")) {
+            holder.tv_price.setVisibility(View.GONE);
+            holder.tv_no_price_available.setVisibility(View.VISIBLE);
+        } else {
+            holder.tv_no_price_available.setVisibility(View.GONE);
+            holder.tv_price.setVisibility(View.VISIBLE);
+            holder.tv_price.setText("₹ " + Integer.parseInt(productDetails.getAmount()) + "/" + productDetails.getUnit_of_measure());
+        }
 
         if (holder.tv_productinfo.getText().toString().trim().equals(""))
             holder.tv_productinfo.setVisibility(View.GONE);
@@ -87,7 +95,7 @@ public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout ll_mainlayout;
-        private TextView tv_productname, tv_productinfo, tv_quantity, tv_price;
+        private TextView tv_productname, tv_productinfo, tv_quantity, tv_price, tv_no_price_available;
         private ImageView imv_productimage, imv_image_not_available;
         private View view_divider;
 
@@ -98,6 +106,7 @@ public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProd
             tv_productinfo = itemView.findViewById(R.id.tv_productinfo);
             tv_quantity = itemView.findViewById(R.id.tv_quantity);
             tv_price = itemView.findViewById(R.id.tv_price);
+            tv_no_price_available = itemView.findViewById(R.id.tv_no_price_available);
             imv_productimage = itemView.findViewById(R.id.imv_productimage);
             imv_image_not_available = itemView.findViewById(R.id.imv_image_not_available);
             view_divider = itemView.findViewById(R.id.view_divider);

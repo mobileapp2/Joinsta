@@ -51,13 +51,13 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
 
         switch (orderDetails.getOrder_type()) {         //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
             case "1":
-                holder.tv_purchase_order_type.setText("Order with Product");
+                holder.tv_purchase_order_type.setText("Order by Product | " + "Order Id - " + orderDetails.getOrder_id());
                 break;
             case "2":
-                holder.tv_purchase_order_type.setText("Order by Image");
+                holder.tv_purchase_order_type.setText("Order by Image | " + "Order Id - " + orderDetails.getOrder_id());
                 break;
             case "3":
-                holder.tv_purchase_order_type.setText("Order by Text");
+                holder.tv_purchase_order_type.setText("Order by Text | " + "Order Id - " + orderDetails.getOrder_id());
                 break;
         }
 

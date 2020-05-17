@@ -21,12 +21,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -56,25 +57,22 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.rv_products)
-    RecyclerView rvProducts;
+    @BindView(R.id.rv_orders)
+    RecyclerView rvOrders;
     @BindView(R.id.ll_nopreview)
     LinearLayout llNopreview;
-    @BindView(R.id.btn_save)
-    Button btnSave;
-    @BindView(R.id.btn_reject)
-    Button btnReject;
-    @BindView(R.id.ll_action_buttons)
-    LinearLayout llActionButtons;
+    @BindView(R.id.progressBar)
+    SpinKitView progressBar;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
-    private List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsList;
     private LocalBroadcastManager localBroadcastManager;
+    private BookOrderListAdapter bookOrderListAdapter;
     private String userId /*,businessOwnerId*/;
 
     @Override
@@ -97,10 +95,11 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
         pd.setMessage("Please wait ...");
         pd.setCancelable(false);
 
-        rvProducts.setLayoutManager(new LinearLayoutManager(context));
+        bookOrderListAdapter = new BookOrderListAdapter();
+        rvOrders.setLayoutManager(new LinearLayoutManager(context));
 
         ordersList = new ArrayList<>();
-        productsList = new ArrayList<>();
+        rvOrders.setAdapter(bookOrderListAdapter);
     }
 
     private void getSessionDetails() {
@@ -116,10 +115,6 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-//        businessOwnerOrderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("businessOwnerOrderDetails");
-//        businessOwnerId = getIntent().getStringExtra("businessOwnerId");
-
-        rvProducts.setAdapter(new BookOrderProductsListAdapter());
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetOrders().execute();
@@ -133,30 +128,93 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        btnSave.setOnClickListener(v -> startActivity(new Intent(context, BookOrderImageUpload_Activity.class)
-                .putExtra("orderDetails", businessOwnerOrderDetails)));
-
-        btnReject.setOnClickListener(v -> {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-            alertDialogBuilder.setTitle("Alert");
-            alertDialogBuilder.setMessage("Are you sure you want to cancel this order?");
-            alertDialogBuilder.setCancelable(false);
-            alertDialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new ChangeOrderStatus().execute("7");
+                    new GetOrders().execute();
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
-            });
-            alertDialogBuilder.setNegativeButton("No", (dialog, which) -> {
-
-            });
-            alertDialogBuilder.create().show();
+            }
         });
+    }
 
+    private class BookOrderListAdapter extends RecyclerView.Adapter<BookOrderListAdapter.MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_book_order_cart, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            int position = holder.getAdapterPosition();
+            BookOrderGetMyOrdersModel.ResultBean orderDetails = ordersList.get(position);
+
+            holder.tv_order_for.setText(orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
+            holder.rv_products.setLayoutManager(new LinearLayoutManager(context));
+
+            holder.rv_products.setAdapter(new BookOrderProductsListAdapter(orderDetails.getProduct_details()));
+
+            holder.btn_save.setOnClickListener(v -> startActivity(new Intent(context, BookOrderImageUpload_Activity.class)
+                    .putExtra("orderDetails", orderDetails)));
+
+            holder.btn_reject.setOnClickListener(v -> {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                alertDialogBuilder.setTitle("Alert");
+                alertDialogBuilder.setMessage("Are you sure you want to cancel this order?");
+                alertDialogBuilder.setCancelable(false);
+                alertDialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new ChangeOrderStatus().execute(orderDetails.getId(), "7");
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                });
+                alertDialogBuilder.setNegativeButton("No", (dialog, which) -> {
+
+                });
+                alertDialogBuilder.create().show();
+            });
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return ordersList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView tv_order_for;
+            private RecyclerView rv_products;
+            private Button btn_save, btn_reject;
+
+            public MyViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tv_order_for = itemView.findViewById(R.id.tv_order_for);
+                rv_products = itemView.findViewById(R.id.rv_products);
+                btn_save = itemView.findViewById(R.id.btn_save);
+                btn_reject = itemView.findViewById(R.id.btn_reject);
+            }
+        }
+
+        void updateRv() {
+            notifyDataSetChanged();
+        }
     }
 
     private class BookOrderProductsListAdapter extends RecyclerView.Adapter<BookOrderProductsListAdapter.MyViewHolder> {
+
+        List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsList;
+
+        private BookOrderProductsListAdapter(List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsList) {
+            this.productsList = productsList;
+        }
 
         @NonNull
         @Override
@@ -171,6 +229,12 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
             int position = holder.getAdapterPosition();
             final BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetails = productsList.get(position);
             final int[] quantity = {Integer.parseInt(productDetails.getQuantity())};
+
+            BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails = null;
+            for (BookOrderGetMyOrdersModel.ResultBean resultBean : ordersList)
+                if (resultBean.getId().equals(productDetails.getOrder_details_id()))
+                    businessOwnerOrderDetails = resultBean;
+            BookOrderGetMyOrdersModel.ResultBean finalBusinessOwnerOrderDetails = businessOwnerOrderDetails;
 
             if (productDetails.getProduct_images().size() != 0) {
                 Picasso.with(context)
@@ -197,8 +261,17 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
             holder.tv_product_name.setText(productDetails.getName());
             holder.tv_product_info.setText(productDetails.getDescription());
 
+            if (holder.tv_product_info.getText().toString().trim().equals(""))
+                holder.tv_product_info.setVisibility(View.GONE);
+
             int sellingPrice = (int) Float.parseFloat(productDetails.getCurrent_amount());
-            holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
+
+            if (sellingPrice != 0) {
+                holder.tv_no_price_available.setVisibility(View.GONE);
+                holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
+            } else {
+                holder.tv_total_product_price.setVisibility(View.GONE);
+            }
 
             holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
 
@@ -209,25 +282,32 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
                 quantity[0] = quantity[0] - 1;
                 holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
                 holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
-
+                updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
             });
 
             holder.btn_add.setOnClickListener(v -> {
                 quantity[0] = quantity[0] + 1;
                 holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
                 holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+                updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
             });
 
-            holder.btn_addtocart.setOnClickListener(v -> updateProductQuantity(productDetails, quantity[0]));
+//            holder.btn_addtocart.setOnClickListener(v -> {
+//                updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
+//            });
 
             holder.ib_delete.setOnClickListener(v -> {
+
                 if (productsList.size() == 1) {
                     Utilities.showMessage("There must be atleast one product in the order", context, 2);
                     return;
                 }
 
-                deleteProduct(productDetails.getId());
+                deleteProduct(finalBusinessOwnerOrderDetails, productDetails.getId());
             });
+
+            if (position == productsList.size() - 1)
+                holder.view_divider.setVisibility(View.GONE);
         }
 
         @Override
@@ -237,31 +317,34 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private CardView cv_mainlayout;
             private ImageView imv_productimage;
-            private TextView tv_nopreview, tv_product_name, tv_product_info, tv_total_product_price, tv_quantity;
+            private TextView tv_nopreview, tv_product_name, tv_product_info, tv_total_product_price, tv_no_price_available, tv_quantity;
             private ImageButton btn_remove, btn_add;
             private Button btn_addtocart;
-            private ImageButton ib_delete;
+            private Button ib_delete;
+            private View view_divider;
 
             public MyViewHolder(@NonNull View view) {
                 super(view);
-                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
                 imv_productimage = view.findViewById(R.id.imv_productimage);
                 tv_nopreview = view.findViewById(R.id.tv_nopreview);
                 tv_product_name = view.findViewById(R.id.tv_product_name);
                 tv_product_info = view.findViewById(R.id.tv_product_info);
                 tv_total_product_price = view.findViewById(R.id.tv_total_product_price);
+                tv_no_price_available = view.findViewById(R.id.tv_no_price_available);
                 tv_quantity = view.findViewById(R.id.tv_quantity);
                 btn_remove = view.findViewById(R.id.btn_remove);
                 btn_add = view.findViewById(R.id.btn_add);
                 btn_addtocart = view.findViewById(R.id.btn_addtocart);
                 ib_delete = view.findViewById(R.id.ib_delete);
+                view_divider = view.findViewById(R.id.view_divider);
             }
         }
     }
 
-    private void updateProductQuantity(BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean selectedProduct, int quantity) {
+    private void updateProductQuantity(BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails,
+                                       BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean selectedProduct,
+                                       int quantity) {
 
         List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsToBeAddedList = new ArrayList<>();
 
@@ -315,10 +398,10 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
             }
         }
 
-        updateJson(productsDetailsArray);
+        updateJson(businessOwnerOrderDetails, productsDetailsArray);
     }
 
-    private void deleteProduct(String id) {
+    private void deleteProduct(BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails, String id) {
         JsonArray productsDetailsArray = new JsonArray();
 
         List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsList = businessOwnerOrderDetails.getProduct_details();
@@ -339,10 +422,10 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
             productsDetailsArray.add(productObject);
         }
 
-        updateJson(productsDetailsArray);
+        updateJson(businessOwnerOrderDetails, productsDetailsArray);
     }
 
-    private void updateJson(JsonArray productsDetailsArray) {
+    private void updateJson(BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails, JsonArray productsDetailsArray) {
         JsonObject mainObj = new JsonObject();
         JsonArray orderImageJsonArray = new JsonArray();
 
@@ -371,7 +454,10 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd.show();
+            progressBar.setVisibility(View.VISIBLE);
+            llNopreview.setVisibility(View.GONE);
+            rvOrders.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -387,8 +473,8 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            pd.dismiss();
             String type = "", message = "";
+            progressBar.setVisibility(View.GONE);
             try {
                 if (!result.equals("")) {
                     BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
@@ -396,15 +482,22 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
 
                     if (type.equalsIgnoreCase("success")) {
                         ordersList = pojoDetails.getResult();
-                        updateProductsList();
+
+                        if (ordersList.size() != 0) {
+                            updateProductsList();
+                        } else {
+                            llNopreview.setVisibility(View.VISIBLE);
+                            rvOrders.setVisibility(View.GONE);
+                        }
                     } else {
-                        llActionButtons.setVisibility(View.GONE);
                         llNopreview.setVisibility(View.VISIBLE);
-                        rvProducts.setVisibility(View.GONE);
+                        rvOrders.setVisibility(View.GONE);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                llNopreview.setVisibility(View.VISIBLE);
+                rvOrders.setVisibility(View.GONE);
             }
         }
     }
@@ -464,8 +557,8 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "changeOrderStatus");
-            obj.addProperty("id", businessOwnerOrderDetails.getId());
-            obj.addProperty("status", params[0]);    //status = 'CANCEL'-7
+            obj.addProperty("id", params[0]);
+            obj.addProperty("status", params[1]);    //status = 'CANCEL'-7
             obj.addProperty("user_id", userId);
             res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
             return res.trim();
@@ -483,8 +576,7 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrders_Activity"));
-
+                        new Search_Fragment.GetOrders().execute();
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -499,12 +591,9 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertD.dismiss();
-                                finish();
-                            }
+                        btn_ok.setOnClickListener(v -> {
+                            alertD.dismiss();
+                            finish();
                         });
 
                         alertD.show();
@@ -520,34 +609,24 @@ public class BookOrderCartProducts_Activity extends AppCompatActivity {
     }
 
     private void updateProductsList() {
+        List<BookOrderGetMyOrdersModel.ResultBean> filteredOrderList = new ArrayList<>();
+
         for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList)
-//            if (orderDetail.getOwner_business_id().equals(businessOwnerId))
             if (orderDetail.getStatus_details().size() == 1)
                 if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
-//                    if (orderDetail.getOwner_business_id().equals(businessOwnerId)) {
-                    businessOwnerOrderDetails = orderDetail;
-                    break;
-//                    }
+                    filteredOrderList.add(orderDetail);
                 }
 
+        ordersList.clear();
+        ordersList.addAll(filteredOrderList);
 
-        if (businessOwnerOrderDetails != null) {
-            productsList = businessOwnerOrderDetails.getProduct_details();
-
-            if (productsList.size() != 0) {
-                llActionButtons.setVisibility(View.VISIBLE);
-                llNopreview.setVisibility(View.GONE);
-                rvProducts.setVisibility(View.VISIBLE);
-                rvProducts.setAdapter(new BookOrderProductsListAdapter());
-            } else {
-                llActionButtons.setVisibility(View.GONE);
-                llNopreview.setVisibility(View.VISIBLE);
-                rvProducts.setVisibility(View.GONE);
-            }
+        if (ordersList.size() != 0) {
+            llNopreview.setVisibility(View.GONE);
+            rvOrders.setVisibility(View.VISIBLE);
+            bookOrderListAdapter.updateRv();
         } else {
-            llActionButtons.setVisibility(View.GONE);
             llNopreview.setVisibility(View.VISIBLE);
-            rvProducts.setVisibility(View.GONE);
+            rvOrders.setVisibility(View.GONE);
         }
     }
 

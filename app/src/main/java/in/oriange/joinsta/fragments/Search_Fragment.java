@@ -507,25 +507,19 @@ public class Search_Fragment extends Fragment {
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
+
+                        int numberOfProducts = 0;
+
                         List<BookOrderGetMyOrdersModel.ResultBean> ordersList = pojoDetails.getResult();
-                        BookOrderGetMyOrdersModel.ResultBean businessOwnerOrderDetails = null;
                         for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList)
                             if (orderDetail.getStatus_details().size() == 1)
-                                if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
-                                    businessOwnerOrderDetails = orderDetail;
-                                    break;
-                                }
+                                if (orderDetail.getStatus_details().get(0).getStatus().equals("1"))
+                                    numberOfProducts = numberOfProducts + orderDetail.getProduct_details().size();
 
 
-                        if (businessOwnerOrderDetails != null) {
-                            if (businessOwnerOrderDetails.getProduct_details().size() != 0) {
-                                fl_cart.setVisibility(View.VISIBLE);
-                                tv_cart_count.setVisibility(View.VISIBLE);
-                                tv_cart_count.setText(String.valueOf(businessOwnerOrderDetails.getProduct_details().size()));
-                            } else {
-                                tv_cart_count.setVisibility(View.GONE);
-                                tv_cart_count.setText("");
-                            }
+                        if (numberOfProducts != 0) {
+                            tv_cart_count.setVisibility(View.VISIBLE);
+                            tv_cart_count.setText(String.valueOf(numberOfProducts));
                         } else {
                             tv_cart_count.setVisibility(View.GONE);
                             tv_cart_count.setText("");
@@ -537,6 +531,8 @@ public class Search_Fragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                tv_cart_count.setVisibility(View.GONE);
+                tv_cart_count.setText("");
             }
         }
     }

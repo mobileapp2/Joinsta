@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cv_mainlayout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
-    android:layout_marginBottom="5dp"
-    android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="5dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,9 +13,10 @@
 
         <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="130dp"
             android:layout_gravity="center"
-            android:layout_weight="0.33">
+            android:layout_weight="0.33"
+            android:padding="5dp">
 
             <ImageView
                 android:id="@+id/imv_productimage"
@@ -57,7 +53,9 @@
                 android:layout_gravity="start"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:padding="4dp"
+                android:paddingLeft="2dp"
+                android:paddingTop="2dp"
+                android:paddingRight="2dp"
                 android:text="Kiwi Fruit"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
@@ -68,9 +66,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:ellipsize="end"
-                android:maxLines="2"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
+                android:maxLines="1"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"
                 android:text="Kiwi Fruit Kiwi Fruit Kiwi Fruit Kiwi Fruit Kiwi Fruit Kiwi Fruit Kiwi Fruit Kiwi Fruit "
                 android:textColor="@color/darkGray"
                 android:textSize="12sp" />
@@ -117,7 +115,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -137,8 +134,18 @@
                         android:padding="4dp"
                         android:text="₹120"
                         android:textColor="@color/green"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_no_price_available"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="Price Not Disclosed"
+                        android:textColor="@color/red"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/tv_total_max_retail_price"
@@ -161,21 +168,29 @@
                     android:text="Add"
                     android:textColor="@color/white"
                     android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
-                <ImageButton
+                <Button
                     android:id="@+id/ib_delete"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/icon_delete"
-                    android:tint="@color/red" />
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:drawableRight="@drawable/icon_delete_red"
+                    android:text="Remove"
+                    android:textAllCaps="false"
+                    android:textColor="@color/red" />
 
             </LinearLayout>
-
 
         </LinearLayout>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.2dp"
+        android:background="@color/mediumGray" />
+
+</LinearLayout>
