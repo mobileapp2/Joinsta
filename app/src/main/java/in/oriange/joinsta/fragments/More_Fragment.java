@@ -1,14 +1,7 @@
 package in.oriange.joinsta.fragments;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,11 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
-
-import java.util.Random;
 
 import in.oriange.joinsta.R;
 import in.oriange.joinsta.activities.BookOrderMyOrders_Activity;
@@ -179,51 +168,4 @@ public class More_Fragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private void showEnquiryNotification(Context mContext, Intent notificationIntent, String title, String message) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
-        PendingIntent pendingIntent = PendingIntent.getActivity((mContext), 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        String channelId = "channel-01";
-        String channelName = "Channel Name";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel mChannel = new NotificationChannel(
-                    channelId, channelName, importance);
-            notificationManager.createNotificationChannel(mChannel);
-            builder = new NotificationCompat.Builder(mContext, channelId);
-        } else {
-            builder = new NotificationCompat.Builder(mContext);
-        }
-
-        Intent callIntent = new Intent(Intent.ACTION_CALL,
-                Uri.parse("tel:" + "8149115089"));
-        PendingIntent callPendingIntent = PendingIntent.getActivity(context, 0, callIntent, 0);
-
-        Notification notification = builder
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                .setContentTitle(title)
-                .setSmallIcon(R.drawable.icon_notification_logo)
-                .setSound(notificationSound)
-                .setLights(Color.YELLOW, 1000, 1000)
-                .setVibrate(new long[]{500, 500})
-                .setWhen(System.currentTimeMillis())
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .setColor(getResources().getColor(R.color.colorPrimary))
-                .addAction(R.drawable.icon_call, "CALL", callPendingIntent)
-                .build();
-
-        Random random = new Random();
-        int m = random.nextInt(9999 - 1000) + 1000;
-
-        notificationManager.notify(m, notification);
-    }
-
-
 }

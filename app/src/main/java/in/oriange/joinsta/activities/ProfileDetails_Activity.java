@@ -155,7 +155,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
         cv_offers.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffers_Actvity.class)));
 
         cv_public_office.setOnClickListener(v -> {
-            selectImage();
+            selectOptions();
         });
 
         btn_add.setOnClickListener(v -> startActivity(new Intent(context, BizProfEmpDetails_Activity.class)
@@ -194,7 +194,7 @@ public class ProfileDetails_Activity extends AppCompatActivity {
         });
     }
 
-    private void selectImage() {
+    private void selectOptions() {
         final CharSequence[] options = {"My Public Office", "Public Office Approval Requests"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builder.setCancelable(false);
